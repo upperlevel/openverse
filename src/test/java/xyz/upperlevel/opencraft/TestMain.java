@@ -2,7 +2,6 @@ package xyz.upperlevel.opencraft;
 
 import org.joml.Vector3f;
 import xyz.upperlevel.graphicengine.api.util.math.Camera;
-import xyz.upperlevel.graphicengine.api.opengl.model.Drawer;
 import xyz.upperlevel.graphicengine.api.opengl.model.Model;
 import xyz.upperlevel.graphicengine.api.opengl.model.VertexDefiner;
 import xyz.upperlevel.graphicengine.api.opengl.model.Vertices;
@@ -23,7 +22,7 @@ import xyz.upperlevel.graphicengine.api.window.event.action.Action;
 import xyz.upperlevel.graphicengine.api.window.event.action.GLFWAction;
 import xyz.upperlevel.graphicengine.api.window.event.key.GLFWKey;
 import xyz.upperlevel.opencraft.world.*;
-import xyz.upperlevel.opencraft.world.generators.FlatChunkGenerator;
+import xyz.upperlevel.opencraft.world.FlatChunkGenerator;
 
 import java.io.File;
 import java.nio.FloatBuffer;

@@ -1,6 +1,5 @@
 package xyz.upperlevel.opencraft;
 
-import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -11,7 +10,6 @@ import xyz.upperlevel.graphicengine.api.opengl.shader.Program;
 import xyz.upperlevel.graphicengine.api.opengl.shader.Shader;
 import xyz.upperlevel.graphicengine.api.opengl.shader.Uniformer;
 import xyz.upperlevel.graphicengine.api.opengl.shader.loader.SimpleShaderSourceLoader;
-import xyz.upperlevel.graphicengine.api.util.Color;
 import xyz.upperlevel.graphicengine.api.util.math.Camera;
 import xyz.upperlevel.graphicengine.api.util.math.Rot;
 import xyz.upperlevel.graphicengine.api.window.GLFW;
@@ -22,10 +20,9 @@ import xyz.upperlevel.graphicengine.api.window.event.action.Action;
 import xyz.upperlevel.graphicengine.api.window.event.action.GLFWAction;
 import xyz.upperlevel.graphicengine.api.window.event.key.GLFWKey;
 import xyz.upperlevel.opencraft.world.Block;
-import xyz.upperlevel.opencraft.world.BlockData;
 import xyz.upperlevel.opencraft.world.Chunk;
 import xyz.upperlevel.opencraft.world.World;
-import xyz.upperlevel.opencraft.world.generators.FlatChunkGenerator;
+import xyz.upperlevel.opencraft.world.FlatChunkGenerator;
 
 import java.io.File;
 import java.nio.FloatBuffer;
@@ -33,9 +30,6 @@ import java.nio.FloatBuffer;
 import static org.lwjgl.glfw.GLFW.GLFW_SAMPLES;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
-import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL20.glGetUniformi;
 import static org.lwjgl.opengl.GL20.glUniform1i;
 

@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.world.generators;
+package xyz.upperlevel.opencraft.world;
 
 import xyz.upperlevel.opencraft.Blocks;
 import xyz.upperlevel.opencraft.world.BlockData;

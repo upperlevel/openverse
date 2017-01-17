@@ -18,5 +18,4 @@ public class BlockData {
     public static final BlockData EMPTY = new BlockData(new Material(), Color.WHITE) {{
         transparent = true;
     }};
-
 }

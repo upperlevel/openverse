@@ -1,7 +1,7 @@
 package xyz.upperlevel.opencraft;
 
 import lombok.Getter;
-import xyz.upperlevel.graphicengine.Game;
+import xyz.upperlevel.graphicengine.launcher.Game;
 
 public class OpenCraft extends Game {
 
