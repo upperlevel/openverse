@@ -248,8 +248,8 @@ public class TestRenderOptimization {
                 for (int y = 0; y < Chunk.HEIGHT; y++) {
                     for (int z = 0; z < Chunk.LENGTH; z++) {
                         Block block = chunk.getBlock(x, y, z);
-                        BlockData data = block.getData();
-                        if (data != BlockData.EMPTY) {
+                        BlockId data = block.getData();
+                        if (data != BlockId.EMPTY) {
                             glActiveTexture(GL_TEXTURE0);
                             data.getMaterial().getTexture().bind();
 

@@ -1,65 +1,64 @@
 package xyz.upperlevel.opencraft.world;
 
 import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import xyz.upperlevel.opencraft.world.block.BlockId;
+import xyz.upperlevel.opencraft.world.block.BlockState;
 
-@RequiredArgsConstructor
 public class Block {
 
-    @Getter @NonNull public final Location location;
+    @Getter
+    public final World world;
 
-    public World getWorld() {
-        return location.getWorld();
+    @Getter
+    public final Chunk chunk;
+
+    @Getter
+    public final int x, y, z;
+
+    public Block(World world, int x, int y, int z) {
+        this.world = world;
+        this.chunk = world.getChunk(x, y, z);
+        this.x     = x;
+        this.y     = y;
+        this.z     = z;
     }
 
-    public Chunk getChunk() {
-        return location.getChunk();
+    private ChunkCache getChunkCache() {
+        return chunk.cache;
     }
 
-    public ChunkCache getChunkCache() {
-        return getChunk().cache;
+    public BlockId getId() {
+        return getState().id;
     }
 
-    public Block getRelative(BlockFace face) {
-        return face.offset(location.copy()).getBlock();
+    public void setId(BlockId id) {
+        setState(id.createState());
     }
 
-    public boolean isVisible() {
-        return BlockFace.FACES.stream()
-                .anyMatch(face -> getRelative(face).getData().isTransparent());
+    public BlockState getState() {
+        return getChunkCache().getBlockState(
+                chunk.toChunkX(x),
+                chunk.toChunkY(y),
+                chunk.toChunkZ(z)
+        );
     }
 
-    public BlockData getData() {
-        BlockData data = getChunkCache().blocks[(int) location.asChunkX()][(int) location.asChunkY()][(int) location.asChunkZ()];
-        return data == null ? BlockData.EMPTY : data;
-    }
-
-    public void setData(BlockData data) {
-        setData(data, true);
-    }
-
-    public void setData(BlockData data, boolean update) {
-        getChunkCache().blocks[(int) location.asChunkX()][(int) location.asChunkY()][(int) location.asChunkZ()] = data;
-        if (update)
-            update();
-    }
-
-    public void update() {
-        if (isVisible()) {
-            getChunkCache().renderer.add(this);
-        } else {
-            getChunkCache().renderer.remove(this);
-        }
+    public void setState(BlockState state) {
+        getChunkCache().setBlockState(
+                chunk.toChunkX(x),
+                chunk.toChunkY(y),
+                chunk.toChunkZ(z),
+                state
+        );
     }
 
     @Override
     public int hashCode() {
-        return location.hashCode();
+        return 1;
     }
 
     @Override
     public boolean equals(Object object) {
-        return object instanceof Block ? location.equals(((Block) object).getLocation()) : super.equals(object);
+        return object instanceof Block ? loc.equals(this.getLoc()) : super.equals(object);
     }
 }

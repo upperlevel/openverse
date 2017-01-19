@@ -2,41 +2,40 @@ package xyz.upperlevel.opencraft.world;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.util.HashSet;
-import java.util.Set;
+import xyz.upperlevel.opencraft.world.block.BlockState;
 
 import static xyz.upperlevel.opencraft.world.Chunk.*;
 
 @RequiredArgsConstructor
-public class ChunkCache implements BlockArea<Block> {
+public class ChunkCache {
 
-    @Getter public final Chunk chunk;
-    @Getter public final BlockData[][][] blocks = new BlockData[WIDTH][HEIGHT][LENGTH];
+    @Getter
+    public final Chunk chunk;
 
-    @Getter final Set<Block> renderer = new HashSet<>();
+    @Getter
+    private final BlockState[][][] blockStates = new BlockState[WIDTH][HEIGHT][LENGTH];
 
-    @Override
     public int getWidth() {
         return WIDTH;
     }
 
-    @Override
     public int getHeight() {
         return HEIGHT;
     }
 
-    @Override
     public int getLength() {
         return LENGTH;
     }
 
-    private Location getLocation(int x, int y, int z) {
-        return new Location(chunk.world, chunk.asWorldX(x), chunk.asWorldY(y), chunk.asWorldZ(z));
+    public Block getBlock(int x, int y, int z) {
+        return new Block(chunk.world, chunk.toWorldX(x), chunk.toWorldY(y), chunk.toWorldZ(z));
     }
 
-    @Override
-    public Block getBlock(int x, int y, int z) {
-        return new Block(getLocation(x, y, z));
+    public BlockState getBlockState(int x, int y, int z) {
+        return blockStates[x][y][z] == null ? ;
+    }
+
+    public void setBlockState(int x, int y, int z, BlockState state) {
+        blockStates[x][y][z] = state;
     }
 }

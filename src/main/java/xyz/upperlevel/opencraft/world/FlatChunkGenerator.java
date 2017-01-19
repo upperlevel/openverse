@@ -1,10 +1,6 @@
 package xyz.upperlevel.opencraft.world;
 
 import xyz.upperlevel.opencraft.Blocks;
-import xyz.upperlevel.opencraft.world.BlockData;
-import xyz.upperlevel.opencraft.world.Chunk;
-import xyz.upperlevel.opencraft.world.ChunkCache;
-import xyz.upperlevel.opencraft.world.ChunkGenerator;
 
 public class FlatChunkGenerator implements ChunkGenerator {
 

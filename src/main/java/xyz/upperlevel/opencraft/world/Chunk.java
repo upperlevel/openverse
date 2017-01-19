@@ -4,17 +4,21 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class Chunk implements BlockArea<Block> {
+public class Chunk {
 
     public static final int
-            WIDTH  = 16,
+            WIDTH = 16,
             HEIGHT = 16,
             LENGTH = 16;
 
-    @Getter public final World world;
-    @Getter public final int x, y, z;
+    @Getter
+    public final World world;
 
-    @Getter public final ChunkCache cache = new ChunkCache(this);
+    @Getter
+    public final int x, y, z;
+
+    @Getter
+    public final ChunkCache cache = new ChunkCache(this);
 
     public boolean isLoaded() {
         return world.isLoaded(this);
@@ -32,35 +36,83 @@ public class Chunk implements BlockArea<Block> {
             world.unloadChunk(this);
     }
 
-    @Override
-    public int getWidth() {
+    public final int getWidth() {
         return WIDTH;
     }
 
-    @Override
-    public int getHeight() {
+    public final int getHeight() {
         return HEIGHT;
     }
 
-    @Override
-    public int getLength() {
+    public final int getLength() {
         return LENGTH;
     }
 
-    public double asWorldX(double x) {
-        return WIDTH * this.x + x;
+    //<editor-fold desc="world coords -> chunk coords">
+    public int toChunkX(int x) {
+        return x % WIDTH;
     }
 
-    public double asWorldY(double y) {
-        return HEIGHT * this.y + y;
+    public double toChunkX(double x) {
+        return x % WIDTH;
     }
 
-    public double asWorldZ(double z) {
-        return LENGTH * this.z + z;
+    public int toChunkY(int y) {
+        return y % HEIGHT;
+    }
+
+    public double toChunkY(double y) {
+        return y % HEIGHT;
+    }
+
+    public int toChunkZ(int z) {
+        return z % LENGTH;
+    }
+
+    public double toChunkZ(double z) {
+        return z % LENGTH;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="chunk coords -> world coords">
+    public int toWorldX(int x) {
+        return this.x * WIDTH + x;
+    }
+
+    public double toWorldX(double x) {
+        return this.x * WIDTH + x;
+    }
+
+    public int toWorldY(int y) {
+        return this.y * HEIGHT + y;
+    }
+
+    public double toWorldY(double y) {
+        return this.y * HEIGHT + y;
+    }
+
+    public int toWorldZ(int z) {
+        return this.z * LENGTH + z;
+    }
+
+    public double toWorldZ(double z) {
+        return this.z * LENGTH + z;
+    }
+    //</editor-fold>
+
+    public Block getBlock(int x, int y, int z) {
+        return cache.getBlock(x, y, z);
     }
 
     @Override
-    public Block getBlock(int x, int y, int z) {
-        return cache.getBlock(x, y, z);
+    public boolean equals(Object obj) {
+        if (obj instanceof Chunk) {
+            Chunk chunk = (Chunk) obj;
+            return  chunk.world.equals(world) &&
+                    chunk.x == x &&
+                    chunk.y == y &&
+                    chunk.z == z;
+        }
+        return false;
     }
 }

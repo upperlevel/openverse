@@ -23,6 +23,7 @@ import xyz.upperlevel.graphicengine.api.window.event.action.GLFWAction;
 import xyz.upperlevel.graphicengine.api.window.event.key.GLFWKey;
 import xyz.upperlevel.opencraft.world.*;
 import xyz.upperlevel.opencraft.world.FlatChunkGenerator;
+import xyz.upperlevel.opencraft.world.block.BlockId;
 
 import java.io.File;
 import java.nio.FloatBuffer;
@@ -244,7 +245,7 @@ public class TestMain {
             uniformer.setUni("viewPosition", camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
 
             /*
-            BlockData cache = Blocks.WOOD;
+            BlockId cache = Blocks.WOOD;
 
             glActiveTexture(GL_TEXTURE0);
             cache.getMaterial().getTexture().bind();
@@ -264,8 +265,8 @@ public class TestMain {
             model.draw();*/
 
             chunk.cache.getRenderer().forEach(block -> {
-                BlockData data = block.getData();
-                if (data.equals(BlockData.EMPTY))
+                BlockId data = block.getData();
+                if (data.equals(BlockId.EMPTY))
                     return;
 
                 glActiveTexture(GL_TEXTURE0);
@@ -289,9 +290,9 @@ public class TestMain {
                 float h = 1f / 16;
                 float l = 1f / Chunk.LENGTH;
 
-                float movX = (float) (block.getLocation().asChunkX() * 2f / Chunk.WIDTH - 1f + w);
-                float movY = (float) (block.getLocation().asChunkY() * 2f / 16 - 1f + h);
-                float movZ = (float) (block.getLocation().asChunkZ() * 2f / Chunk.LENGTH - 1f + l);
+                float movX = (float) (block.getLoc().asChunkX() * 2f / Chunk.WIDTH - 1f + w);
+                float movY = (float) (block.getLoc().asChunkY() * 2f / 16 - 1f + h);
+                float movZ = (float) (block.getLoc().asChunkZ() * 2f / Chunk.LENGTH - 1f + l);
 
                 translation.translate(movX, movY, movZ);
                 translation.scale(w, h, l);
@@ -308,8 +309,8 @@ public class TestMain {
                 for (int y = 0; y < Chunk.HEIGHT; y++) {
                     for (int z = 0; z < Chunk.LENGTH; z++) {
                         Block block = chunk.getBlock(x, y, z);
-                        BlockData data = block.getData();
-                        if (data != BlockData.EMPTY) {
+                        BlockId data = block.getData();
+                        if (data != BlockId.EMPTY) {
                             glActiveTexture(GL_TEXTURE0);
                             data.getMaterial().getTexture().bind();
 
