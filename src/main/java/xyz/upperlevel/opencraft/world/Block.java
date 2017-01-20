@@ -56,9 +56,4 @@ public class Block {
     public int hashCode() {
         return 1;
     }
-
-    @Override
-    public boolean equals(Object object) {
-        return object instanceof Block ? loc.equals(this.getLoc()) : super.equals(object);
-    }
 }

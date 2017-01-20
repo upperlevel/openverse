@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.world.block;
+package xyz.upperlevel.opencraft.world.block.face;
 
 import org.joml.Matrix4f;
 

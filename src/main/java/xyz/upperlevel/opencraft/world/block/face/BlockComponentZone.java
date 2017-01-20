@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.world.block;
+package xyz.upperlevel.opencraft.world.block.face;
 
 import lombok.*;
 import org.joml.Vector3f;
@@ -17,6 +17,24 @@ public class BlockComponentZone {
 
     public Vector3f getSecondPosition() {
         return secondPosition;
+    }
+
+    public boolean is1D() {
+        return  firstPosition.x == secondPosition.x &&
+                firstPosition.y == secondPosition.y &&
+                firstPosition.z == secondPosition.z;
+    }
+
+    public boolean is2D() {
+        return  !is1D() && (
+                firstPosition.x == secondPosition.x ||
+                firstPosition.y == secondPosition.y ||
+                firstPosition.z == secondPosition.z
+        );
+    }
+
+    public boolean is3D() {
+        return !is2D();
     }
 
     public float getMinX() {
@@ -58,5 +76,26 @@ public class BlockComponentZone {
                 secondPosition,
                 firstPosition
         );
+    }
+
+    public BlockComponentZone copy() {
+        return new BlockComponentZone(
+                new Vector3f(firstPosition),
+                new Vector3f(secondPosition)
+        );
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof BlockComponentZone) {
+            BlockComponentZone other = (BlockComponentZone) object;
+            return getMinX() == other.getMinX() &&
+                    getMaxX() == other.getMaxX() &&
+                    getMinY() == other.getMinY() &&
+                    getMaxY() == other.getMaxY() &&
+                    getMinZ() == other.getMinZ() &&
+                    getMaxZ() == other.getMaxZ();
+        }
+        return false;
     }
 }

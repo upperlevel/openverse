@@ -33,8 +33,4 @@ public class BlockRelative {
     public Location offset(Location location) {
         return location.add(location);
     }
-
-    public static void around(Block block, Consumer<Block> action) {
-        BlockRelative.FACES.forEach(face -> action.accept(face.offset(block.loc.copy()).getBlock()));
-    }
 }

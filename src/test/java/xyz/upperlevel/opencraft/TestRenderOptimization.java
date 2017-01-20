@@ -236,7 +236,6 @@ public class TestRenderOptimization {
             Chunk chunk = world.getChunk(world.getChunkX(position.x), world.getChunkY(position.y), world.getChunkZ(position.z));
             chunk.load();
 
-            System.out.println("size: " + chunk.cache.getRenderer().size());
             Block test = chunk.getBlock(0, 2, 0);
 
             buffer = BufferUtils.createFloatBuffer(16);

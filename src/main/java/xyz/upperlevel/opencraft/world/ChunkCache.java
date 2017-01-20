@@ -32,7 +32,7 @@ public class ChunkCache {
     }
 
     public BlockState getBlockState(int x, int y, int z) {
-        return blockStates[x][y][z] == null ? ;
+        return blockStates[x][y][z];
     }
 
     public void setBlockState(int x, int y, int z, BlockState state) {

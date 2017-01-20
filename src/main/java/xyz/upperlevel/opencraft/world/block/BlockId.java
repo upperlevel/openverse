@@ -1,14 +1,11 @@
 package xyz.upperlevel.opencraft.world.block;
 
-import lombok.NonNull;
-
 public class BlockId<State extends BlockState> {
 
-    @NonNull
-    public final String str;
+    private final String id;
 
     public BlockId(String name) {
-        str = name;
+        id = name;
     }
 
     public BlockState createState() {
@@ -17,16 +14,16 @@ public class BlockId<State extends BlockState> {
 
     @Override
     public int hashCode() {
-        return str.hashCode();
+        return id.hashCode();
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return obj instanceof BlockId && str.equals(((BlockId) obj).str);
+    public boolean equals(Object object) {
+        return object instanceof BlockId && id.equals(((BlockId) object).id);
     }
 
     @Override
     public String toString() {
-        return str;
+        return id;
     }
 }
