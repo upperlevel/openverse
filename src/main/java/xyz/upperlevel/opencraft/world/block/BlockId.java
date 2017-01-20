@@ -1,11 +1,19 @@
 package xyz.upperlevel.opencraft.world.block;
 
-public class BlockId<State extends BlockState> {
+import lombok.Getter;
+import xyz.upperlevel.opencraft.world.block.shape.BlockShape;
 
-    private final String id;
+public class BlockId {
 
-    public BlockId(String name) {
+    @Getter
+    public final String id;
+
+    @Getter
+    public final BlockShape shape;
+
+    public BlockId(String name, BlockShape shape) {
         id = name;
+        this.shape = shape;
     }
 
     public BlockState createState() {

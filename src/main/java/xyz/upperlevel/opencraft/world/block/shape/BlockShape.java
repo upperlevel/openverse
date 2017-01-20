@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.world.block.face;
+package xyz.upperlevel.opencraft.world.block.shape;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,8 +34,9 @@ public class BlockShape {
     }
 
     public BlockShape copy() {
-        return new BlockShape().addComponents(components.stream()
-                        .map(BlockComponent::copy)
-                        .collect(Collectors.toList()));
+        return new BlockShape().addComponents(
+                        components.stream()
+                                .map(BlockComponent::copy)
+                                .collect(Collectors.toList()));
     }
 }

@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.world.block.face;
+package xyz.upperlevel.opencraft.world.block.shape;
 
 import lombok.*;
 import org.joml.Vector3f;
@@ -89,7 +89,7 @@ public class BlockComponentZone {
     public boolean equals(Object object) {
         if (object instanceof BlockComponentZone) {
             BlockComponentZone other = (BlockComponentZone) object;
-            return getMinX() == other.getMinX() &&
+            return  getMinX() == other.getMinX() &&
                     getMaxX() == other.getMaxX() &&
                     getMinY() == other.getMinY() &&
                     getMaxY() == other.getMaxY() &&
