@@ -1,8 +1,8 @@
 package xyz.upperlevel.opencraft.world;
 
 import lombok.Getter;
-import xyz.upperlevel.opencraft.world.block.BlockId;
-import xyz.upperlevel.opencraft.world.block.BlockState;
+import xyz.upperlevel.opencraft.world.block.id.BlockId;
+import xyz.upperlevel.opencraft.world.block.state.BlockState;
 
 public class Block {
 
@@ -32,7 +32,7 @@ public class Block {
     }
 
     public void setId(BlockId id) {
-        setState(id.createState());
+        setState(id.generateState());
     }
 
     public BlockState getState() {

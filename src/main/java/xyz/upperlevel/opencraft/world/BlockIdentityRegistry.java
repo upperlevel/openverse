@@ -1,6 +1,6 @@
 package xyz.upperlevel.opencraft.world;
 
-import xyz.upperlevel.opencraft.world.block.BlockId;
+import xyz.upperlevel.opencraft.world.block.id.BlockId;
 
 import java.util.*;
 

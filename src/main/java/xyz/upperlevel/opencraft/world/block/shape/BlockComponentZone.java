@@ -1,6 +1,7 @@
 package xyz.upperlevel.opencraft.world.block.shape;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.joml.Vector3f;
 
 @NoArgsConstructor

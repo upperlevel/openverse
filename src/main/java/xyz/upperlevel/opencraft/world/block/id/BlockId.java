@@ -1,6 +1,9 @@
-package xyz.upperlevel.opencraft.world.block;
+package xyz.upperlevel.opencraft.world.block.id;
 
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import xyz.upperlevel.opencraft.world.block.state.BlockState;
 import xyz.upperlevel.opencraft.world.block.shape.BlockShape;
 
 public class BlockId {
@@ -9,15 +12,21 @@ public class BlockId {
     public final String id;
 
     @Getter
-    public final BlockShape shape;
+    @Setter
+    @NonNull
+    private BlockShape shape = BlockShape.empty();
+
+    public BlockId(String name) {
+        id = name;
+    }
 
     public BlockId(String name, BlockShape shape) {
-        id = name;
+        this(name);
         this.shape = shape;
     }
 
-    public BlockState createState() {
-        return new BlockState(this);
+    public BlockState generateState() {
+        return new BlockState(this, shape.copy());
     }
 
     @Override

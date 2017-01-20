@@ -2,7 +2,7 @@ package xyz.upperlevel.opencraft.world;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import xyz.upperlevel.opencraft.world.block.BlockState;
+import xyz.upperlevel.opencraft.world.block.state.BlockState;
 
 import static xyz.upperlevel.opencraft.world.Chunk.*;
 

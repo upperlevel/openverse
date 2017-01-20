@@ -9,6 +9,9 @@ public class BlockShape {
 
     private final List<BlockComponent> components = new ArrayList<>();
 
+    public BlockShape() {
+    }
+
     public BlockShape addComponent(BlockComponent component) {
         components.add(component);
         return this;
@@ -34,9 +37,12 @@ public class BlockShape {
     }
 
     public BlockShape copy() {
-        return new BlockShape().addComponents(
-                        components.stream()
-                                .map(BlockComponent::copy)
-                                .collect(Collectors.toList()));
+        return new BlockShape().addComponents(components.stream()
+                .map(BlockComponent::copy)
+                .collect(Collectors.toList()));
+    }
+
+    public static BlockShape empty() {
+        return new BlockShape();
     }
 }

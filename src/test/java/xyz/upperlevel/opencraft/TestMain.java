@@ -23,7 +23,7 @@ import xyz.upperlevel.graphicengine.api.window.event.action.GLFWAction;
 import xyz.upperlevel.graphicengine.api.window.event.key.GLFWKey;
 import xyz.upperlevel.opencraft.world.*;
 import xyz.upperlevel.opencraft.world.FlatChunkGenerator;
-import xyz.upperlevel.opencraft.world.block.BlockId;
+import xyz.upperlevel.opencraft.world.block.id.BlockId;
 
 import java.io.File;
 import java.nio.FloatBuffer;
