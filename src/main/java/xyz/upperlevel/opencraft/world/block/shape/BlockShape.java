@@ -1,8 +1,6 @@
 package xyz.upperlevel.opencraft.world.block.shape;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class BlockShape {
@@ -34,6 +32,14 @@ public class BlockShape {
 
     public List<BlockComponent> getComponents() {
         return components;
+    }
+
+    public void load(Map<String, Object> data) {
+        data.get("components");
+    }
+
+    public Map<String, Object> save() {
+        Map<String, Object> data = new HashMap<>();
     }
 
     public BlockShape copy() {

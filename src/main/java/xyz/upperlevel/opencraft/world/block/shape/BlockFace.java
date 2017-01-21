@@ -2,6 +2,9 @@ package xyz.upperlevel.opencraft.world.block.shape;
 
 import lombok.Getter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class BlockFace {
 
     @Getter
@@ -33,6 +36,16 @@ public class BlockFace {
 
     public BlockComponentZone getZone() {
         return position.getZone(component.getZone());
+    }
+
+    public void load(Map<String, Object> data) {
+        // todo retrieves data from a data registry
+    }
+
+    public Map<String, Object> save() {
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", this.data.save());
+        return data;
     }
 
     public BlockFace copy() {
