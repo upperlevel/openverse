@@ -7,7 +7,8 @@ import xyz.upperlevel.opencraft.world.World;
 
 public class EntityLocation extends Location {
 
-    @Getter private double yaw, pitch;
+    @Getter
+    private double yaw, pitch;
 
     public EntityLocation(World world, double x, double y, double z, double yaw, double pitch) {
         super(world, x, y, z);
