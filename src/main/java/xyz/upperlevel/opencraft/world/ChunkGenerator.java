@@ -4,5 +4,5 @@ public interface ChunkGenerator {
 
     ChunkGenerator NULL = (data, x, y, z) -> {};
 
-    void generate(ChunkCache data, int x, int y, int z);
+    void generate(Chunk chunk, int x, int y, int z);
 }

@@ -2,6 +2,7 @@ package xyz.upperlevel.opencraft.world;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import xyz.upperlevel.opencraft.world.block.BlockState;
 
 @RequiredArgsConstructor
 public class Chunk {
@@ -27,7 +28,7 @@ public class Chunk {
     public void load() {
         if (!isLoaded()) {
             world.loadChunk(this);
-            world.getChunkGenerator().generate(cache, x, y, z);
+            world.getChunkGenerator().generate(this, x, y, z);
         }
     }
 
@@ -104,11 +105,19 @@ public class Chunk {
         return cache.getBlock(x, y, z);
     }
 
+    public BlockState getBlockState(int x, int y, int z) {
+        return cache.getBlockState(x, y, z);
+    }
+
+    public void setBlockState(int x, int y, int z, BlockState state) {
+        cache.setBlockState(x, y, z, state);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Chunk) {
             Chunk chunk = (Chunk) obj;
-            return  chunk.world.equals(world) &&
+            return chunk.world.equals(world) &&
                     chunk.x == x &&
                     chunk.y == y &&
                     chunk.z == z;
