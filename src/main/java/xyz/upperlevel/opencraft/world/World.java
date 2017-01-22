@@ -12,11 +12,16 @@ import java.util.Optional;
 @AllArgsConstructor
 public class World {
 
-    @Getter @Setter @NonNull private ChunkGenerator chunkGenerator;
-    @Getter private final List<Chunk> loadedChunks = new ArrayList<>();
+    @Getter
+    @Setter
+    @NonNull
+    private ChunkGenerator chunkGenerator;
+
+    @Getter
+    private final List<Chunk> loadedChunks = new ArrayList<>();
 
     public World() {
-        this(ChunkGenerator.ANY);
+        this(ChunkGenerator.NULL);
     }
 
     public Chunk getChunk(int x, int y, int z) {

@@ -1,30 +1,30 @@
 package xyz.upperlevel.opencraft.world;
 
-import lombok.Getter;
-import xyz.upperlevel.opencraft.world.block.id.BlockId;
-import xyz.upperlevel.opencraft.world.block.state.BlockState;
+import xyz.upperlevel.opencraft.world.block.BlockFacePosition;
+import xyz.upperlevel.opencraft.world.block.BlockId;
+import xyz.upperlevel.opencraft.world.block.BlockState;
+
+import java.util.Objects;
 
 public class Block {
 
-    @Getter
     public final World world;
-
-    @Getter
-    public final Chunk chunk;
-
-    @Getter
     public final int x, y, z;
 
     public Block(World world, int x, int y, int z) {
+        Objects.requireNonNull(world, "Block world cannot be null");
         this.world = world;
-        this.chunk = world.getChunk(x, y, z);
-        this.x     = x;
-        this.y     = y;
-        this.z     = z;
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
-    private ChunkCache getChunkCache() {
-        return chunk.cache;
+    public Chunk getChunk() {
+        return world.getChunk(x, y, z);
+    }
+
+    public ChunkCache getChunkCache() {
+        return getChunk().cache;
     }
 
     public BlockId getId() {
@@ -37,18 +37,26 @@ public class Block {
 
     public BlockState getState() {
         return getChunkCache().getBlockState(
-                chunk.toChunkX(x),
-                chunk.toChunkY(y),
-                chunk.toChunkZ(z)
+                getChunk().toChunkX(x),
+                getChunk().toChunkY(y),
+                getChunk().toChunkZ(z)
         );
     }
 
     public void setState(BlockState state) {
         getChunkCache().setBlockState(
-                chunk.toChunkX(x),
-                chunk.toChunkY(y),
-                chunk.toChunkZ(z),
+                getChunk().toChunkX(x),
+                getChunk().toChunkY(y),
+                getChunk().toChunkZ(z),
                 state
+        );
+    }
+
+    public Block getRelative(BlockFacePosition position) {
+        return getChunkCache().getBlock(
+                x + position.directionX,
+                y + position.directionY,
+                z + position.directionZ
         );
     }
 

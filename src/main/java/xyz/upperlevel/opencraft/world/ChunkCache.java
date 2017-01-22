@@ -2,28 +2,32 @@ package xyz.upperlevel.opencraft.world;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import xyz.upperlevel.opencraft.world.block.state.BlockState;
+import xyz.upperlevel.opencraft.world.block.BlockIds;
+import xyz.upperlevel.opencraft.world.block.BlockState;
 
 import static xyz.upperlevel.opencraft.world.Chunk.*;
 
 @RequiredArgsConstructor
 public class ChunkCache {
 
-    @Getter
     public final Chunk chunk;
 
     @Getter
     private final BlockState[][][] blockStates = new BlockState[WIDTH][HEIGHT][LENGTH];
 
-    public int getWidth() {
+    public final Chunk getChunk() {
+        return chunk;
+    }
+
+    public final int getWidth() {
         return WIDTH;
     }
 
-    public int getHeight() {
+    public final int getHeight() {
         return HEIGHT;
     }
 
-    public int getLength() {
+    public final int getLength() {
         return LENGTH;
     }
 
@@ -32,7 +36,8 @@ public class ChunkCache {
     }
 
     public BlockState getBlockState(int x, int y, int z) {
-        return blockStates[x][y][z];
+        BlockState res = blockStates[x][y][z];
+        return res != null ? res : BlockIds.NULL_BLOCK.generateState();
     }
 
     public void setBlockState(int x, int y, int z, BlockState state) {

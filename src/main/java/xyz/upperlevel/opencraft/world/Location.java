@@ -1,16 +1,32 @@
 package xyz.upperlevel.opencraft.world;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import xyz.upperlevel.graphicengine.api.util.math.VecOperable;
 
-@AllArgsConstructor
+
 public class Location implements VecOperable<Location> {
 
-    @Getter @Setter @NonNull private World world;
-    @Getter @Setter public double x, y, z;
+    @Getter
+    @Setter
+    @NonNull
+    private World world;
+
+    @Getter
+    @Setter
+    public double x = 0, y = 0, z = 0;
+
+    public Location(World world) {
+        this.world = world;
+    }
+
+    public Location(World world, double x, double y, double z) {
+        this.world = world;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
 
     public Chunk getChunk() {
         return world.getChunk(getChunkX(), getChunkY(), getChunkZ());
@@ -119,38 +135,6 @@ public class Location implements VecOperable<Location> {
     }
 
     @Override
-    public Location add(Location other, Location dest) {
-        dest.x = x + other.x;
-        dest.y = y + other.y;
-        dest.z = z + other.z;
-        return dest;
-    }
-
-    @Override
-    public Location sub(Location other, Location dest) {
-        dest.x = x - other.x;
-        dest.y = y - other.y;
-        dest.z = z - other.z;
-        return dest;
-    }
-
-    @Override
-    public Location mul(Location other, Location dest) {
-        dest.x = x * other.x;
-        dest.y = y * other.y;
-        dest.z = z * other.z;
-        return dest;
-    }
-
-    @Override
-    public Location div(Location other, Location dest) {
-        dest.x = x / other.x;
-        dest.y = y / other.y;
-        dest.z = z / other.z;
-        return dest;
-    }
-
-    @Override
     public Location zero() {
         x = 0;
         y = 0;
@@ -164,15 +148,6 @@ public class Location implements VecOperable<Location> {
         x *= invLen;
         y *= invLen;
         z *= invLen;
-        return this;
-    }
-
-    @Override
-    public Location normalize(Location dest) {
-        double invLen = 1. / length();
-        dest.x = x * invLen;
-        dest.y = y * invLen;
-        dest.z = z * invLen;
         return this;
     }
 
