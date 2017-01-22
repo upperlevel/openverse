@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.world.block.shape;
+package xyz.upperlevel.opencraft.world.block;
 
 import lombok.Getter;
 
@@ -14,20 +14,20 @@ public class BlockFace {
     public final BlockFacePosition position;
 
     @Getter
-    private BlockFaceData data = BlockFaceData.NULL;
+    private FaceData data = FaceData.NULL;
 
     public BlockFace(BlockComponent component, BlockFacePosition position) {
         this.component = component;
         this.position = position;
     }
 
-    public BlockFace(BlockComponent component, BlockFacePosition position, BlockFaceData data) {
+    public BlockFace(BlockComponent component, BlockFacePosition position, FaceData data) {
         this(component, position);
         this.data = data;
     }
 
-    public void setData(BlockFaceData data) {
-        this.data = data != null ? data : BlockFaceData.NULL;
+    public void setData(FaceData data) {
+        this.data = data != null ? data : FaceData.NULL;
     }
 
     public boolean isVisible(BlockComponentZone zone) {

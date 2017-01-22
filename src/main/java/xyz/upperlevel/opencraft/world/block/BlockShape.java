@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.world.block.shape;
+package xyz.upperlevel.opencraft.world.block;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,6 +20,12 @@ public class BlockShape {
         return this;
     }
 
+    public Optional<BlockComponent> getComponent(String id) {
+        return components.stream()
+                .filter(comp -> comp.getId().equals(id))
+                .findAny();
+    }
+
     public BlockShape removeComponent(BlockComponent component) {
         components.remove(component);
         return this;
@@ -34,12 +40,21 @@ public class BlockShape {
         return components;
     }
 
+    @SuppressWarnings("unchecked")
     public void load(Map<String, Object> data) {
-        data.get("components");
+        for (Map<String, Object> subData : (List<Map<String, Object>>) data.get("components")) {
+            BlockComponent component = new BlockComponent((String) subData.get("id")); // can be null
+            component.load(subData);
+            components.add(component);
+        }
     }
 
     public Map<String, Object> save() {
         Map<String, Object> data = new HashMap<>();
+        List<Map<String, Object>> compData = new ArrayList<>();
+        components.forEach(comp -> compData.add(comp.save()));
+        data.put("components", compData);
+        return data;
     }
 
     public BlockShape copy() {

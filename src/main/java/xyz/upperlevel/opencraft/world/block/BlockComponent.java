@@ -1,11 +1,10 @@
-package xyz.upperlevel.opencraft.world.block.shape;
+package xyz.upperlevel.opencraft.world.block;
 
 import lombok.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
 public class BlockComponent {
 
     public static final String NULL_ID = "_null";
@@ -21,7 +20,7 @@ public class BlockComponent {
     @Getter
     @Setter
     @NonNull
-    private BlockComponentZone zone;
+    private BlockComponentZone zone = new BlockComponentZone();
 
     public BlockComponent() {
         this(NULL_ID);
@@ -29,6 +28,11 @@ public class BlockComponent {
 
     public BlockComponent(String id) {
         this.id = id != null ? id : NULL_ID;
+    }
+
+    public BlockComponent(String id, BlockComponentZone zone) {
+        this(id);
+        this.zone = zone;
     }
 
     public boolean hasId() {
@@ -66,7 +70,7 @@ public class BlockComponent {
     }
 
     public BlockComponent copy() {
-        BlockComponent copied = new BlockComponent(zone.copy());
+        BlockComponent copied = new BlockComponent(id, zone.copy());
         faces.values().stream()
                 .map(BlockFace::copy)
                 .collect(Collectors.toList())

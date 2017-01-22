@@ -1,16 +1,24 @@
-package xyz.upperlevel.opencraft.world.block.shape;
+package xyz.upperlevel.opencraft.world.block;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.joml.Vector3f;
 
-@NoArgsConstructor
-@AllArgsConstructor
 public class BlockComponentZone {
 
     private Vector3f
             firstPosition = new Vector3f(),
             secondPosition = new Vector3f();
+
+    public BlockComponentZone() {
+    }
+
+    public BlockComponentZone(float pos1x, float pos1y, float pos1z, float pos2x, float pos2y, float pos2z) {
+        this(new Vector3f(pos1x, pos1y, pos1z), new Vector3f(pos2x, pos2y, pos2z));
+    }
+
+    public BlockComponentZone(Vector3f firstPosition, Vector3f secondPosition) {
+        this.firstPosition = firstPosition;
+        this.secondPosition = secondPosition;
+    }
 
     public Vector3f getFirstPosition() {
         return firstPosition;
@@ -21,16 +29,16 @@ public class BlockComponentZone {
     }
 
     public boolean is1D() {
-        return  firstPosition.x == secondPosition.x &&
+        return firstPosition.x == secondPosition.x &&
                 firstPosition.y == secondPosition.y &&
                 firstPosition.z == secondPosition.z;
     }
 
     public boolean is2D() {
-        return  !is1D() && (
+        return !is1D() && (
                 firstPosition.x == secondPosition.x ||
-                firstPosition.y == secondPosition.y ||
-                firstPosition.z == secondPosition.z
+                        firstPosition.y == secondPosition.y ||
+                        firstPosition.z == secondPosition.z
         );
     }
 
@@ -90,7 +98,7 @@ public class BlockComponentZone {
     public boolean equals(Object object) {
         if (object instanceof BlockComponentZone) {
             BlockComponentZone other = (BlockComponentZone) object;
-            return  getMinX() == other.getMinX() &&
+            return getMinX() == other.getMinX() &&
                     getMaxX() == other.getMaxX() &&
                     getMinY() == other.getMinY() &&
                     getMaxY() == other.getMaxY() &&

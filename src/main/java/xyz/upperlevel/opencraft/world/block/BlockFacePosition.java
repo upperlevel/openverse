@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.world.block.shape;
+package xyz.upperlevel.opencraft.world.block;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
