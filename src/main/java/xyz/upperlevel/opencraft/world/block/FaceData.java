@@ -19,6 +19,9 @@ public class FaceData {
         return id;
     }
 
+    public void render() {
+    }
+
     public void load(Map<String, Object> data) {
     }
 
