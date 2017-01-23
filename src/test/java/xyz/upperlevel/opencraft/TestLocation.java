@@ -14,21 +14,21 @@ public class TestLocation {
 
     @Test
     public void checkHashCode() {
-        assert LOC1.hashCode() == LOC2.hashCode() : "Locations hashcode should be equal.";
+        assert LOC1.hashCode() == LOC2.hashCode() : "Locations hashcode should be equal";
     }
 
     @Test
     public void checkDiffHashCode() {
-        assert LOC1.hashCode() != LOC3.hashCode() : "Locations hashcode should be different.";
+        assert LOC1.hashCode() != LOC3.hashCode() : "Locations hashcode should be different";
     }
 
     @Test
     public void checkEquals() {
-        assert LOC1.equals(LOC2) : "Locations should be equals.";
+        assert LOC1.equals(LOC2) : "Locations should be equals";
     }
 
     @Test
     public void checkDiffEquals() {
-        assert !LOC1.equals(LOC3) : "Locations should be different.";
+        assert !LOC1.equals(LOC3) : "Locations should be different";
     }
 }
