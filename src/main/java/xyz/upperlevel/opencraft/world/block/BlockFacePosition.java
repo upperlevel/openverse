@@ -11,37 +11,37 @@ public enum BlockFacePosition {
     UP(0, 1, 0) {
         @Override
         public Matrix4f transformMatrix(Matrix4f matrix) {
-            return rotateMatrix(matrix.translate(-0f, +.5f, -.5f), 1f, 0f, 0f);
+            return rotateMatrix(matrix.translate(0, 1f, 0), 1f, 0f, 0f);
         }
     },
     DOWN(0, -1, 0) {
         @Override
         public Matrix4f transformMatrix(Matrix4f matrix) {
-            return rotateMatrix(matrix.translate(-0f, -.5f, -.5f), 1f, 0f, 0f);
+            return rotateMatrix(matrix.translate(0, -1f, 0), 1f, 0f, 0f);
         }
     },
     LEFT(-1, 0, 0) {
         @Override
         public Matrix4f transformMatrix(Matrix4f matrix) {
-            return rotateMatrix(matrix.translate(-.5f, 0f, -.5f), 0f, 1f, 0f);
+            return rotateMatrix(matrix.translate(-1f, 0, 0), 0f, 1f, 0f);
         }
     },
     RIGHT(1, 0, 0) {
         @Override
         public Matrix4f transformMatrix(Matrix4f matrix) {
-            return rotateMatrix(matrix.translate(+.5f, 0f, -.5f), 0f, 1f, 0f);
+            return rotateMatrix(matrix.translate(1f, 0, 0), 0f, 1f, 0f);
         }
     },
     FORWARD(0, 0, 1) {
         @Override
         public Matrix4f transformMatrix(Matrix4f matrix) {
-            return matrix; // default face position
+            return matrix.translate(0, 0, 1f); // default face position
         }
     },
     BACKWARD(0, 0, -1) {
         @Override
         public Matrix4f transformMatrix(Matrix4f matrix) {
-            return matrix.translate(0f, 0f, -1);
+            return matrix.translate(0, 0, -1f);
         }
     };
 
