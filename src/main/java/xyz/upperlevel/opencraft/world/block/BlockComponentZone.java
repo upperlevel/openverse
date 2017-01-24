@@ -20,6 +20,18 @@ public class BlockComponentZone {
         this.secondPosition = secondPosition;
     }
 
+    public float getWidth() {
+        return getMaxX() - getMinX();
+    }
+
+    public float getHeight() {
+        return getMaxY() - getMinY();
+    }
+
+    public float getLength() {
+        return getMaxZ() - getMinZ();
+    }
+
     public Vector3f getFirstPosition() {
         return firstPosition;
     }
