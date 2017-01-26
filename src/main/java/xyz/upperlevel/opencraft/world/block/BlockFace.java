@@ -5,6 +5,8 @@ import lombok.Getter;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.lang.System.out;
+
 public class BlockFace {
 
     @Getter
@@ -30,8 +32,12 @@ public class BlockFace {
         this.data = data != null ? data : FaceData.NULL;
     }
 
-    public boolean isVisible(BlockComponentZone zone) {
-        return !zone.isInside(getZone());
+    public boolean isVisible(BlockComponent component) {
+        out.println("---");
+        out.println(this.component.getId() + ">" + position.name() + "> is component transparent? " + component.isTransparent());
+        out.println(this.component.getId() + ">" + position.name() + "> is inside component? " + component.isInside(this));
+        out.println(this.component.getId() + ">" + position.name() + "> visible? " + (component.isTransparent() || !component.isInside(this)));
+        return component.isTransparent() || !component.isInside(this);
     }
 
     public BlockComponentZone getZone() {

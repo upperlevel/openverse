@@ -32,26 +32,49 @@ public class BlockComponentZone {
         return getMaxZ() - getMinZ();
     }
 
+    public Vector3f getSize() {
+        return new Vector3f(
+                getWidth(),
+                getHeight(),
+                getLength()
+        );
+    }
+
+    public Vector3f getMinPosition() {
+        return new Vector3f(
+                getMinX(),
+                getMinY(),
+                getMinZ()
+        );
+    }
+
+    public Vector3f getMaxPosition() {
+        return new Vector3f(
+                getMaxX(),
+                getMaxY(),
+                getMaxZ()
+        );
+    }
+
     public Vector3f getFirstPosition() {
-        return firstPosition;
+        return new Vector3f(firstPosition);
     }
 
     public Vector3f getSecondPosition() {
-        return secondPosition;
+        return new Vector3f(secondPosition);
     }
 
     public boolean is1D() {
-        return firstPosition.x == secondPosition.x &&
+        return (firstPosition.x == secondPosition.x &&
                 firstPosition.y == secondPosition.y &&
-                firstPosition.z == secondPosition.z;
+                firstPosition.z == secondPosition.z);
     }
 
     public boolean is2D() {
-        return !is1D() && (
+        return !is1D() &&
                 firstPosition.x == secondPosition.x ||
-                        firstPosition.y == secondPosition.y ||
-                        firstPosition.z == secondPosition.z
-        );
+                firstPosition.y == secondPosition.y ||
+                firstPosition.z == secondPosition.z;
     }
 
     public boolean is3D() {
@@ -59,11 +82,11 @@ public class BlockComponentZone {
     }
 
     public float getMinX() {
-        return Math.min(firstPosition.x, secondPosition.y);
+        return Math.min(firstPosition.x, secondPosition.x);
     }
 
     public float getMaxX() {
-        return Math.max(firstPosition.x, secondPosition.y);
+        return Math.max(firstPosition.x, secondPosition.x);
     }
 
     public float getMinY() {
@@ -82,10 +105,26 @@ public class BlockComponentZone {
         return Math.max(firstPosition.z, secondPosition.z);
     }
 
+    public boolean isEqual(BlockComponentZone zone) {
+        return (getMinPosition().equals(zone.getMinPosition()) &&
+                getMaxPosition().equals(zone.getMaxPosition()));
+    }
+
+    /**
+     * Checks if the zone passed correspond to a face of this zone.
+     */
+    public boolean isFace(BlockComponentZone testFace) {
+        for (BlockFacePosition position : BlockFacePosition.values()) {
+            if (position.getZone(this).isEqual(testFace))
+                return true;
+        }
+        return false;
+    }
+
     public boolean isInside(Vector3f point) {
-        return point.x >= getMinX() && point.x <= getMaxX() &&
+        return (point.x >= getMinX() && point.x <= getMaxX() &&
                 point.y >= getMinY() && point.y <= getMaxY() &&
-                point.z >= getMinZ() && point.z <= getMaxZ();
+                point.z >= getMinZ() && point.z <= getMaxZ());
     }
 
     public boolean isInside(BlockComponentZone zone) {
@@ -108,15 +147,6 @@ public class BlockComponentZone {
 
     @Override
     public boolean equals(Object object) {
-        if (object instanceof BlockComponentZone) {
-            BlockComponentZone other = (BlockComponentZone) object;
-            return getMinX() == other.getMinX() &&
-                    getMaxX() == other.getMaxX() &&
-                    getMinY() == other.getMinY() &&
-                    getMaxY() == other.getMaxY() &&
-                    getMinZ() == other.getMinZ() &&
-                    getMaxZ() == other.getMaxZ();
-        }
-        return false;
+        return object instanceof BlockComponentZone && isEqual((BlockComponentZone) object);
     }
 }

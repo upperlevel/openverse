@@ -1,25 +1,14 @@
 package xyz.upperlevel.opencraft.world.block.defaults;
 
-import xyz.upperlevel.graphicengine.api.opengl.shader.Program;
-import xyz.upperlevel.graphicengine.api.opengl.shader.ShaderType;
-import xyz.upperlevel.graphicengine.api.opengl.shader.ShaderUtil;
-import xyz.upperlevel.graphicengine.api.opengl.shader.Uniformer;
-import xyz.upperlevel.graphicengine.api.util.Color;
-import xyz.upperlevel.graphicengine.api.util.Colors;
+import xyz.upperlevel.opencraft.world.block.BlockComponent;
 import xyz.upperlevel.opencraft.world.block.FaceData;
+import xyz.upperlevel.ulge.opengl.shader.Uniformer;
+import xyz.upperlevel.ulge.util.Color;
+import xyz.upperlevel.ulge.util.Colors;
 
 import java.util.Objects;
 
 public class TestFaceData extends FaceData {
-
-    public static final Program PROGRAM = new Program();
-
-    static {
-        ClassLoader classLoader = TestFaceData.class.getClassLoader();
-        PROGRAM.attach(ShaderUtil.load(ShaderType.VERTEX, classLoader.getResourceAsStream("resources/vertex.glsl")));
-        PROGRAM.attach(ShaderUtil.load(ShaderType.FRAGMENT, classLoader.getResourceAsStream("resources/fragment.glsl")));
-        PROGRAM.link();
-    }
 
     private Color color = Colors.WHITE;
 
@@ -37,8 +26,7 @@ public class TestFaceData extends FaceData {
     }
 
     @Override
-    public void render() {
-        Uniformer uniformer = PROGRAM.bind();
+    public void render(Uniformer uniformer) {
         uniformer.setUniform("color", color);
     }
 }

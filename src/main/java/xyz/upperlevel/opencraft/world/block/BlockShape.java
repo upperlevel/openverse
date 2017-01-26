@@ -1,5 +1,7 @@
 package xyz.upperlevel.opencraft.world.block;
 
+import xyz.upperlevel.opencraft.world.Block;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -65,5 +67,33 @@ public class BlockShape {
 
     public static BlockShape empty() {
         return new BlockShape();
+    }
+
+    private final FaceBuffer faceBuf = new FaceBuffer();
+
+    public FaceBuffer getFaceBuffer() {
+        return faceBuf;
+    }
+
+    public class FaceBuffer { // useful for rendering
+
+        private List<BlockFace> faces = new ArrayList<>();
+
+        private FaceBuffer() {
+        }
+
+        public List<BlockFace> computeFaces() {
+            return computeFaces(BlockComponent.NULL);
+        }
+
+        public List<BlockFace> computeFaces(BlockComponent component) {
+            // foreach component compute its faces
+            components.forEach(comp -> faces.addAll(comp.getFaceBuffer().computeFaces(component)));
+            return faces;
+        }
+
+        public List<BlockFace> getFaces() {
+            return faces;
+        }
     }
 }

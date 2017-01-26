@@ -1,6 +1,7 @@
 package xyz.upperlevel.opencraft.world.block.defaults;
 
-import xyz.upperlevel.graphicengine.api.util.Color;
+import xyz.upperlevel.opencraft.world.block.BlockShape;
+import xyz.upperlevel.ulge.util.Color;
 import xyz.upperlevel.opencraft.world.block.BlockFacePosition;
 import xyz.upperlevel.opencraft.world.block.BlockId;
 import xyz.upperlevel.opencraft.world.block.BlockState;
@@ -9,6 +10,10 @@ public class TestBlockState extends BlockState {
 
     public TestBlockState(BlockId id) {
         super(id);
+    }
+
+    public TestBlockState(BlockId id, BlockShape shape) {
+        super(id, shape);
     }
 
     public void setColor(Color color) {

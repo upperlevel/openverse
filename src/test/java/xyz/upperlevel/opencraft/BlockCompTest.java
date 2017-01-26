@@ -8,7 +8,7 @@ import xyz.upperlevel.opencraft.world.block.BlockFacePosition;
 
 import static java.lang.System.out;
 
-public class TestBlockComponent {
+public class BlockCompTest {
 
     /**
      * Tests if the faces get splitter correctly from

@@ -1,7 +1,7 @@
 package xyz.upperlevel.opencraft;
 
 import lombok.*;
-import xyz.upperlevel.graphicengine.api.util.math.AngleUtil;
+import xyz.upperlevel.ulge.util.math.AngleUtil;
 import xyz.upperlevel.opencraft.world.Location;
 import xyz.upperlevel.opencraft.world.World;
 

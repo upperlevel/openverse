@@ -1,11 +1,16 @@
 package xyz.upperlevel.opencraft.world.block;
 
 import lombok.*;
+import org.joml.Vector3f;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class BlockComponent {
+
+    public static final BlockComponent NULL = new BlockComponent() {{
+        setZone(new BlockComponentZone());
+    }};
 
     public static final String NULL_ID = "_null";
 
@@ -17,13 +22,26 @@ public class BlockComponent {
     @Getter
     private String id = NULL_ID;
 
+    /**
+     * The variable transparent is checked on face rendering. If a face
+     * is inside a transparent block component then it is considered
+     * renderable, otherwise not.
+     */
+    @Getter
+    @Setter
+    private boolean transparent = false;
+
     @Getter
     @Setter
     @NonNull
-    private BlockComponentZone zone = new BlockComponentZone();
+    private BlockComponentZone zone = new BlockComponentZone(
+            new Vector3f(),
+            new Vector3f(1f, 1f, 1f)
+    );
 
     public BlockComponent() {
         this(NULL_ID);
+        setTransparent(false);
     }
 
     public BlockComponent(String id) {
@@ -39,14 +57,20 @@ public class BlockComponent {
         return id.equals(NULL_ID);
     }
 
-    public BlockFace getFace(BlockFacePosition position) {
-        return faces.get(position); // must be present since initialized in the constructor
+    public boolean isInside(BlockComponentZone zone) {
+        return this.zone.isInside(zone);
     }
 
-    public Collection<BlockFace> getVisibleFaces(BlockComponentZone zone) {
-        return getFaces().stream()
-                .filter(face -> face.isVisible(zone))
-                .collect(Collectors.toList());
+    public boolean isInside(BlockComponent component) {
+        return zone.isInside(component.getZone());
+    }
+
+    public boolean isInside(BlockFace face) {
+        return isInside(face.getZone());
+    }
+
+    public BlockFace getFace(BlockFacePosition position) {
+        return faces.get(position); // must be present since initialized in the constructor
     }
 
     public Collection<BlockFace> getFaces() {
@@ -76,5 +100,37 @@ public class BlockComponent {
                 .collect(Collectors.toList())
                 .forEach(face -> copied.faces.put(face.position, face));
         return copied;
+    }
+
+    public final FaceBuffer faceBuf = new FaceBuffer();
+
+    public FaceBuffer getFaceBuffer() {
+        return faceBuf;
+    }
+
+    public class FaceBuffer { // useful for rendering
+
+        private Set<BlockFace> faces = new HashSet<>(); // using a set because it cannot contain same position faces
+
+        private FaceBuffer() {
+        }
+
+        public Set<BlockFace> computeFaces() {
+            return computeFaces(NULL);
+        }
+
+        public Set<BlockFace> computeFaces(BlockComponent component) {
+            // add all visible faces to the buffer
+            // should remove faces of the same position by itself
+            faces.addAll(BlockComponent.this.getFaces().stream()
+                    .filter(face -> face.isVisible(component) || (component.getZone().isFace(face.getZone()) && component.isInside(BlockComponent.this)))
+                    .collect(Collectors.toList())
+            );
+            return faces;
+        }
+
+        public Set<BlockFace> getFaces() {
+            return faces;
+        }
     }
 }

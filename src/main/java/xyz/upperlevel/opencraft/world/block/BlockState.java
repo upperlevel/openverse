@@ -25,4 +25,8 @@ public class BlockState {
     public void setShape(BlockShape shape) {
         this.shape = shape != null ? shape : BlockShape.empty();
     }
+
+    public BlockShape.FaceBuffer getFaceBuffer() {
+        return shape.getFaceBuffer();
+    }
 }

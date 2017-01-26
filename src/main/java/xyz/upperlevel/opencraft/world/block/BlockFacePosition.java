@@ -10,43 +10,51 @@ public enum BlockFacePosition {
 
     UP(0, 1, 0) {
         @Override
-        public Matrix4f transformMatrix(Matrix4f matrix) {
-            return rotateMatrix(matrix.translate(0, 1f, 0), 1f, 0f, 0f);
+        public Matrix4f rotateToCubeRotation(Matrix4f matrix) {
+            return BlockFacePosition.rotateMatrix(matrix, 1f, 0f, 0f);
         }
     },
     DOWN(0, -1, 0) {
         @Override
-        public Matrix4f transformMatrix(Matrix4f matrix) {
-            return rotateMatrix(matrix.translate(0, -1f, 0), 1f, 0f, 0f);
+        public Matrix4f rotateToCubeRotation(Matrix4f matrix) {
+            return BlockFacePosition.rotateMatrix(matrix, 1f, 0f, 0f);
         }
     },
     LEFT(-1, 0, 0) {
         @Override
-        public Matrix4f transformMatrix(Matrix4f matrix) {
-            return rotateMatrix(matrix.translate(-1f, 0, 0), 0f, 1f, 0f);
+        public Matrix4f rotateToCubeRotation(Matrix4f matrix) {
+            return BlockFacePosition.rotateMatrix(matrix, 0f, 1f, 0f);
         }
     },
     RIGHT(1, 0, 0) {
         @Override
-        public Matrix4f transformMatrix(Matrix4f matrix) {
-            return rotateMatrix(matrix.translate(1f, 0, 0), 0f, 1f, 0f);
+        public Matrix4f rotateToCubeRotation(Matrix4f matrix) {
+            return BlockFacePosition.rotateMatrix(matrix, 0f, 1f, 0f);
         }
     },
     FORWARD(0, 0, 1) {
         @Override
-        public Matrix4f transformMatrix(Matrix4f matrix) {
-            return matrix.translate(0, 0, 1f); // default face position
+        public Matrix4f rotateToCubeRotation(Matrix4f matrix) {
+            return matrix; // default face position
         }
     },
     BACKWARD(0, 0, -1) {
         @Override
-        public Matrix4f transformMatrix(Matrix4f matrix) {
-            return matrix.translate(0, 0, -1f);
+        public Matrix4f rotateToCubeRotation(Matrix4f matrix) {
+            return matrix;
         }
     };
 
     @Getter
     public final int directionX, directionY, directionZ;
+
+    public Vector3f getMod() {
+        return new Vector3f(
+                directionX,
+                directionY,
+                directionZ
+        );
+    }
 
     public BlockComponentZone getZone(BlockComponentZone zone) {
         return new BlockComponentZone(
@@ -61,7 +69,14 @@ public enum BlockFacePosition {
         );
     }
 
-    public abstract Matrix4f transformMatrix(Matrix4f matrix);
+    /**
+     * Rotates a default XY face to obtain the indexed face direction.
+     */
+    public abstract Matrix4f rotateToCubeRotation(Matrix4f matrix);
+
+    public Matrix4f translateToCubePosition(Matrix4f matrix, Vector3f cubeScale) {
+        return matrix.translate(getMod().mul(cubeScale));
+    }
 
     private static Matrix4f rotateMatrix(Matrix4f matrix, float x, float y, float z) {
         return matrix.rotate((float) (Math.PI / 2.), x, y, z);

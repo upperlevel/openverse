@@ -1,6 +1,6 @@
 package xyz.upperlevel.opencraft.world.block.defaults;
 
-import xyz.upperlevel.graphicengine.api.util.Colors;
+import xyz.upperlevel.ulge.util.Colors;
 import xyz.upperlevel.opencraft.world.block.BlockComponent;
 import xyz.upperlevel.opencraft.world.block.BlockFacePosition;
 import xyz.upperlevel.opencraft.world.block.BlockId;
@@ -24,6 +24,6 @@ public class TestBlockId extends BlockId {
 
     @Override
     public BlockState generateState() {
-        return new TestBlockState(this);
+        return new TestBlockState(this, getShape().copy());
     }
 }

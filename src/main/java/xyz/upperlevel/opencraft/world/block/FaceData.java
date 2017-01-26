@@ -1,5 +1,7 @@
 package xyz.upperlevel.opencraft.world.block;
 
+import xyz.upperlevel.ulge.opengl.shader.Uniformer;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -19,7 +21,7 @@ public class FaceData {
         return id;
     }
 
-    public void render() {
+    public void render(Uniformer uniformer) {
     }
 
     public void load(Map<String, Object> data) {

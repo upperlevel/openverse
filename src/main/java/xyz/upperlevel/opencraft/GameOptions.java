@@ -2,7 +2,7 @@ package xyz.upperlevel.opencraft;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import xyz.upperlevel.graphicengine.api.util.math.AngleUtil;
+import xyz.upperlevel.ulge.util.math.AngleUtil;
 
 @NoArgsConstructor
 public class GameOptions {
