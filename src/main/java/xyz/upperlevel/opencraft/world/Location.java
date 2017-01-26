@@ -1,11 +1,12 @@
 package xyz.upperlevel.opencraft.world;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import xyz.upperlevel.graphicengine.api.util.math.VecOperable;
+import xyz.upperlevel.ulge.util.math.VecOperable;
 
-
+@AllArgsConstructor
 public class Location implements VecOperable<Location> {
 
     @Getter
@@ -20,14 +21,6 @@ public class Location implements VecOperable<Location> {
     public Location(World world) {
         this.world = world;
     }
-
-    public Location(World world, double x, double y, double z) {
-        this.world = world;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
-
     public Chunk getChunk() {
         return world.getChunk(getChunkX(), getChunkY(), getChunkZ());
     }
@@ -93,7 +86,6 @@ public class Location implements VecOperable<Location> {
         return super.equals(object);
     }
 
-    @Override
     public Location set(Location other) {
         world = other.world;
         x = other.x;
