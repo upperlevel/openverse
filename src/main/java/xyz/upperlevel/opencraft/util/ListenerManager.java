@@ -66,7 +66,7 @@ public class ListenerManager {
             try {
                 mth.invoke(rl.listener, event);
             } catch (InvocationTargetException e) {
-                throw new RuntimeException("The listeneer " + rl.listener.getClass().getName() + " thrown an error while executing.", e);
+                throw new RuntimeException("The listener " + rl.listener.getClass().getName() + " thrown an error while executing.", e);
             } catch (IllegalAccessException ignored) {
             }
         });
@@ -86,6 +86,11 @@ public class ListenerManager {
 
     public ListenerManager unregister(Listener listener) {
         listeners.remove(listener);
+        return this;
+    }
+
+    public ListenerManager clear() {
+        listeners.clear();
         return this;
     }
 }
