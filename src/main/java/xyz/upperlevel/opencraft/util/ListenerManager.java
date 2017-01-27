@@ -5,7 +5,10 @@ import lombok.RequiredArgsConstructor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ListenerManager {
@@ -23,7 +26,7 @@ public class ListenerManager {
         private final Listener listener;
         private final List<EventFetcher> evs = new ArrayList<>();
 
-        public List<Method> getMethods(Class<? extends Event> ev) {
+        private List<Method> getMethods(Class<? extends Event> ev) {
             return evs.stream()
                     .filter(evb -> evb.ev == ev)
                     .map(evb -> evb.mth)
@@ -75,7 +78,7 @@ public class ListenerManager {
 
     public ListenerManager call(Event event, Listener listener) {
         if (!isRegistered(listener))
-            throw new IllegalArgumentException("The listener "+ listener.getClass().getName() + " is not registered.");
+            throw new IllegalArgumentException("The listener " + listener.getClass().getName() + " is not registered.");
         return call(event, listeners.get(listener));
     }
 
