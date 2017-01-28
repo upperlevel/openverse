@@ -2,11 +2,8 @@ package xyz.upperlevel.opencraft.world;
 
 import lombok.Getter;
 
-<<<<<<< HEAD
-=======
 import java.util.Objects;
 
->>>>>>> c2da1efc78c07a3b3c8d57021cb54cdb5cb8f026
 public class Chunk {
 
     public static final int
@@ -22,18 +19,6 @@ public class Chunk {
 
     @Getter
     public final Block[][][] blocks = new Block[WIDTH][HEIGHT][LENGTH];
-<<<<<<< HEAD
-
-    Chunk(World world, int x, int y, int z) {
-        this.world = world;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-
-        fillEmpty();
-    }
-=======
->>>>>>> c2da1efc78c07a3b3c8d57021cb54cdb5cb8f026
 
     Chunk(World world, int chunkX, int chunkY, int chunkZ) {
         Objects.requireNonNull(world, "World cannot be null.");
@@ -55,22 +40,6 @@ public class Chunk {
 
     public final int getLength() {
         return LENGTH;
-    }
-
-    public Chunk getRelative(int x, int y, int z) {
-        return world.getChunk(
-                this.x + x,
-                this.y + y,
-                this.z + z
-        );
-    }
-
-    public Chunk getRelative(ChunkRelative relative) {
-        return getRelative(
-                relative.offsetX,
-                relative.offsetY,
-                relative.offsetZ
-        );
     }
 
     //<editor-fold desc="world coords -> chunk coords">
@@ -125,18 +94,6 @@ public class Chunk {
     }
     //</editor-fold>
 
-<<<<<<< HEAD
-    /**
-     * Gets a block from chunk coordinates.
-     */
-    public Block getBlock(int x, int y, int z) {
-        return blocks[x][y][z];
-    }
-
-    /**
-     * Fills the blocks array with empty blocks value.
-     */
-=======
     public boolean isLoaded() {
         return world.isLoaded(this);
     }
@@ -173,7 +130,6 @@ public class Chunk {
         );
     }
 
->>>>>>> c2da1efc78c07a3b3c8d57021cb54cdb5cb8f026
     public void fillEmpty() {
         for (int x = 0; x < WIDTH; x++)
             for (int y = 0; y < HEIGHT; y++)
