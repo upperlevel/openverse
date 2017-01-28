@@ -2,10 +2,13 @@ package xyz.upperlevel.opencraft.render;
 
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
+import org.joml.FrustumIntersection;
+import org.joml.Matrix4f;
 import xyz.upperlevel.opencraft.world.Block;
 import xyz.upperlevel.opencraft.world.Chunk;
 import xyz.upperlevel.opencraft.world.World;
+import xyz.upperlevel.opencraft.world.block.BlockComponentZone;
+import xyz.upperlevel.ulge.util.math.CameraUtil;
 
 import java.util.Objects;
 
@@ -22,7 +25,19 @@ public class WorldViewer {
     private float yaw = 0, pitch = 0;
 
     @Getter
-    public float fov = 50f;
+    private float fov = 90f;
+
+    @Getter
+    private float nearPlane = 0.01f, farPlane = 100f;
+
+    @Getter
+    private float aspectRatio = 1f / 2f;
+
+    @Getter
+    private FrustumIntersection frustum = new FrustumIntersection();
+
+    @Getter
+    private Matrix4f cameraMatrix = new Matrix4f();
 
     @Getter
     public final RenderArea renderArea;
@@ -48,56 +63,101 @@ public class WorldViewer {
     }
 
     public boolean isInFrustum(Block block) {
-        return true;
+        return block.getState().getShape().getComponents().stream().anyMatch(component -> {
+            BlockComponentZone zone = component.getZone();
+            return (frustum.testPoint(zone.getMinPosition()) ||
+                    frustum.testPoint(zone.getMaxPosition()));
+        });
     }
 
-    public void setWorld(World world) {
+    public WorldViewer setWorld(World world) {
         Objects.requireNonNull(world, "World cannot be null.");
         this.world = world;
         // todo update buffer
+        return this;
     }
 
-    public void setX(double x) {
+    public WorldViewer setX(double x) {
         this.x = x;
+        recalculateCameraMatrix();
         // todo update buffer
+        return this;
     }
 
-    public void setY(double y) {
+    public WorldViewer setY(double y) {
         this.y = y;
+        recalculateCameraMatrix();
         // todo update buffer
+        return this;
     }
 
-    public void setZ(double z) {
+    public WorldViewer setZ(double z) {
         this.z = z;
+        recalculateCameraMatrix();
         // todo update buffer
+        return this;
     }
 
-    public void setPosition(int x, int y, int z) {
+    public WorldViewer setPosition(int x, int y, int z) {
         this.x = x;
         this.y = y;
         this.z = z;
+        recalculateCameraMatrix();
         // todo update buffer
+        return this;
     }
 
-    public void setYaw(float yaw) {
+    public WorldViewer setYaw(float yaw) {
         this.yaw = yaw;
+        recalculateCameraMatrix();
         // todo update buffer
+        return this;
     }
 
-    public void setPitch(float pitch) {
+    public WorldViewer setPitch(float pitch) {
         this.pitch = pitch;
+        recalculateCameraMatrix();
         // todo update buffer
+        return this;
     }
 
-    public void setRotation(float yaw, float pitch) {
+    public WorldViewer setRotation(float yaw, float pitch) {
         this.yaw = yaw;
         this.pitch = pitch;
+        recalculateCameraMatrix();
         // todo update buffer
+        return this;
     }
 
-    public void setFov(float fov) {
+    public WorldViewer setFov(float fov) {
         this.fov = fov;
+        recalculateCameraMatrix();
         // todo update buffer
+        return this;
+    }
+
+    public WorldViewer setAspectRatio(float aspectRatio) {
+        this.aspectRatio = aspectRatio;
+        recalculateCameraMatrix();
+        return this;
+    }
+
+    public WorldViewer setNearPlane(float nearPlane) {
+        this.nearPlane = nearPlane;
+        recalculateCameraMatrix();
+        return this;
+    }
+
+    public WorldViewer setFarPlane(float farPlane) {
+        this.farPlane = farPlane;
+        recalculateCameraMatrix();
+        return this;
+    }
+
+    public void recalculateCameraMatrix() {
+        Matrix4f proj = CameraUtil.getProjection(fov, aspectRatio, nearPlane, farPlane);
+        Matrix4f view = CameraUtil.getView(yaw, pitch, (float) x, (float) y, (float) z);
+        cameraMatrix = CameraUtil.getCamera(proj, view);
     }
 
     public Block getBlock() {
