@@ -1,7 +1,21 @@
 package xyz.upperlevel.opencraft.render.test;
 
-/**
- * Created by User on 28/01/2017.
- */
-public class BlockInFrustumTest {
+import xyz.upperlevel.opencraft.render.WorldViewer;
+import xyz.upperlevel.opencraft.world.Block;
+
+public class BlockInFrustumTest implements BlockRenderTest {
+
+    public static final BlockRenderTest $ = new BlockInFrustumTest();
+
+    public BlockInFrustumTest() {
+    }
+
+    @Override
+    public boolean canRender(WorldViewer viewer, Block block) {
+        return viewer.isInFrustum(block);
+    }
+
+    public static BlockRenderTest $() {
+        return $;
+    }
 }

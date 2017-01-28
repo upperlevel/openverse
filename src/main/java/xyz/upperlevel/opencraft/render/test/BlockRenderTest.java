@@ -1,7 +1,9 @@
 package xyz.upperlevel.opencraft.render.test;
 
-/**
- * Created by User on 28/01/2017.
- */
-public class BlockRenderTest {
+import xyz.upperlevel.opencraft.render.WorldViewer;
+import xyz.upperlevel.opencraft.world.Block;
+
+public interface BlockRenderTest {
+
+    boolean canRender(WorldViewer viewer, Block block);
 }
