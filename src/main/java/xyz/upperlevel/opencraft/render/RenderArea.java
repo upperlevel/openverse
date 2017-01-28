@@ -47,6 +47,14 @@ public class RenderArea {
             lastCenChunkY,
             lastCenChunkZ;
 
+    public void setupBuffer() {
+        data.setupBuffer(viewer.getChunk());
+    }
+
+    public void translateBuffer(int offsetX, int offsetY, int offsetZ) {
+        data.translateBuffer(offsetX, offsetY, offsetZ, viewer.getChunk());
+    }
+
     public void updateBuffer() {
         Chunk center = viewer.getChunk();
         chunkBuffer.translate(

@@ -7,31 +7,25 @@ import xyz.upperlevel.opencraft.world.Block;
 import xyz.upperlevel.opencraft.world.Chunk;
 import xyz.upperlevel.opencraft.world.World;
 
+import java.util.Objects;
+
 public class WorldViewer {
 
-    // position
-
     @Getter
-    @Setter
     @NonNull
     private World world;
 
     @Getter
-    @Setter
-    private double x = 0, y = 0, z = 0;
+    public double x = 0, y = 0, z = 0;
 
     @Getter
-    @Setter
     private float yaw = 0, pitch = 0;
 
-    // rendering info
+    @Getter
+    public float fov = 50f;
 
     @Getter
-    @Setter
-    private float fov = 50f;
-
-    @Getter
-    private final RenderArea renderArea;
+    public final RenderArea renderArea;
 
     public WorldViewer(World world) {
         this(world, 0, 0, 0);
@@ -42,6 +36,7 @@ public class WorldViewer {
     }
 
     public WorldViewer(World world, double x, double y, double z, float yaw, float pitch) {
+        Objects.requireNonNull(world, "World cannot be null.");
         this.world = world;
         this.x = x;
         this.y = y;
@@ -53,44 +48,63 @@ public class WorldViewer {
     }
 
     public boolean isInFrustum(Block block) {
-        // todo checks if given block is in frustum
         return true;
     }
 
-    public int getRenderDistance() {
-        return renderArea.getRenderDistance();
+    public void setWorld(World world) {
+        Objects.requireNonNull(world, "World cannot be null.");
+        this.world = world;
+        // todo update buffer
     }
 
-    public void setRenderDistance(int renderDistance) {
-        if (renderDistance < 0)
-            throw new IllegalArgumentException("render distance cannot be negative");
-        renderArea.setRenderDistance(renderDistance);
+    public void setX(double x) {
+        this.x = x;
+        // todo update buffer
     }
 
-    /**
-     * Updates render area on world viewer move.
-     */
-    public void update() {
-        renderArea.updateBuffer();
+    public void setY(double y) {
+        this.y = y;
+        // todo update buffer
+    }
+
+    public void setZ(double z) {
+        this.z = z;
+        // todo update buffer
+    }
+
+    public void setPosition(int x, int y, int z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        // todo update buffer
+    }
+
+    public void setYaw(float yaw) {
+        this.yaw = yaw;
+        // todo update buffer
+    }
+
+    public void setPitch(float pitch) {
+        this.pitch = pitch;
+        // todo update buffer
+    }
+
+    public void setRotation(float yaw, float pitch) {
+        this.yaw = yaw;
+        this.pitch = pitch;
+        // todo update buffer
+    }
+
+    public void setFov(float fov) {
+        this.fov = fov;
+        // todo update buffer
+    }
+
+    public Block getBlock() {
+        return world.getBlock((int) x, (int) y, (int) z);
     }
 
     public Chunk getChunk() {
-        return world.getChunk(
-                getChunkX(),
-                getChunkY(),
-                getChunkZ()
-        );
-    }
-
-    public int getChunkX() {
-        return world.getChunkX(x);
-    }
-
-    public int getChunkY() {
-        return world.getChunkY(y);
-    }
-
-    public int getChunkZ() {
-        return world.getChunkZ(z);
+        return getBlock().getChunk();
     }
 }
