@@ -2,13 +2,15 @@ package xyz.upperlevel.opencraft.render;
 
 import lombok.Getter;
 import xyz.upperlevel.opencraft.world.Chunk;
+import xyz.upperlevel.ulge.opengl.shader.Uniformer;
 
 public class RenderArea {
 
     @Getter
     public final WorldViewer viewer;
 
-    private RenderChunkBuffer data;
+    @Getter
+    private RenderChunkBuffer chunkBuffer;
 
     public RenderArea(WorldViewer viewer) {
         this.viewer = viewer;
@@ -16,18 +18,27 @@ public class RenderArea {
     }
 
     public int getRenderDistance() {
-        return data.renderDistance;
+        return chunkBuffer.rd;
     }
 
     public void setRenderDistance(int renderDistance) {
-        if (data != null && data.renderDistance == renderDistance)
+        if (chunkBuffer != null && chunkBuffer.rd == renderDistance)
             return;
         // initializes the new buffer and merges the old one with him
         RenderChunkBuffer newBuf = new RenderChunkBuffer(renderDistance);
-        newBuf.setupBuffer(viewer.getChunk());
-        if (data != null)
-            newBuf.mergeBuffer(data);
-        data = newBuf;
+        newBuf.setup(viewer.getChunk());
+        if (chunkBuffer != null)
+            newBuf.merge(chunkBuffer);
+        chunkBuffer = newBuf;
+    }
+
+    public int getSide() {
+        return chunkBuffer.side;
+    }
+
+    public int getSize() {
+        int side = chunkBuffer.side;
+        return side * side * side;
     }
 
     // cache of last center chunk coordinates
@@ -38,7 +49,7 @@ public class RenderArea {
 
     public void updateBuffer() {
         Chunk center = viewer.getChunk();
-        data.translateBuffer(
+        chunkBuffer.translate(
                 center.x - lastCenChunkX,
                 center.y - lastCenChunkY,
                 center.z - lastCenChunkZ,
@@ -47,5 +58,11 @@ public class RenderArea {
         lastCenChunkX = center.x;
         lastCenChunkY = center.y;
         lastCenChunkZ = center.z;
+    }
+
+
+    // todo canRender
+    public void render(Uniformer uni, int v) {
+        chunkBuffer.render(uni, v);
     }
 }

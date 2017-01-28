@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public enum ChunkPosition {
+public enum ChunkRelative {
 
     UP(0, 1, 0),
     DOWN(0, -1, 0),

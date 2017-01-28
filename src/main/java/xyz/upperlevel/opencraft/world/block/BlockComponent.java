@@ -120,7 +120,7 @@ public class BlockComponent {
         }
 
         public Set<BlockFace> computeFaces(BlockComponent component) {
-            // add all visible faces to the buffer
+            // add all visible faces to the data
             // should remove faces of the same position by itself
             faces.addAll(BlockComponent.this.getFaces().stream()
                     .filter(face -> face.isVisible(component) || (component.getZone().isFace(face.getZone()) && component.isInside(BlockComponent.this)))

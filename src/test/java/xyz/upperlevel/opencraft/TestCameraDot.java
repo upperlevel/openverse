@@ -22,7 +22,7 @@ public class TestCameraDot {
     @Test
     public void checkDot() {
         float res = testDot();
-        System.out.println("Result test dot: " + res);
+        System.out.println("Result canRender dot: " + res);
         assert res > 0 : "Dot doesn't work.";
     }
 

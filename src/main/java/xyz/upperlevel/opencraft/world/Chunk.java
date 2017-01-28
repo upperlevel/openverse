@@ -1,10 +1,7 @@
 package xyz.upperlevel.opencraft.world;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import xyz.upperlevel.opencraft.world.block.BlockState;
 
-@RequiredArgsConstructor
 public class Chunk {
 
     public static final int
@@ -19,7 +16,16 @@ public class Chunk {
     public final int x, y, z;
 
     @Getter
-    public final ChunkCache cache = new ChunkCache(this);
+    public final Block[][][] blocks = new Block[WIDTH][HEIGHT][LENGTH];
+
+    Chunk(World world, int x, int y, int z) {
+        this.world = world;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+
+        fillEmpty();
+    }
 
     public boolean isLoaded() {
         return world.isLoaded(this);
@@ -47,6 +53,22 @@ public class Chunk {
 
     public final int getLength() {
         return LENGTH;
+    }
+
+    public Chunk getRelative(int x, int y, int z) {
+        return world.getChunk(
+                this.x + x,
+                this.y + y,
+                this.z + z
+        );
+    }
+
+    public Chunk getRelative(ChunkRelative relative) {
+        return getRelative(
+                relative.offsetX,
+                relative.offsetY,
+                relative.offsetZ
+        );
     }
 
     //<editor-fold desc="world coords -> chunk coords">
@@ -101,16 +123,21 @@ public class Chunk {
     }
     //</editor-fold>
 
+    /**
+     * Gets a block from chunk coordinates.
+     */
     public Block getBlock(int x, int y, int z) {
-        return cache.getBlock(x, y, z);
+        return blocks[x][y][z];
     }
 
-    public BlockState getBlockState(int x, int y, int z) {
-        return cache.getBlockState(x, y, z);
-    }
-
-    public void setBlockState(int x, int y, int z, BlockState state) {
-        cache.setBlockState(x, y, z, state);
+    /**
+     * Fills the blocks array with empty blocks value.
+     */
+    public void fillEmpty() {
+        for (int x = 0; x < WIDTH; x++)
+            for (int y = 0; y < HEIGHT; y++)
+                for (int z = 0; z < LENGTH; z++)
+                    blocks[x][y][z] = new Block(this, x, y, z);
     }
 
     @Override

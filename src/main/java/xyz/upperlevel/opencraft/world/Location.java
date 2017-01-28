@@ -38,15 +38,15 @@ public class Location implements VecOperable<Location> {
     }
 
     public double asChunkX() {
-        return world.asChunkX(x);
+        return world.toChunkX(x);
     }
 
     public double asChunkY() {
-        return world.asChunkY(y);
+        return world.toChunkY(y);
     }
 
     public double asChunkZ() {
-        return world.asChunkZ(z);
+        return world.toChunkZ(z);
     }
 
     public Block getBlock() {

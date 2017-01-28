@@ -1,20 +1,21 @@
 package xyz.upperlevel.opencraft.render.block;
 
-import java.util.Objects;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.Setter;
 
-public final class BlockRendererSelector {
+@NoArgsConstructor
+public class BlockRendererSupplier {
 
-    private static BlockRenderer renderer; // todo = default one
+    public static final BlockRendererSupplier $ = new BlockRendererSupplier();
 
-    private BlockRendererSelector() {
-    }
+    @Getter
+    @Setter
+    @NonNull
+    private BlockRenderer renderer = SimpleBlockRenderer.$;
 
-    public static BlockRenderer selected() {
-        return renderer;
-    }
-
-    public static void select(BlockRenderer renderer) {
-        Objects.requireNonNull(renderer, "block renderer cannot be null");
-        BlockRendererSelector.renderer = renderer;
+    public static BlockRendererSupplier $() {
+        return $;
     }
 }

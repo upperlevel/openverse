@@ -4,6 +4,8 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import xyz.upperlevel.opencraft.render.RenderArea;
+import xyz.upperlevel.opencraft.render.WorldViewer;
 import xyz.upperlevel.opencraft.world.block.*;
 import xyz.upperlevel.ulge.opengl.DataType;
 import xyz.upperlevel.ulge.opengl.buffer.*;
@@ -47,7 +49,7 @@ public class GameTest {
                 -1f, -1f, 0f,//0
         };
 
-        Window win = GLFW.createWindow(500, 500, "game test", false);
+        Window win = GLFW.createWindow(500, 500, "game canRender", false);
         camera.setAspectRatio(500f / 500f);
 
         // registers cursor move event
@@ -106,7 +108,7 @@ public class GameTest {
         Chunk chunk = world.getChunk(0, 0, 0); // gets a random-coords chunk
         chunk.load();
 
-        BlockState blockState = chunk.getBlockState(0, 0, 0);
+        BlockState blockState = chunk.getBlock(0, 0, 0).getState();
         out.println("block id at {0,0,0} of chunk {0,0,0}: " + blockState.getId());
         out.println("block state shape components: " + blockState.getShape().getComponents().size());
 
@@ -120,7 +122,7 @@ public class GameTest {
         out.println("attempting to draw " + collisionComp.getFaceBuffer().getFaces().size() + " faces for collision component");
 
         blockState.getFaceBuffer().computeFaces(collisionComp); // computes faces once
-        out.println("attempting to draw " + blockState.getFaceBuffer().getFaces().size() + " faces for test component");
+        out.println("attempting to draw " + blockState.getFaceBuffer().getFaces().size() + " faces for canRender component");
 
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_ALPHA_TEST);
@@ -215,11 +217,11 @@ public class GameTest {
                 Drawer.drawArrays(DrawMode.TRIANGLES, 0, faceVert.length / 3);
             });
 
-            // test checks
+            // canRender checks
             if (win.getKey(Key.K) || win.getKey(Key.ESCAPE)) {
                 break;
             } else if (win.getKey(Key.E)) {
-                throw new IllegalStateException("test does not gone well");
+                throw new IllegalStateException("canRender does not gone well");
             }
 
             win.update();

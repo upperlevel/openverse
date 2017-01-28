@@ -1,67 +1,62 @@
 package xyz.upperlevel.opencraft.world;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import xyz.upperlevel.opencraft.world.block.BlockFacePosition;
 import xyz.upperlevel.opencraft.world.block.BlockId;
+import xyz.upperlevel.opencraft.world.block.BlockIds;
 import xyz.upperlevel.opencraft.world.block.BlockState;
 
 import java.util.Objects;
 
 public class Block {
 
+    @Getter
     public final World world;
+
+    @Getter
+    public final Chunk chunk;
+
+    @Getter
+    public final int chunkX, chunkY, chunkZ;
+
+    @Getter
     public final int x, y, z;
 
-    public Block(World world, int x, int y, int z) {
-        Objects.requireNonNull(world, "Block world cannot be null");
-        this.world = world;
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
+    @Getter
+    @Setter
+    @NonNull
+    private BlockState state = BlockIds.NULL_BLOCK.generateState();
 
-    public Chunk getChunk() {
-        return world.getChunk(x, y, z);
-    }
+    Block(Chunk chunk, int x, int y, int z) {
+        world = chunk.world;
+        this.chunk = chunk;
 
-    public ChunkCache getChunkCache() {
-        return getChunk().cache;
+        // chunk coordinates
+        chunkX = x;
+        chunkY = y;
+        chunkZ = z;
+
+        // world coordinates
+        this.x = chunk.toWorldX(x);
+        this.y = chunk.toWorldY(y);
+        this.z = chunk.toWorldZ(z);
     }
 
     public BlockId getId() {
-        return getState().id;
+        return state.id;
     }
 
     public void setId(BlockId id) {
         setState(id.generateState());
     }
 
-    public BlockState getState() {
-        return getChunkCache().getBlockState(
-                getChunk().toChunkX(x),
-                getChunk().toChunkY(y),
-                getChunk().toChunkZ(z)
-        );
-    }
-
-    public void setState(BlockState state) {
-        getChunkCache().setBlockState(
-                getChunk().toChunkX(x),
-                getChunk().toChunkY(y),
-                getChunk().toChunkZ(z),
-                state
-        );
-    }
-
     public Block getRelative(BlockFacePosition position) {
-        return getChunkCache().getBlock(
+        return world.getBlock(
                 x + position.directionX,
                 y + position.directionY,
                 z + position.directionZ
         );
-    }
-
-    @Override
-    public int hashCode() {
-        return 1;
     }
 }

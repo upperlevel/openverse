@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft;
+package xyz.upperlevel.opencraft.world;
 
 import lombok.*;
 import xyz.upperlevel.ulge.util.math.AngleUtil;
@@ -9,6 +9,12 @@ public class EntityLocation extends Location {
 
     @Getter
     private double yaw, pitch;
+
+    public EntityLocation(World world) {
+        super(world);
+        yaw = 0f;
+        pitch = 0f;
+    }
 
     public EntityLocation(World world, double x, double y, double z, double yaw, double pitch) {
         super(world, x, y, z);

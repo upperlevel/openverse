@@ -43,15 +43,27 @@ public class World {
         return (int) (z / Chunk.LENGTH);
     }
 
-    public double asChunkX(double x) {
+    public int toChunkX(int x) {
         return x % Chunk.WIDTH;
     }
 
-    public double asChunkY(double y) {
+    public double toChunkX(double x) {
+        return x % Chunk.WIDTH;
+    }
+
+    public int toChunkY(int y) {
+        return y % Chunk.WIDTH;
+    }
+
+    public double toChunkY(double y) {
         return y % Chunk.HEIGHT;
     }
 
-    public double asChunkZ(double z) {
+    public int toChunkZ(int z) {
+        return z % Chunk.WIDTH;
+    }
+
+    public double toChunkZ(double z) {
         return z % Chunk.LENGTH;
     }
 
@@ -68,7 +80,15 @@ public class World {
     }
 
     public Block getBlock(int x, int y, int z) {
-        Chunk chunk = getChunk(getChunkX(x), getChunkY(y), getChunkZ(z));
-        return chunk.getBlock((int) asChunkX(x), y, (int) asChunkZ(z));
+        Chunk chunk = getChunk(
+                getChunkX(x),
+                getChunkY(y),
+                getChunkZ(z)
+        );
+        return chunk.getBlock(
+                toChunkX(x),
+                toChunkY(y),
+                toChunkZ(z)
+        );
     }
 }

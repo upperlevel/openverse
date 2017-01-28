@@ -20,7 +20,7 @@ import static org.lwjgl.opengl.GL11.glClearColor;
 public class SimpleRenderTest {
 
     public static void main(String[] args) {
-        Window win = GLFW.createWindow(500, 500, "base opengl test", false);
+        Window win = GLFW.createWindow(500, 500, "base opengl canRender", false);
         win.centerPosition();
         win.contextualize();
         win.show();

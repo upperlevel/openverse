@@ -1,4 +1,9 @@
 package xyz.upperlevel.opencraft.render.face;
 
-public class FaceRenderer {
+import xyz.upperlevel.opencraft.render.Renderer;
+import xyz.upperlevel.opencraft.world.block.BlockFace;
+
+public interface FaceRenderer extends Renderer {
+
+    void render(BlockFace face);
 }

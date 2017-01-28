@@ -1,20 +1,21 @@
 package xyz.upperlevel.opencraft.render.chunk;
 
-import java.util.Objects;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.Setter;
 
-public final class ChunkRendererSelector {
+@NoArgsConstructor
+public class ChunkRendererSupplier {
 
-    private static ChunkRenderer renderer; // todo = default one
+    public static final ChunkRendererSupplier $ = new ChunkRendererSupplier();
 
-    private ChunkRendererSelector() {
-    }
+    @Getter
+    @Setter
+    @NonNull
+    private ChunkRenderer renderer = SimpleChunkRenderer.$;
 
-    public static ChunkRenderer selected() {
-        return renderer;
-    }
-
-    public static void select(ChunkRenderer renderer) {
-        Objects.requireNonNull(renderer, "block renderer cannot be null");
-        ChunkRendererSelector.renderer = renderer;
+    public static ChunkRendererSupplier $() {
+        return $;
     }
 }
