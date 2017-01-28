@@ -34,10 +34,10 @@ public class WorldViewer {
     private float aspectRatio = 1f / 2f;
 
     @Getter
-    private FrustumIntersection frustum = new FrustumIntersection();
+    private Matrix4f cameraMatrix = new Matrix4f();
 
     @Getter
-    private Matrix4f cameraMatrix = new Matrix4f();
+    private FrustumIntersection frustum = new FrustumIntersection();
 
     @Getter
     public final RenderArea renderArea;
@@ -79,21 +79,21 @@ public class WorldViewer {
 
     public WorldViewer setX(double x) {
         this.x = x;
-        recalculateCameraMatrix();
+        calculateCameraMatrix();
         // todo update buffer
         return this;
     }
 
     public WorldViewer setY(double y) {
         this.y = y;
-        recalculateCameraMatrix();
+        calculateCameraMatrix();
         // todo update buffer
         return this;
     }
 
     public WorldViewer setZ(double z) {
         this.z = z;
-        recalculateCameraMatrix();
+        calculateCameraMatrix();
         // todo update buffer
         return this;
     }
@@ -102,21 +102,21 @@ public class WorldViewer {
         this.x = x;
         this.y = y;
         this.z = z;
-        recalculateCameraMatrix();
+        calculateCameraMatrix();
         // todo update buffer
         return this;
     }
 
     public WorldViewer setYaw(float yaw) {
         this.yaw = yaw;
-        recalculateCameraMatrix();
+        calculateCameraMatrix();
         // todo update buffer
         return this;
     }
 
     public WorldViewer setPitch(float pitch) {
         this.pitch = pitch;
-        recalculateCameraMatrix();
+        calculateCameraMatrix();
         // todo update buffer
         return this;
     }
@@ -124,40 +124,41 @@ public class WorldViewer {
     public WorldViewer setRotation(float yaw, float pitch) {
         this.yaw = yaw;
         this.pitch = pitch;
-        recalculateCameraMatrix();
+        calculateCameraMatrix();
         // todo update buffer
         return this;
     }
 
     public WorldViewer setFov(float fov) {
         this.fov = fov;
-        recalculateCameraMatrix();
+        calculateCameraMatrix();
         // todo update buffer
         return this;
     }
 
     public WorldViewer setAspectRatio(float aspectRatio) {
         this.aspectRatio = aspectRatio;
-        recalculateCameraMatrix();
+        calculateCameraMatrix();
         return this;
     }
 
     public WorldViewer setNearPlane(float nearPlane) {
         this.nearPlane = nearPlane;
-        recalculateCameraMatrix();
+        calculateCameraMatrix();
         return this;
     }
 
     public WorldViewer setFarPlane(float farPlane) {
         this.farPlane = farPlane;
-        recalculateCameraMatrix();
+        calculateCameraMatrix();
         return this;
     }
 
-    public void recalculateCameraMatrix() {
+    public void calculateCameraMatrix() {
         Matrix4f proj = CameraUtil.getProjection(fov, aspectRatio, nearPlane, farPlane);
         Matrix4f view = CameraUtil.getView(yaw, pitch, (float) x, (float) y, (float) z);
         cameraMatrix = CameraUtil.getCamera(proj, view);
+        frustum.set(cameraMatrix);
     }
 
     public Block getBlock() {
