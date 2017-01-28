@@ -45,11 +45,19 @@ public class Block {
         setState(id.generateState());
     }
 
-    public Block getRelative(Relative relative) {
+    public Block getRelative(int offsetX, int offsetY, int offsetZ) {
         return chunk.getBlock(
-                x + relative.offsetX,
-                y + relative.offsetY,
-                z + relative.offsetZ
+                offsetX,
+                offsetY,
+                offsetZ
+        );
+    }
+
+    public Block getRelative(Relative relative) {
+        return getRelative(
+                relative.offsetX,
+                relative.offsetY,
+                relative.offsetZ
         );
     }
 }

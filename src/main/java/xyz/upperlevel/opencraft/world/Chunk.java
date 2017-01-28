@@ -116,6 +116,22 @@ public class Chunk {
         return blocks[x][y][z];
     }
 
+    public Chunk getRelative(int offsetX, int offsetY, int offsetZ) {
+        return world.getChunk(
+                x + offsetX,
+                y + offsetY,
+                z + offsetZ
+        );
+    }
+
+    public Chunk getRelative(Relative relative) {
+        return getRelative(
+                relative.offsetX,
+                relative.offsetY,
+                relative.offsetZ
+        );
+    }
+
     public void fillEmpty() {
         for (int x = 0; x < WIDTH; x++)
             for (int y = 0; y < HEIGHT; y++)

@@ -1,12 +1,19 @@
 package xyz.upperlevel.opencraft.world.block;
 
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Objects;
 
 public abstract class BlockId {
 
     public final String id;
     private BlockShape shape = BlockShape.empty();
+
+    @Getter
+    @Setter
+    private boolean transparent = false;
 
     public BlockId(String id) {
         this.id = id;
