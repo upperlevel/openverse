@@ -4,10 +4,10 @@ import lombok.Getter;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
-public class TextureHub {
+public class TextureManager {
 
     @Getter
     private int width = 0, height = 0;
@@ -16,9 +16,9 @@ public class TextureHub {
     private BufferedImage output = new BufferedImage(0, 0, BufferedImage.TYPE_INT_ARGB);
 
     @Getter
-    private final Set<TextureFragment> fragments = new HashSet<>();
+    private final List<TextureFragment> fragments = new ArrayList<>();
 
-    public TextureHub register(int width, int height, BufferedImage texture) {
+    public TextureManager register(int width, int height, BufferedImage texture) {
         BufferedImage result = new BufferedImage(this.width + width, this.height + height, BufferedImage.TYPE_INT_ARGB);
 
         Graphics gr = result.getGraphics();
@@ -32,6 +32,10 @@ public class TextureHub {
         fragments.add(new TextureFragment(fragments.size(), this, width, height));
         update();
         return this;
+    }
+
+    public TextureFragment getFragment(int id) {
+        return fragments.get(id);
     }
 
     public void update() {

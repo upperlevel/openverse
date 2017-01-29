@@ -10,7 +10,7 @@ public class TextureFragment {
     public final int id;
 
     @Getter
-    public final TextureHub hub;
+    public final TextureManager hub;
 
     @Getter
     public final int width, height;
