@@ -16,9 +16,6 @@ public class BlockFace {
     @Getter
     public final Zone3f zone;
 
-    @Getter
-    private FaceData data = FaceData.NULL;
-
     private Matrix4f transformation;
 
     public BlockFace(BlockComponent component, BlockFacePosition position) {
@@ -30,15 +27,6 @@ public class BlockFace {
                 .translate(position.getDirection().mul(component.zone.getSize()))
                 .scale(component.zone.getSize());
         position.rotateToCubeRotation(transformation);
-    }
-
-    public BlockFace(BlockComponent component, BlockFacePosition position, FaceData data) {
-        this(component, position);
-        this.data = data;
-    }
-
-    public void setData(FaceData data) {
-        this.data = data != null ? data : FaceData.NULL;
     }
 
     protected int compile(VertexBuffer buffer, Matrix4f matrix) {

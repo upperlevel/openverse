@@ -8,7 +8,7 @@ import java.util.*;
 
 public class BlockComponent {
 
-    private final Map<BlockFacePosition, BlockFace> faces = new HashMap<BlockFacePosition, BlockFace>();
+    private final Map<BlockFacePosition, BlockFace> faces = new HashMap<>();
 
     @Getter
     @NonNull
