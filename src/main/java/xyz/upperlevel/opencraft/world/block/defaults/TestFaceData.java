@@ -1,7 +1,6 @@
 package xyz.upperlevel.opencraft.world.block.defaults;
 
-import xyz.upperlevel.opencraft.world.block.BlockComponent;
-import xyz.upperlevel.opencraft.world.block.FaceData;
+import xyz.upperlevel.opencraft.world.FaceData;
 import xyz.upperlevel.ulge.opengl.shader.Uniformer;
 import xyz.upperlevel.ulge.util.Color;
 import xyz.upperlevel.ulge.util.Colors;

@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.world.block;
+package xyz.upperlevel.opencraft.world;
 
 import xyz.upperlevel.ulge.opengl.shader.Uniformer;
 

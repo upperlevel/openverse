@@ -1,6 +1,8 @@
 package xyz.upperlevel.opencraft.world;
 
 import lombok.Getter;
+import org.joml.Matrix4f;
+import xyz.upperlevel.opencraft.render.VertexBuffer;
 
 import java.util.Objects;
 
@@ -135,6 +137,25 @@ public class Chunk {
             for (int y = 0; y < HEIGHT; y++)
                 for (int z = 0; z < LENGTH; z++)
                     blocks[x][y][z] = new Block(this, x, y, z);
+    }
+
+    public int compile(VertexBuffer buffer) {
+        return compile(buffer, new Matrix4f());
+    }
+
+    public int compile(VertexBuffer buffer, Matrix4f matrix) {
+        int vertices = 0;
+        for (int x = 0; x < WIDTH; x++) {
+            for (int y = 0; y < HEIGHT; y++) {
+                for (int z = 0; z < LENGTH; z++) {
+                    Block block = blocks[x][y][z];
+                    if (block.isEmpty() || block.isHidden())
+                        continue;
+                    vertices += block.compile(buffer, new Matrix4f(matrix));
+                }
+            }
+        }
+        return vertices;
     }
 
     @Override
