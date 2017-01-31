@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.util;
+package xyz.upperlevel.opencraft.util.event;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

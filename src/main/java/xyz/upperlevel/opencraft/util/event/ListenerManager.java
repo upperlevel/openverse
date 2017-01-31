@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.util;
+package xyz.upperlevel.opencraft.util.event;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
