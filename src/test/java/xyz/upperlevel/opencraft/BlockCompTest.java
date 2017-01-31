@@ -1,10 +1,10 @@
 package xyz.upperlevel.opencraft;
 
 import org.junit.Test;
-import xyz.upperlevel.opencraft.world.block.BlockComponent;
-import xyz.upperlevel.opencraft.world.block.BlockComponentZone;
-import xyz.upperlevel.opencraft.world.block.BlockFace;
-import xyz.upperlevel.opencraft.world.block.BlockFacePosition;
+import xyz.upperlevel.opencraft.world.BlockComponent;
+import xyz.upperlevel.opencraft.world.BlockFace;
+import xyz.upperlevel.opencraft.world.BlockFacePosition;
+import xyz.upperlevel.opencraft.world.Zone3f;
 
 import static java.lang.System.out;
 
@@ -17,12 +17,11 @@ public class BlockCompTest {
     @Test
     public void testFaceSplitter() {
         // instantiate default block component
-        BlockComponentZone zone = new BlockComponentZone(
+        Zone3f zone = new Zone3f(
                 0, 0, 0,
                 1f, 1f, 1f
         );
-        BlockComponent comp = new BlockComponent();
-        comp.setZone(zone);
+        BlockComponent comp = new BlockComponent(zone);
 
         // gets some faces and checks if the obtained value correspond to expected ones
 

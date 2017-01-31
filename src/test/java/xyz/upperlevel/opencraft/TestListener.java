@@ -2,10 +2,10 @@ package xyz.upperlevel.opencraft;
 
 import lombok.Getter;
 import org.junit.Test;
-import xyz.upperlevel.opencraft.util.Event;
-import xyz.upperlevel.opencraft.util.EventFunction;
-import xyz.upperlevel.opencraft.util.Listener;
-import xyz.upperlevel.opencraft.util.ListenerManager;
+import xyz.upperlevel.opencraft.util.event.Event;
+import xyz.upperlevel.opencraft.util.event.EventFunction;
+import xyz.upperlevel.opencraft.util.event.Listener;
+import xyz.upperlevel.opencraft.util.event.ListenerManager;
 
 public class TestListener implements Listener {
 
