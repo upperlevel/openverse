@@ -3,7 +3,9 @@ package xyz.upperlevel.opencraft;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL30;
 import xyz.upperlevel.opencraft.render.VertexBuffer;
+import xyz.upperlevel.opencraft.render.texture.Textures;
 import xyz.upperlevel.opencraft.world.Chunk;
 import xyz.upperlevel.opencraft.world.ChunkGenerators;
 import xyz.upperlevel.opencraft.world.World;
@@ -13,6 +15,9 @@ import xyz.upperlevel.ulge.opengl.shader.Program;
 import xyz.upperlevel.ulge.opengl.shader.ShaderType;
 import xyz.upperlevel.ulge.opengl.shader.ShaderUtil;
 import xyz.upperlevel.ulge.opengl.shader.Uniformer;
+import xyz.upperlevel.ulge.opengl.texture.Texture;
+import xyz.upperlevel.ulge.opengl.texture.loader.TextureContent;
+import xyz.upperlevel.ulge.opengl.texture.loader.TextureLoaderManager;
 import xyz.upperlevel.ulge.util.math.Camera;
 import xyz.upperlevel.ulge.util.math.Rot;
 import xyz.upperlevel.ulge.window.GLFW;
@@ -21,6 +26,9 @@ import xyz.upperlevel.ulge.window.event.CursorMoveEvent;
 import xyz.upperlevel.ulge.window.event.GLFWCursorMoveEventHandler;
 import xyz.upperlevel.ulge.window.event.key.Key;
 
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
 import java.nio.FloatBuffer;
 
 import static java.lang.System.out;
@@ -68,14 +76,24 @@ public class VBOGenerationTest {
         // creates a shader program and loads shader, finally bind it and keep it bound
         Program program = new Program();
         ClassLoader classLoader = VBOGenerationTest.class.getClassLoader();
-        program.attach(ShaderUtil.load(ShaderType.VERTEX, classLoader.getResourceAsStream("resources/vertex.glsl")));
-        program.attach(ShaderUtil.load(ShaderType.FRAGMENT, classLoader.getResourceAsStream("resources/fragment.glsl")));
+        program.attach(ShaderUtil.load(ShaderType.VERTEX, classLoader.getResourceAsStream("shaders/vertex.glsl")));
+        program.attach(ShaderUtil.load(ShaderType.FRAGMENT, classLoader.getResourceAsStream("shaders/fragment.glsl")));
         program.link();
         Uniformer uniformer = program.bind();
 
-        out.println("program color uniform existing: " + uniformer.hasUniform("color"));
+        try {
+            Textures.manager().register(ImageIO.read(classLoader.getResourceAsStream("textures/dirt.jpg")));
+        } catch (IOException e) {
+            throw new IllegalStateException("error in tex loading", e);
+        }
 
-        // bind and keep it bound for the rest of the program
+        Textures.manager().getOutput().bind();
+        GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
+
+        TextureContent content = TextureLoaderManager.DEFAULT.load(new File("C:/users/lorenzo/desktop/hello.png"));
+        Texture ENABLED_TEX = new Texture();
+        ENABLED_TEX.setContent(content);
+        ENABLED_TEX.bind();
 
         int posAtr = uniformer.getAttribLocation("position");
         out.println("pos atr location: " + posAtr);
@@ -89,7 +107,7 @@ public class VBOGenerationTest {
         chunk.load();
 
         long startAt  = System.currentTimeMillis();
-        VertexBuffer buffer = new VertexBuffer(1024 * 800);
+        VertexBuffer buffer = new VertexBuffer(1024 * 1024);
         int VERT_COUNT = chunk.compile(buffer);
         out.println("VBO generated, time took: " + (System.currentTimeMillis() - startAt));
 
@@ -102,11 +120,10 @@ public class VBOGenerationTest {
         new VertexLinker(DataType.FLOAT)
                 .attrib(0, 3)
                 .attrib(1, 4)
+                .attrib(2, 2)
                 .setup();
 
         FloatBuffer matBuf = BufferUtils.createFloatBuffer(16);
-
-        win.setVSync(false);
 
         int fpsCounter = 0;
         long lastTime = 0;

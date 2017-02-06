@@ -9,7 +9,7 @@ public enum BlockFacePosition {
     UP(0, 1, 0) {
         @Override
         public Matrix4f rotateToCubeRotation(Matrix4f matrix) {
-            return BlockFacePosition.rotateToCubeRotation(matrix, 1f, 0f, 0f);
+            return BlockFacePosition.rotateToCubeRotation(matrix, -1f, 0f, 0f);
         }
     },
     DOWN(0, -1, 0) {
@@ -21,7 +21,7 @@ public enum BlockFacePosition {
     LEFT(-1, 0, 0) {
         @Override
         public Matrix4f rotateToCubeRotation(Matrix4f matrix) {
-            return BlockFacePosition.rotateToCubeRotation(matrix, 0f, 1f, 0f);
+            return BlockFacePosition.rotateToCubeRotation(matrix, 0f, -1f, 0f);
         }
     },
     RIGHT(1, 0, 0) {
@@ -39,7 +39,7 @@ public enum BlockFacePosition {
     BACKWARD(0, 0, -1) {
         @Override
         public Matrix4f rotateToCubeRotation(Matrix4f matrix) {
-            return matrix;
+            return matrix.rotate((float) Math.PI, 0f, 1f, 0f);
         }
     };
 
@@ -72,5 +72,9 @@ public enum BlockFacePosition {
 
     private static Matrix4f rotateToCubeRotation(Matrix4f matrix, float x, float y, float z) {
         return matrix.rotate((float) Math.PI / 2, x, y, z);
+    }
+
+    public Relative asRelative() {
+        return Relative.values()[ordinal()];
     }
 }

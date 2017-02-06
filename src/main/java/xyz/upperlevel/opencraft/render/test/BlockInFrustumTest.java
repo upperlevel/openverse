@@ -12,7 +12,7 @@ public class BlockInFrustumTest implements BlockRenderTest {
 
     @Override
     public boolean canRender(WorldViewer viewer, Block block) {
-        return viewer.isInFrustum(block);
+        return true;
     }
 
     public static BlockRenderTest $() {

@@ -3,19 +3,18 @@ package xyz.upperlevel.opencraft.render.texture;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.Accessors;
 
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public class Texture {
+public class TextureFragment {
 
     @Getter
-    public final int id;
+    private final int id;
 
     @Getter
-    public final TextureManager manager;
+    private final TextureManager manager;
 
     @Getter
-    public final int width, height;
+    private final int width, height;
 
     @Getter
     float realWidth, realHeight;
@@ -30,18 +29,12 @@ public class Texture {
 
     @Override
     public boolean equals(Object object) {
-        return object instanceof Texture && ((Texture) object).id == id;
+        return object instanceof TextureFragment && ((TextureFragment) object).id == id;
     }
 
     @Override
     public String toString() {
-        return "{w: " + width + " h: " + height
-                + " real_w: " + realWidth
-                + " real_h: " + realHeight
-                + " minU: " + minU
-                + " maxU: " + maxU
-                + " minV: " + minV
-                + " maxV: " + maxV
-                + "}";
+        return
+                "{minU: " + minU + " " + " minV: " + minV + " maxU: " + maxU + " maxV: " + maxV + "}";
     }
 }

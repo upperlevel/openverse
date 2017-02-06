@@ -15,4 +15,8 @@ public enum Relative {
 
     @Getter
     public final int offsetX, offsetY, offsetZ;
+
+    public BlockFacePosition asFacePosition() {
+        return BlockFacePosition.values()[ordinal()];
+    }
 }

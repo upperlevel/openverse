@@ -10,19 +10,11 @@ public abstract class BlockType {
 
     @Getter
     @NonNull
-    public final String id;
+    private final String id;
 
     @Getter
     @NonNull
-    public final BlockShape shape;
-
-    @Getter
-    @Setter
-    public boolean empty = false;
-
-    @Getter
-    @Setter
-    public boolean transparent = false;
+    private final BlockShape shape;
 
     public BlockType(String id) {
         this(id, BlockShape.empty());

@@ -7,7 +7,6 @@ import org.joml.Matrix4f;
 import xyz.upperlevel.opencraft.world.Block;
 import xyz.upperlevel.opencraft.world.Chunk;
 import xyz.upperlevel.opencraft.world.World;
-import xyz.upperlevel.opencraft.world.block.BlockComponentZone;
 import xyz.upperlevel.ulge.util.math.CameraUtil;
 
 import java.util.Objects;
@@ -39,9 +38,6 @@ public class WorldViewer {
     @Getter
     private FrustumIntersection frustum = new FrustumIntersection();
 
-    @Getter
-    public final RenderArea renderArea;
-
     public WorldViewer(World world) {
         this(world, 0, 0, 0);
     }
@@ -58,43 +54,33 @@ public class WorldViewer {
         this.z = z;
         this.yaw = yaw;
         this.pitch = pitch;
-
-        renderArea = new RenderArea(this);
-    }
-
-    public boolean isInFrustum(Block block) {
-        return block.getState().getShape().getComponents().stream().anyMatch(component -> {
-            BlockComponentZone zone = component.getZone();
-            return (frustum.testPoint(zone.getMinPosition()) ||
-                    frustum.testPoint(zone.getMaxPosition()));
-        });
     }
 
     public WorldViewer setWorld(World world) {
         Objects.requireNonNull(world, "World cannot be null.");
         this.world = world;
-        // todo update buffer
+        // todo updateFragments buffer
         return this;
     }
 
     public WorldViewer setX(double x) {
         this.x = x;
         calculateCameraMatrix();
-        // todo update buffer
+        // todo updateFragments buffer
         return this;
     }
 
     public WorldViewer setY(double y) {
         this.y = y;
         calculateCameraMatrix();
-        // todo update buffer
+        // todo updateFragments buffer
         return this;
     }
 
     public WorldViewer setZ(double z) {
         this.z = z;
         calculateCameraMatrix();
-        // todo update buffer
+        // todo updateFragments buffer
         return this;
     }
 
@@ -103,21 +89,21 @@ public class WorldViewer {
         this.y = y;
         this.z = z;
         calculateCameraMatrix();
-        // todo update buffer
+        // todo updateFragments buffer
         return this;
     }
 
     public WorldViewer setYaw(float yaw) {
         this.yaw = yaw;
         calculateCameraMatrix();
-        // todo update buffer
+        // todo updateFragments buffer
         return this;
     }
 
     public WorldViewer setPitch(float pitch) {
         this.pitch = pitch;
         calculateCameraMatrix();
-        // todo update buffer
+        // todo updateFragments buffer
         return this;
     }
 
@@ -125,14 +111,14 @@ public class WorldViewer {
         this.yaw = yaw;
         this.pitch = pitch;
         calculateCameraMatrix();
-        // todo update buffer
+        // todo updateFragments buffer
         return this;
     }
 
     public WorldViewer setFov(float fov) {
         this.fov = fov;
         calculateCameraMatrix();
-        // todo update buffer
+        // todo updateFragments buffer
         return this;
     }
 

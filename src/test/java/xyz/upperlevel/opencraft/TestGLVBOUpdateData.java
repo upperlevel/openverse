@@ -32,15 +32,13 @@ import java.io.IOException;
 import java.nio.FloatBuffer;
 
 import static java.lang.System.out;
-import static org.lwjgl.opengl.GL11.GL_ALPHA_TEST;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.*;
 
-public class VBOGenerationTest {
+public class TestGLVBOUpdateData {
 
     public static void main(String[] a) {
         Camera camera = new Camera();
-        camera.setPosition(new Vector3f(0f,0,1f));
+        camera.setPosition(new Vector3f(0f, 0, 1f));
         camera.setRotation(new Rot());
         camera.setNearAndFarPlane(0.01f, 100f);
 
@@ -75,9 +73,9 @@ public class VBOGenerationTest {
 
         // creates a shader program and loads shader, finally bind it and keep it bound
         Program program = new Program();
-        ClassLoader classLoader = VBOGenerationTest.class.getClassLoader();
-        program.attach(ShaderUtil.load(ShaderType.VERTEX, classLoader.getResourceAsStream("shaders/vertex.glsl")));
-        program.attach(ShaderUtil.load(ShaderType.FRAGMENT, classLoader.getResourceAsStream("shaders/fragment.glsl")));
+        ClassLoader classLoader = TestGLVBOUpdateData.class.getClassLoader();
+        program.attach(ShaderUtil.load(ShaderType.VERTEX, classLoader.getResourceAsStream("shaders/test_vbo_update.vsh")));
+        program.attach(ShaderUtil.load(ShaderType.FRAGMENT, classLoader.getResourceAsStream("shaders/test_vbo_update.fsh")));
         program.link();
         Uniformer uniformer = program.bind();
 
@@ -101,32 +99,31 @@ public class VBOGenerationTest {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_ALPHA_TEST);
 
-        out.println("Attempting to create VBO...");
-        World w = new World(ChunkGenerators.FLAT);
-        Chunk chunk = w.getChunk(0, 0, 0);
-        chunk.load();
 
-        long startAt  = System.currentTimeMillis();
-        VertexBuffer buffer = new VertexBuffer(1024 * 1024);
-        int VERT_COUNT = chunk.compile(buffer);
-        out.println("VBO generated, time took: " + (System.currentTimeMillis() - startAt));
+        float[] v = {
+                -1f, 1f, 0f,//0
+                1f, 1f, 0f,//1
+                -1f, -1f, 0f,//2
 
-        out.println("ho compilato: " + VERT_COUNT + " vertici!");
+                1f, 1f, 0f,//1
+                -1f, -1f, 0f,//2
+                1f, -1f, 0f,//3
+        };
 
         VBO vbo = new VBO();
-        vbo.loadData((FloatBuffer) buffer.data.flip(), VBOUsage.STATIC_DRAW);
+        vbo.loadData(v, VBOUsage.STATIC_DRAW);
         vbo.bind();
 
         new VertexLinker(DataType.FLOAT)
                 .attrib(0, 3)
-                .attrib(1, 4)
-                .attrib(2, 2)
                 .setup();
 
         FloatBuffer matBuf = BufferUtils.createFloatBuffer(16);
 
         int fpsCounter = 0;
         long lastTime = 0;
+
+        float af = 0;
 
         while (!win.isClosed()) {
             if (System.currentTimeMillis() - lastTime >= 1000) {
@@ -136,6 +133,10 @@ public class VBOGenerationTest {
             }
             fpsCounter++;
 
+            vbo.updateData(0, new float[]{
+                    af += 0.001f
+            });
+
             // todo replace gl11 functions glClear glClearColor
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
             GL11.glClearColor(0f, 0f, 0f, 0f);
@@ -143,7 +144,7 @@ public class VBOGenerationTest {
             updateCamera(win, camera, 0.05f);
 
             uniformer.setUniformMatrix4("camera", camera.getMatrix().get(matBuf));
-            Drawer.drawArrays(DrawMode.QUADS, 0, VERT_COUNT);
+            Drawer.drawArrays(DrawMode.TRIANGLES, 0, 6);
 
             // canRender checks
             if (win.getKey(Key.K) || win.getKey(Key.ESCAPE)) {

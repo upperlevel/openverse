@@ -1,9 +1,15 @@
 package xyz.upperlevel.opencraft.render.texture;
 
 import lombok.Getter;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL30;
+import xyz.upperlevel.ulge.opengl.texture.loader.TextureContent;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,38 +18,60 @@ public class TextureManager {
     @Getter
     private int width = 0, height = 0;
 
-    @Getter
-    private BufferedImage output = new BufferedImage(0, 0, BufferedImage.TYPE_INT_ARGB);
+    private BufferedImage merger;
 
     @Getter
     private final List<TextureFragment> fragments = new ArrayList<>();
 
-    public TextureManager register(int width, int height, BufferedImage texture) {
-        BufferedImage result = new BufferedImage(this.width + width, this.height + height, BufferedImage.TYPE_INT_ARGB);
+    public TextureManager() {
+    }
 
-        Graphics gr = result.getGraphics();
-        gr.drawImage(output, 0, 0, null);
-        gr.drawImage(texture, this.width, this.height, null);
+    public TextureFragment register(BufferedImage image) {
+        int w = image.getWidth();
+        int h = image.getHeight();
+        if (h > height)
+            height = h;
+        BufferedImage result = new BufferedImage(this.width + w, this.height, BufferedImage.TYPE_INT_ARGB);
 
-        this.width += width;
+        if (merger != null) {
+            Graphics gr = result.getGraphics();
+            gr.drawImage(merger, 0, 0, null);
+            gr.drawImage(image, this.width, 0, null);
+        } else
+            merger = image;
 
-        output = result;
+        width += w;
 
-        fragments.add(new TextureFragment(fragments.size(), this, width, height));
-        update();
-        return this;
+        // updates output buffer
+        merger = result;
+
+        TextureFragment tex = new TextureFragment(fragments.size(), this, w, h);
+
+        // updates fragment data
+        fragments.add(tex);
+        updateFragments();
+        return tex;
     }
 
     public TextureFragment getFragment(int id) {
         return fragments.get(id);
     }
 
-    public void update() {
+    public xyz.upperlevel.ulge.opengl.texture.Texture getOutput() {
+        xyz.upperlevel.ulge.opengl.texture.Texture r = new xyz.upperlevel.ulge.opengl.texture.Texture();
+        r.setContent(new TextureContent(merger, false));
+        return r;
+    }
+
+    private void updateFragments() {
         int width = 0;
         for (TextureFragment fragment : fragments) {
+            // the distance between the point on U axis and the origin
             float currentWidth = ((float) width) / this.width;
-            float realWidth = ((float) fragment.width) / this.width;
-            float realHeight = ((float) fragment.height) / height;
+
+            // the dimensions of the texture to draw
+            float realWidth = ((float) fragment.getWidth()) / this.width;
+            float realHeight = ((float) fragment.getHeight()) / height;
 
             fragment.realWidth = realWidth;
             fragment.realHeight = realHeight;
@@ -52,7 +80,11 @@ public class TextureManager {
             fragment.minV = 0;
             fragment.maxV = realHeight;
 
-            width += fragment.width;
+            width += fragment.getWidth();
         }
+    }
+
+    public void save(File file) throws IOException {
+        ImageIO.write(merger, "png", file);
     }
 }

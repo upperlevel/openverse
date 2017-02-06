@@ -9,8 +9,9 @@ public final class BlockTypes {
 
     public static final BlockType NULL_BLOCK = new BlockType("_null") {
         {
-            empty = true;
-            transparent = true;
+            getShape()
+                    .setBulky(true)
+                    .setTransparent(true);
         }
     };
 

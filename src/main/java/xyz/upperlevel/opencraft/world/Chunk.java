@@ -8,19 +8,16 @@ import java.util.Objects;
 
 public class Chunk {
 
-    public static final int
-            WIDTH = 16,
-            HEIGHT = 16,
-            LENGTH = 16;
+    public static final int WIDTH = 16, HEIGHT = 16, LENGTH = 16;
 
     @Getter
-    public final World world;
+    private final World world;
 
     @Getter
-    public final int x, y, z;
+    private final int x, y, z;
 
     @Getter
-    public final Block[][][] blocks = new Block[WIDTH][HEIGHT][LENGTH];
+    private final Block[] blocks = new Block[WIDTH * HEIGHT * LENGTH];
 
     Chunk(World world, int chunkX, int chunkY, int chunkZ) {
         Objects.requireNonNull(world, "World cannot be null.");
@@ -112,8 +109,17 @@ public class Chunk {
             world.unloadChunk(this);
     }
 
+    /**
+     * Gets relative coordinate obtained by x y z. It is usable
+     * in the 1d blocks array.
+     */
+
+    public int getCompactCoordinate(int x, int y, int z) {
+        return x + HEIGHT * (y + WIDTH * z);
+    }
+
     public Block getBlock(int x, int y, int z) {
-        return blocks[x][y][z];
+        return blocks[getCompactCoordinate(x, y, z)];
     }
 
     public Chunk getRelative(int offsetX, int offsetY, int offsetZ) {
@@ -132,11 +138,14 @@ public class Chunk {
         );
     }
 
-    public void fillEmpty() {
-        for (int x = 0; x < WIDTH; x++)
-            for (int y = 0; y < HEIGHT; y++)
-                for (int z = 0; z < LENGTH; z++)
-                    blocks[x][y][z] = new Block(this, x, y, z);
+    public void fillEmpty(){
+        for (int x = 0; x < WIDTH; x++) {
+            for (int y = 0; y < HEIGHT; y++) {
+                for(int z = 0; z < LENGTH; z++) {
+                    blocks[getCompactCoordinate(x, y, z)] = new Block(this, x, y, z);
+                }
+            }
+        }
     }
 
     public int compile(VertexBuffer buffer) {
@@ -148,8 +157,8 @@ public class Chunk {
         for (int x = 0; x < WIDTH; x++) {
             for (int y = 0; y < HEIGHT; y++) {
                 for (int z = 0; z < LENGTH; z++) {
-                    Block block = blocks[x][y][z];
-                    if (block.isEmpty() || block.isHidden())
+                    Block block = getBlock(x, y, z);
+                    if (block.isHidden())
                         continue;
                     vertices += block.compile(buffer, new Matrix4f(matrix));
                 }

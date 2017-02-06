@@ -12,7 +12,7 @@ uniform mat4 camera;
 
 void main()
 {
-   gl_Position = vec4(position, 1f);
+   gl_Position = camera * vec4(position, 1f);
    color = inColor;
    textureCoords = inTextureCoords;
 }

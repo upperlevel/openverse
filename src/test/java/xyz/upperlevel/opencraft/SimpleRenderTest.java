@@ -1,7 +1,6 @@
 package xyz.upperlevel.opencraft;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL30;
 import xyz.upperlevel.ulge.opengl.DataType;
 import xyz.upperlevel.ulge.opengl.buffer.Drawer;
 import xyz.upperlevel.ulge.opengl.buffer.VBO;
@@ -29,8 +28,8 @@ public class SimpleRenderTest {
         // creates base program
         Program program = new Program();
         ClassLoader res = SimpleRenderTest.class.getClassLoader();
-        program.attach(ShaderUtil.load(ShaderType.VERTEX, res.getResourceAsStream("resources/vertex.glsl")));
-        program.attach(ShaderUtil.load(ShaderType.FRAGMENT, res.getResourceAsStream("resources/fragment.glsl")));
+        program.attach(ShaderUtil.load(ShaderType.VERTEX, res.getResourceAsStream("src/test/resources/vertex.glsl")));
+        program.attach(ShaderUtil.load(ShaderType.FRAGMENT, res.getResourceAsStream("src/test/resources/fragment.glsl")));
         // links program
         program.link();
         Uniformer uniformer = program.bind();

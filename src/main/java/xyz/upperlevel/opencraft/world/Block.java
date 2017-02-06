@@ -3,29 +3,31 @@ package xyz.upperlevel.opencraft.world;
 import lombok.Getter;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.lwjgl.opengl.GL30;
 import xyz.upperlevel.opencraft.render.VertexBuffer;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class Block {
 
     @Getter
-    public final World world;
+    private final World world;
 
     @Getter
-    public final Chunk chunk;
+    private final Chunk chunk;
 
     @Getter
-    public final int x, y, z;
+    private final int x, y, z;
 
     @Getter
-    public final int chunkBlockX, chunkBlockY, chunkBlockZ;
+    private final int chunkBlockX, chunkBlockY, chunkBlockZ;
 
     @Getter
     private BlockType type = BlockTypes.NULL_BLOCK;
 
-    @Getter
-    private boolean hidden = false;
+    private long offset;
 
     private Matrix4f transformation;
 
@@ -59,14 +61,6 @@ public class Block {
                 );
     }
 
-    public boolean isEmpty() {
-        return type.empty;
-    }
-
-    public boolean isTransparent() {
-        return type.transparent;
-    }
-
     public void setType(BlockType type) {
         setType(type, false);
     }
@@ -75,6 +69,10 @@ public class Block {
         this.type = type != null ? type : BlockTypes.NULL_BLOCK;
         if (update)
             update();
+    }
+
+    public BlockShape getShape() {
+        return type.getShape();
     }
 
     public Block getRelative(int offsetX, int offsetY, int offsetZ) {
@@ -93,21 +91,26 @@ public class Block {
         );
     }
 
-    public void checkHidden() {
+    private Set<BlockFacePosition> faces = new HashSet<>();
+
+    public boolean isHidden() {
+        return !faces.isEmpty();
+    }
+
+    public void computeHidden() {
         for (Relative relative : Relative.values())
-            if (getRelative(relative).isTransparent()) {
-                hidden = true;
+            if (!getRelative(relative).getShape().isOccluding()) {
+                faces.add(relative.asFacePosition());
                 return;
             }
-        hidden = false;
     }
 
     public void update() {
-        checkHidden();
+        computeHidden();
     }
 
     public int compile(VertexBuffer buffer, Matrix4f matrix) {
         matrix.mul(transformation);
-        return type.shape.compile(buffer, matrix);
+        return type.getShape().compile(buffer, matrix);
     }
 }
