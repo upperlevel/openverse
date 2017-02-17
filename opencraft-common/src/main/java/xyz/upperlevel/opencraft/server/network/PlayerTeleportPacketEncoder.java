@@ -1,15 +1,14 @@
-package xyz.upperlevel.opencraft.common.network;
+package xyz.upperlevel.opencraft.server.network;
 
-import xyz.upperlevel.opencraft.common.network.packet.PlayerTeleportPacket;
 import xyz.upperlevel.utils.packets.encoder.PacketEncoder;
 import xyz.upperlevel.utils.packets.packet.impl.PlayerTeleportPacket;
 
 import java.nio.ByteBuffer;
 
-public class PlayerTeleportPacketEncoder extends PacketEncoder<PlayerTeleportPacket> {
+public class PlayerTeleportPacketEncoder extends PacketEncoder<PlayerMoveRotatePacket> {
 
     @Override
-    public ByteBuffer encode(PlayerTeleportPacket packet) {
+    public ByteBuffer encode(PlayerMoveRotatePacket packet) {
         ByteBuffer buffer = ByteBuffer.allocate(Double.BYTES * 3 + Float.BYTES * 2);
 
         buffer.putDouble(packet.getX());
@@ -22,10 +21,10 @@ public class PlayerTeleportPacketEncoder extends PacketEncoder<PlayerTeleportPac
     }
 
     @Override
-    public PlayerTeleportPacket decoder(ByteBuffer data) {
+    public PlayerMoveRotatePacket decoder(ByteBuffer data) {
         if (data.remaining() != Double.BYTES * 3 + Float.BYTES * 2)
             throw new IllegalArgumentException("data corrupted");
-        return new PlayerTeleportPacket(
+        return new PlayerMoveRotatePacket(
                 data.getDouble(),
                 data.getDouble(),
                 data.getDouble(),

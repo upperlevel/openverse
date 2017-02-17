@@ -23,7 +23,7 @@ public class BasicEntityController implements Controller {
     }
 
     public void move(double x, double y, double z) {
-        controllingEntities.forEach(entity -> entity.move(x, y, z));
+        controllingEntities.forEach(entity -> entity.teleport(x, y, z));
     }
 
     public void move(Vector3d movement) {
@@ -31,7 +31,7 @@ public class BasicEntityController implements Controller {
     }
 
     public void rotate(float x, float y) {
-        controllingEntities.forEach(entity -> entity.rotate(x, y));
+        controllingEntities.forEach(entity -> entity.teleport(x, y));
     }
 
     @Override

@@ -1,8 +1,8 @@
-package xyz.upperlevel.opencraft.common.world;
+package xyz.upperlevel.opencraft.server.world;
 
 import lombok.Getter;
-import xyz.upperlevel.opencraft.common.block.BlockType;
-import xyz.upperlevel.opencraft.common.block.BlockState;
+import xyz.upperlevel.opencraft.server.block.BlockType;
+import xyz.upperlevel.opencraft.server.block.BlockState;
 
 import java.util.Objects;
 

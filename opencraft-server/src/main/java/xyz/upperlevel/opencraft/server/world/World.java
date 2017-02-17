@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.common.world;
+package xyz.upperlevel.opencraft.server.world;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -21,6 +21,9 @@ public class World {
 
     @Getter
     private List<Chunk> loadedChunks = new ArrayList<>();
+
+    @Getter
+    private Player player = new Player();
 
     public World(String name) {
         this(name, null, null);

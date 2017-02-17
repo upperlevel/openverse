@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.common.world;
+package xyz.upperlevel.opencraft.server.world;
 
 import lombok.Getter;
 import lombok.NonNull;

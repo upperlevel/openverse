@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.common.block;
+package xyz.upperlevel.opencraft.server.block;
 
 public interface BlockType {
 

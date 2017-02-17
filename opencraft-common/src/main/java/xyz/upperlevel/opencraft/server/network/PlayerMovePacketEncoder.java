@@ -1,6 +1,5 @@
-package xyz.upperlevel.opencraft.common.network;
+package xyz.upperlevel.opencraft.server.network;
 
-import xyz.upperlevel.opencraft.common.network.packet.PlayerMovePacket;
 import xyz.upperlevel.utils.packets.encoder.PacketEncoder;
 import xyz.upperlevel.utils.packets.packet.Packet;
 import xyz.upperlevel.utils.packets.packet.impl.PlayerMovePacket;
