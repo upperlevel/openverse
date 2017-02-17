@@ -1,10 +1,10 @@
 package xyz.upperlevel.opencraft;
 
 import org.junit.Test;
-import xyz.upperlevel.opencraft.world.BlockComponent;
-import xyz.upperlevel.opencraft.world.BlockFace;
-import xyz.upperlevel.opencraft.world.BlockFacePosition;
-import xyz.upperlevel.opencraft.world.Zone3f;
+import world.BlockComponent;
+import world.BlockFace;
+import world.BlockFacePosition;
+import world.Zone3f;
 
 import static java.lang.System.out;
 

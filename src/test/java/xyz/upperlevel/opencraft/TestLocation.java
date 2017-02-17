@@ -1,8 +1,8 @@
 package xyz.upperlevel.opencraft;
 
 import org.junit.Test;
-import xyz.upperlevel.opencraft.world.Location;
-import xyz.upperlevel.opencraft.world.World;
+import world.Location;
+import world.World;
 
 public class TestLocation {
 

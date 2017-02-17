@@ -1,8 +1,8 @@
 package xyz.upperlevel.opencraft;
 
 import lombok.Getter;
-import xyz.upperlevel.opencraft.render.texture.TextureManager;
-import xyz.upperlevel.opencraft.render.texture.Textures;
+import xyz.upperlevel.opencraft.renderer.texture.TextureManager;
+import xyz.upperlevel.opencraft.renderer.texture.Textures;
 import xyz.upperlevel.opencraft.util.event.ListenerManager;
 
 public class OpenCraft {

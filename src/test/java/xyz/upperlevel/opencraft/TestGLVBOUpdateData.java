@@ -4,20 +4,16 @@ import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
-import xyz.upperlevel.opencraft.render.VertexBuffer;
-import xyz.upperlevel.opencraft.render.texture.Textures;
-import xyz.upperlevel.opencraft.world.Chunk;
-import xyz.upperlevel.opencraft.world.ChunkGenerators;
-import xyz.upperlevel.opencraft.world.World;
+import xyz.upperlevel.opencraft.renderer.texture.Textures;
 import xyz.upperlevel.ulge.opengl.DataType;
 import xyz.upperlevel.ulge.opengl.buffer.*;
 import xyz.upperlevel.ulge.opengl.shader.Program;
 import xyz.upperlevel.ulge.opengl.shader.ShaderType;
 import xyz.upperlevel.ulge.opengl.shader.ShaderUtil;
 import xyz.upperlevel.ulge.opengl.shader.Uniformer;
-import xyz.upperlevel.ulge.opengl.texture.Texture;
-import xyz.upperlevel.ulge.opengl.texture.loader.TextureContent;
-import xyz.upperlevel.ulge.opengl.texture.loader.TextureLoaderManager;
+import xyz.upperlevel.ulge.opengl.texture.Texture2D;
+import xyz.upperlevel.ulge.opengl.texture.loader.ImageContent;
+import xyz.upperlevel.ulge.opengl.texture.loader.ImageLoaderManager;
 import xyz.upperlevel.ulge.util.math.Camera;
 import xyz.upperlevel.ulge.util.math.Rot;
 import xyz.upperlevel.ulge.window.GLFW;
@@ -88,9 +84,9 @@ public class TestGLVBOUpdateData {
         Textures.manager().getOutput().bind();
         GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
 
-        TextureContent content = TextureLoaderManager.DEFAULT.load(new File("C:/users/lorenzo/desktop/hello.png"));
-        Texture ENABLED_TEX = new Texture();
-        ENABLED_TEX.setContent(content);
+        ImageContent content = ImageLoaderManager.DEFAULT.load(new File("C:/users/lorenzo/desktop/hello.png"));
+        Texture2D ENABLED_TEX = new Texture2D();
+        ENABLED_TEX.loadImage(content);
         ENABLED_TEX.bind();
 
         int posAtr = uniformer.getAttribLocation("position");
@@ -111,7 +107,7 @@ public class TestGLVBOUpdateData {
         };
 
         VBO vbo = new VBO();
-        vbo.loadData(v, VBOUsage.STATIC_DRAW);
+        vbo.loadData(v, VBODataUsage.STATIC_DRAW);
         vbo.bind();
 
         new VertexLinker(DataType.FLOAT)

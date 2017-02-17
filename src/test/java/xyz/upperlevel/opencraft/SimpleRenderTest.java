@@ -2,9 +2,8 @@ package xyz.upperlevel.opencraft;
 
 import org.lwjgl.opengl.GL11;
 import xyz.upperlevel.ulge.opengl.DataType;
-import xyz.upperlevel.ulge.opengl.buffer.Drawer;
 import xyz.upperlevel.ulge.opengl.buffer.VBO;
-import xyz.upperlevel.ulge.opengl.buffer.VBOUsage;
+import xyz.upperlevel.ulge.opengl.buffer.VBODataUsage;
 import xyz.upperlevel.ulge.opengl.buffer.VertexLinker;
 import xyz.upperlevel.ulge.opengl.shader.Program;
 import xyz.upperlevel.ulge.opengl.shader.ShaderType;
@@ -45,7 +44,7 @@ public class SimpleRenderTest {
                 -1f, 1f//3
         };
         VBO vbo = new VBO();
-        vbo.loadData(vert, VBOUsage.STATIC_DRAW);
+        vbo.loadData(vert, VBODataUsage.STATIC_DRAW);
         vbo.bind();
 /*
         int vbo = glGenBuffers();
