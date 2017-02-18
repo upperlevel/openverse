@@ -17,8 +17,8 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>xyz.upperlevel.opencraft</groupId>
-    <artifactId>common</artifactId>
+    <groupId>xyz.upperlevel.opencraft.common</groupId>
+    <artifactId>opencraft-common</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
     
