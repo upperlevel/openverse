@@ -23,7 +23,7 @@ public class World {
     private List<Chunk> loadedChunks = new ArrayList<>();
 
     @Getter
-    private Player player = new Player();
+    private Player player = new Player(); // todo at the moment one player
 
     public World(String name) {
         this(name, null, null);
