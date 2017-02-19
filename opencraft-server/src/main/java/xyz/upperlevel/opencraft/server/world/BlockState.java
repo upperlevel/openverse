@@ -1,4 +1,8 @@
 package xyz.upperlevel.opencraft.server.world;
 
-public class BlockState {
+public interface BlockState {
+
+    BlockState NULL = () -> BlockType.NULL;
+
+    BlockType getType();
 }

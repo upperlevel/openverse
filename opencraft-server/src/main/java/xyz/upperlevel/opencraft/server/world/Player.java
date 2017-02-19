@@ -1,21 +1,16 @@
 package xyz.upperlevel.opencraft.server.world;
 
-import lombok.Getter;
-import lombok.Setter;
+import xyz.upperlevel.opencraft.server.network.SingleplayerServer;
 
 public class Player {
 
-    @Getter
-    private double x, y, z;
+    private PlayerLocation location;
 
-    @Setter
-    private float yaw, pitch;
+    public Player() {
+        location = new PlayerLocation(this);
+    }
 
-    public void teleport(double x, double y, double z, float yaw, float pitch) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.yaw   = yaw;
-        this.pitch = pitch;
+    public PlayerLocation getLocation() {
+        return location;
     }
 }

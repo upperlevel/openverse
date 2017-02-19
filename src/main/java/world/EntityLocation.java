@@ -21,10 +21,10 @@ public class EntityLocation extends Location {
     }
 
     public void setYaw(double yaw) {
-        this.yaw = AngleUtil.normalizeDegAngle(yaw);
+        this.yaw = AngleUtil.normalizeDegreesAngle(yaw);
     }
 
     public void setPitch(double pitch) {
-        this.pitch = AngleUtil.normalizeDegAngle(pitch);
+        this.pitch = AngleUtil.normalizeDegreesAngle(pitch);
     }
 }

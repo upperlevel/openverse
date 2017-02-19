@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.server.network.packet;
+package xyz.upperlevel.opencraft.common.network.packet;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

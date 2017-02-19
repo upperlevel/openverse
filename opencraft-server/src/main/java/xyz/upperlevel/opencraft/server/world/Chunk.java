@@ -1,8 +1,6 @@
 package xyz.upperlevel.opencraft.server.world;
 
 import lombok.Getter;
-import xyz.upperlevel.opencraft.server.block.BlockType;
-import xyz.upperlevel.opencraft.server.block.BlockState;
 
 import java.util.Objects;
 
@@ -67,5 +65,29 @@ public class Chunk {
 
     public Block getBlock(int x, int y, int z) {
         return new Block(this, x, y, z);
+    }
+
+    public int toWorldX(int chunkX) {
+        return x * WIDTH + chunkX;
+    }
+
+    public double toWorldX(double chunkX) {
+        return x * WIDTH + chunkX;
+    }
+
+    public int toWorldY(int chunkY) {
+        return y * HEIGHT + chunkY;
+    }
+
+    public double toWorldY(double chunkY) {
+        return y * HEIGHT + chunkY;
+    }
+
+    public int toWorldZ(int chunkZ) {
+        return z * LENGTH + chunkZ;
+    }
+
+    public double toWorldZ(double chunkZ) {
+        return z * LENGTH + chunkZ;
     }
 }

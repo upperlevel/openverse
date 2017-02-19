@@ -1,8 +1,6 @@
 package xyz.upperlevel.opencraft.server.world;
 
 import lombok.Getter;
-import xyz.upperlevel.opencraft.server.block.BlockType;
-import xyz.upperlevel.opencraft.server.block.BlockState;
 
 import java.util.Objects;
 
@@ -18,16 +16,20 @@ public class Block {
     private int x, y, z;
 
     @Getter
-    private int chunkBlockX, chunkBlockY, chunkBlockZ;
+    private int chunkX, chunkY, chunkZ;
 
-    public Block(Chunk chunk, int chunkBlockX, int chunkBlockY, int chunkBlockZ) {
+    public Block(Chunk chunk, int chunkX, int chunkY, int chunkZ) {
         Objects.requireNonNull(chunk, "chunk");
         world = chunk.getWorld();
         this.chunk = chunk;
 
-        this.chunkBlockX = chunkBlockX;
-        this.chunkBlockY = chunkBlockY;
-        this.chunkBlockZ = chunkBlockZ;
+        this.chunkX = chunkX;
+        this.chunkY = chunkY;
+        this.chunkZ = chunkZ;
+
+        x = chunk.toWorldX(chunkX);
+        y = chunk.toWorldY(chunkY);
+        z = chunk.toWorldZ(chunkZ);
     }
 
     public BlockType getType() {
@@ -35,16 +37,16 @@ public class Block {
     }
 
     public Block setType(BlockType type) {
-        chunk.setBlockType(type, chunkBlockX, chunkBlockY, chunkBlockZ);
+        chunk.setBlockType(type, chunkX, chunkY, chunkZ);
         return this;
     }
 
     public BlockState getState() {
-        return chunk.getBlockState(chunkBlockX, chunkBlockY, chunkBlockZ);
+        return chunk.getBlockState(chunkX, chunkY, chunkZ);
     }
 
     public Block setState(BlockState state) {
-        chunk.setBlockState(state, chunkBlockX, chunkBlockY, chunkBlockZ);
+        chunk.setBlockState(state, chunkX, chunkY, chunkZ);
         return this;
     }
 }
