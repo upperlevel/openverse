@@ -1,5 +1,0 @@
-groupId: xyz.upperlevel
-id: opencraft
-version: '1.0.0-SNAPSHOT'
-name: 'OpenCraft'
-main: xyz.upperlevel.opencraft.OpenCraft

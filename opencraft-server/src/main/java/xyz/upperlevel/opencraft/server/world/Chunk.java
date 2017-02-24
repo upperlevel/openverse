@@ -15,7 +15,7 @@ public class Chunk {
     private int x, y, z;
 
     @Getter
-    private BlockState[][][] blockStates = new BlockState[WIDTH][HEIGHT][LENGTH];
+    private BlockType[][][] blocks = new BlockType[WIDTH][HEIGHT][LENGTH];
 
     public Chunk(World world, int x, int y, int z) {
         Objects.requireNonNull(world, "world");
@@ -45,22 +45,12 @@ public class Chunk {
         world.getChunkGenerator().generate(this);
     }
 
-    public BlockType getBlockType(int x, int y, int z) {
-        return blockStates[x][y][z] != null ? blockStates[x][y][z].getType() : BlockType.NULL;
+    public BlockType getType(int x, int y, int z) {
+        return blocks[x][y][z];
     }
 
-    public Chunk setBlockType(BlockType blockType, int x, int y, int z) {
-        blockStates[x][y][z] = blockType.generateState();
-        return this;
-    }
-
-    public BlockState getBlockState(int x, int y, int z) {
-        return blockStates[x][y][z] != null ? blockStates[x][y][z] : BlockState.NULL;
-    }
-
-    public Chunk setBlockState(BlockState blockState, int x, int y, int z) {
-        blockStates[x][y][z] = blockState;
-        return this;
+    public void setType(BlockType type, int x, int y, int z) {
+        blocks[x][y][z] = type;
     }
 
     public Block getBlock(int x, int y, int z) {

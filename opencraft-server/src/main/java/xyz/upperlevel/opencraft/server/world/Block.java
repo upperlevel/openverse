@@ -33,20 +33,10 @@ public class Block {
     }
 
     public BlockType getType() {
-        return getState().getType();
+        return chunk.getType(chunkX, chunkY, chunkZ);
     }
 
-    public Block setType(BlockType type) {
-        chunk.setBlockType(type, chunkX, chunkY, chunkZ);
-        return this;
-    }
-
-    public BlockState getState() {
-        return chunk.getBlockState(chunkX, chunkY, chunkZ);
-    }
-
-    public Block setState(BlockState state) {
-        chunk.setBlockState(state, chunkX, chunkY, chunkZ);
-        return this;
+    public void setType(BlockType type) {
+        chunk.setType(type, chunkX, chunkY, chunkZ);
     }
 }

@@ -1,7 +1,7 @@
 package xyz.upperlevel.opencraft.server.world;
 
 import lombok.Getter;
-import xyz.upperlevel.opencraft.server.network.SingleplayerServer;
+import xyz.upperlevel.opencraft.common.network.SingleplayerServer;
 import xyz.upperlevel.opencraft.common.network.packet.PlayerTeleportPacket;
 import xyz.upperlevel.ulge.util.math.AngleUtil;
 
