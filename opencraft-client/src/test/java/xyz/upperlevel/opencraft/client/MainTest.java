@@ -1,13 +1,11 @@
 package xyz.upperlevel.opencraft.client;
 
-import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
+import xyz.upperlevel.opencraft.client.render.WorldViewer;
 import xyz.upperlevel.opencraft.client.texture.Textures;
-import xyz.upperlevel.ulge.opengl.DataType;
-import xyz.upperlevel.ulge.opengl.buffer.DrawMode;
-import xyz.upperlevel.ulge.opengl.buffer.VertexLinker;
+import xyz.upperlevel.opencraft.server.OpenCraftServer;
 import xyz.upperlevel.ulge.opengl.shader.Program;
 import xyz.upperlevel.ulge.opengl.shader.ShaderType;
 import xyz.upperlevel.ulge.opengl.shader.ShaderUtil;
@@ -16,8 +14,6 @@ import xyz.upperlevel.ulge.opengl.texture.Texture2D;
 import xyz.upperlevel.ulge.opengl.texture.TextureFormat;
 import xyz.upperlevel.ulge.opengl.texture.loader.ImageContent;
 import xyz.upperlevel.ulge.opengl.texture.loader.ImageLoaderManager;
-import xyz.upperlevel.ulge.util.math.Camera;
-import xyz.upperlevel.ulge.util.math.Rot;
 import xyz.upperlevel.ulge.window.GLFW;
 import xyz.upperlevel.ulge.window.Window;
 import xyz.upperlevel.ulge.window.event.CursorMoveEvent;
@@ -30,20 +26,14 @@ import java.io.IOException;
 import java.nio.FloatBuffer;
 
 import static java.lang.System.out;
-import static org.lwjgl.opengl.GL11.GL_ALPHA_TEST;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.*;
 
 public class MainTest {
 
-    public static void main(String[] a) {
-        Camera camera = new Camera();
-        camera.setPosition(new Vector3f(0f,0,1f));
-        camera.setRotation(new Rot());
-        camera.setNearAndFarPlane(0.01f, 100f);
+    public static WorldViewer VIEWER;
 
+    public static void main(String[] a) {
         Window win = GLFW.createWindow(500, 500, "game canRender", false);
-        camera.setAspectRatio(500f / 500f);
 
         // registers cursor move event
         GLFWCursorMoveEventHandler cmHandler = GLFW.events().CURSOR_MOVE.inst();
@@ -55,8 +45,7 @@ public class MainTest {
                 double movX = x - lastX;
                 double movY = y - lastY;
 
-                Rot rotation = camera.getRotation();
-                rotation.add(new Rot(Math.toRadians(movX), Math.toRadians(movY), 0));
+                VIEWER.rotate((float)movX, (float)movY);
                 //rotation.setPitch(Math.max(-90, Math.min(90, Math.toRadians(movY))));
 
                 lastX = x;
@@ -79,6 +68,11 @@ public class MainTest {
         program.link();
         Uniformer uniformer = program.bind();
 
+        OpenCraftServer server = OpenCraftServer.get();
+        OpenCraftClient client = OpenCraftClient.get();
+        // INITIALIZES PLAYER!
+        VIEWER = client.getViewer();
+
         try {
             Textures.manager().register(ImageIO.read(classLoader.getResourceAsStream("textures/dirt2.png")));
         } catch (IOException e) {
@@ -99,18 +93,12 @@ public class MainTest {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_ALPHA_TEST);
 
-        // bind VBO
-
-        new VertexLinker(DataType.FLOAT)
-                .attrib(0, 3)
-                .attrib(1, 4)
-                .attrib(2, 2)
-                .setup();
-
         FloatBuffer matBuf = BufferUtils.createFloatBuffer(16);
 
         int fpsCounter = 0;
         long lastTime = 0;
+
+        win.setVSync(true);
 
         while (!win.isClosed()) {
             if (System.currentTimeMillis() - lastTime >= 1000) {
@@ -124,10 +112,9 @@ public class MainTest {
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
             GL11.glClearColor(0f, 0f, 0f, 0f);
 
-            updateCamera(win, camera, 0.05f);
+            updateCamera(win, 0.5f);
 
-            uniformer.setUniformMatrix4("camera", camera.getMatrix().get(matBuf));
-            Client.viewer().getRenderArea().draw();
+            VIEWER.draw(uniformer);
 
             // canRender checks
             if (win.getKey(Key.K) || win.getKey(Key.ESCAPE)) {
@@ -143,21 +130,18 @@ public class MainTest {
         win.destroy();
     }
 
-    private static void updateCamera(Window win, Camera camera, float sensitivity) {
-        Vector3f position = camera.getPosition();
-        // checks inputs
-        int state;
+    private static void updateCamera(Window win, float sensitivity) {
         if (win.getKey(Key.W))
-            camera.setPosition(position.add(camera.getForward().mul(sensitivity)));
+            VIEWER.forward(sensitivity);
         if (win.getKey(Key.S))
-            camera.setPosition(position.add(camera.getForward().mul(-sensitivity)));
+            VIEWER.backward(sensitivity);
         if (win.getKey(Key.A))
-            camera.setPosition(position.add(camera.getRight().mul(-sensitivity)));
+            VIEWER.left(sensitivity);
         if (win.getKey(Key.D))
-            camera.setPosition(position.add(camera.getRight().mul(sensitivity)));
+            VIEWER.right(sensitivity);
         if (win.getKey(Key.LEFT_SHIFT))
-            camera.setPosition(position.add(camera.getUp().mul(-sensitivity)));
+            VIEWER.down(sensitivity);
         if (win.getKey(Key.SPACE))
-            camera.setPosition(position.add(camera.getUp().mul(sensitivity)));
+            VIEWER.up(sensitivity);
     }
 }

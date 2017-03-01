@@ -16,7 +16,7 @@ public class Textures {
         NULL = manager.register(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB) {
             {
                 Graphics2D g = createGraphics();
-                g.setColor(Color.RED);
+                g.setColor(Color.WHITE);
                 g.fillRect(0, 0, 1, 1);
             }
         });

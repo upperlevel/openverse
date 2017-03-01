@@ -1,7 +1,5 @@
 package xyz.upperlevel.opencraft.common.network;
 
-import xyz.upperlevel.opencraft.common.network.SingleplayerNetworkConnection;
-import xyz.upperlevel.opencraft.common.network.SingleplayerServer;
 import xyz.upperlevel.utils.packet.packet.Packet;
 
 public final class SingleplayerClient {

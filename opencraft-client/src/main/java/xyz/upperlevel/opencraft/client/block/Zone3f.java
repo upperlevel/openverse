@@ -73,11 +73,11 @@ public class Zone3f {
 
     public boolean isEqual(Zone3f zone) {
         return zone.getMinPosition().equals(getMinPosition()) &&
-                zone.getMaxPosition().equals(getMaxPosition());
+               zone.getMaxPosition().equals(getMaxPosition());
     }
 
     public boolean isInside(float x, float y, float z) {
-        return x >= minX && x <= maxX &&
+        return  x >= minX && x <= maxX &&
                 y >= minY && y <= maxY &&
                 z >= minZ && z <= maxZ;
     }

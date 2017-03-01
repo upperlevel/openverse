@@ -9,7 +9,6 @@ import org.joml.Vector3f;
 import xyz.upperlevel.opencraft.client.texture.TextureFragment;
 import xyz.upperlevel.opencraft.client.texture.Textures;
 import xyz.upperlevel.ulge.util.Color;
-import xyz.upperlevel.ulge.util.Colors;
 
 import java.nio.ByteBuffer;
 
@@ -66,7 +65,7 @@ public final class BlockFace {
     public static final int DATA_COUNT = BlockVertex.DATA_COUNT * VERTICES_COUNT;
 
     @Getter
-    private BlockShapeComponent component;
+    private ShapeComponent component;
 
     @Getter
     private BlockFacePosition position;
@@ -87,9 +86,7 @@ public final class BlockFace {
             vertices[i] = QuadVertexPosition.values()[i].createVertex(this);
     }
 
-    private Matrix4f transformation;
-
-    public BlockFace(BlockShapeComponent component, BlockFacePosition position) {
+    public BlockFace(ShapeComponent component, BlockFacePosition position) {
         this.component = component;
         this.zone = position.obtainZone(component.getZone());
         this.position = position;
@@ -117,24 +114,30 @@ public final class BlockFace {
                 .scale(component.getSize())
                 .rotate(position.getRotation());
 
+        BlockVertex vertex;
+
         // top left
+        vertex = getVertex(QuadVertexPosition.TOP_LEFT);
         putPosition(buffer, matrix.transformPosition(-1f, 1f, 0f, new Vector3f()));
-        putColor(buffer, Colors.WHITE);
+        putColor(buffer, vertex.getColor());
         putTextureCoordinates(buffer, texture.getMinU(), texture.getMinV());
 
         // bottom left
+        vertex = getVertex(QuadVertexPosition.BOTTOM_LEFT);
         putPosition(buffer, matrix.transformPosition(-1f, -1f, 0f, new Vector3f()));
-        putColor(buffer, Colors.WHITE);
+        putColor(buffer, vertex.getColor());
         putTextureCoordinates(buffer, texture.getMinU(), texture.getMaxV());
 
         // bottom right
+        vertex = getVertex(QuadVertexPosition.BOTTOM_RIGHT);
         putPosition(buffer, matrix.transformPosition(1f, -1f, 0f, new Vector3f()));
-        putColor(buffer, Colors.WHITE);
+        putColor(buffer, vertex.getColor());
         putTextureCoordinates(buffer, texture.getMaxU(), texture.getMaxV());
 
         // top right
+        vertex = getVertex(QuadVertexPosition.TOP_RIGHT);
         putPosition(buffer, matrix.transformPosition(1f, 1f, 0f, new Vector3f()));
-        putColor(buffer, Colors.WHITE);
+        putColor(buffer, vertex.getColor());
         putTextureCoordinates(buffer, texture.getMaxU(), texture.getMinV());
 
         /*

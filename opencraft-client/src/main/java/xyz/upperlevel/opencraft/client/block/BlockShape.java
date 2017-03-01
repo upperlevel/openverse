@@ -15,10 +15,7 @@ import java.util.List;
 public class BlockShape {
 
     @Getter
-    private int verticesCount;
-
-    @Getter
-    private final List<BlockShapeComponent> components = new ArrayList<>();
+    private final List<ShapeComponent> components = new ArrayList<>();
 
     /**
      * A shape is considered bulky when it has at least one component with a zone that goes
@@ -48,7 +45,7 @@ public class BlockShape {
 
     @Deprecated
     public void computeBulky() {
-        for (BlockShapeComponent component : components) {
+        for (ShapeComponent component : components) {
             Zone3f zone = component.getZone();
             Vector3f position;
             position = zone.getMinPosition();
@@ -72,32 +69,32 @@ public class BlockShape {
         return bulky && !transparent;
     }
 
-    public BlockShape addComponent(BlockShapeComponent component) {
+    public BlockShape addComponent(ShapeComponent component) {
         components.add(component);
         return this;
     }
 
-    public BlockShape addComponents(Collection<BlockShapeComponent> components) {
+    public BlockShape addComponents(Collection<ShapeComponent> components) {
         this.components.addAll(components);
         return this;
     }
 
-    public BlockShape removeComponent(BlockShapeComponent component) {
+    public BlockShape removeComponent(ShapeComponent component) {
         components.remove(component);
         return this;
     }
 
-    public BlockShape removeComponents(Collection<BlockShapeComponent> components) {
+    public BlockShape removeComponents(Collection<ShapeComponent> components) {
         this.components.removeAll(components);
         return this;
     }
 
     public int getVerticesCount() {
-        return components.size() * BlockShapeComponent.VERTICES_COUNT;
+        return components.size() * ShapeComponent.VERTICES_COUNT;
     }
 
     public int getDataCount() {
-        return components.size() * BlockShapeComponent.DATA_COUNT;
+        return components.size() * ShapeComponent.DATA_COUNT;
     }
 
     public static BlockShape empty() {
@@ -105,7 +102,7 @@ public class BlockShape {
     }
 
     public void compileBuffer(ByteBuffer buffer, Matrix4f matrix) {
-        for (BlockShapeComponent component : components)
+        for (ShapeComponent component : components)
             component.compileBuffer(buffer, new Matrix4f(matrix));
     }
 }

@@ -1,17 +1,10 @@
 package xyz.upperlevel.opencraft.server.world;
 
 import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
 
 import java.util.*;
 
 public class World {
-
-    @Getter
-    @Setter
-    @NonNull
-    private String name;
 
     @Getter
     private ChunkProvider chunkProvider;
@@ -23,15 +16,13 @@ public class World {
     private List<Chunk> loadedChunks = new ArrayList<>();
 
     @Getter
-    private Player player = new Player(); // todo at the moment one player
+    private Location spawn = new Location(this);
 
-    public World(String name) {
-        this(name, null, null);
+    public World() {
+        this(null, null);
     }
 
-    public World(String name, ChunkProvider chunkProvider, ChunkGenerator chunkGenerator) {
-        Objects.requireNonNull(name, "name");
-        this.name = name;
+    public World(ChunkProvider chunkProvider, ChunkGenerator chunkGenerator) {
         setChunkProvider(chunkProvider);
         setChunkGenerator(chunkGenerator);
     }

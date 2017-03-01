@@ -1,10 +1,10 @@
 package xyz.upperlevel.opencraft.common.world;
 
-public interface CommonBlockType {
+public interface BridgeBlockType {
 
     String getId();
 
-    static CommonBlockType create(String id) {
+    static BridgeBlockType create(String id) {
         return () -> id;
     }
 }

@@ -10,5 +10,6 @@ public class OpenCraft extends Game {
 
     @Override
     public void close() {
+
     }
 }

@@ -3,13 +3,14 @@ package xyz.upperlevel.opencraft.client.block;
 import lombok.Getter;
 import lombok.NonNull;
 import org.joml.Matrix4f;
+import xyz.upperlevel.ulge.util.Color;
 
 import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class BlockShapeComponent {
+public final class ShapeComponent {
 
     public static final int VERTICES_COUNT = BlockFace.VERTICES_COUNT * 6;
 
@@ -23,23 +24,28 @@ public final class BlockShapeComponent {
 
     private void initDefaultFaces() {
         for (BlockFacePosition position : BlockFacePosition.values())
-            faces.put(position, new BlockFace(BlockShapeComponent.this, position));
+            faces.put(position, new BlockFace(ShapeComponent.this, position));
     }
 
-    public BlockShapeComponent() {
+    public ShapeComponent() {
         this(new Zone3f(
                 0, 0, 0,
                 1f, 1f, 1f)
         );
     }
 
-    public BlockShapeComponent(Zone3f zone) {
+    public ShapeComponent(Zone3f zone) {
         this.zone = zone;
         initDefaultFaces();
     }
 
     public boolean isInside(Zone3f zone) {
         return zone.isInside(zone);
+    }
+
+    public ShapeComponent setColor(Color color) {
+        faces.values().forEach(face -> face.setColor(color));
+        return this;
     }
 
     public BlockFace getFace(BlockFacePosition position) {

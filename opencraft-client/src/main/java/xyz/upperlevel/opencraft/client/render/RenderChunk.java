@@ -4,11 +4,15 @@ import lombok.Getter;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import xyz.upperlevel.opencraft.client.block.BlockShape;
-import xyz.upperlevel.opencraft.client.block.TestBlockShape;
-import xyz.upperlevel.opencraft.common.world.CommonChunk;
-import xyz.upperlevel.ulge.opengl.buffer.BufferCopier;
+import xyz.upperlevel.opencraft.client.block.registry.BlockRegistry;
+import xyz.upperlevel.opencraft.client.block.registry.BlockType;
+import xyz.upperlevel.opencraft.common.world.BridgeBlockType;
+import xyz.upperlevel.opencraft.common.world.ChunkArea;
+import xyz.upperlevel.ulge.opengl.DataType;
 import xyz.upperlevel.ulge.opengl.buffer.DrawMode;
 import xyz.upperlevel.ulge.opengl.buffer.Vbo;
+import xyz.upperlevel.ulge.opengl.buffer.VboDataUsage;
+import xyz.upperlevel.ulge.opengl.buffer.VertexLinker;
 
 import java.nio.ByteBuffer;
 
@@ -17,90 +21,101 @@ public class RenderChunk {
     @Getter
     private Vbo vbo = new Vbo();
 
+    {
+        vbo.bind();
+        new VertexLinker(DataType.FLOAT)
+                .attrib(0, 3)
+                .attrib(1, 4)
+                .attrib(2, 2)
+                .setup();
+        vbo.unbind();
+    }
+
     @Getter
-    private int verticesCount = 0;
+    private int verticesCount = 0, dataCount = 0;
 
-    private BlockShape blocks[] = new BlockShape[CommonChunk.SIZE];
-    private int[] vboOffsets = new int[CommonChunk.SIZE];
+    private RenderBlockShape[][][] shapes = new RenderBlockShape[16][16][16];
 
-    public RenderChunk() {
-        long sa = System.currentTimeMillis();
+    {
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
                 for (int z = 0; z < 16; z++) {
-                    setShape(x, y, z, TestBlockShape.inst);
+                    shapes[x][y][z] = new RenderBlockShape(this, x, y, z);
                 }
             }
         }
-        recalcVerticesCount();
-        System.out.println("time to generate chunk buf=" + (System.currentTimeMillis() - sa));
     }
 
-    public static int getId(int x, int y, int z) {
-        return x << 4 * 2 | y << 4 | z;
+    public RenderChunk() {
     }
 
-    public static int getX(short id) {
-        return (id & 0xf00) >> 4 * 2;
-    }
-
-    public static int getY(short id) {
-        return (id & 0x0f0) >> 4;
-    }
-
-    public static int getZ(short id) {
-        return id & 0x00f;
-    }
-
-    public BlockShape getShape(int id) {
-        return blocks[id];
-    }
-
-    public BlockShape getShape(int x, int y, int z) {
-        return blocks[getId(x, y, z)];
-    }
-
-    public void setShape(int x, int y, int z, BlockShape renderModel) {
-        setShape(getId(x, y, z), renderModel);
-    }
-
-    private void recalcVerticesCount() {
-        verticesCount = 0;
-        for (BlockShape block : blocks) {
-            if (block != null) {
-                verticesCount += block.getVerticesCount();
+    public RenderChunk load(ChunkArea chunk) {
+        for (int x = 0; x < 16; x++) {
+            for (int y = 0; y < 16; y++) {
+                for (int z = 0; z < 16; z++) {
+                    BridgeBlockType bType = chunk.getBlock(x, y, z);
+                    BlockType type = BlockRegistry.def().getBlock(bType);
+                    if (type == null) {
+                        System.err.println("bridge block type '" + bType.getId() + "' has not been found");
+                        continue;
+                    }
+                    setShape(x, y, z, type.getShape(), false);
+                }
             }
-
-            System.out.println("DEBUG! ELIMINATE IT NOW!");
         }
+        buildVbo();
+        return this;
     }
 
-    public void setShape(int id, BlockShape shape) {
-        blocks[id] = shape;
+    public RenderBlockShape getShape(int x, int y, int z) {
+        return shapes[x][y][z];
+    }
 
-        long sta = System.currentTimeMillis();
-        vboOffsets[id] = id > 0 ? vboOffsets[id - 1] : 0;
-        for (int i = id; i < blocks.length - 1; i++) {
-            int fromOffset = vboOffsets[id];
-            int toOffset = fromOffset + shape.getVerticesCount();
+    public void setShape(int x, int y, int z, BlockShape shape) {
+        setShape(x, y, z, shape, true);
+    }
 
-            // moves vertices inside of the vbo
-            BufferCopier.copy(vbo, vbo, fromOffset, toOffset, blocks[id].getVerticesCount());
+    public void setShape(int x, int y, int z, BlockShape shape, boolean buildVbo) {
+        BlockShape oldShape = shapes[x][y][z].getShape();
 
-            // pushes data inside the vbo
-            ByteBuffer bfr = BufferUtils.createByteBuffer(shape.getDataCount());
-            shape.compileBuffer(bfr, new Matrix4f());
-            vbo.updateData(fromOffset, bfr);
+        shapes[x][y][z].setShape(shape);
 
-            // sets up offsets
-            vboOffsets[id + 1] = toOffset;
-        }
+        int ovc = oldShape != null ? oldShape.getVerticesCount() : 0;
+        int nvc = shape != null ? shape.getVerticesCount() : 0;
+
+        int odc = oldShape != null ? oldShape.getDataCount() : 0;
+        int ndc = shape != null ? shape.getDataCount() : 0;
+
+        verticesCount += nvc - ovc;
+        dataCount += ndc - odc;
+
+        if (buildVbo)
+            buildVbo();
+    }
+
+    public void buildVbo() {
+        ByteBuffer data = BufferUtils.createByteBuffer(dataCount * Float.BYTES);
+        for (int x = 0; x < 16; x++)
+            for (int y = 0; y < 16; y++)
+                for (int z = 0; z < 16; z++) {
+                    RenderBlockShape render = shapes[x][y][z];
+                    BlockShape shape = render.getShape();
+                    if (shape != null) {
+                        Matrix4f model = new Matrix4f()
+                                .translate(
+                                        -1f + x * 2f,
+                                        -1f + y * 2f,
+                                        -1f + z * -2f
+                                );
+                        shape.compileBuffer(data, model);
+                    }
+                }
+        data.flip();
+        vbo.loadData(data, VboDataUsage.DYNAMIC_DRAW);
     }
 
     public void draw() {
-        vbo.bind();
         vbo.draw(DrawMode.QUADS, 0, verticesCount);
-        System.out.println("verticesCount: " + verticesCount);
     }
 
     public void destroy() {
