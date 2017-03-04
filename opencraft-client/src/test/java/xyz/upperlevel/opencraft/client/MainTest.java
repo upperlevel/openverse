@@ -10,10 +10,6 @@ import xyz.upperlevel.ulge.opengl.shader.Program;
 import xyz.upperlevel.ulge.opengl.shader.ShaderType;
 import xyz.upperlevel.ulge.opengl.shader.ShaderUtil;
 import xyz.upperlevel.ulge.opengl.shader.Uniformer;
-import xyz.upperlevel.ulge.opengl.texture.Texture2D;
-import xyz.upperlevel.ulge.opengl.texture.TextureFormat;
-import xyz.upperlevel.ulge.opengl.texture.loader.ImageContent;
-import xyz.upperlevel.ulge.opengl.texture.loader.ImageLoaderManager;
 import xyz.upperlevel.ulge.window.GLFW;
 import xyz.upperlevel.ulge.window.Window;
 import xyz.upperlevel.ulge.window.event.CursorMoveEvent;
@@ -21,7 +17,6 @@ import xyz.upperlevel.ulge.window.event.GLFWCursorMoveEventHandler;
 import xyz.upperlevel.ulge.window.event.key.Key;
 
 import javax.imageio.ImageIO;
-import java.io.File;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 
@@ -82,10 +77,12 @@ public class MainTest {
         //Textures.manager().getOutput().bind();
         GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
 
+        /*
         ImageContent content = ImageLoaderManager.DEFAULT.load(new File("C:/users/lorenzo/desktop/hello.png"));
         Texture2D ENABLED_TEX = new Texture2D();
         ENABLED_TEX.loadImage(TextureFormat.RGBA, content);
         ENABLED_TEX.bind();
+        */
 
         int posAtr = uniformer.getAttribLocation("position");
         out.println("pos atr location: " + posAtr);

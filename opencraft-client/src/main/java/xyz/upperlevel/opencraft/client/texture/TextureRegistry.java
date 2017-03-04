@@ -25,6 +25,10 @@ public class TextureRegistry {
     }
 
     public SpriteTexture register(BufferedImage image) {
+        return register(image, true);
+    }
+
+    public SpriteTexture register(BufferedImage image, boolean update) {
         int w = image.getWidth();
         int h = image.getHeight();
         if (h > height)
@@ -45,7 +49,8 @@ public class TextureRegistry {
 
         SpriteTexture tex = new SpriteTexture(w, h);
         sprites.add(tex);
-        update();
+        if (update)
+            update();
         return tex;
     }
 
@@ -60,7 +65,7 @@ public class TextureRegistry {
             float currentWidth = ((float) width) / this.width;
 
             // the dimensions of the texture to draw
-            float realWidth  = ((float) sprite.getWidth()) / this.width;
+            float realWidth = ((float) sprite.getWidth()) / this.width;
             float realHeight = ((float) sprite.getHeight()) / height;
 
             sprite.realWidth = realWidth;

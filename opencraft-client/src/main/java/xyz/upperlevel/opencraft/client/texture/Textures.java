@@ -29,13 +29,16 @@ public class Textures {
         return manager;
     }
 
+
     public static void main(String[] ar) throws IOException {
-        File desktop = new File("C:/Users/Lorenzo/Desktop");
-        for (int i = 0; i < 10
-        00; i++) {
-            manager.register(ImageIO.read(new File(desktop, "mc_chunk.png")));
+        File desktop = new File(System.getProperty("user.home"), "desktop");
+        long sa = System.currentTimeMillis();
+        for (int i = 0; i < 1000; i++) {
+            manager.register(ImageIO.read(new File(desktop, "lll.png")), false);
             System.out.println("image: " + i);
         }
-        manager.save(new File(desktop, "mine.png"));
+        System.out.println("Image generated: " + (System.currentTimeMillis() - sa));
+        manager.save(new File(desktop, "hello_lol.png"));
+        System.out.println("Image saved");
     }
 }
