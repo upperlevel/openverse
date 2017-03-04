@@ -3,6 +3,7 @@ package xyz.upperlevel.opencraft.client.render;
 import lombok.Getter;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
+import xyz.upperlevel.opencraft.client.OpenCraftClient;
 import xyz.upperlevel.opencraft.common.network.SingleplayerClient;
 import xyz.upperlevel.opencraft.common.network.packet.AskChunkAreaPacket;
 import xyz.upperlevel.ulge.opengl.shader.Uniformer;
@@ -10,7 +11,7 @@ import xyz.upperlevel.ulge.util.Color;
 
 public class RenderArea {
 
-    public static final int RADIUS = 0;
+    public static final int RADIUS = 2;
 
     public static final int SIDE = RADIUS * 2 + 1;
 
@@ -24,8 +25,6 @@ public class RenderArea {
     }
 
     public void build() {
-        destroy();
-
         long sa = System.currentTimeMillis();
         for (int x = 0; x < SIDE; x++)
             for (int y = 0; y < SIDE; y++)
@@ -109,13 +108,24 @@ public class RenderArea {
         }
     }
 
+    public static void main(String[] ar) {
+        System.out.println("floor: " + Math.floor(-0.1));
+    }
+
     public void draw(Uniformer uniformer) {
-        Matrix4f m = new Matrix4f()
-                .translate(
-                        2f * 16f * getAbsoluteX(0),
-                        2f * 16f * getAbsoluteY(0),
-                        2f * 16f * getAbsoluteZ(0)
-                );
+        Matrix4f m = new Matrix4f();
+        m.translate(
+                2f * 16f * centerX,
+                2f * 16f * centerY,
+                2f * 16f * centerZ
+        );
+
+        System.out.println("center coords: " + centerX + " " + centerY + " " + centerZ);
+
+        WorldViewer wv = OpenCraftClient.get().getViewer();
+        System.out.println("world viewer chunk coords: " + wv.getChunkX() + " " + wv.getChunkY() + " " + wv.getChunkZ());
+        System.out.println("world viewer world coords: " + wv.getX() + " " + wv.getY() + " " + wv.getZ());
+
         for (int x = 0; x < SIDE; x++) {
             for (int y = 0; y < SIDE; y++) {
                 for (int z = 0; z < SIDE; z++) {

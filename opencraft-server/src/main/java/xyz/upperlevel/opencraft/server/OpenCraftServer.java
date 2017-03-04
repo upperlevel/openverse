@@ -12,10 +12,8 @@ public class OpenCraftServer {
     @Getter
     private World world = new World(ChunkProvider.NULL, chunk -> {
         for (int x = 0; x < 16; x++)
-            for (int y = 0; y < 16; y++)
                 for (int z = 0; z < 16; z++)
-                    chunk.setType(BridgeBlockType.create("test_id"), x, y, z);
-        System.out.println("server> e invece...");
+                    chunk.setType(BridgeBlockType.create("test_id"), x, 0, z);
     });
 
     @Getter

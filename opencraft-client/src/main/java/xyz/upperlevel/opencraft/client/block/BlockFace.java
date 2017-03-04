@@ -6,7 +6,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import xyz.upperlevel.opencraft.client.texture.TextureFragment;
+import xyz.upperlevel.opencraft.client.texture.TextureRegistry;
 import xyz.upperlevel.opencraft.client.texture.Textures;
 import xyz.upperlevel.ulge.util.Color;
 
@@ -76,7 +76,7 @@ public final class BlockFace {
     @Getter
     @Setter
     @NonNull
-    private TextureFragment texture = Textures.NULL;
+    private TextureRegistry.SpriteTexture texture = Textures.NULL;
 
     @Getter
     private BlockVertex[] vertices = new BlockVertex[4];

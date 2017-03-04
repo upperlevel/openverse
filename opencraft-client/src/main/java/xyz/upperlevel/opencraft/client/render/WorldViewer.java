@@ -35,9 +35,9 @@ public class WorldViewer {
                 100000f,
                 (float) Math.toRadians(yaw),
                 (float) Math.toRadians(pitch),
-                x * 2f,
-                y * 2f,
-                z * 2f
+                x * 2f - 1f,
+                y * 2f - 1f,
+                z * 2f + 1f
         );
     }
 
@@ -65,6 +65,21 @@ public class WorldViewer {
         return this;
     }
 
+    public WorldViewer setPosition(float x, float y, float z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        update();
+        return this;
+    }
+
+    public WorldViewer setRotation(float yaw, float pitch) {
+        this.yaw = yaw;
+        this.pitch = pitch;
+        update();
+        return this;
+    }
+
     public WorldViewer move(float x, float y, float z) {
         this.x += x;
         this.y += y;
@@ -72,7 +87,6 @@ public class WorldViewer {
         update();
         // todo update frustum
         // todo update render-area
-        buildCamera();
         return this;
     }
 
@@ -127,17 +141,17 @@ public class WorldViewer {
     @Getter
     private int chunkX, chunkY, chunkZ; // last chunk coordinates
 
-    public void build() {
-        renderarea.setCenter(chunkX, chunkY, chunkZ);
-    }
-
     public void attemptBuild() { // updates position and send changes
-        int acx = (int) (x / 16);
-        int acy = (int) (y / 16);
-        int acz = (int) (z / 16);
+        float rx = x / 16f;
+        float ry = y / 16f;
+        float rz = z / 16f;
+
+        int acx = (int) Math.floor(rx);
+        int acy = (int) Math.floor(ry);
+        int acz = (int) Math.ceil(rz);
 
         if (chunkX != acx || chunkY != acy || chunkZ != acz)
-            build();
+            renderarea.setCenter(acx, acy, acz);
 
         chunkX = acx;
         chunkY = acy;
@@ -149,6 +163,7 @@ public class WorldViewer {
     }
 
     public void update() {
+        buildCamera();
         attemptBuild();
         updatePosition();
     }

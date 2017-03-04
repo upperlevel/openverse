@@ -1,8 +1,7 @@
 package xyz.upperlevel.opencraft.client.block.registry;
 
 import lombok.Getter;
-import xyz.upperlevel.opencraft.client.block.BlockShape;
-import xyz.upperlevel.opencraft.client.block.ShapeComponent;
+import xyz.upperlevel.opencraft.client.block.*;
 import xyz.upperlevel.opencraft.common.world.BridgeBlockType;
 import xyz.upperlevel.ulge.util.Color;
 
@@ -16,7 +15,12 @@ public class BlockRegistry {
 
     static {
         ShapeComponent comp = new ShapeComponent();
-        comp.setColor(Color.RED);
+        comp.getFace(BlockFacePosition.FORWARD).setColor(Color.RED);
+        comp.getFace(BlockFacePosition.BACKWARD).setColor(Color.YELLOW);
+        comp.getFace(BlockFacePosition.LEFT).setColor(Color.GREEN);
+        comp.getFace(BlockFacePosition.RIGHT).setColor(Color.BLUE);
+        comp.getFace(BlockFacePosition.UP).setColor(Color.AQUA);
+        comp.getFace(BlockFacePosition.DOWN).setColor(Color.DARK_RED);
         def.register(BlockType.create("null_block", new BlockShape()));
                 //.addComponent(comp)));
 

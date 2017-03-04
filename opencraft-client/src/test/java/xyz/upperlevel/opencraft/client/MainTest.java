@@ -79,7 +79,7 @@ public class MainTest {
             throw new IllegalStateException("error in tex loading", e);
         }
 
-        Textures.manager().getOutput().bind();
+        //Textures.manager().getOutput().bind();
         GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
 
         ImageContent content = ImageLoaderManager.DEFAULT.load(new File("C:/users/lorenzo/desktop/hello.png"));
@@ -143,5 +143,18 @@ public class MainTest {
             VIEWER.down(sensitivity);
         if (win.getKey(Key.SPACE))
             VIEWER.up(sensitivity);
+
+        if (win.getKey(Key.KP_1)) {
+            VIEWER.setPosition(0f, 16f, 0f);
+        }
+        if (win.getKey(Key.KP_7)) {
+            VIEWER.setPosition(0f, 16f, 16f);
+        }
+        if (win.getKey(Key.KP_9)) {
+            VIEWER.setPosition(16f, 16f, 16f);
+        }
+        if (win.getKey(Key.KP_3)) {
+            VIEWER.setPosition(16f, 16f, 0f);
+        }
     }
 }

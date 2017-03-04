@@ -1,6 +1,6 @@
 package xyz.upperlevel.opencraft.client.block;
 
-import xyz.upperlevel.opencraft.client.texture.TextureManager;
+import xyz.upperlevel.opencraft.client.texture.TextureRegistry;
 import xyz.upperlevel.opencraft.client.texture.Textures;
 import xyz.upperlevel.ulge.util.Color;
 import javax.imageio.ImageIO;
@@ -11,7 +11,7 @@ public class TestBlockShape {
     public static final BlockShape inst = new BlockShape();
 
     static {
-        TextureManager texMan = Textures.manager();
+        TextureRegistry texMan = Textures.manager();
         try {
             texMan.register(ImageIO.read(TestBlockShape.class.getClassLoader().getResourceAsStream("textures/dirt2.png")));
         } catch (IOException e) {
@@ -20,7 +20,7 @@ public class TestBlockShape {
         ShapeComponent comp = new ShapeComponent()
                 .setColor(Color.RED);
         comp.getFace(BlockFacePosition.UP)
-                .setTexture(texMan.getFragment(0));
+                .setTexture(texMan.getSprite(0));
         inst.addComponent(comp);
     }
 }
