@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import xyz.upperlevel.opencraft.common.world.ChunkArea;
+import xyz.upperlevel.opencraft.common.network.ChunkArea;
 import xyz.upperlevel.utils.packet.packet.Packet;
 
 @AllArgsConstructor
@@ -17,5 +17,5 @@ public class ChunkAreaPacket implements Packet {
     @Getter
     @Setter
     @NonNull
-    private ChunkArea voxel;
+    private ChunkArea area;
 }

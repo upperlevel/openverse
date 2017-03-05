@@ -7,7 +7,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import xyz.upperlevel.ulge.util.Color;
 
-@RequiredArgsConstructor
 @Accessors(chain = true)
 public final class BlockVertex {
 
@@ -30,6 +29,12 @@ public final class BlockVertex {
     @Getter
     @Setter
     private float u, v;
+
+    public BlockVertex(@NonNull BlockFace face) {
+        this.face = face;
+
+        setColor(Color.WHITE);
+    }
 
     public Color getColor() {
         return Color.rgba(r, g, b, a);

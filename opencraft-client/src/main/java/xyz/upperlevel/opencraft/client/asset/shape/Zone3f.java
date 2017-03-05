@@ -41,7 +41,7 @@ public class Zone3f {
         minZ = Math.min(p1z, p2z);
         maxZ = Math.max(p1z, p2z);
         
-        width = maxX - minX;
+        width  = maxX - minX;
         height = maxY - minY;
         length = maxZ - minZ;
     }
@@ -94,6 +94,18 @@ public class Zone3f {
         return new Zone3f(
                 p1x, p1y, p1z,
                 p2x, p2y, p2z
+        );
+    }
+
+    public Zone3f mirror(boolean x, boolean y, boolean z) {
+        return new Zone3f(
+                x ? width  - p1x : p1x,
+                y ? height - p1y : p1y,
+                z ? length - p1z : p1z,
+
+                x ? width  - p2x : p2x,
+                y ? height - p2y : p2y,
+                z ? length - p2z : p2z
         );
     }
 

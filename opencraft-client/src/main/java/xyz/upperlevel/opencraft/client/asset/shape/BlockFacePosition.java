@@ -2,8 +2,8 @@ package xyz.upperlevel.opencraft.client.block;
 
 import lombok.Getter;
 import org.joml.AxisAngle4f;
-import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import xyz.upperlevel.opencraft.client.asset.shape.Zone3f;
 
 public enum BlockFacePosition {
 
@@ -58,6 +58,11 @@ public enum BlockFacePosition {
     }
 
     public abstract AxisAngle4f getRotation();
+
+    public Zone3f getMirrorZone(Zone3f zone) {
+        //System.out.println("face at " + name() + " mirror values:\n" + (directionX != 0) + " " + (directionY != 0) + " " + (directionZ != 0));
+        return zone.mirror(directionX != 0, directionY != 0, directionZ != 0);
+    }
 
     public Zone3f obtainZone(Zone3f zone) {
         return new Zone3f(
