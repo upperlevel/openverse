@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.client.block;
+package xyz.upperlevel.opencraft.client.asset.shape;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -13,48 +13,51 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-@Accessors(chain = true)
 public class BlockShape {
 
     @Getter
     private String id;
 
     @Getter
-    private List<BlockShapeComponent> components = new ArrayList<>();
+    private List<BlockComponent> components = new ArrayList<>();
 
     @Getter
-    @Setter
     private boolean transparent = false;
 
     public BlockShape(@NonNull String id) {
         this.id = id;
     }
 
+    public BlockShape setTransparent(boolean transparent) {
+        this.transparent = transparent;
+        return this;
+    }
+
     public boolean isEmpty() {
         return components.isEmpty();
     }
 
-    public BlockShape add(BlockShapeComponent component) {
+    public BlockShape add(BlockComponent component) {
         components.add(component);
         return this;
     }
 
-    public BlockShape add(BlockShapeComponent... components) {
+    public BlockShape add(BlockComponent... components) {
         this.components.addAll(Arrays.asList(components));
         return this;
     }
 
-    public BlockShape add(Collection<BlockShapeComponent> components) {
+    public BlockShape add(Collection<BlockComponent> components) {
         this.components.addAll(components);
         return this;
     }
 
-    public BlockShape remove(BlockShapeComponent component) {
+    public BlockShape remove(BlockComponent component) {
         components.remove(component);
         return this;
     }
 
-    public BlockShape remove(Collection<BlockShapeComponent> components) {
+    public BlockShape remove(Collection<BlockComponent> components) {
         this.components.removeAll(components);
         return this;
     }
@@ -67,16 +70,21 @@ public class BlockShape {
         components.forEach(component -> component.cleanCompile(x, y, z, area, matrix, buffer));
     }
 
+    public boolean isInside(float x, float y, float z) {
+        return components.stream()
+                .anyMatch(comp -> comp.isInside(x, y, z));
+    }
+
     public boolean isInside(Zone3f zone) {
         return components.stream()
                 .anyMatch(comp -> comp.isInside(zone));
     }
 
     public int getVerticesCount() {
-        return components.size() * BlockShapeComponent.VERTICES_COUNT;
+        return components.size() * BlockCubeComponent.VERTICES_COUNT;
     }
 
     public int getDataCount() {
-        return components.size() * BlockShapeComponent.DATA_COUNT;
+        return components.size() * BlockCubeComponent.DATA_COUNT;
     }
 }

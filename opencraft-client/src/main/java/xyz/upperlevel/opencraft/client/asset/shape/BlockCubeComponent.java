@@ -3,9 +3,9 @@ package xyz.upperlevel.opencraft.client.asset.shape;
 import lombok.Getter;
 import lombok.NonNull;
 import org.joml.Matrix4f;
-import xyz.upperlevel.opencraft.client.block.BlockFacePosition;
+import xyz.upperlevel.opencraft.client.asset.texture.Texture;
 import xyz.upperlevel.opencraft.client.render.RenderArea;
-import xyz.upperlevel.opencraft.client.texture.TextureRegistry;
+import xyz.upperlevel.opencraft.client.asset.texture.TextureManager;
 import xyz.upperlevel.ulge.util.Color;
 
 import java.nio.ByteBuffer;
@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BlockShapeCubeComponent implements BlockShapeComponent {
+public class BlockCubeComponent implements BlockComponent {
 
     public static final int VERTICES_COUNT = BlockFace.VERTICES_COUNT * 6;
 
@@ -27,27 +27,31 @@ public class BlockShapeCubeComponent implements BlockShapeComponent {
 
     private void initDefaultFaces() {
         for (BlockFacePosition position : BlockFacePosition.values())
-            faces.put(position, new BlockFace(BlockShapeCubeComponent.this, position));
+            faces.put(position, new BlockFace(BlockCubeComponent.this, position));
     }
 
-    public BlockShapeCubeComponent() {
+    public BlockCubeComponent() {
     }
 
-    public BlockShapeCubeComponent(Zone3f zone) {
+    public BlockCubeComponent(Zone3f zone) {
         this.zone = zone;
         initDefaultFaces();
+    }
+
+    public boolean isInside(float x, float y, float z) {
+        return zone.isInside(x, y, z);
     }
 
     public boolean isInside(Zone3f zone) {
         return zone.isInside(zone);
     }
 
-    public BlockShapeCubeComponent setColor(Color color) {
+    public BlockCubeComponent setColor(Color color) {
         faces.values().forEach(face -> face.setColor(color));
         return this;
     }
 
-    public BlockShapeCubeComponent setTexture(TextureRegistry.SpriteTexture texture) {
+    public BlockCubeComponent setTexture(Texture texture) {
         faces.values().forEach(face -> face.setTexture(texture));
         return this;
     }
@@ -77,6 +81,17 @@ public class BlockShapeCubeComponent implements BlockShapeComponent {
 
     @Override
     public void cleanCompile(int x, int y, int z, RenderArea area, Matrix4f matrix, ByteBuffer buffer) {
+        for (BlockFacePosition position : BlockFacePosition.values()) {
+            BlockFace face = getFace(position);
+            // if the face is visible
+            if (canCompile(face, area.getShape(
+                    x + position.getDirectionX(),
+                    y + position.getDirectionY(),
+                    z + position.getDirectionZ())))
+                // compiles it
+                face.compile(matrix, buffer);
+        }
+        /*
         BlockShape
                 rel_right,
                 rel_up,
@@ -126,5 +141,6 @@ public class BlockShapeCubeComponent implements BlockShapeComponent {
 
         if (canCompile(f_backward, rel_backward))
             f_backward.compile(matrix, buffer);
+            */
     }
 }

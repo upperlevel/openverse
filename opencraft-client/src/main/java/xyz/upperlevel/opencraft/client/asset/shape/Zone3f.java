@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.client.block;
+package xyz.upperlevel.opencraft.client.asset.shape;
 
 import lombok.Getter;
 import org.joml.Vector3f;
@@ -6,22 +6,22 @@ import org.joml.Vector3f;
 public class Zone3f {
 
     @Getter
-    public final float p1x, p1y, p1z;
+    private float p1x, p1y, p1z;
 
     @Getter
-    public final float p2x, p2y, p2z;
+    private float p2x, p2y, p2z;
     
     @Getter
-    public final float minX, maxX;
+    private float minX, maxX;
     
     @Getter
-    public final float minY, maxY;
+    private float minY, maxY;
     
     @Getter
-    public final float minZ, maxZ;
+    private float minZ, maxZ;
     
     @Getter
-    public final float width, height, length;
+    private float width, height, length;
 
     public Zone3f(float p1x, float p1y, float p1z, float p2x, float p2y, float p2z) {
         this.p1x = p1x;

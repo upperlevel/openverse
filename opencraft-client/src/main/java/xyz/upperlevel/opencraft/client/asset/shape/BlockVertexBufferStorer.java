@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.client.block;
+package xyz.upperlevel.opencraft.client.asset.shape;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;

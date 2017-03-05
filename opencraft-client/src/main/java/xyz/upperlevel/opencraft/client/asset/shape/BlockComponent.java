@@ -5,9 +5,11 @@ import xyz.upperlevel.opencraft.client.render.RenderArea;
 
 import java.nio.ByteBuffer;
 
-public interface BlockShapeComponent extends Zone {
+public interface BlockComponent {
 
-    String getId();
+    boolean isInside(float x, float y, float z);
+
+    boolean isInside(Zone3f zone);
 
     void compile(Matrix4f transformation, ByteBuffer buffer);
 

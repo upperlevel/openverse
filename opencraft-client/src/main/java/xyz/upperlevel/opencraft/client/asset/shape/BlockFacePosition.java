@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.client.block;
+package xyz.upperlevel.opencraft.client.asset.shape;
 
 import lombok.Getter;
 import org.joml.AxisAngle4f;
@@ -45,7 +45,7 @@ public enum BlockFacePosition {
     };
 
     @Getter
-    public final int directionX, directionY, directionZ;
+    private int directionX, directionY, directionZ;
 
     BlockFacePosition(int dirX, int dirY, int dirZ) {
         directionX = dirX;
@@ -53,26 +53,26 @@ public enum BlockFacePosition {
         directionZ = dirZ;
     }
 
+    public abstract AxisAngle4f getRotation();
+
     public Vector3f getDirection() {
         return new Vector3f(directionX, directionY, directionZ);
     }
 
-    public abstract AxisAngle4f getRotation();
+    public Zone3f getZone(Zone3f zone) {
+        return new Zone3f(
+                directionX > 0 ? zone.getMaxX() : zone.getMinX(),
+                directionY > 0 ? zone.getMaxY() : zone.getMinY(),
+                directionZ > 0 ? zone.getMaxZ() : zone.getMinZ(),
+
+                directionX < 0 ? zone.getMinX() : zone.getMaxX(),
+                directionY < 0 ? zone.getMinY() : zone.getMaxY(),
+                directionZ < 0 ? zone.getMinZ() : zone.getMaxZ()
+        );
+    }
 
     public Zone3f getMirrorZone(Zone3f zone) {
         //System.out.println("face at " + name() + " mirror values:\n" + (directionX != 0) + " " + (directionY != 0) + " " + (directionZ != 0));
         return zone.mirror(directionX != 0, directionY != 0, directionZ != 0);
-    }
-
-    public Zone3f obtainZone(Zone3f zone) {
-        return new Zone3f(
-                directionX > 0 ? zone.maxX : zone.minX,
-                directionY > 0 ? zone.maxY : zone.minY,
-                directionZ > 0 ? zone.maxZ : zone.minZ,
-
-                directionX < 0 ? zone.minX : zone.maxX,
-                directionY < 0 ? zone.minY : zone.maxY,
-                directionZ < 0 ? zone.minZ : zone.maxZ
-        );
     }
 }

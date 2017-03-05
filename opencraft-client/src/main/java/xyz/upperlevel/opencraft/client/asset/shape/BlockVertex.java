@@ -1,14 +1,14 @@
-package xyz.upperlevel.opencraft.client.block;
+package xyz.upperlevel.opencraft.client.asset.shape;
 
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import xyz.upperlevel.opencraft.client.asset.shape.BlockFace;
 import xyz.upperlevel.ulge.util.Color;
 
 @Accessors(chain = true)
-public final class BlockVertex {
+public class BlockVertex {
 
     public static final int VERTICES_COUNT = 1;
 
@@ -25,10 +25,6 @@ public final class BlockVertex {
     @Getter
     @Setter
     private float r, g, b, a;
-
-    @Getter
-    @Setter
-    private float u, v;
 
     public BlockVertex(@NonNull BlockFace face) {
         this.face = face;
