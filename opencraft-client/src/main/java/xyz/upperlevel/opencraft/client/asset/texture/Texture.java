@@ -1,23 +1,43 @@
 package xyz.upperlevel.opencraft.client.asset.texture;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 
-public class BakeTexture {
+import java.awt.image.BufferedImage;
+
+public class Texture {
 
     @Getter
-    private int pixelWidth, pixelHeight;
+    private String id;
+
+    @Getter
+    private BufferedImage image;
 
     @Getter
     @Setter
-    private float width, height;
+    private int
+            width,
+            height;
 
     @Getter
     @Setter
-    private float minU, minV, maxU, maxV;
+    private float
+            screenWidth  = 1f,
+            screenHeight = 1f;
 
-    public BakeTexture(int pixelWidth, int pixelHeight) {
-        this.pixelWidth = pixelWidth;
-        this.pixelHeight = pixelHeight;
+    @Getter
+    @Setter
+    private float
+            minU = 0f,
+            minV = 0f,
+            maxU = 1f,
+            maxV = 1f;
+
+    public Texture(@NonNull String id, @NonNull BufferedImage image) {
+        this.id    = id;
+        this.image = image;
+        width      = image.getWidth();
+        height     = image.getHeight();
     }
 }

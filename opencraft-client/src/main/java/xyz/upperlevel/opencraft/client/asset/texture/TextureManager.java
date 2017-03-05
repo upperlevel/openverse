@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TextureMerger {
+public class TextureManager {
 
     @Getter
     private int
@@ -24,11 +24,11 @@ public class TextureMerger {
 
     private Map<String, Texture> textures = new HashMap<>();
 
-    public TextureMerger() {
+    public TextureManager() {
     }
 
-    public TextureMerger merge(Texture texture) {
-        return merge(texture, true);
+    public TextureManager register(Texture texture) {
+        return register(texture, true);
     }
 
     private void merge(BufferedImage image) {
@@ -49,7 +49,7 @@ public class TextureMerger {
         merger = result;
     }
 
-    public TextureMerger merge(Texture texture, boolean update) {
+    public TextureManager register(Texture texture, boolean update) {
         merge(texture.getImage());
         textures.put(texture.getId(), texture);
 
