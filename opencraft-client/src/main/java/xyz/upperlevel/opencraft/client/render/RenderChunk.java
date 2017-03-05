@@ -1,13 +1,12 @@
 package xyz.upperlevel.opencraft.client.render;
 
 import lombok.Getter;
+import lombok.NonNull;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
-import xyz.upperlevel.opencraft.client.block.BlockShape;
-import xyz.upperlevel.opencraft.client.block.registry.BlockRegistry;
-import xyz.upperlevel.opencraft.client.block.registry.BlockType;
-import xyz.upperlevel.opencraft.common.world.BridgeBlockType;
-import xyz.upperlevel.opencraft.common.world.ChunkArea;
+import xyz.upperlevel.opencraft.client.OpenCraft;
+import xyz.upperlevel.opencraft.client.asset.shape.BlockShape;
+import xyz.upperlevel.opencraft.server.world.ChunkArea;
 import xyz.upperlevel.ulge.opengl.DataType;
 import xyz.upperlevel.ulge.opengl.buffer.DrawMode;
 import xyz.upperlevel.ulge.opengl.buffer.Vbo;
@@ -32,34 +31,37 @@ public class RenderChunk {
     }
 
     @Getter
+    private RenderArea area;
+
+    @Getter
+    private int x, y, z;
+
+    @Getter
     private int verticesCount = 0, dataCount = 0;
 
-    private RenderBlockShape[][][] shapes = new RenderBlockShape[16][16][16];
+    private BlockShape[][][] shapes = new BlockShape[16][16][16];
 
-    {
-        for (int x = 0; x < 16; x++) {
-            for (int y = 0; y < 16; y++) {
-                for (int z = 0; z < 16; z++) {
-                    shapes[x][y][z] = new RenderBlockShape(this, x, y, z);
-                }
-            }
-        }
-    }
-
-    public RenderChunk() {
+    public RenderChunk(@NonNull RenderArea area, int x, int y, int z) {
+        this.area = area;
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
     public RenderChunk load(ChunkArea chunk) {
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
                 for (int z = 0; z < 16; z++) {
-                    BridgeBlockType bType = chunk.getBlock(x, y, z);
-                    BlockType type = BlockRegistry.def().getBlock(bType);
-                    if (type == null) {
-                        System.err.println("bridge block type '" + bType.getId() + "' has not been found");
+                    String id = chunk.getBlock(x, y, z).getId();
+                    BlockShape shape = OpenCraft.get()
+                            .getAssetManager()
+                            .getShapeManager()
+                            .getShape(id);
+                    if (shape == null) {
+                        System.err.println("shape not found for: " + id);
                         continue;
                     }
-                    setShape(x, y, z, type.getShape(), false);
+                    setShape(x, y, z, shape, false);
                 }
             }
         }
@@ -67,8 +69,12 @@ public class RenderChunk {
         return this;
     }
 
-    public RenderBlockShape getShape(int x, int y, int z) {
-        return shapes[x][y][z];
+    public boolean isOut(int x, int y, int z) {
+        return x < 0 || y < 0 || z < 0 || x >= 16 || y >= 16 || z >= 16;
+    }
+
+    public BlockShape getShape(int x, int y, int z) {
+        return isOut(x, y, z) ? null : shapes[x][y][z];
     }
 
     public void setShape(int x, int y, int z, BlockShape shape) {
@@ -76,9 +82,9 @@ public class RenderChunk {
     }
 
     public void setShape(int x, int y, int z, BlockShape shape, boolean buildVbo) {
-        BlockShape oldShape = shapes[x][y][z].getShape();
+        BlockShape oldShape = shapes[x][y][z];
 
-        shapes[x][y][z].setShape(shape);
+        shapes[x][y][z] = shape;
 
         int ovc = oldShape != null ? oldShape.getVerticesCount() : 0;
         int nvc = shape != null ? shape.getVerticesCount() : 0;
@@ -98,16 +104,18 @@ public class RenderChunk {
         for (int x = 0; x < 16; x++)
             for (int y = 0; y < 16; y++)
                 for (int z = 0; z < 16; z++) {
-                    RenderBlockShape render = shapes[x][y][z];
-                    BlockShape shape = render.getShape();
+                    BlockShape shape = shapes[x][y][z];
                     if (shape != null) {
+                        area.getShape(x, y, z - 1);
+
+
                         Matrix4f model = new Matrix4f()
                                 .translate(
                                         -1f + x * 2f,
                                         -1f + y * 2f,
                                         -1f + z * -2f
                                 );
-                        shape.compileBuffer(data, model);
+                        shape.cleanCompile(this.x * 16 + x, this.y * 16 + y, this.z * 16 + z, area, model, data);
                     }
                 }
         data.flip();

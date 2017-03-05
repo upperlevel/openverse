@@ -1,11 +1,12 @@
 package xyz.upperlevel.opencraft.client.render;
 
 import lombok.Getter;
+import org.joml.FrustumIntersection;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
-import xyz.upperlevel.opencraft.common.network.SingleplayerClient;
-import xyz.upperlevel.opencraft.common.network.packet.PlayerTeleportPacket;
+import xyz.upperlevel.opencraft.server.network.SingleplayerClient;
+import xyz.upperlevel.opencraft.server.network.packet.PlayerTeleportPacket;
 import xyz.upperlevel.ulge.opengl.shader.Uniformer;
 import xyz.upperlevel.ulge.util.math.AngleUtil;
 import xyz.upperlevel.ulge.util.math.CameraUtil;
@@ -25,20 +26,31 @@ public class WorldViewer {
     private Matrix4f camera = new Matrix4f();
 
     @Getter
-    private RenderArea renderarea = new RenderArea();
+    private RenderArea renderarea = new RenderArea(this);
 
     private void buildCamera() {
         camera = CameraUtil.getCamera(
                 45f,
                 1f,
                 0.01f,
-                100000f,
+                100f,
                 (float) Math.toRadians(yaw),
                 (float) Math.toRadians(pitch),
                 x * 2f - 1f,
                 y * 2f - 1f,
                 z * 2f + 1f
         );
+        frustum.set(camera);
+    }
+
+    private FrustumIntersection frustum = new FrustumIntersection();
+
+    public boolean isInFrustum(float x, float y, float z) {
+        return frustum.testPoint(x, y, z);
+    }
+
+    public boolean isInFrustum(float x1, float y1, float z1, float x2, float y2, float z2) {
+        return frustum.testAab(x1, y1, z1, x2, y2, z2);
     }
 
     public Matrix4f getOrientation() {

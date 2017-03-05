@@ -1,15 +1,19 @@
 package xyz.upperlevel.opencraft.client.render;
 
 import lombok.Getter;
+import lombok.NonNull;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
-import xyz.upperlevel.opencraft.client.OpenCraftClient;
-import xyz.upperlevel.opencraft.common.network.SingleplayerClient;
-import xyz.upperlevel.opencraft.common.network.packet.AskChunkAreaPacket;
+import xyz.upperlevel.opencraft.client.asset.shape.BlockShape;
+import xyz.upperlevel.opencraft.server.network.SingleplayerClient;
+import xyz.upperlevel.opencraft.server.network.packet.AskChunkAreaPacket;
 import xyz.upperlevel.ulge.opengl.shader.Uniformer;
 import xyz.upperlevel.ulge.util.Color;
 
 public class RenderArea {
+
+    @Getter
+    private WorldViewer viewer;
 
     public static final int RADIUS = 2;
 
@@ -21,16 +25,32 @@ public class RenderArea {
     @Getter
     private int centerX, centerY, centerZ;
 
-    public RenderArea() {
+    public RenderArea(@NonNull WorldViewer viewer) {
+        this.viewer = viewer;
+    }
+
+    public boolean isOut(int x, int y, int z) {
+        return x < 0 || y < 0 || z < 0 || x >= SIDE || y >= SIDE || z >= SIDE;
+    }
+
+    public BlockShape getShape(int x, int y, int z) {
+        int cx = x / 16;
+        int cy = y / 16;
+        int cz = z / 16;
+
+        int cbx = x % 16;
+        int cby = y % 16;
+        int cbz = z % 16;
+
+        RenderChunk chunk = isOut(cx, cy, cz) ? null : chunks[cx][cy][cz];
+        return chunk != null ? chunk.getShape(cbx, cby, cbz) : null;
     }
 
     public void build() {
-        long sa = System.currentTimeMillis();
         for (int x = 0; x < SIDE; x++)
             for (int y = 0; y < SIDE; y++)
                 for (int z = 0; z < SIDE; z++)
                     demandChunk(x, y, z);
-        System.out.println("CLIENT> IMPORTANT!!! time took to generate chunk: " + (System.currentTimeMillis() - sa));
     }
 
     public RenderArea setCenterX(int absX) {
@@ -80,7 +100,6 @@ public class RenderArea {
         int abs_y = getAbsoluteY(y);
         int abs_z = getAbsoluteZ(z);
 
-        System.out.println("Client> Asking chunk at x=" + abs_x + " y=" + abs_y + " z=" + abs_z);
         SingleplayerClient.connection().sendPacket(new AskChunkAreaPacket(
                 abs_x,
                 abs_y,
@@ -108,10 +127,6 @@ public class RenderArea {
         }
     }
 
-    public static void main(String[] ar) {
-        System.out.println("floor: " + Math.floor(-0.1));
-    }
-
     public void draw(Uniformer uniformer) {
         Matrix4f m = new Matrix4f();
         m.translate(
@@ -120,12 +135,7 @@ public class RenderArea {
                 2f * 16f * centerZ
         );
 
-        System.out.println("center coords: " + centerX + " " + centerY + " " + centerZ);
-
-        WorldViewer wv = OpenCraftClient.get().getViewer();
-        System.out.println("world viewer chunk coords: " + wv.getChunkX() + " " + wv.getChunkY() + " " + wv.getChunkZ());
-        System.out.println("world viewer world coords: " + wv.getX() + " " + wv.getY() + " " + wv.getZ());
-
+        long i = System.currentTimeMillis();
         for (int x = 0; x < SIDE; x++) {
             for (int y = 0; y < SIDE; y++) {
                 for (int z = 0; z < SIDE; z++) {
