@@ -4,7 +4,7 @@ import xyz.upperlevel.opencraft.client.OpenCraftClient;
 import xyz.upperlevel.opencraft.client.render.RenderArea;
 import xyz.upperlevel.opencraft.client.render.RenderChunk;
 import xyz.upperlevel.opencraft.client.render.WorldViewer;
-import xyz.upperlevel.opencraft.common.network.packet.ChunkAreaPacket;
+import xyz.upperlevel.opencraft.server.network.packet.ChunkAreaPacket;
 import xyz.upperlevel.utils.event.EventListener;
 
 public class ChunkAreaPacketListener extends EventListener<ChunkAreaPacket> {
@@ -31,7 +31,6 @@ public class ChunkAreaPacketListener extends EventListener<ChunkAreaPacket> {
         int rel_y = abs_y - ra.getCenterY() + RenderArea.RADIUS;
         int rel_z = abs_z - ra.getCenterZ() + RenderArea.RADIUS;
 
-        System.out.println("Client> Received chunk at x=" + abs_x + " y=" + abs_y + " z=" + abs_z);
-        ra.setChunk(rel_x, rel_y, rel_z, new RenderChunk().load(packet.getVoxel()));
+        ra.setChunk(rel_x, rel_y, rel_z, new RenderChunk(ra, rel_x, rel_y, rel_z).load(packet.getArea()));
     }
 }

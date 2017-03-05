@@ -1,8 +1,8 @@
 package xyz.upperlevel.opencraft.server.world;
 
 import lombok.Getter;
-import xyz.upperlevel.opencraft.common.world.BridgeBlockType;
-import xyz.upperlevel.opencraft.common.world.ChunkArea;
+import lombok.NonNull;
+import lombok.Setter;
 
 import java.util.Objects;
 
@@ -17,6 +17,8 @@ public class Chunk {
     private int x, y, z;
 
     @Getter
+    @Setter
+    @NonNull
     private ChunkArea area = new ChunkArea();
 
     public Chunk(World world, int x, int y, int z) {
@@ -25,18 +27,18 @@ public class Chunk {
         this.x = x;
         this.y = y;
         this.z = z;
-        generate();
     }
 
-    public void generate() {
-        world.getChunkGenerator().generate(this);
+    public Chunk generate() {
+        world.getGenerator().generate(this);
+        return this;
     }
 
-    public BridgeBlockType getType(int x, int y, int z) {
+    public BlockType getType(int x, int y, int z) {
         return area.getBlock(x, y, z);
     }
 
-    public void setType(BridgeBlockType type, int x, int y, int z) {
+    public void setType(BlockType type, int x, int y, int z) {
         area.setBlock(x, y, z, type);
     }
 

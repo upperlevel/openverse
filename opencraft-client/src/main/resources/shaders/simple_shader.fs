@@ -11,5 +11,5 @@ uniform sampler2D tex;
 
 void main()
 {
-    res = Col;
+    res = Col * texture(tex, Tex_coord);
 }

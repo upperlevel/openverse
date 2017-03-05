@@ -1,7 +1,7 @@
 package xyz.upperlevel.opencraft.client.network.player;
 
 import xyz.upperlevel.opencraft.client.OpenCraftClient;
-import xyz.upperlevel.opencraft.common.network.packet.PlayerTeleportPacket;
+import xyz.upperlevel.opencraft.server.network.packet.PlayerTeleportPacket;
 import xyz.upperlevel.utils.event.EventListener;
 
 public class PlayerTeleportPacketListener extends EventListener<PlayerTeleportPacket> {

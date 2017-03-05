@@ -1,9 +1,8 @@
 package xyz.upperlevel.opencraft.client.network.player;
 
-import xyz.upperlevel.opencraft.common.network.SingleplayerClient;
-import xyz.upperlevel.opencraft.common.network.SingleplayerServer;
-import xyz.upperlevel.opencraft.common.network.packet.ChunkAreaPacket;
-import xyz.upperlevel.opencraft.common.network.packet.PlayerTeleportPacket;
+import xyz.upperlevel.opencraft.server.network.SingleplayerClient;
+import xyz.upperlevel.opencraft.server.network.packet.ChunkAreaPacket;
+import xyz.upperlevel.opencraft.server.network.packet.PlayerTeleportPacket;
 
 public final class ClientListenerSubscriber {
 
@@ -15,6 +14,5 @@ public final class ClientListenerSubscriber {
             listener.register(ChunkAreaPacket.class, new ChunkAreaPacketListener());
             listener.register(PlayerTeleportPacket.class, new PlayerTeleportPacketListener());
         });
-        System.out.println("Client> Listeners registered");
     }
 }

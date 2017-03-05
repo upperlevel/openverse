@@ -1,10 +1,7 @@
 package xyz.upperlevel.opencraft.client;
 
-import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL30;
 import xyz.upperlevel.opencraft.client.render.WorldViewer;
-import xyz.upperlevel.opencraft.client.texture.Textures;
 import xyz.upperlevel.opencraft.server.OpenCraftServer;
 import xyz.upperlevel.ulge.opengl.shader.Program;
 import xyz.upperlevel.ulge.opengl.shader.ShaderType;
@@ -12,31 +9,29 @@ import xyz.upperlevel.ulge.opengl.shader.ShaderUtil;
 import xyz.upperlevel.ulge.opengl.shader.Uniformer;
 import xyz.upperlevel.ulge.opengl.texture.Texture2D;
 import xyz.upperlevel.ulge.opengl.texture.TextureFormat;
+import xyz.upperlevel.ulge.opengl.texture.TextureParameters;
 import xyz.upperlevel.ulge.opengl.texture.loader.ImageContent;
-import xyz.upperlevel.ulge.opengl.texture.loader.ImageLoaderManager;
-import xyz.upperlevel.ulge.window.GLFW;
+import xyz.upperlevel.ulge.window.Glfw;
 import xyz.upperlevel.ulge.window.Window;
 import xyz.upperlevel.ulge.window.event.CursorMoveEvent;
-import xyz.upperlevel.ulge.window.event.GLFWCursorMoveEventHandler;
+import xyz.upperlevel.ulge.window.event.GlfwCursorMoveEventHandler;
 import xyz.upperlevel.ulge.window.event.key.Key;
-
-import javax.imageio.ImageIO;
-import java.io.File;
-import java.io.IOException;
-import java.nio.FloatBuffer;
 
 import static java.lang.System.out;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 
 public class MainTest {
 
     public static WorldViewer VIEWER;
 
     public static void main(String[] a) {
-        Window win = GLFW.createWindow(500, 500, "game canRender", false);
+        Window win = Glfw.createWindowSettings()
+                .setSamples(4)
+                .createWindow(500, 500, "game canRender", false);
 
         // registers cursor move event
-        GLFWCursorMoveEventHandler cmHandler = GLFW.events().CURSOR_MOVE.inst();
+        GlfwCursorMoveEventHandler cmHandler = Glfw.events().CURSOR_MOVE.create();
         cmHandler.register(new CursorMoveEvent() {
             private double lastX = 0, lastY = 0;
 
@@ -45,7 +40,7 @@ public class MainTest {
                 double movX = x - lastX;
                 double movY = y - lastY;
 
-                VIEWER.rotate((float)movX, (float)movY);
+                VIEWER.rotate((float) movX, (float) movY);
                 //rotation.setPitch(Math.max(-90, Math.min(90, Math.toRadians(movY))));
 
                 lastX = x;
@@ -73,27 +68,17 @@ public class MainTest {
         // INITIALIZES PLAYER!
         VIEWER = client.getViewer();
 
-        try {
-            Textures.manager().register(ImageIO.read(classLoader.getResourceAsStream("textures/dirt2.png")));
-        } catch (IOException e) {
-            throw new IllegalStateException("error in tex loading", e);
-        }
-
-        //Textures.manager().getOutput().bind();
-        GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
-
-        ImageContent content = ImageLoaderManager.DEFAULT.load(new File("C:/users/lorenzo/desktop/hello.png"));
-        Texture2D ENABLED_TEX = new Texture2D();
-        ENABLED_TEX.loadImage(TextureFormat.RGBA, content);
-        ENABLED_TEX.bind();
+        new Texture2D()
+                .loadImage(TextureFormat.RGBA, new ImageContent(OpenCraft.get().getAssetManager().getTextureManager().getMerger()))
+                .bind();
+        TextureParameters.getDefault().setup();
 
         int posAtr = uniformer.getAttribLocation("position");
         out.println("pos atr location: " + posAtr);
 
+        glEnable(GL_MULTISAMPLE);
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_ALPHA_TEST);
-
-        FloatBuffer matBuf = BufferUtils.createFloatBuffer(16);
 
         int fpsCounter = 0;
         long lastTime = 0;
@@ -110,7 +95,7 @@ public class MainTest {
 
             // todo replace gl11 functions glClear glClearColor
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-            GL11.glClearColor(0f, 0f, 0f, 0f);
+            GL11.glClearColor(155f / 255f, 193f / 255f, 1f, 1f);
 
             updateCamera(win, 0.5f);
 

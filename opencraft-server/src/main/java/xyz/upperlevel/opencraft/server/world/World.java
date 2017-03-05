@@ -7,10 +7,7 @@ import java.util.*;
 public class World {
 
     @Getter
-    private ChunkProvider chunkProvider;
-
-    @Getter
-    private ChunkGenerator chunkGenerator;
+    private ChunkGenerator generator;
 
     @Getter
     private List<Chunk> loadedChunks = new ArrayList<>();
@@ -19,20 +16,15 @@ public class World {
     private Location spawn = new Location(this);
 
     public World() {
-        this(null, null);
+        this(null);
     }
 
-    public World(ChunkProvider chunkProvider, ChunkGenerator chunkGenerator) {
-        setChunkProvider(chunkProvider);
-        setChunkGenerator(chunkGenerator);
+    public World(ChunkGenerator generator) {
+        setGenerator(generator);
     }
 
-    public void setChunkProvider(ChunkProvider chunkProvider) {
-        this.chunkProvider = chunkProvider != null ? chunkProvider : ChunkProvider.NULL;
-    }
-
-    public void setChunkGenerator(ChunkGenerator chunkGenerator) {
-        this.chunkGenerator = chunkGenerator != null ? chunkGenerator : ChunkGenerator.NULL;
+    public void setGenerator(ChunkGenerator generator) {
+        this.generator = generator != null ? generator : ChunkGenerator.NULL;
     }
 
     public boolean isLoaded(Chunk chunk) {
@@ -54,7 +46,7 @@ public class World {
 
     public World loadChunk(int x, int y, int z) {
         if (!isLoaded(x, y, z))
-            loadedChunks.add(chunkProvider.provideChunk(this, x, y, z));
+            loadedChunks.add(new Chunk(this, x, y, z));
         return this;
     }
 
@@ -63,10 +55,10 @@ public class World {
     }
 
     public boolean unloadChunk(int x, int y, int z) {
-        for (Iterator<Chunk> chunkIt = loadedChunks.iterator(); chunkIt.hasNext(); ) {
-            Chunk chunk = chunkIt.next();
+        for (Iterator<Chunk> i = loadedChunks.iterator(); i.hasNext(); ) {
+            Chunk chunk = i.next();
             if (chunk.getX() == x && chunk.getY() == y && chunk.getZ() == z) {
-                chunkIt.remove();
+                i.remove();
                 return true;
             }
         }
@@ -77,7 +69,7 @@ public class World {
         for (Chunk chunk : loadedChunks)
             if (chunk.getX() == x && chunk.getY() == y && chunk.getZ() == z)
                 return chunk;
-        return chunkProvider.provideChunk(this, x, y, z);
+        return new Chunk(this, x, y, z).generate();
     }
 
     public Block getBlock(int x, int y, int z) {

@@ -1,10 +1,10 @@
 package xyz.upperlevel.opencraft.server.world;
 
-public interface CBlockType {
+public interface BlockType {
 
     String getId();
 
-    static CBlockType create(String id) {
+    static BlockType create(String id) {
         return () -> id;
     }
 }

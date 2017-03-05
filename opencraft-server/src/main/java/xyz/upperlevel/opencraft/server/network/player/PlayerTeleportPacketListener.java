@@ -1,6 +1,6 @@
 package xyz.upperlevel.opencraft.server.network.player;
 
-import xyz.upperlevel.opencraft.common.network.packet.PlayerTeleportPacket;
+import xyz.upperlevel.opencraft.server.network.packet.PlayerTeleportPacket;
 import xyz.upperlevel.opencraft.server.OpenCraftServer;
 import xyz.upperlevel.utils.event.EventListener;
 

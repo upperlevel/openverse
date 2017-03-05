@@ -1,7 +1,6 @@
 package xyz.upperlevel.opencraft.server.world;
 
 import lombok.Getter;
-import xyz.upperlevel.opencraft.common.world.BridgeBlockType;
 
 import java.util.Objects;
 
@@ -28,16 +27,16 @@ public class Block {
         this.chunkY = chunkY;
         this.chunkZ = chunkZ;
 
-        x = chunk.toWorldX(chunkX);
-        y = chunk.toWorldY(chunkY);
-        z = chunk.toWorldZ(chunkZ);
+        x = chunk.getX() * 16 + chunkX;
+        y = chunk.getY() * 16 + chunkY;
+        z = chunk.getZ() * 16 + chunkZ;
     }
 
-    public BridgeBlockType getType() {
+    public BlockType getType() {
         return chunk.getType(chunkX, chunkY, chunkZ);
     }
 
-    public void setType(BridgeBlockType type) {
+    public void setType(BlockType type) {
         chunk.setType(type, chunkX, chunkY, chunkZ);
     }
 }

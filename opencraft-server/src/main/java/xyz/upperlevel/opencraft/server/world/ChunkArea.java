@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.common.network;
+package xyz.upperlevel.opencraft.server.world;
 
 import lombok.Getter;
 
@@ -9,16 +9,16 @@ public class ChunkArea {
     public static final int SIZE = WIDTH * HEIGHT * LENGTH;
 
     @Getter
-    private CBlockType[][][] types = new CBlockType[WIDTH][HEIGHT][LENGTH];
+    private BlockType[][][] types = new BlockType[WIDTH][HEIGHT][LENGTH];
 
     public ChunkArea() {
     }
 
-    public CBlockType getBlock(int x, int y, int z) {
-        return types[x][y][z] == null ? CBlockType.create("null_block") : types[x][y][z];
+    public BlockType getBlock(int x, int y, int z) {
+        return types[x][y][z] == null ? BlockType.create("null_shape") : types[x][y][z];
     }
 
-    public ChunkArea setBlock(int x, int y, int z, CBlockType type) {
+    public ChunkArea setBlock(int x, int y, int z, BlockType type) {
         types[x][y][z] = type;
         return this;
     }

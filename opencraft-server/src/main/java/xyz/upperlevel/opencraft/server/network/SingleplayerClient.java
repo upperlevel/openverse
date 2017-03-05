@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.common.network;
+package xyz.upperlevel.opencraft.server.network;
 
 import xyz.upperlevel.utils.packet.packet.Packet;
 
