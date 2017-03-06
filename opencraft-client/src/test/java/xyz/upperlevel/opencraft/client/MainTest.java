@@ -1,6 +1,8 @@
 package xyz.upperlevel.opencraft.client;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL30;
 import xyz.upperlevel.opencraft.client.render.WorldViewer;
 import xyz.upperlevel.opencraft.server.OpenCraftServer;
 import xyz.upperlevel.ulge.opengl.shader.Program;
@@ -10,6 +12,7 @@ import xyz.upperlevel.ulge.opengl.shader.Uniformer;
 
 import xyz.upperlevel.ulge.opengl.texture.Texture2D;
 import xyz.upperlevel.ulge.opengl.texture.TextureFormat;
+import xyz.upperlevel.ulge.opengl.texture.TextureParameter;
 import xyz.upperlevel.ulge.opengl.texture.TextureParameters;
 import xyz.upperlevel.ulge.opengl.texture.loader.ImageContent;
 import xyz.upperlevel.ulge.window.Glfw;
@@ -21,9 +24,15 @@ import xyz.upperlevel.ulge.window.event.key.Key;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
+import java.nio.FloatBuffer;
+
 import static java.lang.System.out;
+import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT;
+import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL12.GL_TEXTURE_MAX_LEVEL;
 import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
+import static org.lwjgl.opengl.GL14.GL_GENERATE_MIPMAP;
 
 public class MainTest {
 
@@ -31,7 +40,6 @@ public class MainTest {
 
     public static void main(String[] a) {
         Window win = Glfw.createWindowSettings()
-                .setSamples(4)
                 .createWindow(500, 500, "game canRender", false);
 
         // registers cursor move event
@@ -72,15 +80,24 @@ public class MainTest {
         // INITIALIZES PLAYER!
         VIEWER = client.getViewer();
 
-        new Texture2D()
-                .loadImage(TextureFormat.RGBA, new ImageContent(OpenCraft.get().getAssetManager().getTextureManager().getMerger()))
-                .bind();
-        TextureParameters.getDefault().setup();
+
+        Texture2D tex = new Texture2D().bind();
+
+        new TextureParameters()
+                .addParameter(TextureParameter.Type.Wrapping.S, TextureParameter.Value.Wrapping.CLAMP_TO_BORDER)
+                .addParameter(TextureParameter.Type.Wrapping.T, TextureParameter.Value.Wrapping.CLAMP_TO_BORDER)
+                .addParameter(TextureParameter.Type.Filter.MIN, new TextureParameter.Value(GL_LINEAR))
+                .addParameter(TextureParameter.Type.Filter.MAG, new TextureParameter.Value(GL_NEAREST))
+                .setup();
+
+        tex.loadImage(TextureFormat.RGBA, new ImageContent(OpenCraft.get().getAssetManager().getTextureManager().getMerger()));
+
+
+        GL30.glGenerateMipmap(GL_TEXTURE_2D);
 
         int posAtr = uniformer.getAttribLocation("position");
         out.println("pos atr location: " + posAtr);
 
-        glEnable(GL_MULTISAMPLE);
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_ALPHA_TEST);
 

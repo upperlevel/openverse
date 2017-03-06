@@ -33,7 +33,7 @@ public class WorldViewer {
                 45f,
                 1f,
                 0.01f,
-                100f,
+                100000f,
                 (float) Math.toRadians(yaw),
                 (float) Math.toRadians(pitch),
                 x * 2f - 1f,

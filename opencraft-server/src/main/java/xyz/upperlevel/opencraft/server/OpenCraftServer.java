@@ -13,7 +13,7 @@ public class OpenCraftServer {
     private World world = new World(chunk -> {
             for (int x = 0; x < 16; x++)
                 for (int z = 0; z < 16; z++)
-                    chunk.setType(BlockType.create("test_shape"), x, 0, z);
+                    chunk.setType(BlockType.create("grass_shape"), x, 0, z);
     });
 
     @Getter

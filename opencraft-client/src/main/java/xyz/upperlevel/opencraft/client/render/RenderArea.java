@@ -135,7 +135,6 @@ public class RenderArea {
                 2f * 16f * centerZ
         );
 
-        long i = System.currentTimeMillis();
         for (int x = 0; x < SIDE; x++) {
             for (int y = 0; y < SIDE; y++) {
                 for (int z = 0; z < SIDE; z++) {

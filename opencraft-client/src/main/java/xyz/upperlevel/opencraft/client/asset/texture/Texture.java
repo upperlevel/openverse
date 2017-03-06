@@ -40,4 +40,14 @@ public class Texture {
         width      = image.getWidth();
         height     = image.getHeight();
     }
+
+    @Override
+    public String toString() {
+        return  "screenWidth: " + screenWidth + " "+
+                "screenHeight: " + screenHeight + " "+
+                "minU: " + minU + " "+
+                "minV: " + minV + " "+
+                "maxU: " + maxU + " "+
+                "maxV: " + maxV;
+    }
 }

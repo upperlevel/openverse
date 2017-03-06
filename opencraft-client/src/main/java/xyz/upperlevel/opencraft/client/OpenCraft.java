@@ -39,6 +39,9 @@ public class OpenCraft extends Game {
             try {
                 texture = new Texture("something_texture", ImageIO.read(new File(desktop, "hello.png")));
                 tm.register(texture);
+
+                texture = new Texture("grass_texture", ImageIO.read(new File(desktop, "grass_top.png")));
+                tm.register(texture);
                 tm.print(new File(desktop, "current_output.png"));
             } catch (IOException e) {
                 throw new IllegalStateException("cannot load image", e);
@@ -49,9 +52,11 @@ public class OpenCraft extends Game {
             BlockShapeManager sm = get.assetManager.getShapeManager();
             BlockShape shape;
 
+            // null
             shape = new BlockShape("null_shape");
             sm.register(shape);
 
+            // test
             shape = new BlockShape("test_shape");
             shape.add(new BlockCubeComponent(
                     new Zone3f(
@@ -64,6 +69,20 @@ public class OpenCraft extends Game {
                     )
             ).setColor(Color.RED)
             .setTexture(get.assetManager.getTextureManager().getTexture("something_texture")));
+            sm.register(shape);
+
+            // grass
+            shape = new BlockShape("grass_shape");
+            shape.add(new BlockCubeComponent(
+                    new Zone3f(
+                            0,
+                            0,
+                            0,
+                            1f,
+                            1f,
+                            1f
+                    )
+            ).setTexture(get.assetManager.getTextureManager().getTexture("grass_texture")));
             sm.register(shape);
         }
     }

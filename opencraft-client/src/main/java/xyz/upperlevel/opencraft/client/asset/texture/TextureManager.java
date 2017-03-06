@@ -16,7 +16,7 @@ public class TextureManager {
 
     @Getter
     private int
-            width  = 0,
+            width = 0,
             height = 0;
 
     @Getter
@@ -71,18 +71,18 @@ public class TextureManager {
         int width = 0;
         for (Texture texture : getTextures()) {
             // the distance between the point on U axis and the origin
-            float cw = ((float) width) / this.width;
+            float offset = ((float) width) / this.width;
 
             // the dimensions of the texture to draw
-            float rw = ((float) texture.getWidth()) / this.width;
-            float rh = ((float) texture.getHeight()) / height;
+            float screenW = ((float) texture.getWidth()) / this.width;
+            float screenH = ((float) texture.getHeight()) / height;
 
-            texture.setScreenWidth(rw);
-            texture.setScreenHeight(rh);
-            texture.setMinU(cw);
-            texture.setMaxU(cw + rw);
+            texture.setScreenWidth(screenW);
+            texture.setScreenHeight(screenH);
+            texture.setMinU(offset);
+            texture.setMaxU(offset + screenW);
             texture.setMinV(0);
-            texture.setMaxV(rh);
+            texture.setMaxV(screenH);
 
             width += texture.getWidth();
         }

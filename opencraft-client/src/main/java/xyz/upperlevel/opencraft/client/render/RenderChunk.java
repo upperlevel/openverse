@@ -99,31 +99,37 @@ public class RenderChunk {
             buildVbo();
     }
 
+    private boolean fill = false;
+
     public void buildVbo() {
-        ByteBuffer data = BufferUtils.createByteBuffer(dataCount * Float.BYTES);
-        for (int x = 0; x < 16; x++)
-            for (int y = 0; y < 16; y++)
-                for (int z = 0; z < 16; z++) {
-                    BlockShape shape = shapes[x][y][z];
-                    if (shape != null) {
-                        area.getShape(x, y, z - 1);
-
-
-                        Matrix4f model = new Matrix4f()
-                                .translate(
-                                        -1f + x * 2f,
-                                        -1f + y * 2f,
-                                        -1f + z * -2f
-                                );
-                        shape.cleanCompile(this.x * 16 + x, this.y * 16 + y, this.z * 16 + z, area, model, data);
+        if (dataCount != 0) {
+            System.out.println("dataCount: " + dataCount);
+            ByteBuffer data = BufferUtils.createByteBuffer(dataCount * Float.BYTES);
+            for (int x = 0; x < 16; x++)
+                for (int y = 0; y < 16; y++)
+                    for (int z = 0; z < 16; z++) {
+                        BlockShape shape = shapes[x][y][z];
+                        if (shape != null) {
+                            Matrix4f model = new Matrix4f()
+                                    .translate(
+                                            -1f + x * 2f,
+                                            -1f + y * 2f,
+                                            -1f + z * -2f
+                                    );
+                            shape.cleanCompile(this.x * 16 + x, this.y * 16 + y, this.z * 16 + z, area, model, data);
+                        }
                     }
-                }
-        data.flip();
-        vbo.loadData(data, VboDataUsage.DYNAMIC_DRAW);
+            data.flip();
+            vbo.loadData(data, VboDataUsage.DYNAMIC_DRAW);
+            fill = true;
+        }
     }
 
     public void draw() {
-        vbo.draw(DrawMode.QUADS, 0, verticesCount);
+        if (fill) {
+           // System.out.println("drawing " + verticesCount);
+            vbo.draw(DrawMode.QUADS, 0, verticesCount);
+        }
     }
 
     public void destroy() {
