@@ -47,6 +47,7 @@ public class RenderArea {
     }
 
     public void build() {
+        destroy();
         for (int x = 0; x < SIDE; x++)
             for (int y = 0; y < SIDE; y++)
                 for (int z = 0; z < SIDE; z++)
@@ -119,7 +120,7 @@ public class RenderArea {
                 for (int z = 0; z < SIDE; z++) {
                     RenderChunk rc = chunks[x][y][z];
                     if (rc != null) {
-                        chunks[x][y][z].destroy();
+                        //chunks[x][y][z].destroy();
                         chunks[x][y][z] = null;
                     }
                 }
