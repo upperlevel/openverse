@@ -1,14 +1,14 @@
-#version 330
+#version 450
 
 in vec3 pos;
 in vec4 col;
-in vec2 tex_coord;
+in vec3 tex_coord;
 
 uniform mat4 model;
 uniform mat4 cam;
 
 out vec4 Col;
-out vec2 Tex_coord;
+out vec3 Tex_coord;
 
 void main()
 {

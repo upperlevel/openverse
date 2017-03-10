@@ -1,13 +1,13 @@
-#version 330
+#version 450
 
 in vec4 Col;
-in vec2 Tex_coord;
+in vec3 Tex_coord;
 
 uniform vec4 uni_col;
 
 out vec4 res;
 
-uniform sampler2D tex;
+uniform sampler2DArray tex;
 
 void main()
 {

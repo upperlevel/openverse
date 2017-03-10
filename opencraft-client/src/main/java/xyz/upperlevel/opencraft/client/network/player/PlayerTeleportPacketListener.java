@@ -16,6 +16,7 @@ public class PlayerTeleportPacketListener extends EventListener<PlayerTeleportPa
 
     @Override
     public void call(PlayerTeleportPacket packet) {
+        /*
         OpenCraftClient.get().getViewer().teleport(
                 packet.getX(),
                 packet.getY(),
@@ -24,5 +25,6 @@ public class PlayerTeleportPacketListener extends EventListener<PlayerTeleportPa
                 packet.getPitch(),
                 false
         );
+        */
     }
 }

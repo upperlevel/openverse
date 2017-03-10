@@ -5,10 +5,13 @@ import xyz.upperlevel.gamelauncher.api.Game;
 import xyz.upperlevel.opencraft.client.asset.AssetManager;
 import xyz.upperlevel.opencraft.client.asset.shape.BlockCubeComponent;
 import xyz.upperlevel.opencraft.client.asset.shape.BlockShape;
-import xyz.upperlevel.opencraft.client.asset.shape.BlockShapeManager;
+import xyz.upperlevel.opencraft.client.asset.shape.BlockShapeRegistry;
 import xyz.upperlevel.opencraft.client.asset.shape.Zone3f;
 import xyz.upperlevel.opencraft.client.asset.texture.Texture;
-import xyz.upperlevel.opencraft.client.asset.texture.TextureManager;
+import xyz.upperlevel.opencraft.client.asset.texture.TextureRegistry;
+import xyz.upperlevel.opencraft.client.physic.PhysicBondManager;
+import xyz.upperlevel.opencraft.client.render.texture.TextureBakery;
+import xyz.upperlevel.ulge.opengl.texture.loader.ImageContent;
 import xyz.upperlevel.ulge.util.Color;
 
 import javax.imageio.ImageIO;
@@ -23,33 +26,35 @@ public class OpenCraft extends Game {
 
     static {
         {
-            TextureManager tm = get.assetManager.getTextureManager();
+            TextureRegistry tm = get.assetManager.getTextureRegistry();
             Texture texture;
 
-            texture = new Texture("null_texture", new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB) {
+            texture = new Texture("null_texture", new ImageContent(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB) {
                 {
                     Graphics2D g = createGraphics();
                     g.setColor(java.awt.Color.WHITE);
                     g.fillRect(0, 0, 1, 1);
                 }
-            });
+            }));
             tm.register(texture);
 
             File desktop = new File(System.getProperty("user.home"), "desktop");
             try {
-                texture = new Texture("something_texture", ImageIO.read(new File(desktop, "hello.png")));
+                texture = new Texture("something_texture", new ImageContent(ImageIO.read(new File(desktop, "hello.png"))));
                 tm.register(texture);
+                TextureBakery.SIMPLE_INST.register(texture);
 
-                texture = new Texture("grass_texture", ImageIO.read(new File(desktop, "grass_top.png")));
+                BufferedImage bi = ImageIO.read(new File(desktop, "grass_top.png"));
+                texture = new Texture("grass_texture", new ImageContent(bi));
                 tm.register(texture);
-                tm.print(new File(desktop, "current_output.png"));
+                TextureBakery.SIMPLE_INST.register(texture);
             } catch (IOException e) {
                 throw new IllegalStateException("cannot load image", e);
             }
         }
 
         {
-            BlockShapeManager sm = get.assetManager.getShapeManager();
+            BlockShapeRegistry sm = get.assetManager.getShapeRegistry();
             BlockShape shape;
 
             // null
@@ -68,7 +73,7 @@ public class OpenCraft extends Game {
                             1f
                     )
             ).setColor(Color.RED)
-            .setTexture(get.assetManager.getTextureManager().getTexture("something_texture")));
+                    .setTexture(get.assetManager.getTextureRegistry().getTexture("something_texture")));
             sm.register(shape);
 
             // grass
@@ -82,13 +87,16 @@ public class OpenCraft extends Game {
                             1f,
                             1f
                     )
-            ).setTexture(get.assetManager.getTextureManager().getTexture("grass_texture")));
+            ).setTexture(get.assetManager.getTextureRegistry().getTexture("grass_texture")));
             sm.register(shape);
         }
     }
 
     @Getter
     private AssetManager assetManager = new AssetManager();
+
+    @Getter
+    private PhysicBondManager physicBondManager = new PhysicBondManager();
 
     @Override
     public void start() {

@@ -1,48 +1,35 @@
 package xyz.upperlevel.opencraft.client;
 
-import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
-import xyz.upperlevel.opencraft.client.render.WorldViewer;
+import xyz.upperlevel.opencraft.client.render.ViewerRenderer;
+import xyz.upperlevel.opencraft.client.render.texture.TextureBakery;
 import xyz.upperlevel.opencraft.server.OpenCraftServer;
 import xyz.upperlevel.ulge.opengl.shader.Program;
 import xyz.upperlevel.ulge.opengl.shader.ShaderType;
 import xyz.upperlevel.ulge.opengl.shader.ShaderUtil;
 import xyz.upperlevel.ulge.opengl.shader.Uniformer;
-
-import xyz.upperlevel.ulge.opengl.texture.Texture2D;
-import xyz.upperlevel.ulge.opengl.texture.TextureFormat;
-import xyz.upperlevel.ulge.opengl.texture.TextureParameter;
-import xyz.upperlevel.ulge.opengl.texture.TextureParameters;
-import xyz.upperlevel.ulge.opengl.texture.loader.ImageContent;
 import xyz.upperlevel.ulge.window.Glfw;
-
 import xyz.upperlevel.ulge.window.Window;
 import xyz.upperlevel.ulge.window.event.CursorMoveEvent;
 import xyz.upperlevel.ulge.window.event.GlfwCursorMoveEventHandler;
 import xyz.upperlevel.ulge.window.event.key.Key;
 
-import javax.imageio.ImageIO;
-import java.io.IOException;
-import java.nio.FloatBuffer;
-
 import static java.lang.System.out;
-import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT;
-import static org.lwjgl.opengl.EXTTextureFilterAnisotropic.GL_TEXTURE_MAX_ANISOTROPY_EXT;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL12.GL_TEXTURE_MAX_LEVEL;
-import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
-import static org.lwjgl.opengl.GL14.GL_GENERATE_MIPMAP;
+import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
+import static org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY;
 
 public class MainTest {
 
-    public static WorldViewer VIEWER;
+    public static ViewerRenderer VIEWER;
 
     public static void main(String[] a) {
         Window win = Glfw.createWindowSettings()
+                .setSamples(4)
                 .createWindow(500, 500, "game canRender", false);
 
-        // registers cursor move event
+        // registers cursor addPosition event
         GlfwCursorMoveEventHandler cmHandler = Glfw.events().CURSOR_MOVE.create();
         cmHandler.register(new CursorMoveEvent() {
             private double lastX = 0, lastY = 0;
@@ -52,7 +39,7 @@ public class MainTest {
                 double movX = x - lastX;
                 double movY = y - lastY;
 
-                VIEWER.rotate((float) movX, (float) movY);
+                VIEWER.addRotation((float) movX, (float) movY);
                 //rotation.setPitch(Math.max(-90, Math.min(90, Math.toRadians(movY))));
 
                 lastX = x;
@@ -67,6 +54,11 @@ public class MainTest {
         win.contextualize();
         win.show();
 
+        System.out.println("max texture size: " +
+                glGetInteger(GL_MAX_TEXTURE_SIZE));
+        System.out.println("max texture layers in tex array: " +
+                glGetInteger(GL30.GL_MAX_ARRAY_TEXTURE_LAYERS));
+
         // creates a shader program and loads shader, finally bind it and keep it bound
         Program program = new Program();
         ClassLoader classLoader = MainTest.class.getClassLoader();
@@ -80,20 +72,12 @@ public class MainTest {
         // INITIALIZES PLAYER!
         VIEWER = client.getViewer();
 
+        TextureBakery.SIMPLE_INST.getCompiled().bind();
 
-        Texture2D tex = new Texture2D().bind();
-
-        new TextureParameters()
-                .addParameter(TextureParameter.Type.Wrapping.S, TextureParameter.Value.Wrapping.CLAMP_TO_BORDER)
-                .addParameter(TextureParameter.Type.Wrapping.T, TextureParameter.Value.Wrapping.CLAMP_TO_BORDER)
-                .addParameter(TextureParameter.Type.Filter.MIN, new TextureParameter.Value(GL_LINEAR))
-                .addParameter(TextureParameter.Type.Filter.MAG, new TextureParameter.Value(GL_NEAREST))
-                .setup();
-
-        tex.loadImage(TextureFormat.RGBA, new ImageContent(OpenCraft.get().getAssetManager().getTextureManager().getMerger()));
-
-
-        GL30.glGenerateMipmap(GL_TEXTURE_2D);
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
         int posAtr = uniformer.getAttribLocation("position");
         out.println("pos atr location: " + posAtr);
@@ -105,6 +89,8 @@ public class MainTest {
         long lastTime = 0;
 
         win.setVSync(true);
+
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         while (!win.isClosed()) {
             if (System.currentTimeMillis() - lastTime >= 1000) {
@@ -149,18 +135,5 @@ public class MainTest {
             VIEWER.down(sensitivity);
         if (win.getKey(Key.SPACE))
             VIEWER.up(sensitivity);
-
-        if (win.getKey(Key.KP_1)) {
-            VIEWER.setPosition(0f, 16f, 0f);
-        }
-        if (win.getKey(Key.KP_7)) {
-            VIEWER.setPosition(0f, 16f, 16f);
-        }
-        if (win.getKey(Key.KP_9)) {
-            VIEWER.setPosition(16f, 16f, 16f);
-        }
-        if (win.getKey(Key.KP_3)) {
-            VIEWER.setPosition(16f, 16f, 0f);
-        }
     }
 }
