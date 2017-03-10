@@ -10,16 +10,16 @@ public class Zone3f {
 
     @Getter
     private float p2x, p2y, p2z;
-    
+
     @Getter
     private float minX, maxX;
-    
+
     @Getter
     private float minY, maxY;
-    
+
     @Getter
     private float minZ, maxZ;
-    
+
     @Getter
     private float width, height, length;
 
@@ -31,7 +31,7 @@ public class Zone3f {
         this.p2x = p2x;
         this.p2y = p2y;
         this.p2z = p2z;
-        
+
         minX = Math.min(p1x, p2x);
         maxX = Math.max(p1x, p2x);
 
@@ -40,8 +40,8 @@ public class Zone3f {
 
         minZ = Math.min(p1z, p2z);
         maxZ = Math.max(p1z, p2z);
-        
-        width  = maxX - minX;
+
+        width = maxX - minX;
         height = maxY - minY;
         length = maxZ - minZ;
     }
@@ -66,18 +66,18 @@ public class Zone3f {
     public Vector3f getMaxPosition() {
         return new Vector3f(maxX, maxY, maxZ);
     }
-    
+
     public Vector3f getSize() {
         return new Vector3f(width, height, length);
     }
 
     public boolean isEqual(Zone3f zone) {
         return zone.getMinPosition().equals(getMinPosition()) &&
-               zone.getMaxPosition().equals(getMaxPosition());
+                zone.getMaxPosition().equals(getMaxPosition());
     }
 
     public boolean isInside(float x, float y, float z) {
-        return  x >= minX && x <= maxX &&
+        return x >= minX && x <= maxX &&
                 y >= minY && y <= maxY &&
                 z >= minZ && z <= maxZ;
     }
@@ -99,18 +99,31 @@ public class Zone3f {
 
     public Zone3f mirror(boolean x, boolean y, boolean z) {
         return new Zone3f(
-                x ? width  - p1x : p1x,
-                y ? height - p1y : p1y,
-                z ? length - p1z : p1z,
+                x ? 1f - p1x : p1x,
+                y ? 1f - p1y : p1y,
+                z ? 1f - p1z : p1z,
 
-                x ? width  - p2x : p2x,
-                y ? height - p2y : p2y,
-                z ? length - p2z : p2z
+                x ? 1f - p2x : p2x,
+                y ? 1f - p2y : p2y,
+                z ? 1f - p2z : p2z
         );
     }
 
     @Override
     public boolean equals(Object object) {
         return object instanceof Zone3f && isEqual((Zone3f) object);
+    }
+
+    @Override
+    public String toString() {
+        String o = "";
+        o += "min_x: " + minX + "\n";
+        o += "min_y: " + minY + "\n";
+        o += "min_z: " + minZ + "\n";
+
+        o += "max_x: " + maxX + "\n";
+        o += "max_y: " + maxY + "\n";
+        o += "max_z: " + maxZ + "\n";
+        return o;
     }
 }

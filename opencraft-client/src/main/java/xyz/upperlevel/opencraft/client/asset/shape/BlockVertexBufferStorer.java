@@ -36,6 +36,10 @@ public final class BlockVertexBufferStorer {
         putFloats(buffer, u, v);
     }
 
+    public static void putTextureCoordinates(ByteBuffer buffer, float u, float v, float layer) {
+        putFloats(buffer, u, v, layer);
+    }
+
     public static void putTextureCoordinates(ByteBuffer buffer, Vector2f textureCoords) {
         putTextureCoordinates(buffer, textureCoords.x, textureCoords.y);
     }

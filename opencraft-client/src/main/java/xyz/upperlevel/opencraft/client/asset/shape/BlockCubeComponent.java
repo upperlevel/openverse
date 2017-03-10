@@ -4,8 +4,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.joml.Matrix4f;
 import xyz.upperlevel.opencraft.client.asset.texture.Texture;
-import xyz.upperlevel.opencraft.client.render.RenderArea;
-import xyz.upperlevel.opencraft.client.asset.texture.TextureManager;
+import xyz.upperlevel.opencraft.client.render.ViewRenderer;
 import xyz.upperlevel.ulge.util.Color;
 
 import java.nio.ByteBuffer;
@@ -65,14 +64,16 @@ public class BlockCubeComponent implements BlockComponent {
     }
 
     @Override
-    public void compile(Matrix4f matrix, ByteBuffer buffer) {
+    public int compile(Matrix4f matrix, ByteBuffer buffer) {
         matrix = new Matrix4f(matrix)
                 .translate(zone.getSize()
                         .add(zone.getMinPosition().mul(2))
                         .mul(1f, 1f, -1f));
 
+        int vertices = 0;
         for (BlockFace face : getFaces())
-            face.compile(new Matrix4f(matrix), buffer);
+            vertices += face.compile(new Matrix4f(matrix), buffer);
+        return vertices;
     }
 
     public boolean canCompile(BlockFace face, BlockShape relative) {
@@ -80,7 +81,8 @@ public class BlockCubeComponent implements BlockComponent {
     }
 
     @Override
-    public void cleanCompile(int x, int y, int z, RenderArea area, Matrix4f matrix, ByteBuffer buffer) {
+    public int cleanCompile(int x, int y, int z, ViewRenderer area, Matrix4f matrix, ByteBuffer buffer) {
+        int vertices = 0;
         for (BlockFacePosition position : BlockFacePosition.values()) {
             BlockFace face = getFace(position);
             // if the face is visible
@@ -89,58 +91,8 @@ public class BlockCubeComponent implements BlockComponent {
                     y + position.getDirectionY(),
                     z + position.getDirectionZ())))
                 // compiles it
-                face.compile(matrix, buffer);
+                vertices += face.compile(matrix, buffer);
         }
-        /*
-        BlockShape
-                rel_right,
-                rel_up,
-                rel_forward,
-                rel_left,
-                rel_down,
-                rel_backward;
-        
-        BlockFace
-                f_right,
-                f_up,
-                f_forward,
-                f_left,
-                f_down,
-                f_backward;
-
-        // relatives
-        rel_right    = area.getShape(x + 1, y, z);
-        rel_up       = area.getShape(x, y + 1, z);
-        rel_forward  = area.getShape(x, y, z + 1);
-        rel_left     = area.getShape(x - 1, y, z);
-        rel_down     = area.getShape(x, y - 1, z);
-        rel_backward = area.getShape(x, y, z - 1);
-
-        // faces
-        f_right      = getFace(BlockFacePosition.RIGHT);
-        f_up         = getFace(BlockFacePosition.UP);
-        f_forward    = getFace(BlockFacePosition.FORWARD);
-        f_left       = getFace(BlockFacePosition.LEFT);
-        f_down       = getFace(BlockFacePosition.DOWN);
-        f_backward   = getFace(BlockFacePosition.BACKWARD);
-
-        if (canCompile(f_right, rel_right))
-            f_right.compile(matrix, buffer);
-
-        if (canCompile(f_up, rel_up))
-            f_up.compile(matrix, buffer);
-
-        if (canCompile(f_forward, rel_forward))
-            f_forward.compile(matrix, buffer);
-
-        if (canCompile(f_left, rel_left))
-            f_left.compile(matrix, buffer);
-
-        if (canCompile(f_down, rel_down))
-            f_down.compile(matrix, buffer);
-
-        if (canCompile(f_backward, rel_backward))
-            f_backward.compile(matrix, buffer);
-            */
+        return vertices;
     }
 }

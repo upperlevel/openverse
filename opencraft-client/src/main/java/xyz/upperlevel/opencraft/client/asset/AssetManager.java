@@ -1,16 +1,16 @@
 package xyz.upperlevel.opencraft.client.asset;
 
 import lombok.Getter;
-import xyz.upperlevel.opencraft.client.asset.shape.BlockShapeManager;
-import xyz.upperlevel.opencraft.client.asset.texture.TextureManager;
+import xyz.upperlevel.opencraft.client.asset.shape.BlockShapeRegistry;
+import xyz.upperlevel.opencraft.client.asset.texture.TextureRegistry;
 
 public class AssetManager {
 
     @Getter
-    private BlockShapeManager shapeManager = new BlockShapeManager();
+    private BlockShapeRegistry shapeRegistry = new BlockShapeRegistry();
 
     @Getter
-    private TextureManager textureManager  = new TextureManager();
+    private TextureRegistry textureRegistry = new TextureRegistry();
 
     public AssetManager() {
     }

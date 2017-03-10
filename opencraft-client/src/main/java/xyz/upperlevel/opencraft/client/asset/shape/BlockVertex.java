@@ -26,6 +26,10 @@ public class BlockVertex {
     @Setter
     private float r, g, b, a;
 
+    @Getter
+    @Setter
+    private float u, v;
+
     public BlockVertex(@NonNull BlockFace face) {
         this.face = face;
 

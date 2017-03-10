@@ -4,14 +4,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BlockShapeManager {
+public class BlockShapeRegistry {
 
     private Map<String, BlockShape> shapes = new HashMap<>();
 
-    public BlockShapeManager() {
+    public BlockShapeRegistry() {
     }
 
-    public BlockShapeManager register(BlockShape shape) {
+    public BlockShapeRegistry register(BlockShape shape) {
         shapes.put(shape.getId(), shape);
         return this;
     }
@@ -20,12 +20,12 @@ public class BlockShapeManager {
         return shapes.get(id);
     }
 
-    public BlockShapeManager unregister(String id) {
+    public BlockShapeRegistry unregister(String id) {
         shapes.remove(id);
         return this;
     }
 
-    public BlockShapeManager unregister(BlockShape shape) {
+    public BlockShapeRegistry unregister(BlockShape shape) {
         shapes.remove(shape.getId());
         return this;
     }

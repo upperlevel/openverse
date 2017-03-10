@@ -3,6 +3,7 @@ package xyz.upperlevel.opencraft.client.asset.texture;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import xyz.upperlevel.ulge.opengl.texture.loader.ImageContent;
 
 import java.awt.image.BufferedImage;
 
@@ -12,42 +13,13 @@ public class Texture {
     private String id;
 
     @Getter
-    private BufferedImage image;
-
-    @Getter
     @Setter
-    private int
-            width,
-            height;
+    private ImageContent image;
 
-    @Getter
-    @Setter
-    private float
-            screenWidth  = 1f,
-            screenHeight = 1f;
-
-    @Getter
-    @Setter
-    private float
-            minU = 0f,
-            minV = 0f,
-            maxU = 1f,
-            maxV = 1f;
-
-    public Texture(@NonNull String id, @NonNull BufferedImage image) {
-        this.id    = id;
+    public Texture(
+            @NonNull String id,
+            @NonNull ImageContent image) {
+        this.id = id;
         this.image = image;
-        width      = image.getWidth();
-        height     = image.getHeight();
-    }
-
-    @Override
-    public String toString() {
-        return  "screenWidth: " + screenWidth + " "+
-                "screenHeight: " + screenHeight + " "+
-                "minU: " + minU + " "+
-                "minV: " + minV + " "+
-                "maxU: " + maxU + " "+
-                "maxV: " + maxV;
     }
 }

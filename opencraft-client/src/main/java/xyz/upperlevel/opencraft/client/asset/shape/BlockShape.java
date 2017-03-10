@@ -2,10 +2,8 @@ package xyz.upperlevel.opencraft.client.asset.shape;
 
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import org.joml.Matrix4f;
-import xyz.upperlevel.opencraft.client.render.RenderArea;
+import xyz.upperlevel.opencraft.client.render.ViewRenderer;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -62,12 +60,20 @@ public class BlockShape {
         return this;
     }
 
-    public void compile(Matrix4f matrix, ByteBuffer buffer) {
-        components.forEach(component -> component.compile(new Matrix4f(matrix), buffer));
+    public int compile(Matrix4f matrix, ByteBuffer buffer) {
+        int vertices = 0;
+        for (BlockComponent component : components) {
+            vertices += component.compile(new Matrix4f(matrix), buffer);
+        }
+        return vertices;
     }
 
-    public void cleanCompile(int x, int y, int z, RenderArea area, Matrix4f matrix, ByteBuffer buffer) {
-        components.forEach(component -> component.cleanCompile(x, y, z, area, matrix, buffer));
+    public int cleanCompile(int x, int y, int z, ViewRenderer area, Matrix4f matrix, ByteBuffer buffer) {
+        int vertices = 0;
+        for (BlockComponent component : components) {
+            vertices += component.cleanCompile(x, y, z, area, matrix, buffer);
+        }
+        return vertices;
     }
 
     public boolean isInside(float x, float y, float z) {

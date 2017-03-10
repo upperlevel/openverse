@@ -15,8 +15,8 @@ public enum BlockFaceVertexPosition {
         public BlockVertex createVertex(BlockFace face) {
             return new BlockVertex(face)
                     .setX(1f)
-                    .setY(1f);
-                    //.setU(1f);
+                    .setY(1f)
+                    .setU(1f);
         }
     },
     BOTTOM_LEFT {
@@ -24,8 +24,8 @@ public enum BlockFaceVertexPosition {
         public BlockVertex createVertex(BlockFace face) {
             return new BlockVertex(face)
                     .setX(-1f)
-                    .setY(-1f);
-                    //.setV(1f);
+                    .setY(-1f)
+                    .setV(1f);
         }
     },
     BOTTOM_RIGHT {
@@ -33,9 +33,9 @@ public enum BlockFaceVertexPosition {
         public BlockVertex createVertex(BlockFace face) {
             return new BlockVertex(face)
                     .setX(1f)
-                    .setY(-1f);
-                    //.setU(1f)
-                    //.setV(1f);
+                    .setY(-1f)
+                    .setU(1f)
+                    .setV(1f);
         }
     };
 
