@@ -15,13 +15,13 @@ import xyz.upperlevel.ulge.opengl.buffer.VertexLinker;
 
 import java.nio.ByteBuffer;
 
-public class RenderChunk {
+public class ChunkRenderer {
 
     @Getter
     private Vbo vbo;
 
     @Getter
-    private RenderArea area;
+    private ViewRenderer view;
 
     @Getter
     private int x, y, z;
@@ -29,10 +29,20 @@ public class RenderChunk {
     @Getter
     private int allocVertCount = 0, allocDataCount = 0;
 
-    private BlockShape[][][] shapes = new BlockShape[16][16][16];
+    private BlockRenderer[][][] blocks = new BlockRenderer[16][16][16];
 
-    public RenderChunk(@NonNull RenderArea area, int x, int y, int z) {
-        this.area = area;
+    {
+        for (int x = 0; x < 16; x++) {
+            for (int y = 0; y < 16; y++) {
+                for (int z = 0; z < 16; z++) {
+                    blocks[x][y][z] = new BlockRenderer(this, x, y, z);
+                }
+            }
+        }
+    }
+
+    public ChunkRenderer(@NonNull ViewRenderer view, int x, int y, int z) {
+        this.view = view;
         this.x = x;
         this.y = y;
         this.z = z;
@@ -65,8 +75,12 @@ public class RenderChunk {
         return x < 0 || y < 0 || z < 0 || x >= 16 || y >= 16 || z >= 16;
     }
 
+    public BlockRenderer getBlock(int x, int y, int z) {
+        return isOut(x, y, z) ? new BlockRenderer(this, x, y, z) : blocks[x][y][z];
+    }
+
     public BlockShape getShape(int x, int y, int z) {
-        return isOut(x, y, z) ? null : shapes[x][y][z];
+        return isOut(x, y, z) ? null : blocks[x][y][z].getShape();
     }
 
     public void setShape(int x, int y, int z, BlockShape shape) {
@@ -74,9 +88,9 @@ public class RenderChunk {
     }
 
     public void setShape(int x, int y, int z, BlockShape shape, boolean rebuild) {
-        BlockShape oldShape = shapes[x][y][z];
+        BlockShape oldShape = blocks[x][y][z].getShape();
 
-        shapes[x][y][z] = shape;
+        blocks[x][y][z].setShape(shape);
 
         int ovc = oldShape != null ? oldShape.getVerticesCount() : 0;
         int nvc = shape != null ? shape.getVerticesCount() : 0;
@@ -98,7 +112,7 @@ public class RenderChunk {
         for (int x = 0; x < 16; x++)
             for (int y = 0; y < 16; y++)
                 for (int z = 0; z < 16; z++) {
-                    BlockShape shape = shapes[x][y][z];
+                    BlockShape shape = blocks[x][y][z].getShape();
                     if (shape != null && !shape.isEmpty()) {
                         Matrix4f model = new Matrix4f()
                                 .translate(
@@ -106,7 +120,7 @@ public class RenderChunk {
                                         -1f + y * 2f,
                                         -1f + z * -2f
                                 );
-                        drawVertCount += shape.cleanCompile(this.x * 16 + x, this.y * 16 + y, this.z * 16 + z, area, model, data);
+                        drawVertCount += shape.cleanCompile(this.x * 16 + x, this.y * 16 + y, this.z * 16 + z, view, model, data);
                     }
                 }
         data.flip();

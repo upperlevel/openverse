@@ -10,7 +10,10 @@ import xyz.upperlevel.opencraft.server.network.packet.AskChunkAreaPacket;
 import xyz.upperlevel.ulge.opengl.shader.Uniformer;
 import xyz.upperlevel.ulge.util.Color;
 
-public class RenderArea {
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class ViewRenderer {
 
     @Getter
     private ViewerRenderer viewer;
@@ -25,7 +28,7 @@ public class RenderArea {
     @Getter
     private int centerX, centerY, centerZ;
 
-    public RenderArea(@NonNull ViewerRenderer viewer) {
+    public ViewRenderer(@NonNull ViewerRenderer viewer) {
         this.viewer = viewer;
     }
 
@@ -34,6 +37,11 @@ public class RenderArea {
     }
 
     public BlockShape getShape(int x, int y, int z) {
+        BlockRenderer b = getBlock(x, y, z);
+        return b != null ? b.getShape() : null;
+    }
+
+    public BlockRenderer getBlock(int x, int y, int z) {
         int cx = x / 16;
         int cy = y / 16;
         int cz = z / 16;
@@ -43,7 +51,105 @@ public class RenderArea {
         int cbz = z % 16;
 
         ChunkRenderer chunk = isOut(cx, cy, cz) ? null : chunks[cx][cy][cz];
-        return chunk != null ? chunk.getShape(cbx, cby, cbz) : null;
+        return chunk != null ? chunk.getBlock(cbx, cby, cbz) : null;
+    }
+
+    public Queue<BlockRenderer> getCollidingBlocks(int fromX, int fromY, int fromZ, int toX, int toY, int toZ) {
+        Queue<BlockRenderer> result = new LinkedList<>();
+
+        if (fromX == toX && fromY == toY && fromZ == toZ) {
+            result.add(getBlock(fromX, fromY, fromZ));
+            return result;
+        }
+
+        int dx = toX - fromX;
+        int dy = toY - fromY;
+        int dz = toZ - fromZ;
+
+        int ax = Math.abs(dx) << 1;
+        int ay = Math.abs(dy) << 1;
+        int az = Math.abs(dz) << 1;
+
+        int signX = (int) Math.signum(dx);
+        int signY = (int) Math.signum(dy);
+        int signZ = (int) Math.signum(dz);
+
+        int x = fromX;
+        int y = fromY;
+        int z = fromZ;
+
+        int deltaX, deltaY, deltaZ;
+        if (ax >= Math.max(ay, az)) /* x dominant */ {
+            deltaY = ay - (ax >> 1);
+            deltaZ = az - (ax >> 1);
+            while (true) {
+                result.offer(getBlock(x, y, z));
+                if (x == toX) {
+                    return result;
+                }
+
+                if (deltaY >= 0) {
+                    y += signY;
+                    deltaY -= ax;
+                }
+
+                if (deltaZ >= 0) {
+                    z += signZ;
+                    deltaZ -= ax;
+                }
+
+                x += signX;
+                deltaY += ay;
+                deltaZ += az;
+            }
+        } else if (ay >= Math.max(ax, az)) /* y dominant */ {
+            deltaX = ax - (ay >> 1);
+            deltaZ = az - (ay >> 1);
+            while (true) {
+                result.offer(getBlock(x, y, z));
+                if (y == toY) {
+                    return result;
+                }
+
+                if (deltaX >= 0) {
+                    x += signX;
+                    deltaX -= ay;
+                }
+
+                if (deltaZ >= 0) {
+                    z += signZ;
+                    deltaZ -= ay;
+                }
+
+                y += signY;
+                deltaX += ax;
+                deltaZ += az;
+            }
+        } else if (az >= Math.max(ax, ay)) /* z dominant */ {
+            deltaX = ax - (az >> 1);
+            deltaY = ay - (az >> 1);
+            while (true) {
+                result.offer(getBlock(x, y, z));
+                if (z == toZ) {
+                    return result;
+                }
+
+                if (deltaX >= 0) {
+                    x += signX;
+                    deltaX -= az;
+                }
+
+                if (deltaY >= 0) {
+                    y += signY;
+                    deltaY -= az;
+                }
+
+                z += signZ;
+                deltaX += ax;
+                deltaY += ay;
+            }
+        }
+        return result;
     }
 
     public void demand() {
@@ -56,9 +162,9 @@ public class RenderArea {
     }
 
     public void demandChunk(int x, int y, int z) {
-        int absX = getAbsoluteX(x);
-        int absY = getAbsoluteY(y);
-        int absZ = getAbsoluteZ(z);
+        int absX = (int) getAbsX(x);
+        int absY = (int) getAbsY(y);
+        int absZ = (int) getAbsZ(z);
 
         SingleplayerClient.connection().sendPacket(new AskChunkAreaPacket(
                 absX,
@@ -77,25 +183,25 @@ public class RenderArea {
                 }
     }
 
-    public RenderArea setCenterX(int absX) {
+    public ViewRenderer setCenterX(int absX) {
         centerX = absX;
         demand();
         return this;
     }
 
-    public RenderArea setCenterY(int absY) {
+    public ViewRenderer setCenterY(int absY) {
         centerY = absY;
         demand();
         return this;
     }
 
-    public RenderArea setCenterZ(int absZ) {
+    public ViewRenderer setCenterZ(int absZ) {
         centerZ = absZ;
         demand();
         return this;
     }
 
-    public RenderArea setCenter(int absX, int absY, int absZ) {
+    public ViewRenderer setCenter(int absX, int absY, int absZ) {
         centerX = absX;
         centerY = absY;
         centerZ = absZ;
@@ -107,19 +213,31 @@ public class RenderArea {
         return chunks[x][y][z];
     }
 
-    public int getAbsoluteX(int x) {
+    public float getViewX(float worldX) {
+        return worldX - (centerX - RADIUS) * 16;
+    }
+
+    public float getViewY(float worldY) {
+        return worldY - (centerY - RADIUS) * 16;
+    }
+
+    public float getViewZ(float worldZ) {
+        return worldZ - (centerZ - RADIUS) * 16;
+    }
+
+    public float getAbsX(float x) {
         return centerX - RADIUS + x;
     }
 
-    public int getAbsoluteY(int y) {
+    public float getAbsY(float y) {
         return centerY - RADIUS + y;
     }
 
-    public int getAbsoluteZ(int z) {
+    public float getAbsZ(float z) {
         return centerZ - RADIUS + z;
     }
 
-    public RenderArea setChunk(int x, int y, int z, ChunkRenderer chunk) {
+    public ViewRenderer setChunk(int x, int y, int z, ChunkRenderer chunk) {
         chunks[x][y][z] = chunk;
         return this;
     }
