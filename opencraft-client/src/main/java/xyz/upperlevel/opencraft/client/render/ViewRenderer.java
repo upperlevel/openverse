@@ -13,19 +13,19 @@ import xyz.upperlevel.ulge.util.Color;
 public class RenderArea {
 
     @Getter
-    private WorldViewer viewer;
+    private ViewerRenderer viewer;
 
     public static final int RADIUS = 2;
 
     public static final int SIDE = RADIUS * 2 + 1;
 
     @Getter
-    private RenderChunk[][][] chunks = new RenderChunk[SIDE][SIDE][SIDE];
+    private ChunkRenderer[][][] chunks = new ChunkRenderer[SIDE][SIDE][SIDE];
 
     @Getter
     private int centerX, centerY, centerZ;
 
-    public RenderArea(@NonNull WorldViewer viewer) {
+    public RenderArea(@NonNull ViewerRenderer viewer) {
         this.viewer = viewer;
     }
 
@@ -42,33 +42,56 @@ public class RenderArea {
         int cby = y % 16;
         int cbz = z % 16;
 
-        RenderChunk chunk = isOut(cx, cy, cz) ? null : chunks[cx][cy][cz];
+        ChunkRenderer chunk = isOut(cx, cy, cz) ? null : chunks[cx][cy][cz];
         return chunk != null ? chunk.getShape(cbx, cby, cbz) : null;
     }
 
-    public void build() {
-        destroy();
+    public void demand() {
         for (int x = 0; x < SIDE; x++)
             for (int y = 0; y < SIDE; y++)
                 for (int z = 0; z < SIDE; z++)
                     demandChunk(x, y, z);
+        // todo chunks will not be received all since is asynchronously (now is sync)
+        build();
+    }
+
+    public void demandChunk(int x, int y, int z) {
+        int absX = getAbsoluteX(x);
+        int absY = getAbsoluteY(y);
+        int absZ = getAbsoluteZ(z);
+
+        SingleplayerClient.connection().sendPacket(new AskChunkAreaPacket(
+                absX,
+                absY,
+                absZ
+        ));
+    }
+
+    public void build() {
+        for (int x = 0; x < SIDE; x++)
+            for (int y = 0; y < SIDE; y++)
+                for (int z = 0; z < SIDE; z++) {
+                    ChunkRenderer chunk = chunks[x][y][z];
+                    if (chunk != null)
+                        chunk.build();
+                }
     }
 
     public RenderArea setCenterX(int absX) {
         centerX = absX;
-        build();
+        demand();
         return this;
     }
 
     public RenderArea setCenterY(int absY) {
         centerY = absY;
-        build();
+        demand();
         return this;
     }
 
     public RenderArea setCenterZ(int absZ) {
         centerZ = absZ;
-        build();
+        demand();
         return this;
     }
 
@@ -76,11 +99,11 @@ public class RenderArea {
         centerX = absX;
         centerY = absY;
         centerZ = absZ;
-        build();
+        demand();
         return this;
     }
 
-    public RenderChunk getChunk(int x, int y, int z) {
+    public ChunkRenderer getChunk(int x, int y, int z) {
         return chunks[x][y][z];
     }
 
@@ -96,20 +119,7 @@ public class RenderArea {
         return centerZ - RADIUS + z;
     }
 
-    public RenderArea demandChunk(int x, int y, int z) {
-        int abs_x = getAbsoluteX(x);
-        int abs_y = getAbsoluteY(y);
-        int abs_z = getAbsoluteZ(z);
-
-        SingleplayerClient.connection().sendPacket(new AskChunkAreaPacket(
-                abs_x,
-                abs_y,
-                abs_z
-        ));
-        return this;
-    }
-
-    public RenderArea setChunk(int x, int y, int z, RenderChunk chunk) {
+    public RenderArea setChunk(int x, int y, int z, ChunkRenderer chunk) {
         chunks[x][y][z] = chunk;
         return this;
     }
@@ -118,9 +128,9 @@ public class RenderArea {
         for (int x = 0; x < SIDE; x++) {
             for (int y = 0; y < SIDE; y++) {
                 for (int z = 0; z < SIDE; z++) {
-                    RenderChunk rc = chunks[x][y][z];
+                    ChunkRenderer rc = chunks[x][y][z];
                     if (rc != null) {
-                        //chunks[x][y][z].destroy();
+                        chunks[x][y][z].destroy();
                         chunks[x][y][z] = null;
                     }
                 }
@@ -129,13 +139,13 @@ public class RenderArea {
     }
 
     public void draw(Uniformer uniformer) {
+
         Matrix4f m = new Matrix4f();
         m.translate(
                 2f * 16f * centerX,
                 2f * 16f * centerY,
                 2f * 16f * centerZ
         );
-
         for (int x = 0; x < SIDE; x++) {
             for (int y = 0; y < SIDE; y++) {
                 for (int z = 0; z < SIDE; z++) {
