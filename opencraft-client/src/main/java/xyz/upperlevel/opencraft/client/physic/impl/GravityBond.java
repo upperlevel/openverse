@@ -22,7 +22,7 @@ public class GravityBond implements PhysicBond {
     @Override
     public void update(ViewerRenderer viewer, long delta) {
 
-        float toAddSpeedY = -(delta * 0.001f * CONSTANT);
+        float toAddSpeedY = (delta * 0.001f * CONSTANT);
         float currSpeedY = viewer.getSpeedY();
 
         viewer.setSpeedY(currSpeedY + toAddSpeedY);
@@ -47,7 +47,7 @@ public class GravityBond implements PhysicBond {
                 BlockShape shape = block.getShape();
                 if (shape != null && !shape.isEmpty()) {
                     // if the player falls on ground
-                    viewer.addPosition(0, -(mod + currY), 0);
+                    viewer.addPosition(0, (mod + currY), 0);
                     viewer.setSpeedY(0f);
                     break;
                 }
