@@ -9,7 +9,7 @@ import xyz.upperlevel.opencraft.client.asset.shape.BlockShapeRegistry;
 import xyz.upperlevel.opencraft.client.asset.shape.Zone3f;
 import xyz.upperlevel.opencraft.client.asset.texture.Texture;
 import xyz.upperlevel.opencraft.client.asset.texture.TextureRegistry;
-import xyz.upperlevel.opencraft.client.physic.PhysicBondManager;
+import xyz.upperlevel.opencraft.client.physic.PhysicSupplierManager;
 import xyz.upperlevel.opencraft.client.render.texture.TextureBakery;
 import xyz.upperlevel.ulge.opengl.texture.loader.ImageContent;
 import xyz.upperlevel.ulge.util.Color;
@@ -96,7 +96,7 @@ public class OpenCraft extends Game {
     private AssetManager assetManager = new AssetManager();
 
     @Getter
-    private PhysicBondManager physicBondManager = new PhysicBondManager();
+    private PhysicSupplierManager physicBondManager = new PhysicSupplierManager();
 
     @Override
     public void start() {

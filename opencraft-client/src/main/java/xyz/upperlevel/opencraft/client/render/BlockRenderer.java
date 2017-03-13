@@ -53,4 +53,8 @@ public class BlockRenderer {
         this.viewY = viewY;
         this.viewZ = viewZ;
     }
+
+    public boolean isEmpty() {
+        return shape == null || shape.isEmpty();
+    }
 }

@@ -19,7 +19,7 @@ public class TextureBakery {
     private int crtLayer = 0;
 
     @Getter
-    private int resX, resY;
+    private int resolutionX, resolutionY;
 
     @Getter
     private List<Texture> textures = new LinkedList<>();
@@ -27,11 +27,11 @@ public class TextureBakery {
     @Getter
     private Texture2dArray compiled = new Texture2dArray();
 
-    public TextureBakery(int resX, int resY) {
-        this.resX = resX;
-        this.resY = resY;
+    public TextureBakery(int resolutionX, int resolutionY) {
+        this.resolutionX = resolutionX;
+        this.resolutionY = resolutionY;
 
-        compiled.allocate(4, GL_RGBA8, resX, resY, 2);
+        compiled.allocate(4, GL_RGBA8, resolutionX, resolutionY, 2);
     }
 
     public void register(@NonNull Texture texture) {
