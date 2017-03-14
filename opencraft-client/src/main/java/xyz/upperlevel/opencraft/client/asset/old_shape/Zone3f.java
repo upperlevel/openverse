@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.client.asset.shape;
+package xyz.upperlevel.opencraft.client.asset.old_shape;
 
 import lombok.Getter;
 import org.joml.Vector3f;

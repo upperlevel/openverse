@@ -5,7 +5,7 @@ import lombok.NonNull;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import xyz.upperlevel.opencraft.client.OpenCraft;
-import xyz.upperlevel.opencraft.client.asset.shape.BlockShape;
+import xyz.upperlevel.opencraft.client.asset.old_shape.BlockShape;
 import xyz.upperlevel.opencraft.server.world.ChunkArea;
 import xyz.upperlevel.ulge.opengl.DataType;
 import xyz.upperlevel.ulge.opengl.buffer.DrawMode;

@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.client.asset.shape;
+package xyz.upperlevel.opencraft.client.asset.old_shape;
 
 import org.joml.Matrix4f;
 import xyz.upperlevel.opencraft.client.render.ViewRenderer;

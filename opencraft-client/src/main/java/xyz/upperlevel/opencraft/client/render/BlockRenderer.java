@@ -3,7 +3,7 @@ package xyz.upperlevel.opencraft.client.render;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import xyz.upperlevel.opencraft.client.asset.shape.BlockShape;
+import xyz.upperlevel.opencraft.client.asset.old_shape.BlockShape;
 
 public class BlockRenderer {
 

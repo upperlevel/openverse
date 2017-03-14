@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
-import xyz.upperlevel.opencraft.client.asset.shape.BlockShape;
+import xyz.upperlevel.opencraft.client.asset.old_shape.BlockShape;
 import xyz.upperlevel.opencraft.server.network.SingleplayerClient;
 import xyz.upperlevel.opencraft.server.network.packet.AskChunkAreaPacket;
 import xyz.upperlevel.ulge.opengl.shader.Uniformer;

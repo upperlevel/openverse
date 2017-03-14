@@ -1,10 +1,9 @@
-package xyz.upperlevel.opencraft.client.asset.shape;
+package xyz.upperlevel.opencraft.client.asset.old_shape;
 
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import xyz.upperlevel.opencraft.client.asset.shape.BlockFace;
 import xyz.upperlevel.ulge.util.Color;
 
 @Accessors(chain = true)
