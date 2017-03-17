@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.client.asset.old_shape;
+package xyz.upperlevel.opencraft.client.asset.shape;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +12,7 @@ import xyz.upperlevel.ulge.util.Color;
 
 import java.nio.ByteBuffer;
 
-import static xyz.upperlevel.opencraft.client.asset.old_shape.BlockVertexBufferStorer.*;
+import static xyz.upperlevel.opencraft.client.asset.shape.BlockVertexBufferStorer.*;
 
 @Accessors(chain = true)
 public class BlockFace {

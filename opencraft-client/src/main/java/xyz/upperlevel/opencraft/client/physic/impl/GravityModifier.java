@@ -1,28 +1,23 @@
 package xyz.upperlevel.opencraft.client.physic.impl;
 
-import xyz.upperlevel.opencraft.client.asset.shape.BlockShape;
-import xyz.upperlevel.opencraft.client.physic.PhysicSupplier;
-import xyz.upperlevel.opencraft.client.render.BlockRenderer;
-import xyz.upperlevel.opencraft.client.render.ViewRenderer;
-import xyz.upperlevel.opencraft.client.render.ViewerRenderer;
-
-import java.util.Queue;
+import xyz.upperlevel.opencraft.client.render.WorldViewer;
 
 public class GravitySupplier implements PhysicSupplier {
 
     public static final float CONSTANT = 0.125f;
-
-    public static final GravitySupplier DEVO_FUNZIONARE_SE_NO_JAVA_NON_E$_UN_GRAN_LINGUAGGIO = new GravitySupplier();
 
     @Override
     public String getId() {
         return "gravity_bond";
     }
 
-
     @Override
-    public void update(ViewerRenderer viewer, long delta) {
-        ViewRenderer view = viewer.getView();
+    public void update(WorldViewer viewer, long delta) {
+
+        viewer.speedY -= CONSTANT * 0.05f;
+
+        /*
+        LocalWorld view = viewer.getView();
 
         viewer.speedY += CONSTANT * 0.05f;
 
@@ -35,7 +30,7 @@ public class GravitySupplier implements PhysicSupplier {
         int vz = (int) fvz;
 
         // gets all blocks colliding from player pos to target player pos
-        Queue<BlockRenderer> blocks = view.getCollidingBlocks(
+        Queue<LocalBlock> blocks = view.getCollidingBlocks(
                 vx,
                 vy,
                 vz,
@@ -47,7 +42,7 @@ public class GravitySupplier implements PhysicSupplier {
 
         float mod = vy - fvy;
         int currY = 0; // y that each loop decrease
-        for (BlockRenderer block : blocks) {
+        for (LocalBlock block : blocks) {
             if (block != null) {
                 BlockShape shape = block.getShape();
                 if (shape != null && !shape.isEmpty()) {
@@ -60,5 +55,6 @@ public class GravitySupplier implements PhysicSupplier {
         }
 
         viewer.down(viewer.speedY);
+        */
     }
 }

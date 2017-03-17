@@ -1,9 +1,9 @@
-package xyz.upperlevel.opencraft.client.asset.old_shape;
+package xyz.upperlevel.opencraft.client.asset.shape;
 
 import lombok.Getter;
 import lombok.NonNull;
 import org.joml.Matrix4f;
-import xyz.upperlevel.opencraft.client.render.ViewRenderer;
+import xyz.upperlevel.opencraft.client.render.LocalWorld;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -68,7 +68,7 @@ public class BlockShape {
         return vertices;
     }
 
-    public int cleanCompile(int x, int y, int z, ViewRenderer area, Matrix4f matrix, ByteBuffer buffer) {
+    public int cleanCompile(int x, int y, int z, LocalWorld area, Matrix4f matrix, ByteBuffer buffer) {
         int vertices = 0;
         for (BlockComponent component : components) {
             vertices += component.cleanCompile(x, y, z, area, matrix, buffer);

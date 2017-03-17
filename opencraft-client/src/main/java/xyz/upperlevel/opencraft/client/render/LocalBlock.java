@@ -3,12 +3,12 @@ package xyz.upperlevel.opencraft.client.render;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import xyz.upperlevel.opencraft.client.asset.old_shape.BlockShape;
+import xyz.upperlevel.opencraft.client.asset.shape.BlockShape;
 
 public class BlockRenderer {
 
     @Getter
-    private ViewRenderer view;
+    private LocalWorld view;
     
     @Getter
     private ChunkRenderer chunk;
@@ -37,7 +37,7 @@ public class BlockRenderer {
         viewZ = chunk.getZ() * 16 + chunkZ;
     }
 
-    public BlockRenderer(ViewRenderer view, int viewX, int viewY, int viewZ) {
+    public BlockRenderer(LocalWorld view, int viewX, int viewY, int viewZ) {
         this.view = view;
         chunk     = view.getChunk(
                 viewX / 16,
@@ -56,5 +56,9 @@ public class BlockRenderer {
 
     public boolean isEmpty() {
         return shape == null || shape.isEmpty();
+    }
+
+    public BlockRenderer getRelative(int x, int y, int z) {
+        return view.getBlock(viewX + x, viewY + y, viewZ + z);
     }
 }

@@ -1,10 +1,10 @@
-package xyz.upperlevel.opencraft.client.asset.old_shape;
+package xyz.upperlevel.opencraft.client.asset.shape;
 
 import lombok.Getter;
 import lombok.NonNull;
 import org.joml.Matrix4f;
 import xyz.upperlevel.opencraft.client.asset.texture.Texture;
-import xyz.upperlevel.opencraft.client.render.ViewRenderer;
+import xyz.upperlevel.opencraft.client.render.LocalWorld;
 import xyz.upperlevel.ulge.util.Color;
 
 import java.nio.ByteBuffer;
@@ -77,21 +77,22 @@ public class BlockCubeComponent implements BlockComponent {
     }
 
     public boolean canCompile(BlockFace face, BlockShape relative) {
-        return relative == null || relative.isTransparent() || !relative.isInside(face.getMirrorZone());
+        return relative == null || relative.isEmpty() || relative.isTransparent() || !relative.isInside(face.getMirrorZone());
     }
 
     @Override
-    public int cleanCompile(int x, int y, int z, ViewRenderer area, Matrix4f matrix, ByteBuffer buffer) {
+    public int cleanCompile(int x, int y, int z, LocalWorld world, Matrix4f matrix, ByteBuffer buffer) {
         int vertices = 0;
         for (BlockFacePosition position : BlockFacePosition.values()) {
             BlockFace face = getFace(position);
             // if the face is visible
-            if (canCompile(face, area.getShape(
+            if (canCompile(face, world.getShape(
                     x + position.getDirectionX(),
                     y + position.getDirectionY(),
-                    z + position.getDirectionZ())))
+                    z + position.getDirectionZ()))) {
                 // compiles it
                 vertices += face.compile(matrix, buffer);
+            }
         }
         return vertices;
     }

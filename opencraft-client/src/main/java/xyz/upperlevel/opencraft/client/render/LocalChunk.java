@@ -5,7 +5,7 @@ import lombok.NonNull;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import xyz.upperlevel.opencraft.client.OpenCraft;
-import xyz.upperlevel.opencraft.client.asset.old_shape.BlockShape;
+import xyz.upperlevel.opencraft.client.asset.shape.BlockShape;
 import xyz.upperlevel.opencraft.server.world.ChunkArea;
 import xyz.upperlevel.ulge.opengl.DataType;
 import xyz.upperlevel.ulge.opengl.buffer.DrawMode;
@@ -21,7 +21,7 @@ public class ChunkRenderer {
     private Vbo vbo;
 
     @Getter
-    private ViewRenderer view;
+    private LocalWorld view;
 
     @Getter
     private int x, y, z;
@@ -29,19 +29,19 @@ public class ChunkRenderer {
     @Getter
     private int allocVertCount = 0, allocDataCount = 0;
 
-    private BlockRenderer[][][] blocks = new BlockRenderer[16][16][16];
+    private LocalBlock[][][] blocks = new LocalBlock[16][16][16];
 
     {
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
                 for (int z = 0; z < 16; z++) {
-                    blocks[x][y][z] = new BlockRenderer(this, x, y, z);
+                    blocks[x][y][z] = new LocalBlock(this, x, y, z);
                 }
             }
         }
     }
 
-    public ChunkRenderer(@NonNull ViewRenderer view, int x, int y, int z) {
+    public ChunkRenderer(@NonNull LocalWorld view, int x, int y, int z) {
         this.view = view;
         this.x = x;
         this.y = y;
@@ -75,8 +75,8 @@ public class ChunkRenderer {
         return x < 0 || y < 0 || z < 0 || x >= 16 || y >= 16 || z >= 16;
     }
 
-    public BlockRenderer getBlock(int x, int y, int z) {
-        return isOut(x, y, z) ? new BlockRenderer(this, x, y, z) : blocks[x][y][z];
+    public LocalBlock getBlock(int x, int y, int z) {
+        return isOut(x, y, z) ? new LocalBlock(this, x, y, z) : blocks[x][y][z];
     }
 
     public BlockShape getShape(int x, int y, int z) {

@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.client.asset.old_shape;
+package xyz.upperlevel.opencraft.client.asset.shape;
 
 import java.util.Collection;
 import java.util.HashMap;

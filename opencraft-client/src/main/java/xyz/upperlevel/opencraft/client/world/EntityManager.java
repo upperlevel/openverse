@@ -9,26 +9,32 @@ import java.util.Map;
 
 public class LocalWorld {
 
+    private LocalChunk[][][] chunks = new LocalChunk[][][];
+
     private Map<Long, Entity> entities = new HashMap<>();
 
     public LocalWorld() {
     }
 
-    public void spawn(float x, float y, float z, @NonNull Entity entity) {
+    public LocalChunk getChunk(int x, int y, int z) {
+        
+    }
+
+    public void spawnEntity(float x, float y, float z, @NonNull Entity entity) {
         entities.put(entity.getId(), entity);
         entity.setPosition(x, y, z);
     }
 
-    public void spawn(float x, float y, float z, float yaw, float pitch, @NonNull Entity entity) {
+    public void spawnEntity(float x, float y, float z, float yaw, float pitch, @NonNull Entity entity) {
         entities.put(entity.getId(), entity);
         entity.setPosition(x, y, z, yaw, pitch);
     }
 
-    public void remove(long id) {
+    public void removeEntity(long id) {
         entities.remove(id);
     }
 
-    public void remove(@NonNull Entity entity) {
+    public void removeEntity(@NonNull Entity entity) {
         entities.remove(entity.getId());
     }
 

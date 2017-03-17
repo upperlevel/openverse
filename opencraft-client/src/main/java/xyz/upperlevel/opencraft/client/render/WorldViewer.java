@@ -1,12 +1,10 @@
 package xyz.upperlevel.opencraft.client.render;
 
-import jdk.nashorn.internal.ir.Block;
 import lombok.Getter;
 import lombok.Setter;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import xyz.upperlevel.opencraft.client.physic.PhysicalViewer;
-import xyz.upperlevel.opencraft.client.physic.impl.GravitySupplier;
 import xyz.upperlevel.ulge.opengl.shader.Uniformer;
 import xyz.upperlevel.ulge.util.math.CameraUtil;
 
@@ -26,7 +24,7 @@ public class ViewerRenderer extends PhysicalViewer {
 
     @Getter
     @Setter
-    protected ViewRenderer view = new ViewRenderer(this);
+    protected LocalWorld view = new LocalWorld(this);
 
     public ViewerRenderer() {
     }
@@ -70,6 +68,7 @@ public class ViewerRenderer extends PhysicalViewer {
     public void updatePosition() {
         updateCamera();
         updateView();
+        System.out.println("pos: " + view.getViewX(x) + " " + view.getViewY(y) + " " + view.getViewZ(z));
     }
 
     @Override
@@ -79,21 +78,14 @@ public class ViewerRenderer extends PhysicalViewer {
 
     private long lastTime = -1;
 
-
-
-    public BlockRenderer getBlock() {
-        int vx = (int) view.getViewX(x);
-        int vy = (int) view.getViewY(y);
-        int vz = (int) view.getViewZ(z);
-
-        return view.getBlock(vx, vy, vz);
-    }
-
     public void draw(Uniformer uniformer) {
         if (lastTime == -1)
             lastTime = System.currentTimeMillis();
         long currTime = System.currentTimeMillis();
-        GravitySupplier.DEVO_FUNZIONARE_SE_NO_JAVA_NON_E$_UN_GRAN_LINGUAGGIO.update(this, currTime - lastTime);
+
+        //new GravitySupplier().update(  this, 0);
+        //new CollisionSupplier().update(this, 0);
+
         lastTime = currTime;
 
         if (camera != null) {
