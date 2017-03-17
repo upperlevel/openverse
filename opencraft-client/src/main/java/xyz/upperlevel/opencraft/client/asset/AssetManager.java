@@ -1,7 +1,7 @@
 package xyz.upperlevel.opencraft.client.asset;
 
 import lombok.Getter;
-import xyz.upperlevel.opencraft.client.asset.old_shape.BlockShapeRegistry;
+import xyz.upperlevel.opencraft.client.asset.shape.BlockShapeRegistry;
 import xyz.upperlevel.opencraft.client.asset.texture.TextureRegistry;
 
 public class AssetManager {
