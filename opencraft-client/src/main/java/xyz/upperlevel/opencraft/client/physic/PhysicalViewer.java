@@ -9,7 +9,7 @@ import xyz.upperlevel.ulge.util.math.AngleUtil;
 public class PhysicalViewer {
 
     @Getter
-    protected float x, y = 20, z;
+    protected float x = 0, y = 15, z = 0;
 
     @Getter
     protected float yaw, pitch;
@@ -57,6 +57,13 @@ public class PhysicalViewer {
         updatePosition();
     }
 
+    public void setPosition(float x, float y, float z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        updatePosition();
+    }
+
     public void addPosition(float x, float y, float z) {
         this.x += x;
         this.y += y;
@@ -69,6 +76,10 @@ public class PhysicalViewer {
         y += position.y;
         z += position.z;
         updatePosition();
+    }
+
+    public void addSpeed(Vector3f speed) {
+        addSpeed(speed.x, speed.y, speed.z);
     }
 
     public void addSpeed(float x, float y, float z) {
@@ -149,7 +160,7 @@ public class PhysicalViewer {
     }
 
     private static final Vector3f
-            UP   = new Vector3f(0, +1f, 0),
+            UP   = new Vector3f(0, 1f, 0),
             DOWN = new Vector3f(0, -1f, 0);
 
     public Vector3f getUp() {
@@ -160,48 +171,24 @@ public class PhysicalViewer {
         return new Vector3f(DOWN);
     }
 
-    public void forward() {
-        addPosition(getForward().mul(speedX, speedY, speedZ));
-    }
-
     public void forward(float sensitivity) {
         addPosition(getForward().mul(sensitivity));
-    }
-
-    public void backward() {
-        addPosition(getBackward().mul(speedX, speedY, speedZ));
     }
 
     public void backward(float sensitivity) {
         addPosition(getBackward().mul(sensitivity));
     }
 
-    public void right() {
-        addPosition(getRight().mul(speedX, speedY, speedZ));
-    }
-
     public void right(float sensitivity) {
         addPosition(getRight().mul(sensitivity));
-    }
-
-    public void left() {
-        addPosition(getLeft().mul(speedX, speedY, speedZ));
     }
 
     public void left(float sensitivity) {
         addPosition(getLeft().mul(sensitivity));
     }
 
-    public void up() {
-        addPosition(getUp().mul(speedX, speedY, speedZ));
-    }
-
     public void up(float sensitivity) {
         addPosition(getUp().mul(sensitivity));
-    }
-
-    public void down() {
-        addPosition(getDown().mul(speedX, speedY, speedZ));
     }
 
     public void down(float sensitivity) {

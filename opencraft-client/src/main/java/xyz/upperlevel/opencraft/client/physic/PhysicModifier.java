@@ -1,4 +1,6 @@
 package xyz.upperlevel.opencraft.client.physic;
 
-public class PhysicModifier {
+public interface PhysicModifier {
+
+    void update(PhysicalViewer viewer);
 }

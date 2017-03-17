@@ -1,27 +1,13 @@
-package xyz.upperlevel.opencraft.client.physic;
+package xyz.upperlevel.opencraft.client.physic.util;
 
 import lombok.Getter;
 import lombok.NonNull;
 import org.joml.Vector3d;
+import xyz.upperlevel.opencraft.client.physic.util.RaycastBlock.Face;
 
 import static java.lang.Math.floor;
 
 public class RaycastUtil {
-
-    public interface IntersectionHandler {
-
-        boolean onIntersect(int x, int y, int z, Face face);
-    }
-
-    public static void main(String[] a) {
-        Vector3d r = getIntersection(
-                0, 0, 0,
-                2.5, 2.5, 0,
-                1, 1, 1,
-                Face.LEFT
-        );
-        System.out.println("rx: " + r.x + " ry: " + r.y + " rz: " + r.z);
-    }
 
     public static Vector3d getIntersection(double sx, double sy, double sz,
                                            double ex, double ey, double ez,
@@ -56,7 +42,7 @@ public class RaycastUtil {
         throw new IllegalStateException();
     }
 
-
+/*
     // http://www.cse.yorku.ca/~amana/research/grid.pdf
     public static void line3d(double startX, double startY, double startZ, double endX, double endY, double endZ, IntersectionHandler callback) {
         // block's coordinates
@@ -124,5 +110,5 @@ public class RaycastUtil {
                 }
             }
         } while (!callback.onIntersect(rx, ry, rz, face) && !(rx == rex && ry == rey && rz == rez));
-    }
+    }*/
 }
