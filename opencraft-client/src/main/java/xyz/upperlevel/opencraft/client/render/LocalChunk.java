@@ -15,13 +15,13 @@ import xyz.upperlevel.ulge.opengl.buffer.VertexLinker;
 
 import java.nio.ByteBuffer;
 
-public class ChunkRenderer {
+public class LocalChunk {
 
     @Getter
     private Vbo vbo;
 
     @Getter
-    private LocalWorld view;
+    private LocalWorld world;
 
     @Getter
     private int x, y, z;
@@ -41,8 +41,8 @@ public class ChunkRenderer {
         }
     }
 
-    public ChunkRenderer(@NonNull LocalWorld view, int x, int y, int z) {
-        this.view = view;
+    public LocalChunk(@NonNull LocalWorld view, int x, int y, int z) {
+        this.world = view;
         this.x = x;
         this.y = y;
         this.z = z;
@@ -71,16 +71,15 @@ public class ChunkRenderer {
             build();
     }
 
-    public boolean isOut(int x, int y, int z) {
-        return x < 0 || y < 0 || z < 0 || x >= 16 || y >= 16 || z >= 16;
-    }
-
     public LocalBlock getBlock(int x, int y, int z) {
-        return isOut(x, y, z) ? new LocalBlock(this, x, y, z) : blocks[x][y][z];
+        if (x < 0 || y < 0 || z < 0 || x >= 16 || y >= 16 || z >= 16)
+            return null;
+        return blocks[x][y][z];
     }
 
     public BlockShape getShape(int x, int y, int z) {
-        return isOut(x, y, z) ? null : blocks[x][y][z].getShape();
+        LocalBlock b = getBlock(x, y, z);
+        return b != null ? b.getShape() : null;
     }
 
     public void setShape(int x, int y, int z, BlockShape shape) {
@@ -120,7 +119,7 @@ public class ChunkRenderer {
                                         -1f + y * 2f,
                                         -1f + z * -2f
                                 );
-                        drawVertCount += shape.cleanCompile(this.x * 16 + x, this.y * 16 + y, this.z * 16 + z, view, model, data);
+                        drawVertCount += shape.cleanCompile(this.x * 16 + x, this.y * 16 + y, this.z * 16 + z, world, model, data);
                     }
                 }
         data.flip();

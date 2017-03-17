@@ -1,7 +1,6 @@
 package xyz.upperlevel.opencraft.client.render;
 
 import lombok.Getter;
-import lombok.NonNull;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import xyz.upperlevel.opencraft.client.asset.shape.BlockShape;
@@ -10,65 +9,134 @@ import xyz.upperlevel.opencraft.server.network.packet.AskChunkAreaPacket;
 import xyz.upperlevel.ulge.opengl.shader.Uniformer;
 import xyz.upperlevel.ulge.util.Color;
 
-public class ViewRenderer {
+public class LocalWorld {
 
-    @Getter
-    private ViewerRenderer viewer;
+    public static final int MAX_RADIUS = 2;
 
-    public static final int RADIUS = 2;
-
-    public static final int SIDE = RADIUS * 2 + 1;
-
-    @Getter
-    private ChunkRenderer[][][] chunks = new ChunkRenderer[SIDE][SIDE][SIDE];
+    public static final int SIDE = MAX_RADIUS * 2 + 1;
 
     @Getter
     private int centerX, centerY, centerZ;
 
-    public ViewRenderer(@NonNull ViewerRenderer viewer) {
-        this.viewer = viewer;
+    @Getter
+    private LocalChunk[][][] chunks = new LocalChunk[SIDE][SIDE][SIDE];
+
+    public LocalWorld() {
     }
 
-    public boolean isOut(int x, int y, int z) {
-        return x < 0 || y < 0 || z < 0 || x >= SIDE || y >= SIDE || z >= SIDE;
+    public int getCornerX() {
+        return centerX - MAX_RADIUS;
+    }
+
+    public int getCornerY() {
+        return centerY - MAX_RADIUS;
+    }
+
+    public int getCornerZ() {
+        return centerZ - MAX_RADIUS;
+    }
+
+    public void setCenterX(int x) {
+        if (x != centerX) {
+            centerX = x;
+            demand();
+        }
+    }
+
+    public void setCenterY(int y) {
+        if (y != centerY) {
+            centerY = y;
+            demand();
+        }
+    }
+
+    public void setCenterZ(int z) {
+        if (z != centerZ) {
+            centerZ = z;
+            demand();
+        }
+    }
+
+    public void setCenter(int x, int y, int z) {
+        if (x != centerX || y != centerY || z != centerZ) {
+            centerX = x;
+            centerY = y;
+            centerZ = z;
+            demand();
+        }
+    }
+
+    private int toLocWrlX(int x) {
+        return x - centerX + MAX_RADIUS;
+    }
+
+    private int toLocWrlY(int y) {
+        return y - centerY + MAX_RADIUS;
+    }
+
+    private int toLocWrlZ(int z) {
+        return z - centerZ + MAX_RADIUS;
+    }
+
+    public LocalChunk getChunk(int x, int y, int z) {
+        int lwx = toLocWrlX(x);
+        int lwy = toLocWrlY(y);
+        int lwz = toLocWrlZ(z);
+
+        if (lwx < 0 || lwx >= SIDE || lwy < 0 || lwy >= SIDE || lwz < 0 || lwz >= SIDE)
+            return null;
+
+        return chunks[lwx][lwy][lwz];
+    }
+
+    public void setChunk(int x, int y, int z, LocalChunk chunk) {
+        int lwx = toLocWrlX(x);
+        int lwy = toLocWrlY(y);
+        int lwz = toLocWrlZ(z);
+
+        if (lwx < 0 || lwx >= SIDE || lwy < 0 || lwy >= SIDE || lwz < 0 || lwz >= SIDE)
+            return;
+
+        chunks[lwx][lwy][lwz] = chunk;
     }
 
     public BlockShape getShape(int x, int y, int z) {
-        BlockRenderer b = getBlock(x, y, z);
+        LocalBlock b = getBlock(x, y, z);
         return b != null ? b.getShape() : null;
     }
 
-    public BlockRenderer getBlock(int x, int y, int z) {
-        int cx = x / 16;
-        int cy = y / 16;
-        int cz = z / 16;
+    public LocalBlock getBlock(int x, int y, int z) {
+        int cx = (int) Math.floor(x / 16f);
+        int cy = (int) Math.floor(y / 16f);
+        int cz = (int) Math.floor(z / 16f);
 
-        int cbx = x % 16;
-        int cby = y % 16;
-        int cbz = z % 16;
+        int bx = Math.floorMod(x, 16);
+        int by = Math.floorMod(y, 16);
+        int bz = Math.floorMod(z, 16);
 
-        ChunkRenderer chunk = isOut(cx, cy, cz) ? null : chunks[cx][cy][cz];
-        return chunk != null ? chunk.getBlock(cbx, cby, cbz) : null;
+        LocalChunk c = getChunk(cx, cy, cz);
+        return c != null ? c.getBlock(bx, by, bz) : null;
     }
 
     public void demand() {
+        int crx = getCornerX();
+        int cry = getCenterY();
+        int crz = getCornerZ();
+        
         for (int x = 0; x < SIDE; x++)
             for (int y = 0; y < SIDE; y++)
                 for (int z = 0; z < SIDE; z++)
-                    demandChunk(x, y, z);
+                    demandChunk(crx + x, cry + y, crz + z);
+        
         // todo chunks will not be received all since is asynchronously (now is sync)
         build();
     }
 
     public void demandChunk(int x, int y, int z) {
-        int absX = (int) getAbsX(x);
-        int absY = (int) getAbsY(y);
-        int absZ = (int) getAbsZ(z);
-
         SingleplayerClient.connection().sendPacket(new AskChunkAreaPacket(
-                absX,
-                absY,
-                absZ
+                x,
+                y,
+                z
         ));
     }
 
@@ -76,77 +144,18 @@ public class ViewRenderer {
         for (int x = 0; x < SIDE; x++)
             for (int y = 0; y < SIDE; y++)
                 for (int z = 0; z < SIDE; z++) {
-                    ChunkRenderer chunk = chunks[x][y][z];
-                    if (chunk != null)
-                        chunk.build();
+                    LocalChunk c = chunks[x][y][z];
+                    if (c != null)
+                        c.build();
                 }
-    }
-
-    public ViewRenderer setCenterX(int absX) {
-        centerX = absX;
-        demand();
-        return this;
-    }
-
-    public ViewRenderer setCenterY(int absY) {
-        centerY = absY;
-        demand();
-        return this;
-    }
-
-    public ViewRenderer setCenterZ(int absZ) {
-        centerZ = absZ;
-        demand();
-        return this;
-    }
-
-    public ViewRenderer setCenter(int absX, int absY, int absZ) {
-        centerX = absX;
-        centerY = absY;
-        centerZ = absZ;
-        demand();
-        return this;
-    }
-
-    public ChunkRenderer getChunk(int x, int y, int z) {
-        return chunks[x][y][z];
-    }
-
-    public float getViewX(float worldX) {
-        return worldX - (centerX - RADIUS) * 16;
-    }
-
-    public float getViewY(float worldY) {
-        return worldY - (centerY - RADIUS) * 16;
-    }
-
-    public float getViewZ(float worldZ) {
-        return worldZ - (centerZ - RADIUS) * 16;
-    }
-
-    public float getAbsX(float x) {
-        return centerX - RADIUS + x;
-    }
-
-    public float getAbsY(float y) {
-        return centerY - RADIUS + y;
-    }
-
-    public float getAbsZ(float z) {
-        return centerZ - RADIUS + z;
-    }
-
-    public ViewRenderer setChunk(int x, int y, int z, ChunkRenderer chunk) {
-        chunks[x][y][z] = chunk;
-        return this;
     }
 
     public void destroy() {
         for (int x = 0; x < SIDE; x++) {
             for (int y = 0; y < SIDE; y++) {
                 for (int z = 0; z < SIDE; z++) {
-                    ChunkRenderer rc = chunks[x][y][z];
-                    if (rc != null) {
+                    LocalChunk c = chunks[x][y][z];
+                    if (c != null) {
                         chunks[x][y][z].destroy();
                         chunks[x][y][z] = null;
                     }
@@ -156,7 +165,6 @@ public class ViewRenderer {
     }
 
     public void draw(Uniformer uniformer) {
-
         Matrix4f m = new Matrix4f();
         m.translate(
                 2f * 16f * centerX,
@@ -169,14 +177,14 @@ public class ViewRenderer {
                     if (chunks[x][y][z] != null) {
                         Matrix4f model = new Matrix4f(m);
                         model.translate(
-                                2f * 16f * (x - RADIUS),
-                                2f * 16f * (y - RADIUS),
-                                2f * 16f * (z - RADIUS) * -1f
+                                2f * 16f * (x - MAX_RADIUS),
+                                2f * 16f * (y - MAX_RADIUS),
+                                2f * 16f * (z - MAX_RADIUS) * -1f
                         );
                         uniformer.setUniformMatrix4("model", model.get(BufferUtils.createFloatBuffer(16)));
                         uniformer.setUniform("uni_col", Color.rgba(((float) x) / SIDE, ((float) y) / SIDE, 1f - ((float) z) / SIDE, 1f));
 
-                        getChunk(x, y, z).draw();
+                        chunks[x][y][z].draw();
                     }
                 }
             }

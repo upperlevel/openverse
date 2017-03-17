@@ -5,60 +5,36 @@ import lombok.NonNull;
 import lombok.Setter;
 import xyz.upperlevel.opencraft.client.asset.shape.BlockShape;
 
-public class BlockRenderer {
+public class LocalBlock {
 
     @Getter
-    private LocalWorld view;
+    private LocalWorld world;
     
     @Getter
-    private ChunkRenderer chunk;
+    private LocalChunk chunk;
     
     @Getter
-    private int chunkX, chunkY, chunkZ;
-
-    @Getter
-    private int viewX, viewY, viewZ;
+    private int x, y, z;
 
     @Getter
     @Setter
-    @NonNull
     private BlockShape shape = null;
 
-    public BlockRenderer(ChunkRenderer chunk, int chunkX, int chunkY, int chunkZ) {
-        view       = chunk.getView();
+    public LocalBlock(LocalWorld world, int x, int y, int z) {
+        this.world = world;
+        this.chunk = world.getChunk(x, y, z);
+
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    public LocalBlock(LocalChunk chunk, int x, int y, int z) {
+        this.world = chunk.getWorld();
         this.chunk = chunk;
-        
-        this.chunkX = chunkX;
-        this.chunkY = chunkY;
-        this.chunkZ = chunkZ;
-        
-        viewX = chunk.getX() * 16 + chunkX;
-        viewY = chunk.getY() * 16 + chunkY;
-        viewZ = chunk.getZ() * 16 + chunkZ;
-    }
 
-    public BlockRenderer(LocalWorld view, int viewX, int viewY, int viewZ) {
-        this.view = view;
-        chunk     = view.getChunk(
-                viewX / 16,
-                viewY / 16,
-                viewZ / 16
-        );
-
-        chunkX = viewX % 16;
-        chunkY = viewY % 16;
-        chunkZ = viewZ % 16;
-
-        this.viewX = viewX;
-        this.viewY = viewY;
-        this.viewZ = viewZ;
-    }
-
-    public boolean isEmpty() {
-        return shape == null || shape.isEmpty();
-    }
-
-    public BlockRenderer getRelative(int x, int y, int z) {
-        return view.getBlock(viewX + x, viewY + y, viewZ + z);
+        this.x = chunk.getX() * 16 + x;
+        this.y = chunk.getY() * 16 + y;
+        this.z = chunk.getZ() * 16 + z;
     }
 }

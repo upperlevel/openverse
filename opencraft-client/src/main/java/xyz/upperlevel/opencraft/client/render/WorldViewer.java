@@ -4,11 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
+import xyz.upperlevel.opencraft.client.physic.PhysicEngine;
 import xyz.upperlevel.opencraft.client.physic.PhysicalViewer;
 import xyz.upperlevel.ulge.opengl.shader.Uniformer;
 import xyz.upperlevel.ulge.util.math.CameraUtil;
 
-public class ViewerRenderer extends PhysicalViewer {
+public class WorldViewer extends PhysicalViewer {
 
     @Getter
     @Setter
@@ -24,9 +25,9 @@ public class ViewerRenderer extends PhysicalViewer {
 
     @Getter
     @Setter
-    protected LocalWorld view = new LocalWorld(this);
+    protected LocalWorld world = new LocalWorld();
 
-    public ViewerRenderer() {
+    public WorldViewer() {
     }
 
     private Matrix4f camera = null;
@@ -57,7 +58,7 @@ public class ViewerRenderer extends PhysicalViewer {
         int acz = (int) Math.ceil(rz);
 
         if (chunkX != acx || chunkY != acy || chunkZ != acz)
-            view.setCenter(acx, acy, acz);
+            world.setCenter(acx, acy, acz);
 
         chunkX = acx;
         chunkY = acy;
@@ -68,7 +69,6 @@ public class ViewerRenderer extends PhysicalViewer {
     public void updatePosition() {
         updateCamera();
         updateView();
-        System.out.println("pos: " + view.getViewX(x) + " " + view.getViewY(y) + " " + view.getViewZ(z));
     }
 
     @Override
@@ -76,21 +76,11 @@ public class ViewerRenderer extends PhysicalViewer {
         updateCamera();
     }
 
-    private long lastTime = -1;
 
     public void draw(Uniformer uniformer) {
-        if (lastTime == -1)
-            lastTime = System.currentTimeMillis();
-        long currTime = System.currentTimeMillis();
-
-        //new GravitySupplier().update(  this, 0);
-        //new CollisionSupplier().update(this, 0);
-
-        lastTime = currTime;
-
         if (camera != null) {
             uniformer.setUniformMatrix4("cam", camera.get(BufferUtils.createFloatBuffer(16)));
-            view.draw(uniformer);
+            world.draw(uniformer);
         }
     }
 }
