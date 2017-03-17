@@ -7,17 +7,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LocalWorld {
-
-    private LocalChunk[][][] chunks = new LocalChunk[][][];
+public class EntityManager {
 
     private Map<Long, Entity> entities = new HashMap<>();
 
-    public LocalWorld() {
-    }
-
-    public LocalChunk getChunk(int x, int y, int z) {
-        
+    public EntityManager() {
     }
 
     public void spawnEntity(float x, float y, float z, @NonNull Entity entity) {

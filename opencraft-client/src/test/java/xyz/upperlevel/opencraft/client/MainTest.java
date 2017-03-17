@@ -2,7 +2,9 @@ package xyz.upperlevel.opencraft.client;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
-import xyz.upperlevel.opencraft.client.render.ViewerRenderer;
+import xyz.upperlevel.opencraft.client.physic.PhysicEngine;
+import xyz.upperlevel.opencraft.client.render.LocalWorld;
+import xyz.upperlevel.opencraft.client.render.WorldViewer;
 import xyz.upperlevel.opencraft.client.render.texture.TextureBakery;
 import xyz.upperlevel.opencraft.server.OpenCraftServer;
 import xyz.upperlevel.ulge.opengl.shader.Program;
@@ -15,6 +17,8 @@ import xyz.upperlevel.ulge.window.event.CursorMoveEvent;
 import xyz.upperlevel.ulge.window.event.GlfwCursorMoveEventHandler;
 import xyz.upperlevel.ulge.window.event.key.Key;
 
+import java.io.OutputStream;
+
 import static java.lang.System.out;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
@@ -22,7 +26,7 @@ import static org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY;
 
 public class MainTest {
 
-    public static ViewerRenderer VIEWER;
+    public static WorldViewer VIEWER;
 
     public static void main(String[] a) {
         Window win = Glfw.createWindowSettings()
@@ -86,19 +90,34 @@ public class MainTest {
         glEnable(GL_ALPHA_TEST);
 
         int fpsCounter = 0;
-        long lastTime = 0;
 
-        win.setVSync(true);
+        win.setVSync(false);
+
+        LocalWorld w = client.getViewer().getWorld();
+        w.demand();
 
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+
+        long lastTime_fps = 0;
+        long lastTime_py = 0;
+
         while (!win.isClosed()) {
-            if (System.currentTimeMillis() - lastTime >= 1000) {
+            long t;
+            t = System.currentTimeMillis();
+            if (t - lastTime_fps >= 1000) {
                 out.println("FPS: " + fpsCounter);
                 fpsCounter = 0;
-                lastTime = System.currentTimeMillis();
+                lastTime_fps = t;
             }
             fpsCounter++;
+
+            t = System.currentTimeMillis();
+            if (t - lastTime_py >= 1000 / 20) {
+                PhysicEngine.in.update(VIEWER, VIEWER.getWorld());
+                lastTime_py = t;
+            }
+
 
             // todo replace gl11 functions glClear glClearColor
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
