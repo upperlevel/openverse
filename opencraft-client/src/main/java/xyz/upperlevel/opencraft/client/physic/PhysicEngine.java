@@ -13,6 +13,8 @@ import xyz.upperlevel.opencraft.client.render.LocalWorld;
 import java.util.LinkedList;
 import java.util.List;
 
+import static xyz.upperlevel.opencraft.client.physic.util.RaycastBlock.Face.*;
+
 public class PhysicEngine {
 
     public static final PhysicEngine in = new PhysicEngine();
@@ -41,17 +43,15 @@ public class PhysicEngine {
     public void update(PhysicalViewer viewer, LocalWorld world) {
         modifiers.forEach(m -> m.update(viewer));
 
-        float fx = viewer.x;
-        float fy = viewer.y;
-        float fz = viewer.z;
+        float sx = viewer.x;
+        float sy = viewer.y;
+        float sz = viewer.z;
 
-        float tx = viewer.x + viewer.speedX;
-        float ty = viewer.y + viewer.speedY;
-        float tz = viewer.z + viewer.speedZ;
+        float ex = viewer.x + viewer.speedX;
+        float ey = viewer.y + viewer.speedY;
+        float ez = viewer.z + viewer.speedZ;
 
-        System.out.println("fx: " + fx + " fy: " + fy + " fz: " + fz);
-        System.out.println("tx: " + tx + " ty: " + ty + " tz: " + tz);
-        RaycastIterator ri = new RaycastIterator(fx, fy, fz, tx, ty, tz);
+        RaycastIterator ri = new RaycastIterator(sx, sy, sz, ex, ey, ez);
         while (ri.hasNext()) {
             RaycastBlock rb = ri.next();
 
@@ -64,22 +64,29 @@ public class PhysicEngine {
 
             if (lb != null && lb.getShape() != null && !lb.getShape().isEmpty()) {
                 if (face == null)
-                    return;
+                    continue;
                 Vector3d it = RaycastUtil.getIntersection(
-                        fx, fy, fz,
-                        tx, ty, tz,
+                        sx, sy, sz,
+                        ex, ey, ez,
                         bx, by, bz,
                         face
                 );
-                viewer.setPosition((float) it.x, (float) it.y, (float) it.z);
-                viewer.setSpeed(
-                        -viewer.speedX * 0.9f,
-                        -viewer.speedY * 0.9f,
-                        -viewer.speedZ * 0.9f
+
+                viewer.setPosition(
+                        (float) ((face == RIGHT && viewer.speedX < 0 || face == LEFT && viewer.speedX >= 0) ? it.x : ex),
+                        (float) ((face == UP && viewer.speedY < 0 || face == DOWN && viewer.speedY >= 0) ? it.y : ey ),
+                        (float) ((face == FRONT && viewer.speedZ < 0 || face == BACK && viewer.speedZ >= 0) ? it.z : ez)
                 );
+
+                viewer.setSpeed(
+                        -viewer.speedX * 0.25f,
+                        -viewer.speedY * 0.25f,
+                        -viewer.speedZ * 0.25f
+                );
+
                 return;
             }
         }
-        viewer.setPosition(tx, ty, tz);
+        viewer.setPosition(ex, ey, ez);
     }
 }

@@ -108,7 +108,7 @@ public class LocalWorld {
     public LocalBlock getBlock(int x, int y, int z) {
         int cx = (int) Math.floor(x / 16f);
         int cy = (int) Math.floor(y / 16f);
-        int cz = (int) Math.floor(z / 16f);
+        int cz = (int) Math.ceil(z / 16f);
 
         int bx = Math.floorMod(x, 16);
         int by = Math.floorMod(y, 16);

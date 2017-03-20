@@ -78,6 +78,10 @@ public class WorldViewer extends PhysicalViewer {
 
 
     public void draw(Uniformer uniformer) {
+
+        // todo temporary here
+        PhysicEngine.in.update(this, world);
+
         if (camera != null) {
             uniformer.setUniformMatrix4("cam", camera.get(BufferUtils.createFloatBuffer(16)));
             world.draw(uniformer);

@@ -91,7 +91,7 @@ public class MainTest {
 
         int fpsCounter = 0;
 
-        win.setVSync(false);
+        win.setVSync(true);
 
         LocalWorld w = client.getViewer().getWorld();
         w.demand();
@@ -112,11 +112,7 @@ public class MainTest {
             }
             fpsCounter++;
 
-            t = System.currentTimeMillis();
-            if (t - lastTime_py >= 1000 / 20) {
-                PhysicEngine.in.update(VIEWER, VIEWER.getWorld());
-                lastTime_py = t;
-            }
+            //PhysicEngine.in.update(VIEWER, VIEWER.getWorld());
 
 
             // todo replace gl11 functions glClear glClearColor

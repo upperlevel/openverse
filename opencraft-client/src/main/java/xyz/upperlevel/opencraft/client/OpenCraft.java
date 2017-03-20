@@ -1,7 +1,6 @@
 package xyz.upperlevel.opencraft.client;
 
 import lombok.Getter;
-import xyz.upperlevel.gamelauncher.api.Game;
 import xyz.upperlevel.opencraft.client.asset.AssetManager;
 import xyz.upperlevel.opencraft.client.asset.shape.BlockCubeComponent;
 import xyz.upperlevel.opencraft.client.asset.shape.BlockShape;
@@ -19,7 +18,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class OpenCraft extends Game {
+public class OpenCraft {
 
     private static OpenCraft get = new OpenCraft();
 
@@ -93,15 +92,6 @@ public class OpenCraft extends Game {
 
     @Getter
     private AssetManager assetManager = new AssetManager();
-
-    @Override
-    public void start() {
-        get = this;
-    }
-
-    @Override
-    public void close() {
-    }
 
     public static OpenCraft get() {
         return get;

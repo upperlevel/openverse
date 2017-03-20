@@ -1,6 +1,5 @@
 package xyz.upperlevel.opencraft.client.physic.util;
 
-import lombok.Getter;
 import xyz.upperlevel.opencraft.client.physic.util.RaycastBlock.Face;
 
 import java.util.Iterator;
@@ -8,109 +7,115 @@ import java.util.NoSuchElementException;
 
 import static java.lang.Math.floor;
 
+// http://playtechs.blogspot.it/2007/03/raytracing-on-grid.html
 public class RaycastIterator implements Iterator<RaycastBlock> {
 
-    private int rx, ry, rz;
-    private final int rex, rey, rez;
+    private int x, y, z;
 
-    private final int stepX, stepY, stepZ;
-    private final double tDeltaX, tDeltaY, tDeltaZ;
-    private double tMaxX, tMaxY, tMaxZ;
+    private double dt_dx, dt_dy, dt_dz;
+
+    private int n = 1;
+    private int x_inc, y_inc, z_inc;
+    private double t_next_y, t_next_x, t_next_z;
     private final Face faceX, faceY, faceZ;
-
-    private RaycastBlock next = null;
-
-
-    private static double forceCeil(double v) {
-        return Math.floor(v) + 1;
-    }
+    private Face lastFace = null;
 
     public RaycastIterator(double startX, double startY, double startZ, double endX, double endY, double endZ) {
-        rx = (int) floor(startX);
-        ry = (int) floor(startY);
-        rz = (int) floor(startZ);
+        double dx = Math.abs(startX - endX);
+        double dy = Math.abs(startY - endY);
+        double dz = Math.abs(startZ - endZ);
 
-        rex = (int) floor(endX);
-        rey = (int) floor(endY);
-        rez = (int) floor(endZ);
+        x = (int) (floor(startX));
+        y = (int) (floor(startY));
+        z = (int) (floor(startZ));
 
-        if (rx == rex && ry == rey && rz == rez) {
-            next = new RaycastBlock(rx, ry, rz, null);
-            stepX = 0;
-            stepY = 0;
-            stepZ = 0;
-            tDeltaX = 0.0;
-            tDeltaY = 0.0;
-            tDeltaZ = 0.0;
+        dt_dx = 1.0 / dx;
+        dt_dy = 1.0 / dy;
+        dt_dz = 1.0 / dz;
+
+        if (dx == 0) {
+            x_inc = 0;
+            t_next_x = dt_dx; // infinity
             faceX = null;
-            faceY = null;
-            faceZ = null;
+        } else if (endX > startX) {
+            x_inc = 1;
+            n += (int) (floor(endX)) - x;
+            t_next_x = (floor(startX) + 1 - startX) * dt_dx;
+            faceX = Face.LEFT;
         } else {
-            double dx = endX - startX;
-            double dy = endY - startY;
-            double dz = endZ - startZ;
+            x_inc = -1;
+            n += x - (int) (floor(endX));
+            t_next_x = (startX - floor(startX)) * dt_dx;
+            faceX = Face.RIGHT;
+        }
 
-            stepX = (int) Math.signum(dx);
-            stepY = (int) Math.signum(dy);
-            stepZ = (int) Math.signum(dz);
+        if (dy == 0) {
+            y_inc = 0;
+            t_next_y = dt_dy; // infinity
+            faceY = null;
+        } else if (endY > startY) {
+            y_inc = 1;
+            n += (int) (floor(startY)) - y;
+            t_next_y = (floor(startY) + 1 - startY) * dt_dy;
+            faceY = Face.DOWN;
+        } else {
+            y_inc = -1;
+            n += y - (int) (floor(endY));
+            t_next_y = (startY - floor(startY)) * dt_dy;
+            faceY = Face.UP;
+        }
 
-            tMaxX = dx == 0 ? Double.POSITIVE_INFINITY : (forceCeil(startX) - startX) / dx * stepX;
-            tMaxY = dy == 0 ? Double.POSITIVE_INFINITY : (forceCeil(startY) - startY) / dy * stepY;
-            tMaxZ = dz == 0 ? Double.POSITIVE_INFINITY : (forceCeil(startZ) - startZ) / dz * stepZ;
-
-            tDeltaX = tMaxX * dx * stepX;
-            tDeltaY = tMaxY * dy * stepY;
-            tDeltaZ = tMaxZ * dz * stepZ;
-
-            faceX = stepX > 0 ? Face.LEFT : Face.RIGHT;
-            faceY = stepY > 0 ? Face.DOWN : Face.UP;
-            faceZ = stepZ > 0 ? Face.FRONT : Face.BACK;
-
-            calc();
+        if (dz == 0) {
+            z_inc = 0;
+            t_next_z = dt_dz; // infinity
+            faceZ = null;
+        } else if (endZ > startZ) {
+            z_inc = 1;
+            n += (int) (floor(endZ)) - z;
+            t_next_z = (floor(startZ) + 1 - startZ) * dt_dz;
+            faceZ = Face.FRONT;
+        } else {
+            z_inc = -1;
+            n += z - (int) (floor(endZ));
+            t_next_z = (startZ - floor(startZ)) * dt_dz;
+            faceZ = Face.BACK;
         }
     }
 
     @Override
     public boolean hasNext() {
-        return next != null;
+        return n > 0;
     }
 
     @Override
     public RaycastBlock next() {
         if (!hasNext())
             throw new NoSuchElementException();
-        RaycastBlock current = next;
-        calc();
-        return current;
-    }
+        RaycastBlock current = new RaycastBlock(x, y, z, lastFace);
 
-    private void calc() {
-        if (rx == rex && ry == rey && rz == rez) {
-            next = null;
-            return;
-        }
-        Face face;
-        if (tMaxX < tMaxY) {
-            if (tMaxX < tMaxZ) {
-                tMaxX += tDeltaX;
-                rx += stepX;
-                face = faceX;
+        if (t_next_y < t_next_x) {
+            if (t_next_z < t_next_y) {
+                z += z_inc;
+                t_next_z += dt_dz;
+                lastFace = faceZ;
             } else {
-                tMaxZ += tDeltaZ;
-                rz += stepZ;
-                face = faceZ;
+                y += y_inc;
+                t_next_y += dt_dy;
+                lastFace = faceY;
             }
         } else {
-            if (tMaxY < tMaxZ) {
-                tMaxY += tDeltaY;
-                ry += stepY;
-                face = faceY;
+            if (t_next_z < t_next_x) {
+                z += z_inc;
+                t_next_z += dt_dz;
+                lastFace = faceZ;
             } else {
-                tMaxZ += tDeltaZ;
-                rz += stepZ;
-                face = faceZ;
+                x += x_inc;
+                t_next_x += dt_dx;
+                lastFace = faceX;
             }
         }
-        next = new RaycastBlock(rx, ry, rz, face);
+
+        n--;
+        return current;
     }
 }

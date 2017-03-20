@@ -13,12 +13,4 @@
     <groupId>xyz.upperlevel.opencraft.server</groupId>
     <artifactId>opencraft-server</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.flowpowered</groupId>
-            <artifactId>flow-noise</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-    </dependencies>
 </project>
