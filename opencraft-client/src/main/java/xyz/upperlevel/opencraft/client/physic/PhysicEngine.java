@@ -3,7 +3,6 @@ package xyz.upperlevel.opencraft.client.physic;
 import com.sun.istack.internal.Nullable;
 import lombok.NonNull;
 import org.joml.Vector3d;
-import org.joml.Vector3f;
 import xyz.upperlevel.opencraft.client.physic.impl.GravityModifier;
 import xyz.upperlevel.opencraft.client.physic.util.PhysicalBlock;
 import xyz.upperlevel.opencraft.client.physic.util.PhysicalFace;
@@ -25,20 +24,20 @@ public class PhysicEngine {
         in.addModifier(new GravityModifier());
     }
 
-    private List<PhysicModifier> modifiers = new LinkedList<>();
+    private List<SpeedModifier> modifiers = new LinkedList<>();
 
     public PhysicEngine() {
     }
 
-    public void addModifier(@NonNull PhysicModifier modifier) {
+    public void addModifier(@NonNull SpeedModifier modifier) {
         modifiers.add(modifier);
     }
 
-    public void addModifier(int i, @Nullable PhysicModifier modifier) {
+    public void addModifier(int i, @Nullable SpeedModifier modifier) {
         modifiers.add(i, modifier);
     }
 
-    public void removeModifier(PhysicModifier modifier) {
+    public void removeModifier(SpeedModifier modifier) {
         modifiers.remove(modifier);
     }
 
@@ -49,12 +48,13 @@ public class PhysicEngine {
         float sy = viewer.y;
         float sz = viewer.z;
 
-        float ex = viewer.x + viewer.speedX;
-        float ey = viewer.y + viewer.speedY;
-        float ez = viewer.z + viewer.speedZ;
+        float ex = viewer.x + viewer.getSpeedX();
+        float ey = viewer.y + viewer.getSpeedY();
+        float ez = viewer.z + viewer.getSpeedZ();
 
-        // check player's grid intersections between start point and end point
+        // checks entity's grid intersections between start point and end point
         RaycastIterator ri = new RaycastIterator(sx, sy, sz, ex, ey, ez);
+
         while (ri.hasNext()) {
             PhysicalBlock rb = ri.next();
 
@@ -64,10 +64,10 @@ public class PhysicEngine {
             PhysicalFace face = rb.getFace();
 
             LocalBlock lb = world.getBlock(bx, by, bz);
-            
+
             // if the block is solid
             if (lb != null && lb.getShape() != null && !lb.getShape().isEmpty()) {
-                
+
                 // if the face colliding with is not null
                 if (face == null)
                     continue;
@@ -79,20 +79,24 @@ public class PhysicEngine {
                         bx, by, bz,
                         face
                 );
-                
+
                 // sets player position (solid block found case)
                 viewer.setPosition(
-                        (float) ((face == RIGHT && viewer.speedX < 0 || face == LEFT && viewer.speedX >= 0) ? it.x : ex),
-                        (float) ((face == UP && viewer.speedY < 0 || face == DOWN && viewer.speedY >= 0) ? it.y : ey),
-                        (float) ((face == FRONT && viewer.speedZ < 0 || face == BACK && viewer.speedZ >= 0) ? it.z : ez)
+                        (float) ((face == RIGHT && viewer.getSpeedX() < 0 || face == LEFT && viewer.getSpeedX() >= 0) ? it.x : ex),
+                        (float) ((face == UP && viewer.getSpeedY() < 0 || face == DOWN && viewer.getSpeedY() >= 0) ? it.y : ey),
+                        (float) ((face == FRONT && viewer.getSpeedZ() < 0 || face == BACK && viewer.getSpeedZ() >= 0) ? it.z : ez)
                 );
 
+                /*
                 // applies bounce
                 viewer.setSpeed(
-                       -viewer.speedX * 0.1f,
-                       -viewer.speedY * 0.1f,
-                       -viewer.speedZ * 0.1f
+                       -viewer.getSpeedX() * 0.1f,
+                       -viewer.getSpeedY() * 0.1f,
+                       -viewer.getSpeedZ() * 0.1f
                 );
+                */
+                viewer.setColliding(face, true);
+
                 return;
             }
         }

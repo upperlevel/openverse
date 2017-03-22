@@ -1,9 +1,9 @@
 package xyz.upperlevel.opencraft.client.physic.impl;
 
-import xyz.upperlevel.opencraft.client.physic.PhysicModifier;
+import xyz.upperlevel.opencraft.client.physic.SpeedModifier;
 import xyz.upperlevel.opencraft.client.physic.PhysicalViewer;
 
-public class GravityModifier implements PhysicModifier {
+public class GravityModifier implements SpeedModifier {
 
     public static final float CONSTANT = 0.125f;
 
@@ -12,6 +12,6 @@ public class GravityModifier implements PhysicModifier {
 
     @Override
     public void update(PhysicalViewer viewer) {
-        viewer.speedY -= CONSTANT * 0.5f;
+        viewer.addSpeedY(-CONSTANT);
     }
 }
