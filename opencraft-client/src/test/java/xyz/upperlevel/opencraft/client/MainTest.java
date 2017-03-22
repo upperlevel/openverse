@@ -2,7 +2,6 @@ package xyz.upperlevel.opencraft.client;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
-import xyz.upperlevel.opencraft.client.physic.PhysicEngine;
 import xyz.upperlevel.opencraft.client.render.LocalWorld;
 import xyz.upperlevel.opencraft.client.render.WorldViewer;
 import xyz.upperlevel.opencraft.client.render.texture.TextureBakery;
@@ -16,8 +15,6 @@ import xyz.upperlevel.ulge.window.Window;
 import xyz.upperlevel.ulge.window.event.CursorMoveEvent;
 import xyz.upperlevel.ulge.window.event.GlfwCursorMoveEventHandler;
 import xyz.upperlevel.ulge.window.event.key.Key;
-
-import java.io.OutputStream;
 
 import static java.lang.System.out;
 import static org.lwjgl.opengl.GL11.*;

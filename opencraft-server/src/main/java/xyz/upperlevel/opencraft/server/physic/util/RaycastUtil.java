@@ -1,9 +1,9 @@
-package xyz.upperlevel.opencraft.client.physic.util;
+package xyz.upperlevel.opencraft.server.physic.util;
 
 import lombok.NonNull;
 import org.joml.Vector3d;
 
-import static xyz.upperlevel.opencraft.client.physic.util.PhysicalFace.*;
+import static xyz.upperlevel.opencraft.server.physic.util.PhysicalFace.*;
 
 public class RaycastUtil {
 

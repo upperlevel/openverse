@@ -1,7 +1,7 @@
-package xyz.upperlevel.opencraft.client.physic.impl;
+package xyz.upperlevel.opencraft.server.physic.impl;
 
-import xyz.upperlevel.opencraft.client.physic.SpeedModifier;
-import xyz.upperlevel.opencraft.client.physic.PhysicalViewer;
+import xyz.upperlevel.opencraft.server.physic.SpeedModifier;
+import xyz.upperlevel.opencraft.server.physic.PhysicalViewer;
 
 public class GravityModifier implements SpeedModifier {
 

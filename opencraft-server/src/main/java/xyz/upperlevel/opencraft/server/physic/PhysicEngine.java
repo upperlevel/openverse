@@ -1,20 +1,20 @@
-package xyz.upperlevel.opencraft.client.physic;
+package xyz.upperlevel.opencraft.server.physic;
 
 import com.sun.istack.internal.Nullable;
 import lombok.NonNull;
 import org.joml.Vector3d;
-import xyz.upperlevel.opencraft.client.physic.impl.GravityModifier;
-import xyz.upperlevel.opencraft.client.physic.util.PhysicalBlock;
-import xyz.upperlevel.opencraft.client.physic.util.PhysicalFace;
-import xyz.upperlevel.opencraft.client.physic.util.RaycastIterator;
-import xyz.upperlevel.opencraft.client.physic.util.RaycastUtil;
+import xyz.upperlevel.opencraft.server.physic.impl.GravityModifier;
+import xyz.upperlevel.opencraft.server.physic.util.PhysicalBlock;
+import xyz.upperlevel.opencraft.server.physic.util.PhysicalFace;
+import xyz.upperlevel.opencraft.server.physic.util.RaycastIterator;
+import xyz.upperlevel.opencraft.server.physic.util.RaycastUtil;
 import xyz.upperlevel.opencraft.client.render.LocalBlock;
 import xyz.upperlevel.opencraft.client.render.LocalWorld;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import static xyz.upperlevel.opencraft.client.physic.util.PhysicalFace.*;
+import static xyz.upperlevel.opencraft.server.physic.util.PhysicalFace.*;
 
 public class PhysicEngine {
 
