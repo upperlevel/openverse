@@ -32,7 +32,7 @@ public class BlockFace {
 
     @Getter
     @Setter
-    private Texture texture = OpenCraft.get().getAssetManager().getTextureRegistry().getTexture("null_texture");
+    private Texture texture = OpenCraft.get().getAssetManager().getTextureRegistry().getTexture("null");
 
     @Getter
     private BlockVertex[] vertices = new BlockVertex[4];

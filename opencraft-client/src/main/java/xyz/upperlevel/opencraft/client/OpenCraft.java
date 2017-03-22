@@ -8,15 +8,11 @@ import xyz.upperlevel.opencraft.client.asset.shape.BlockShapeRegistry;
 import xyz.upperlevel.opencraft.client.asset.shape.Zone3f;
 import xyz.upperlevel.opencraft.client.asset.texture.Texture;
 import xyz.upperlevel.opencraft.client.asset.texture.TextureRegistry;
-import xyz.upperlevel.opencraft.client.render.texture.TextureBakery;
 import xyz.upperlevel.ulge.opengl.texture.loader.ImageContent;
 import xyz.upperlevel.ulge.util.Color;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 public class OpenCraft {
 
@@ -27,7 +23,7 @@ public class OpenCraft {
             TextureRegistry tm = get.assetManager.getTextureRegistry();
             Texture texture;
 
-            texture = new Texture("null_texture", new ImageContent(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB) {
+            texture = new Texture("null", new ImageContent(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB) {
                 {
                     Graphics2D g = createGraphics();
                     g.setColor(java.awt.Color.WHITE);
@@ -36,19 +32,7 @@ public class OpenCraft {
             }));
             tm.register(texture);
 
-            File desktop = new File(System.getProperty("user.home"), "desktop");
-            try {
-                texture = new Texture("something_texture", new ImageContent(ImageIO.read(new File(desktop, "hello.png"))));
-                tm.register(texture);
-                TextureBakery.SIMPLE_INST.register(texture);
-
-                BufferedImage bi = ImageIO.read(new File(desktop, "grass_top.png"));
-                texture = new Texture("grass_texture", new ImageContent(bi));
-                tm.register(texture);
-                TextureBakery.SIMPLE_INST.register(texture);
-            } catch (IOException e) {
-                throw new IllegalStateException("cannot load image", e);
-            }
+            tm.registerDirectory(OpenCraft.class.getClassLoader().getResource("tex"));
         }
 
         {
@@ -61,31 +45,36 @@ public class OpenCraft {
 
             // test
             shape = new BlockShape("test_shape");
-            shape.add(new BlockCubeComponent(
-                    new Zone3f(
-                            0,
-                            0,
-                            0,
-                            1f,
-                            1f,
-                            1f
+            shape.add(
+                    new BlockCubeComponent(
+                            new Zone3f(
+                                    0,
+                                    0,
+                                    0,
+                                    1f,
+                                    1f,
+                                    1f
+                            )
                     )
-            ).setColor(Color.RED)
-                    .setTexture(get.assetManager.getTextureRegistry().getTexture("something_texture")));
+                            .setColor(Color.RED)
+                            .setTexture(get.assetManager.getTextureRegistry().getTexture("something"))
+            );
             sm.register(shape);
 
             // grass
             shape = new BlockShape("grass_shape");
-            shape.add(new BlockCubeComponent(
-                    new Zone3f(
-                            0,
-                            0,
-                            0,
-                            1f,
-                            1f,
-                            1f
-                    )
-            ).setTexture(get.assetManager.getTextureRegistry().getTexture("grass_texture")));
+            shape.add(
+                    new BlockCubeComponent(
+                            new Zone3f(
+                                    0,
+                                    0,
+                                    0,
+                                    1f,
+                                    1f,
+                                    1f
+                            )
+                    ).setTexture(get.assetManager.getTextureRegistry().getTexture("grass"))
+            );
             sm.register(shape);
         }
     }
