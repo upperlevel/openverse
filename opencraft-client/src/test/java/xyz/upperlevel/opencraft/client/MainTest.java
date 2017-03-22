@@ -150,5 +150,7 @@ public class MainTest {
             VIEWER.down(sensitivity);
         if (win.getKey(Key.SPACE))
             VIEWER.up(sensitivity);
+        if (win.getKey(Key.KEY_0))
+            VIEWER.setPosition(1, 7, 1);
     }
 }

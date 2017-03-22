@@ -66,7 +66,9 @@ public class BlockFace {
         matrix = new Matrix4f(matrix)
                 .translate(position.getDirection().mul(component.getSize()))
                 .scale(component.getSize())
-                .rotate(position.getRotation());
+                .translate(.5f, .5f, .5f)
+                .rotate(position.getRotation())
+                .translate(-.5f, -.5f, -.5f);
 
         BlockVertex vertex;
 
@@ -74,28 +76,28 @@ public class BlockFace {
 
         // top left
         vertex = getVertex(BlockFaceVertexPosition.TOP_LEFT);
-        putPosition(buffer, matrix.transformPosition(-1f, 1f, 0f, new Vector3f()));
+        putPosition(buffer, matrix.transformPosition(vertex.getX(), vertex.getY(), 0f, new Vector3f()));
         putColor(buffer, vertex.getColor());
         putTextureCoordinates(buffer, vertex.getU(), vertex.getV(), texLayer);
         // System.out.println("top left - u: " + vertex.getU() + " v: " + vertex.getV() + " layer: " + texLayer);
 
         // bottom left
         vertex = getVertex(BlockFaceVertexPosition.BOTTOM_LEFT);
-        putPosition(buffer, matrix.transformPosition(-1f, -1f, 0f, new Vector3f()));
+        putPosition(buffer, matrix.transformPosition(vertex.getX(), vertex.getY(), 0f, new Vector3f()));
         putColor(buffer, vertex.getColor());
         putTextureCoordinates(buffer, vertex.getU(), vertex.getV(), texLayer);
         // System.out.println("bottom left - u: " + vertex.getU() + " v: " + vertex.getV() + " layer: " + texLayer);
 
         // bottom right
         vertex = getVertex(BlockFaceVertexPosition.BOTTOM_RIGHT);
-        putPosition(buffer, matrix.transformPosition(1f, -1f, 0f, new Vector3f()));
+        putPosition(buffer, matrix.transformPosition(vertex.getX(), vertex.getY(), 0f, new Vector3f()));
         putColor(buffer, vertex.getColor());
         putTextureCoordinates(buffer, vertex.getU(), vertex.getV(), texLayer);
         //System.out.println("bottom right - u: " + vertex.getU() + " v: " + vertex.getV() + " layer: " + texLayer);
 
         // top right
         vertex = getVertex(BlockFaceVertexPosition.TOP_RIGHT);
-        putPosition(buffer, matrix.transformPosition(1f, 1f, 0f, new Vector3f()));
+        putPosition(buffer, matrix.transformPosition(vertex.getX(), vertex.getY(), 0f, new Vector3f()));
         putColor(buffer, vertex.getColor());
         putTextureCoordinates(buffer, vertex.getU(), vertex.getV(), texLayer);
         // System.out.println("top right - u: " + vertex.getU() + " v: " + vertex.getV() + " layer: " + texLayer);

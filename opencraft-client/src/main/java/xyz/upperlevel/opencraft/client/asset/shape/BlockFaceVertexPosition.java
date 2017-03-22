@@ -6,7 +6,7 @@ public enum BlockFaceVertexPosition {
         @Override
         public BlockVertex createVertex(BlockFace face) {
             return new BlockVertex(face)
-                    .setX(-1f)
+                    .setX(0f)
                     .setY(1f);
         }
     },
@@ -23,8 +23,8 @@ public enum BlockFaceVertexPosition {
         @Override
         public BlockVertex createVertex(BlockFace face) {
             return new BlockVertex(face)
-                    .setX(-1f)
-                    .setY(-1f)
+                    .setX(0f)
+                    .setY(0f)
                     .setV(1f);
         }
     },
@@ -33,7 +33,7 @@ public enum BlockFaceVertexPosition {
         public BlockVertex createVertex(BlockFace face) {
             return new BlockVertex(face)
                     .setX(1f)
-                    .setY(-1f)
+                    .setY(0f)
                     .setU(1f)
                     .setV(1f);
         }

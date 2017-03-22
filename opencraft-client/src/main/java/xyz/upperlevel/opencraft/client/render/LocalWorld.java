@@ -11,7 +11,7 @@ import xyz.upperlevel.ulge.util.Color;
 
 public class LocalWorld {
 
-    public static final int MAX_RADIUS = 2;
+    public static final int MAX_RADIUS = 1;
 
     public static final int SIDE = MAX_RADIUS * 2 + 1;
 
@@ -34,27 +34,6 @@ public class LocalWorld {
 
     public int getCornerZ() {
         return centerZ - MAX_RADIUS;
-    }
-
-    public void setCenterX(int x) {
-        if (x != centerX) {
-            centerX = x;
-            demand();
-        }
-    }
-
-    public void setCenterY(int y) {
-        if (y != centerY) {
-            centerY = y;
-            demand();
-        }
-    }
-
-    public void setCenterZ(int z) {
-        if (z != centerZ) {
-            centerZ = z;
-            demand();
-        }
     }
 
     public void setCenter(int x, int y, int z) {
@@ -108,7 +87,7 @@ public class LocalWorld {
     public LocalBlock getBlock(int x, int y, int z) {
         int cx = (int) Math.floor(x / 16f);
         int cy = (int) Math.floor(y / 16f);
-        int cz = (int) Math.ceil(z / 16f);
+        int cz = (int) Math.floor(z / 16f);
 
         int bx = Math.floorMod(x, 16);
         int by = Math.floorMod(y, 16);
@@ -120,7 +99,7 @@ public class LocalWorld {
 
     public void demand() {
         int crx = getCornerX();
-        int cry = getCenterY();
+        int cry = getCornerY();
         int crz = getCornerZ();
         
         for (int x = 0; x < SIDE; x++)
@@ -166,21 +145,24 @@ public class LocalWorld {
 
     public void draw(Uniformer uniformer) {
         Matrix4f m = new Matrix4f();
+        // translates world in base of its center
         m.translate(
-                2f * 16f * centerX,
-                2f * 16f * centerY,
-                2f * 16f * centerZ
+                16f * centerX,
+                16f * centerY,
+                16f * centerZ
         );
         for (int x = 0; x < SIDE; x++) {
             for (int y = 0; y < SIDE; y++) {
                 for (int z = 0; z < SIDE; z++) {
                     if (chunks[x][y][z] != null) {
                         Matrix4f model = new Matrix4f(m);
+                        // translates chunk in base of its position
                         model.translate(
-                                2f * 16f * (x - MAX_RADIUS),
-                                2f * 16f * (y - MAX_RADIUS),
-                                2f * 16f * (z - MAX_RADIUS) * -1f
+                                16f * (x - MAX_RADIUS),
+                                16f * (y - MAX_RADIUS),
+                                16f * (z - MAX_RADIUS)
                         );
+                        uniformer.setUniform("cntChk", (x == toLocWrlX(getCenterX()) && y == toLocWrlY(getCenterY()) && z == toLocWrlZ((getCenterZ()))) ? Color.RED : Color.WHITE);
                         uniformer.setUniformMatrix4("model", model.get(BufferUtils.createFloatBuffer(16)));
                         uniformer.setUniform("uni_col", Color.rgba(((float) x) / SIDE, ((float) y) / SIDE, 1f - ((float) z) / SIDE, 1f));
 

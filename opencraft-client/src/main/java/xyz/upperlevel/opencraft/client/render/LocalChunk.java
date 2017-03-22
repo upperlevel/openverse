@@ -115,9 +115,9 @@ public class LocalChunk {
                     if (shape != null && !shape.isEmpty()) {
                         Matrix4f model = new Matrix4f()
                                 .translate(
-                                        -1f + x * 2f,
-                                        -1f + y * 2f,
-                                        -1f + z * -2f
+                                        x,
+                                        y,
+                                        z
                                 );
                         drawVertCount += shape.cleanCompile(this.x * 16 + x, this.y * 16 + y, this.z * 16 + z, world, model, data);
                     }

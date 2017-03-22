@@ -40,22 +40,18 @@ public class WorldViewer extends PhysicalViewer {
                 100000f,
                 (float) Math.toRadians(yaw),
                 (float) Math.toRadians(pitch),
-                x * 2f - 1f,
-                y * 2f - 1f,
-                z * 2f + 1f
+                x,
+                y,
+                z
         );
     }
 
     private int chunkX, chunkY, chunkZ;
 
     public void updateView() { // updates position and send changes
-        float rx = x / 16f;
-        float ry = y / 16f;
-        float rz = z / 16f;
-
-        int acx = (int) Math.floor(rx);
-        int acy = (int) Math.floor(ry);
-        int acz = (int) Math.ceil(rz);
+        int acx = (int) Math.floor(x / 16f);
+        int acy = (int) Math.floor(y / 16f);
+        int acz = (int) Math.floor(z / 16f);
 
         if (chunkX != acx || chunkY != acy || chunkZ != acz)
             world.setCenter(acx, acy, acz);
@@ -81,6 +77,7 @@ public class WorldViewer extends PhysicalViewer {
 
         // todo temporary here
         PhysicEngine.in.update(this, world);
+
 
         if (camera != null) {
             uniformer.setUniformMatrix4("cam", camera.get(BufferUtils.createFloatBuffer(16)));

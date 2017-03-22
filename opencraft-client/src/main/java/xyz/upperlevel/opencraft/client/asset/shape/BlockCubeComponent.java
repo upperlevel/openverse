@@ -27,6 +27,14 @@ public class BlockCubeComponent implements BlockComponent {
     private void initDefaultFaces() {
         for (BlockFacePosition position : BlockFacePosition.values())
             faces.put(position, new BlockFace(BlockCubeComponent.this, position));
+        {
+            faces.get(BlockFacePosition.BACKWARD).setColor(Color.YELLOW);
+            faces.get(BlockFacePosition.FORWARD).setColor(Color.RED);
+            faces.get(BlockFacePosition.RIGHT).setColor(Color.GREEN);
+            faces.get(BlockFacePosition.LEFT).setColor(Color.BLUE);
+            faces.get(BlockFacePosition.DOWN).setColor(Color.AQUA);
+            faces.get(BlockFacePosition.UP).setColor(Color.WHITE);
+        }
     }
 
     public BlockCubeComponent() {
@@ -67,7 +75,7 @@ public class BlockCubeComponent implements BlockComponent {
     public int compile(Matrix4f matrix, ByteBuffer buffer) {
         matrix = new Matrix4f(matrix)
                 .translate(zone.getSize()
-                        .add(zone.getMinPosition().mul(2))
+                        .add(zone.getMinPosition())
                         .mul(1f, 1f, -1f));
 
         int vertices = 0;
