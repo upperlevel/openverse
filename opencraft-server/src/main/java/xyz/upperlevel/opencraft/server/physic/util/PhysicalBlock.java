@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.client.physic.util;
+package xyz.upperlevel.opencraft.server.physic.util;
 
 import lombok.Getter;
 

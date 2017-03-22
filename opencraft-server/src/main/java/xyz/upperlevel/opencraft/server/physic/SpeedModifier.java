@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.client.physic;
+package xyz.upperlevel.opencraft.server.physic;
 
 public interface SpeedModifier {
 

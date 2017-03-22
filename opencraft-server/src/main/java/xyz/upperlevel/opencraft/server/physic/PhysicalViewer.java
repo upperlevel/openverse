@@ -1,12 +1,12 @@
-package xyz.upperlevel.opencraft.client.physic;
+package xyz.upperlevel.opencraft.server.physic;
 
 import lombok.Getter;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import xyz.upperlevel.opencraft.client.physic.util.PhysicalFace;
+import xyz.upperlevel.opencraft.server.physic.util.PhysicalFace;
 import xyz.upperlevel.ulge.util.math.AngleUtil;
 
-import static xyz.upperlevel.opencraft.client.physic.util.PhysicalFace.*;
+import static xyz.upperlevel.opencraft.server.physic.util.PhysicalFace.*;
 
 public class PhysicalViewer {
 

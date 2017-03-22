@@ -4,8 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
-import xyz.upperlevel.opencraft.client.physic.PhysicEngine;
-import xyz.upperlevel.opencraft.client.physic.PhysicalViewer;
+import xyz.upperlevel.opencraft.server.physic.PhysicEngine;
+import xyz.upperlevel.opencraft.server.physic.PhysicalViewer;
 import xyz.upperlevel.ulge.opengl.shader.Uniformer;
 import xyz.upperlevel.ulge.util.math.CameraUtil;
 
