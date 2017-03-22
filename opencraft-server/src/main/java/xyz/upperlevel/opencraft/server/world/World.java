@@ -2,7 +2,9 @@ package xyz.upperlevel.opencraft.server.world;
 
 import lombok.Getter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class World {
 
@@ -13,7 +15,7 @@ public class World {
     private List<Chunk> loadedChunks = new ArrayList<>();
 
     @Getter
-    private Location spawn = new Location(this);
+    private Location spawn = new Location(0, 0,0);
 
     public World() {
         this(null);
