@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import static java.lang.Math.floor;
 
 // http://playtechs.blogspot.it/2007/03/raytracing-on-grid.html
+
 public class RaycastIterator implements Iterator<PhysicalBlock> {
 
     private int x, y, z;

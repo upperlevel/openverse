@@ -1,7 +1,6 @@
 package xyz.upperlevel.opencraft.client.physic;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import xyz.upperlevel.opencraft.client.physic.util.PhysicalFace;
@@ -12,7 +11,7 @@ import static xyz.upperlevel.opencraft.client.physic.util.PhysicalFace.*;
 public class PhysicalViewer {
 
     @Getter
-    protected float x = 1, y = 7, z = 1;
+    protected float x = 8, y = 2, z = 8;
 
     @Getter
     protected float yaw, pitch;
@@ -78,14 +77,68 @@ public class PhysicalViewer {
 
     // speed ---
 
+    private boolean[] collides = new boolean[PhysicalFace.values().length];
+
+    public boolean isColliding(PhysicalFace face) {
+        return collides[face.ordinal()];
+    }
+
+    public void setColliding(PhysicalFace face, boolean colliding) {
+        collides[face.ordinal()] = colliding;
+        if (colliding)
+            switch (face) {
+                case UP:
+                case DOWN:
+                    speedY = 0;
+                    break;
+                case RIGHT:
+                case LEFT:
+                    speedX = 0;
+                    break;
+                case FRONT:
+                case BACK:
+                    speedZ = 0;
+                    break;
+            }
+    }
+
     @Getter
-    @Setter
-    public float speedX, speedY, speedZ;
+    private float speedX, speedY, speedZ;
+
+    public void addSpeedX(float x) {
+        if (!isColliding(RIGHT) && x < 0) {
+            speedX += x;
+            setColliding(LEFT, false);
+        } else if (!isColliding(LEFT) && x > 0) {
+            speedX += x;
+            setColliding(RIGHT, false);
+        }
+    }
+
+    public void addSpeedY(float y) {
+        if (!isColliding(UP) && y < 0) {
+            speedY += y;
+            setColliding(DOWN, false);
+        } else if (!isColliding(DOWN) && y > 0) {
+            speedY += y;
+            setColliding(UP, false);
+        }
+    }
+
+    public void addSpeedZ(float z) {
+        if (!isColliding(FRONT) && z < 0) {
+            speedZ += z;
+            setColliding(BACK, false);
+        } else if (!isColliding(BACK) && z > 0) {
+            speedZ += z;
+            setColliding(FRONT, false);
+        }
+    }
 
     public void addSpeed(float x, float y, float z) {
-        speedX += x;
-        speedY += y;
-        speedZ += z;
+        addSpeedX(x);
+        addSpeedY(y);
+        addSpeedZ(z);
     }
 
     public void addSpeed(Vector3f value) {

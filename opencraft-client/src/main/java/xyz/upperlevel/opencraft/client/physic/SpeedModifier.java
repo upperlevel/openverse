@@ -1,6 +1,6 @@
 package xyz.upperlevel.opencraft.client.physic;
 
-public interface PhysicModifier {
+public interface SpeedModifier {
 
     void update(PhysicalViewer viewer);
 }
