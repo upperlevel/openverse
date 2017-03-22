@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import xyz.upperlevel.opencraft.server.math.Vector;
 
 public class Location {
 
@@ -27,29 +28,58 @@ public class Location {
         this.pitch = 0f;
     }
 
+    public Location(Vector vec) {
+        this(vec.getX(), vec.getY(), vec.getZ());
+    }
+
+
+    public void set(float x, float y, float z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    public void set(float x, float y, float z, float yaw, float pitch) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.yaw = yaw;
+        this.pitch = pitch;
+    }
+
+    public void set(Location o) {
+        this.x = o.x;
+        this.y = o.y;
+        this.z = o.z;
+        this.yaw = o.yaw;
+        this.pitch = o.pitch;
+    }
+
+    public void set(Vector o) {
+        this.x = o.getX();
+        this.y = o.getY();
+        this.z = o.getZ();
+    }
+
 
     public void add(Location loc) {
         this.x += loc.x;
         this.y += loc.y;
         this.z += loc.z;
-        this.yaw += loc.yaw;
-        this.pitch += loc.pitch;
     }
 
     public void add(Location loc, Location dest) {
-        dest.x = x + loc.x;
-        dest.y = y + loc.y;
-        dest.z = z + loc.z;
-        dest.yaw = yaw + loc.yaw;
-        dest.pitch = pitch + loc.pitch;
+        dest.set(
+                x + loc.x,
+                y + loc.y,
+                z + loc.z
+        );
     }
 
-    public void add(float x, float y, float z, float yaw, float pitch) {
-        this.x += x;
-        this.y += y;
-        this.z += z;
-        this.yaw += yaw;
-        this.pitch += pitch;
+    public void add(Vector loc) {
+        this.x += loc.getX();
+        this.y += loc.getY();
+        this.z += loc.getZ();
     }
 
     public void add(float x, float y, float z) {
@@ -63,24 +93,20 @@ public class Location {
         this.x -= loc.x;
         this.y -= loc.y;
         this.z -= loc.z;
-        this.yaw -= loc.yaw;
-        this.pitch -= loc.pitch;
     }
 
     public void sub(Location loc, Location dest) {
-        dest.x = x - loc.x;
-        dest.y = y - loc.y;
-        dest.z = z - loc.z;
-        dest.yaw = yaw - loc.yaw;
-        dest.pitch = pitch - loc.pitch;
+        dest.set(
+                x - loc.x,
+                y - loc.y,
+                z - loc.z
+        );
     }
 
-    public void sub(float x, float y, float z, float yaw, float pitch) {
-        this.x -= x;
-        this.y -= y;
-        this.z -= z;
-        this.yaw -= yaw;
-        this.pitch -= pitch;
+    public void sub(Vector loc) {
+        this.x -= loc.getX();
+        this.y -= loc.getY();
+        this.z -= loc.getZ();
     }
 
     public void sub(float x, float y, float z) {
@@ -89,29 +115,24 @@ public class Location {
         this.z -= z;
     }
 
-
     public void mul(Location loc) {
         this.x *= loc.x;
         this.y *= loc.y;
         this.z *= loc.z;
-        this.yaw *= loc.yaw;
-        this.pitch *= loc.pitch;
     }
 
     public void mul(Location loc, Location dest) {
-        dest.x = x * loc.x;
-        dest.y = y * loc.y;
-        dest.z = z * loc.z;
-        dest.yaw = yaw * loc.yaw;
-        dest.pitch = pitch * loc.pitch;
+        dest.set(
+                x * loc.x,
+                y * loc.y,
+                z * loc.z
+        );
     }
 
-    public void mul(float x, float y, float z, float yaw, float pitch) {
-        this.x *= x;
-        this.y *= y;
-        this.z *= z;
-        this.yaw *= yaw;
-        this.pitch *= pitch;
+    public void mul(Vector loc) {
+        this.x *= loc.getX();
+        this.y *= loc.getY();
+        this.z *= loc.getZ();
     }
 
     public void mul(float x, float y, float z) {
@@ -127,9 +148,19 @@ public class Location {
     }
 
     public void mul(float m, Location dest) {
-        dest.x = x * m;
-        dest.y = y * m;
-        dest.z = z * m;
+        dest.set(
+                x * m,
+                y * m,
+                z * m
+        );
+    }
+
+    public void mul(float m, Vector dest) {
+        dest.set(
+                x * m,
+                y * m,
+                z * m
+        );
     }
 
 
@@ -137,24 +168,20 @@ public class Location {
         this.x /= loc.x;
         this.y /= loc.y;
         this.z /= loc.z;
-        this.yaw /= loc.yaw;
-        this.pitch /= loc.pitch;
     }
 
     public void div(Location loc, Location dest) {
-        dest.x = x / loc.x;
-        dest.y = y / loc.y;
-        dest.z = z / loc.z;
-        dest.yaw = yaw / loc.yaw;
-        dest.pitch = pitch / loc.pitch;
+        dest.set(
+                x / loc.x,
+                y / loc.y,
+                z / loc.z
+        );
     }
 
-    public void div(float x, float y, float z, float yaw, float pitch) {
-        this.x /= x;
-        this.y /= y;
-        this.z /= z;
-        this.yaw /= yaw;
-        this.pitch /= pitch;
+    public void div(Vector loc) {
+        this.x /= loc.getX();
+        this.y /= loc.getY();
+        this.z /= loc.getZ();
     }
 
     public void div(float x, float y, float z) {
@@ -170,9 +197,19 @@ public class Location {
     }
 
     public void div(float m, Location dest) {
-        dest.x = x / m;
-        dest.y = y / m;
-        dest.z = z / m;
+        dest.set(
+                x / m,
+                y / m,
+                z / m
+        );
+    }
+
+    public void div(float m, Vector dest) {
+        dest.set(
+                x / m,
+                y / m,
+                z / m
+        );
     }
 
 
@@ -240,9 +277,24 @@ public class Location {
 
     public void normalize(Location dest) {
         float m = (float) length();
-        dest.x = x / m;
-        dest.y = y / m;
-        dest.z = z / m;
+        dest.set(
+                x / m,
+                y / m,
+                z / m
+        );
+    }
+
+    public void normalize(Vector dest) {
+        float m = (float) length();
+        dest.set(
+                x / m,
+                y / m,
+                z / m
+        );
+    }
+
+    public Vector toVector() {
+        return new Vector(x, y, z);
     }
 
 }
