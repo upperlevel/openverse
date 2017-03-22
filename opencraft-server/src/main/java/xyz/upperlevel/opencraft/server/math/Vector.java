@@ -22,23 +22,23 @@ public class Vector {
     }
 
     public void set(Vector o) {
-        this.x = o.x;
-        this.y = o.y;
-        this.z = o.z;
+        this.x = o.getX();
+        this.y = o.getY();
+        this.z = o.getZ();
     }
 
 
     public void add(Vector loc) {
-        this.x += loc.x;
-        this.y += loc.y;
-        this.z += loc.z;
+        this.x += loc.getX();
+        this.y += loc.getY();
+        this.z += loc.getZ();
     }
 
     public void add(Vector loc, Vector dest) {
         dest.set(
-                x + loc.x,
-                y + loc.y,
-                z + loc.z
+                x + loc.getX(),
+                y + loc.getY(),
+                z + loc.getZ()
         );
     }
 
@@ -56,16 +56,16 @@ public class Vector {
 
 
     public void sub(Vector loc) {
-        this.x -= loc.x;
-        this.y -= loc.y;
-        this.z -= loc.z;
+        this.x -= loc.getX();
+        this.y -= loc.getY();
+        this.z -= loc.getZ();
     }
 
     public void sub(Vector loc, Vector dest) {
         dest.set(
-                x - loc.x,
-                y - loc.y,
-                z - loc.z
+                x - loc.getX(),
+                y - loc.getY(),
+                z - loc.getZ()
         );
     }
 
@@ -83,16 +83,16 @@ public class Vector {
 
 
     public void mul(Vector loc) {
-        this.x *= loc.x;
-        this.y *= loc.y;
-        this.z *= loc.z;
+        this.x *= loc.getX();
+        this.y *= loc.getY();
+        this.z *= loc.getZ();
     }
 
     public void mul(Vector loc, Vector dest) {
         dest.set(
-                x * loc.x,
-                y * loc.y,
-                z * loc.z
+                x * loc.getX(),
+                y * loc.getY(),
+                z * loc.getY()
         );
     }
 
@@ -125,16 +125,16 @@ public class Vector {
 
 
     public void div(Vector loc) {
-        this.x /= loc.x;
-        this.y /= loc.y;
-        this.z /= loc.z;
+        this.x /= loc.getX();
+        this.y /= loc.getY();
+        this.z /= loc.getZ();
     }
 
     public void div(Vector loc, Vector dest) {
         dest.set(
-                x / loc.x,
-                y / loc.y,
-                z / loc.z
+                x / loc.getX(),
+                y / loc.getY(),
+                z / loc.getZ()
         );
     }
 
@@ -174,16 +174,16 @@ public class Vector {
     }
 
     public double distance(Vector loc) {
-        float   dx = x - loc.x,
-                dy = y - loc.y,
-                dz = z - loc.z;
+        float   dx = x - loc.getX(),
+                dy = y - loc.getY(),
+                dz = z - loc.getZ();
         return Math.sqrt(dx*dx + dy*dy + dz*dz);
     }
 
     public double distanceSq(Vector loc) {
-        float   dx = x - loc.x,
-                dy = y - loc.y,
-                dz = z - loc.z;
+        float   dx = x - loc.getX(),
+                dy = y - loc.getY(),
+                dz = z - loc.getZ();
         return dx*dx + dy*dy + dz*dz;
     }
 

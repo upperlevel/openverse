@@ -48,11 +48,11 @@ public class Location {
     }
 
     public void set(Location o) {
-        this.x = o.x;
-        this.y = o.y;
-        this.z = o.z;
-        this.yaw = o.yaw;
-        this.pitch = o.pitch;
+        this.x = o.getX();
+        this.y = o.getY();
+        this.z = o.getZ();
+        this.yaw = o.getYaw();
+        this.pitch = o.getPitch();
     }
 
     public void set(Vector o) {
@@ -63,16 +63,16 @@ public class Location {
 
 
     public void add(Location loc) {
-        this.x += loc.x;
-        this.y += loc.y;
-        this.z += loc.z;
+        this.x += loc.getX();
+        this.y += loc.getY();
+        this.z += loc.getZ();
     }
 
     public void add(Location loc, Location dest) {
         dest.set(
-                x + loc.x,
-                y + loc.y,
-                z + loc.z
+                x + loc.getX(),
+                y + loc.getY(),
+                z + loc.getZ()
         );
     }
 
@@ -90,16 +90,16 @@ public class Location {
 
 
     public void sub(Location loc) {
-        this.x -= loc.x;
-        this.y -= loc.y;
-        this.z -= loc.z;
+        this.x -= loc.getX();
+        this.y -= loc.getY();
+        this.z -= loc.getZ();
     }
 
     public void sub(Location loc, Location dest) {
         dest.set(
-                x - loc.x,
-                y - loc.y,
-                z - loc.z
+                x - loc.getX(),
+                y - loc.getY(),
+                z - loc.getZ()
         );
     }
 
@@ -116,16 +116,16 @@ public class Location {
     }
 
     public void mul(Location loc) {
-        this.x *= loc.x;
-        this.y *= loc.y;
-        this.z *= loc.z;
+        this.x *= loc.getX();
+        this.y *= loc.getY();
+        this.z *= loc.getZ();
     }
 
     public void mul(Location loc, Location dest) {
         dest.set(
-                x * loc.x,
-                y * loc.y,
-                z * loc.z
+                x * loc.getX(),
+                y * loc.getY(),
+                z * loc.getZ()
         );
     }
 
@@ -165,16 +165,16 @@ public class Location {
 
 
     public void div(Location loc) {
-        this.x /= loc.x;
-        this.y /= loc.y;
-        this.z /= loc.z;
+        this.x /= loc.getX();
+        this.y /= loc.getY();
+        this.z /= loc.getZ();
     }
 
     public void div(Location loc, Location dest) {
         dest.set(
-                x / loc.x,
-                y / loc.y,
-                z / loc.z
+                x / loc.getX(),
+                y / loc.getY(),
+                z / loc.getZ()
         );
     }
 
@@ -222,16 +222,16 @@ public class Location {
     }
 
     public double distance(Location loc) {
-        float   dx = x - loc.x,
-                dy = y - loc.y,
-                dz = z - loc.z;
+        float   dx = x - loc.getX(),
+                dy = y - loc.getY(),
+                dz = z - loc.getZ();
         return Math.sqrt(dx*dx + dy*dy + dz*dz);
     }
 
     public double distanceSq(Location loc) {
-        float   dx = x - loc.x,
-                dy = y - loc.y,
-                dz = z - loc.z;
+        float   dx = x - loc.getX(),
+                dy = y - loc.getY(),
+                dz = z - loc.getZ();
         return dx*dx + dy*dy + dz*dz;
     }
 

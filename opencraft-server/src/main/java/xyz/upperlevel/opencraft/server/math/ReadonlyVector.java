@@ -150,16 +150,16 @@ public class ReadonlyVector extends Vector {
 
 
             public double length() {
-                float x = v.getX();
-                float y = v.getY();
-                float z = v.getZ();
+                float   x = v.getX(),
+                        y = v.getY(),
+                        z = v.getZ();
                 return Math.sqrt(x*x + y*y + z*z);
             }
 
             public double lengthSq() {
-                float x = v.getX();
-                float y = v.getY();
-                float z = v.getZ();
+                float   x = v.getX(),
+                        y = v.getY(),
+                        z = v.getZ();
                 return x*x + y*y + z*z;
             }
 
