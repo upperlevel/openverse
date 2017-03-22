@@ -2,26 +2,15 @@ package xyz.upperlevel.opencraft.client.physic.util;
 
 import lombok.Getter;
 
-public class RaycastBlock {
-
-    public enum Face {
-        UP,
-        DOWN,
-
-        FRONT,
-        BACK,
-
-        RIGHT,
-        LEFT
-    }
+public class PhysicalBlock {
 
     @Getter
     private int x, y, z;
 
     @Getter
-    private Face face;
+    private PhysicalFace face;
 
-    public RaycastBlock(int x, int y, int z, Face face) {
+    public PhysicalBlock(int x, int y, int z, PhysicalFace face) {
         this.x = x;
         this.y = y;
         this.z = z;

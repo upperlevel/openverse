@@ -4,23 +4,18 @@ import lombok.Getter;
 import lombok.Setter;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import xyz.upperlevel.opencraft.client.physic.util.PhysicalFace;
 import xyz.upperlevel.ulge.util.math.AngleUtil;
+
+import static xyz.upperlevel.opencraft.client.physic.util.PhysicalFace.*;
 
 public class PhysicalViewer {
 
     @Getter
-    protected float x = 0, y = 15, z = 0;
+    protected float x = 1, y = 7, z = 1;
 
     @Getter
     protected float yaw, pitch;
-
-    @Getter
-    @Setter
-    protected float friction;
-
-    @Getter
-    @Setter
-    public float speedX, speedY, speedZ;
 
     public PhysicalViewer() {
     }
@@ -78,14 +73,29 @@ public class PhysicalViewer {
         updatePosition();
     }
 
-    public void addSpeed(Vector3f speed) {
-        addSpeed(speed.x, speed.y, speed.z);
+    public void updatePosition() {
     }
+
+    // speed ---
+
+    @Getter
+    @Setter
+    public float speedX, speedY, speedZ;
 
     public void addSpeed(float x, float y, float z) {
         speedX += x;
         speedY += y;
         speedZ += z;
+    }
+
+    public void addSpeed(Vector3f value) {
+        addSpeed(value.x, value.y, value.z);
+    }
+
+    public void setSpeed(float value) {
+        speedX = value;
+        speedY = value;
+        speedZ = value;
     }
 
     public void setSpeed(float x, float y, float z) {
@@ -94,7 +104,8 @@ public class PhysicalViewer {
         speedZ = z;
     }
 
-    public void updatePosition() {
+    public void setSpeed(Vector3f value) {
+        setSpeed(value.x, value.y, value.z);
     }
 
     // rotation
@@ -159,39 +170,35 @@ public class PhysicalViewer {
         return getRight().mul(-1f);
     }
 
-    private static final Vector3f
-            UP   = new Vector3f(0, 1f, 0),
-            DOWN = new Vector3f(0, -1f, 0);
-
     public Vector3f getUp() {
-        return new Vector3f(UP);
+        return new Vector3f(0, 1f, 0);
     }
 
     public Vector3f getDown() {
-        return new Vector3f(DOWN);
+        return new Vector3f(0, -1f, 0);
     }
 
     public void forward(float sensitivity) {
-        addPosition(getForward().mul(sensitivity));
+        addSpeed(getForward().mul(sensitivity));
     }
 
     public void backward(float sensitivity) {
-        addPosition(getBackward().mul(sensitivity));
+        addSpeed(getBackward().mul(sensitivity));
     }
 
     public void right(float sensitivity) {
-        addPosition(getRight().mul(sensitivity));
+        addSpeed(getRight().mul(sensitivity));
     }
 
     public void left(float sensitivity) {
-        addPosition(getLeft().mul(sensitivity));
+        addSpeed(getLeft().mul(sensitivity));
     }
 
     public void up(float sensitivity) {
-        addPosition(getUp().mul(sensitivity));
+        addSpeed(getUp().mul(sensitivity));
     }
 
     public void down(float sensitivity) {
-        addPosition(getDown().mul(sensitivity));
+        addSpeed(getDown().mul(sensitivity));
     }
 }

@@ -1,14 +1,12 @@
 package xyz.upperlevel.opencraft.client.physic.util;
 
-import xyz.upperlevel.opencraft.client.physic.util.RaycastBlock.Face;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import static java.lang.Math.floor;
 
 // http://playtechs.blogspot.it/2007/03/raytracing-on-grid.html
-public class RaycastIterator implements Iterator<RaycastBlock> {
+public class RaycastIterator implements Iterator<PhysicalBlock> {
 
     private int x, y, z;
 
@@ -17,8 +15,8 @@ public class RaycastIterator implements Iterator<RaycastBlock> {
     private int n = 1;
     private int x_inc, y_inc, z_inc;
     private double t_next_y, t_next_x, t_next_z;
-    private final Face faceX, faceY, faceZ;
-    private Face lastFace = null;
+    private final PhysicalFace faceX, faceY, faceZ;
+    private PhysicalFace lastFace = null;
 
     public RaycastIterator(double startX, double startY, double startZ, double endX, double endY, double endZ) {
         double dx = Math.abs(startX - endX);
@@ -41,12 +39,12 @@ public class RaycastIterator implements Iterator<RaycastBlock> {
             x_inc = 1;
             n += (int) (floor(endX)) - x;
             t_next_x = (floor(startX) + 1 - startX) * dt_dx;
-            faceX = Face.LEFT;
+            faceX = PhysicalFace.LEFT;
         } else {
             x_inc = -1;
             n += x - (int) (floor(endX));
             t_next_x = (startX - floor(startX)) * dt_dx;
-            faceX = Face.RIGHT;
+            faceX = PhysicalFace.RIGHT;
         }
 
         if (dy == 0) {
@@ -57,12 +55,12 @@ public class RaycastIterator implements Iterator<RaycastBlock> {
             y_inc = 1;
             n += (int) (floor(startY)) - y;
             t_next_y = (floor(startY) + 1 - startY) * dt_dy;
-            faceY = Face.DOWN;
+            faceY = PhysicalFace.DOWN;
         } else {
             y_inc = -1;
             n += y - (int) (floor(endY));
             t_next_y = (startY - floor(startY)) * dt_dy;
-            faceY = Face.UP;
+            faceY = PhysicalFace.UP;
         }
 
         if (dz == 0) {
@@ -73,12 +71,12 @@ public class RaycastIterator implements Iterator<RaycastBlock> {
             z_inc = 1;
             n += (int) (floor(endZ)) - z;
             t_next_z = (floor(startZ) + 1 - startZ) * dt_dz;
-            faceZ = Face.FRONT;
+            faceZ = PhysicalFace.FRONT;
         } else {
             z_inc = -1;
             n += z - (int) (floor(endZ));
             t_next_z = (startZ - floor(startZ)) * dt_dz;
-            faceZ = Face.BACK;
+            faceZ = PhysicalFace.BACK;
         }
     }
 
@@ -88,10 +86,10 @@ public class RaycastIterator implements Iterator<RaycastBlock> {
     }
 
     @Override
-    public RaycastBlock next() {
+    public PhysicalBlock next() {
         if (!hasNext())
             throw new NoSuchElementException();
-        RaycastBlock current = new RaycastBlock(x, y, z, lastFace);
+        PhysicalBlock current = new PhysicalBlock(x, y, z, lastFace);
 
         if (t_next_y < t_next_x) {
             if (t_next_z < t_next_y) {
