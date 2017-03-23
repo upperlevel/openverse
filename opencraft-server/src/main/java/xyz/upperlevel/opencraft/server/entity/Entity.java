@@ -1,25 +1,13 @@
 package xyz.upperlevel.opencraft.server.entity;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
-import xyz.upperlevel.opencraft.server.math.Vector;
+import org.joml.Vector3f;
 import xyz.upperlevel.opencraft.server.world.Location;
 
-public abstract class Entity {
+public interface Entity {
 
-    @Getter
-    @Setter
-    @NonNull
-    private Location loc;
+    Location getLoc();
 
-    @Getter
-    @Setter
-    @NonNull
-    private Vector vel;
+    Vector3f getVel();
 
-    public Entity() {
-    }
-
-    public abstract void tick();
+    void tick();
 }
