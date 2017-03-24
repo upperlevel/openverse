@@ -1,28 +1,20 @@
-package xyz.upperlevel.opencraft.server.world;
+package xyz.upperlevel.opencraft.server.entity;
 
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import xyz.upperlevel.opencraft.server.shape.Shape;
 
-public class BlockType {
+public class EntityType {
 
     @Getter
     private String id;
 
     @Getter
     @Setter
-    private boolean solid;
-
-    @Getter
-    @Setter
-    private boolean transparent;
-
-    @Getter
-    @Setter
     private Shape shape;
 
-    public BlockType(@NonNull String id) {
+    public EntityType(@NonNull String id) {
         this.id = id;
     }
 }

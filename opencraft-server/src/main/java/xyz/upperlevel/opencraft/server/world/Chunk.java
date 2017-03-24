@@ -2,13 +2,10 @@ package xyz.upperlevel.opencraft.server.world;
 
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.Setter;
-
-import java.util.Objects;
 
 public class Chunk {
 
-    public static final int WIDTH = 16, HEIGHT = 16, LENGTH = 16, SIZE = WIDTH * HEIGHT * LENGTH;
+    public static final int WIDTH = 16, HEIGHT = 16, LENGTH = 16;
 
     @Getter
     private World world;
@@ -17,32 +14,41 @@ public class Chunk {
     private int x, y, z;
 
     @Getter
-    @Setter
-    @NonNull
-    private ChunkArea area = new ChunkArea();
+    private BlockType[][][] voxels = new BlockType[WIDTH][HEIGHT][LENGTH];
 
-    public Chunk(World world, int x, int y, int z) {
-        Objects.requireNonNull(world, "world");
+    public Chunk(@NonNull World world, int x, int y, int z) {
         this.world = world;
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public Chunk generate() {
-        world.getGenerator().generate(this);
-        return this;
+    public int getWidth() {
+        return WIDTH;
     }
 
-    public BlockType getType(int x, int y, int z) {
-        return area.getBlock(x, y, z);
+    public int getHeight() {
+        return HEIGHT;
     }
 
-    public void setType(BlockType type, int x, int y, int z) {
-        area.setBlock(x, y, z, type);
+    public int getLength() {
+        return LENGTH;
     }
 
-    public Block getBlock(int x, int y, int z) {
-        return new Block(this, x, y, z);
+    public BlockType get(int x, int y, int z) {
+        return voxels[x][y][z];
+    }
+
+    public void set(int x, int y, int z, BlockType voxel) {
+        voxels[x][y][z] = voxel;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Chunk) {
+            Chunk c = (Chunk) o;
+            return world.equals(c.getWorld()) && x == c.getX() && y == c.getY() && z == c.getZ();
+        }
+        return false;
     }
 }

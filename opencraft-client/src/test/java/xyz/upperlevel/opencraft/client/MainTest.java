@@ -6,6 +6,7 @@ import xyz.upperlevel.opencraft.client.render.LocalWorld;
 import xyz.upperlevel.opencraft.client.render.WorldViewer;
 import xyz.upperlevel.opencraft.client.render.texture.TextureBakery;
 import xyz.upperlevel.opencraft.server.OpenCraftServer;
+import xyz.upperlevel.opencraft.server.world.Location;
 import xyz.upperlevel.ulge.opengl.shader.Program;
 import xyz.upperlevel.ulge.opengl.shader.ShaderType;
 import xyz.upperlevel.ulge.opengl.shader.ShaderUtil;
@@ -25,8 +26,10 @@ public class MainTest {
 
     public static WorldViewer VIEWER;
 
+    public static Window win;
+
     public static void main(String[] a) {
-        Window win = Glfw.createWindowSettings()
+        win = Glfw.createWindowSettings()
                 .setSamples(4)
                 .createWindow(500, 500, "game canRender", false);
 
@@ -40,7 +43,10 @@ public class MainTest {
                 double movX = x - lastX;
                 double movY = y - lastY;
 
-                VIEWER.addRotation((float) movX, (float) movY);
+                Location l = VIEWER.getLoc();
+                l.setYaw(l.getYaw() + (float) movX);
+                l.setPitch(l.getPitch() + (float) movY);
+
                 //rotation.setPitch(Math.max(-90, Math.min(90, Math.toRadians(movY))));
 
                 lastX = x;
@@ -116,9 +122,9 @@ public class MainTest {
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
             GL11.glClearColor(155f / 255f, 193f / 255f, 1f, 1f);
 
-            updateCamera(win, 0.5f);
+            //updateCamera(win, 0.5f);
 
-            VIEWER.draw(uniformer);
+            VIEWER.draw(win, uniformer);
 
             // canRender checks
             if (win.getKey(Key.K) || win.getKey(Key.ESCAPE)) {
@@ -148,6 +154,6 @@ public class MainTest {
         if (win.getKey(Key.SPACE))
             VIEWER.up(sensitivity);
         if (win.getKey(Key.KEY_0))
-            VIEWER.setPosition(1, 7, 1);
+            VIEWER.getLoc().set(1, 7, 1);
     }
 }

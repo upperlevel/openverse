@@ -4,12 +4,13 @@ import lombok.Getter;
 import lombok.Setter;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
-import xyz.upperlevel.opencraft.server.physic.PhysicEngine;
-import xyz.upperlevel.opencraft.server.physic.PhysicalViewer;
+import xyz.upperlevel.opencraft.client.physic.PhysicEngine;
+import xyz.upperlevel.opencraft.server.world.Location;
 import xyz.upperlevel.ulge.opengl.shader.Uniformer;
 import xyz.upperlevel.ulge.util.math.CameraUtil;
+import xyz.upperlevel.ulge.window.Window;
 
-public class WorldViewer extends PhysicalViewer {
+public class WorldViewer extends ControllableEntity {
 
     @Getter
     @Setter
@@ -33,25 +34,28 @@ public class WorldViewer extends PhysicalViewer {
     private Matrix4f camera = null;
 
     public void updateCamera() {
+        Location loc = getLoc();
         camera = CameraUtil.getCamera(
                 45f,
                 1f,
                 0.01f,
                 100000f,
-                (float) Math.toRadians(yaw),
-                (float) Math.toRadians(pitch),
-                x,
-                y,
-                z
+                (float) Math.toRadians(loc.getYaw()),
+                (float) Math.toRadians(loc.getPitch()),
+                loc.getX(),
+                loc.getY(),
+                loc.getZ()
         );
     }
 
     private int chunkX, chunkY, chunkZ;
 
     public void updateView() { // updates position and send changes
-        int acx = (int) Math.floor(x / 16f);
-        int acy = (int) Math.floor(y / 16f);
-        int acz = (int) Math.floor(z / 16f);
+        Location loc = getLoc();
+
+        int acx = (int) Math.floor(loc.getX() / 16f);
+        int acy = (int) Math.floor(loc.getY() / 16f);
+        int acz = (int) Math.floor(loc.getZ() / 16f);
 
         if (chunkX != acx || chunkY != acy || chunkZ != acz)
             world.setCenter(acx, acy, acz);
@@ -61,23 +65,14 @@ public class WorldViewer extends PhysicalViewer {
         chunkZ = acz;
     }
 
-    @Override
-    public void updatePosition() {
+    public void draw(Window w, Uniformer uniformer) {
         updateCamera();
         updateView();
-    }
-
-    @Override
-    public void updateRotation() {
-        updateCamera();
-    }
-
-
-    public void draw(Uniformer uniformer) {
 
         // todo temporary here
-        PhysicEngine.in.update(this, world);
+        PhysicEngine.in.update(w, this, world, 0);
 
+        System.out.println(getLoc().getY());
 
         if (camera != null) {
             uniformer.setUniformMatrix4("cam", camera.get(BufferUtils.createFloatBuffer(16)));

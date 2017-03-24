@@ -4,7 +4,6 @@ import xyz.upperlevel.opencraft.client.OpenCraftClient;
 import xyz.upperlevel.opencraft.client.render.LocalWorld;
 import xyz.upperlevel.opencraft.client.render.LocalChunk;
 import xyz.upperlevel.opencraft.client.render.WorldViewer;
-import xyz.upperlevel.opencraft.server.network.packet.ChunkAreaPacket;
 import xyz.upperlevel.utils.event.EventListener;
 
 public class ChunkAreaPacketListener extends EventListener<ChunkAreaPacket> {

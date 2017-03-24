@@ -1,88 +1,48 @@
 package xyz.upperlevel.opencraft.server.world;
 
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class World {
 
     @Getter
-    private ChunkGenerator generator;
+    @Setter
+    private ChunkGenerator gen;
 
     @Getter
-    private List<Chunk> loadedChunks = new ArrayList<>();
-
-    @Getter
-    private Location spawn = new Location(0, 0,0);
+    private Set<Chunk> loaded = new HashSet<>();
 
     public World() {
-        this(null);
     }
 
-    public World(ChunkGenerator generator) {
-        setGenerator(generator);
+    public World(ChunkGenerator gen) {
+        this.gen = gen;
     }
 
-    public void setGenerator(ChunkGenerator generator) {
-        this.generator = generator != null ? generator : ChunkGenerator.NULL;
+    public void load(@NonNull Chunk chunk) {
+        loaded.add(chunk);
     }
 
     public boolean isLoaded(Chunk chunk) {
-        return loadedChunks.contains(chunk);
+        return loaded.contains(chunk);
     }
 
-    public boolean isLoaded(int x, int y, int z) {
-        for (Chunk chunk : loadedChunks)
-            if (chunk.getX() == x && chunk.getY() == y && chunk.getZ() == z)
-                return true;
-        return false;
+    public Chunk get(int x, int y, int z) {
+        for (Chunk c : loaded)
+            if (c.getX() == x && c.getY() == y && c.getZ() == z)
+                return c;
+        return new Chunk(this, x, y, z);
     }
 
-    public World loadChunk(Chunk chunk) {
-        if (!isLoaded(chunk))
-            loadedChunks.add(chunk);
-        return this;
+    public void unload(int x, int y, int z) {
+        loaded.removeIf(c -> c.getX() == x && c.getY() == y && c.getZ() == z);
     }
 
-    public World loadChunk(int x, int y, int z) {
-        if (!isLoaded(x, y, z))
-            loadedChunks.add(new Chunk(this, x, y, z));
-        return this;
-    }
-
-    public boolean unloadChunk(Chunk chunk) {
-        return loadedChunks.remove(chunk);
-    }
-
-    public boolean unloadChunk(int x, int y, int z) {
-        for (Iterator<Chunk> i = loadedChunks.iterator(); i.hasNext(); ) {
-            Chunk chunk = i.next();
-            if (chunk.getX() == x && chunk.getY() == y && chunk.getZ() == z) {
-                i.remove();
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public Chunk getChunk(int x, int y, int z) {
-        for (Chunk chunk : loadedChunks)
-            if (chunk.getX() == x && chunk.getY() == y && chunk.getZ() == z)
-                return chunk;
-        return new Chunk(this, x, y, z).generate();
-    }
-
-    public Block getBlock(int x, int y, int z) {
-        int cx = x / Chunk.WIDTH;
-        int cy = y / Chunk.HEIGHT;
-        int cz = z / Chunk.LENGTH;
-
-        int cbx = x % Chunk.WIDTH;
-        int cby = y % Chunk.HEIGHT;
-        int cbz = z % Chunk.LENGTH;
-
-        return getChunk(cx, cy, cz).getBlock(cbx, cby, cbz);
+    public void unload(Chunk chunk) {
+        loaded.remove(chunk);
     }
 }

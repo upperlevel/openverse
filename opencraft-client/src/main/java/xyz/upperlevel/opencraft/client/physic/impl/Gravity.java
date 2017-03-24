@@ -1,7 +1,7 @@
-package xyz.upperlevel.opencraft.server.physic.impl;
+package xyz.upperlevel.opencraft.client.physic.impl;
 
 import xyz.upperlevel.opencraft.server.entity.Entity;
-import xyz.upperlevel.opencraft.server.physic.Force;
+import xyz.upperlevel.opencraft.client.physic.Force;
 
 public class Gravity implements Force {
 
@@ -10,6 +10,6 @@ public class Gravity implements Force {
 
     @Override
     public void update(Entity e, long delta) {
-
+        e.getVel().y = -.1f;
     }
 }

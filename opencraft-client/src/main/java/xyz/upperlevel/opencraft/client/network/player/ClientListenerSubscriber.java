@@ -1,7 +1,6 @@
 package xyz.upperlevel.opencraft.client.network.player;
 
 import xyz.upperlevel.opencraft.server.network.SingleplayerClient;
-import xyz.upperlevel.opencraft.server.network.packet.ChunkAreaPacket;
 import xyz.upperlevel.opencraft.server.network.packet.PlayerTeleportPacket;
 
 public final class ClientListenerSubscriber {

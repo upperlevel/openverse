@@ -1,10 +1,6 @@
 package xyz.upperlevel.opencraft.server;
 
-import lombok.Getter;
 import xyz.upperlevel.opencraft.server.network.player.ServerListenerSubscriber;
-import xyz.upperlevel.opencraft.server.world.BlockType;
-import xyz.upperlevel.opencraft.server.world.Player;
-import xyz.upperlevel.opencraft.server.world.World;
 
 import java.util.Random;
 
@@ -13,7 +9,7 @@ public class OpenCraftServer {
     public static final OpenCraftServer GET = new OpenCraftServer();
 
     private int seed = new Random().nextInt();
-
+/*
     @Getter
     private World world = new World(chunk -> {
         // CHUNK GENERATION
@@ -30,9 +26,12 @@ public class OpenCraftServer {
                 }
         }
     });
+    */
 
+/*
     @Getter
     private Player player = new Player();
+*/
 
     public OpenCraftServer() {
         start();
