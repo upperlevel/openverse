@@ -1,9 +1,9 @@
 package xyz.upperlevel.opencraft.client.network.player;
 
-import xyz.upperlevel.opencraft.client.OpenCraftClient;
-import xyz.upperlevel.opencraft.client.render.LocalWorld;
-import xyz.upperlevel.opencraft.client.render.LocalChunk;
-import xyz.upperlevel.opencraft.client.render.WorldViewer;
+import xyz.upperlevel.opencraft.client.Openverse;
+import xyz.upperlevel.opencraft.client.view.WorldView;
+import xyz.upperlevel.opencraft.client.view.ChunkView;
+import xyz.upperlevel.opencraft.client.view.WorldViewer;
 import xyz.upperlevel.utils.event.EventListener;
 
 public class ChunkAreaPacketListener extends EventListener<ChunkAreaPacket> {
@@ -18,14 +18,14 @@ public class ChunkAreaPacketListener extends EventListener<ChunkAreaPacket> {
 
     @Override
     public void call(ChunkAreaPacket packet) {
-        WorldViewer viewer = OpenCraftClient.get().getViewer();
+        WorldViewer viewer = Openverse.get().getViewer();
 
-        LocalWorld w = viewer.getWorld();
+        WorldView w = viewer.getWorld();
         int cx = packet.getX();
         int cy = packet.getY();
         int cz = packet.getZ();
 
-        LocalChunk c = new LocalChunk(w, cx, cy, cz);
+        ChunkView c = new ChunkView(w, cx, cy, cz);
         c.load(packet.getArea(), false);
         w.setChunk(cx, cy, cz, c);
     }

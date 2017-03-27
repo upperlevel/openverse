@@ -1,6 +1,5 @@
 package xyz.upperlevel.opencraft.client.network.player;
 
-import xyz.upperlevel.opencraft.client.OpenCraftClient;
 import xyz.upperlevel.opencraft.server.network.packet.PlayerTeleportPacket;
 import xyz.upperlevel.utils.event.EventListener;
 
@@ -17,7 +16,7 @@ public class PlayerTeleportPacketListener extends EventListener<PlayerTeleportPa
     @Override
     public void call(PlayerTeleportPacket packet) {
         /*
-        OpenCraftClient.get().getViewer().teleport(
+        Openverse.getChunk().getViewer().teleport(
                 packet.getX(),
                 packet.getY(),
                 packet.getZ(),

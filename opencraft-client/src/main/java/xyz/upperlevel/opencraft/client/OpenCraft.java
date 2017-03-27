@@ -1,13 +1,12 @@
 package xyz.upperlevel.opencraft.client;
 
 import lombok.Getter;
-import xyz.upperlevel.opencraft.client.asset.AssetManager;
-import xyz.upperlevel.opencraft.client.asset.shape.BlockCubeComponent;
+import xyz.upperlevel.opencraft.client.resource.model.Cube;
 import xyz.upperlevel.opencraft.client.asset.shape.BlockShape;
 import xyz.upperlevel.opencraft.client.asset.shape.BlockShapeRegistry;
 import xyz.upperlevel.opencraft.client.asset.shape.Zone3f;
-import xyz.upperlevel.opencraft.client.asset.texture.Texture;
-import xyz.upperlevel.opencraft.client.asset.texture.TextureRegistry;
+import xyz.upperlevel.opencraft.client.resource.texture.Texture;
+import xyz.upperlevel.opencraft.client.resource.texture.TextureManager;
 import xyz.upperlevel.ulge.opengl.texture.loader.ImageContent;
 import xyz.upperlevel.ulge.util.Color;
 
@@ -20,7 +19,7 @@ public class OpenCraft {
 
     static {
         {
-            TextureRegistry tm = get.assetManager.getTextureRegistry();
+            TextureManager tm = get.assetManager.getTextureRegistry();
             Texture texture;
 
             texture = new Texture("null", new ImageContent(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB) {
@@ -46,7 +45,7 @@ public class OpenCraft {
             // test
             shape = new BlockShape("test_shape");
             shape.add(
-                    new BlockCubeComponent(
+                    new Cube(
                             new Zone3f(
                                     0,
                                     0,
@@ -57,14 +56,14 @@ public class OpenCraft {
                             )
                     )
                             .setColor(Color.RED)
-                            .setTexture(get.assetManager.getTextureRegistry().getTexture("something"))
+                            .setTexture(get.assetManager.getTextureRegistry().get("something"))
             );
             sm.register(shape);
 
             // grass
             shape = new BlockShape("grass_shape");
             shape.add(
-                    new BlockCubeComponent(
+                    new Cube(
                             new Zone3f(
                                     0,
                                     0,
@@ -73,7 +72,7 @@ public class OpenCraft {
                                     1f,
                                     1f
                             )
-                    ).setTexture(get.assetManager.getTextureRegistry().getTexture("grass"))
+                    ).setTexture(get.assetManager.getTextureRegistry().get("grass"))
             );
             sm.register(shape);
         }

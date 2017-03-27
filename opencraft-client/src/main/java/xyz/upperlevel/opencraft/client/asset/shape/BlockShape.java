@@ -3,7 +3,9 @@ package xyz.upperlevel.opencraft.client.asset.shape;
 import lombok.Getter;
 import lombok.NonNull;
 import org.joml.Matrix4f;
-import xyz.upperlevel.opencraft.client.render.LocalWorld;
+import xyz.upperlevel.opencraft.client.resource.model.Cube;
+import xyz.upperlevel.opencraft.client.resource.model.ModelPart;
+import xyz.upperlevel.opencraft.client.view.WorldView;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -17,7 +19,7 @@ public class BlockShape {
     private String id;
 
     @Getter
-    private List<BlockComponent> components = new ArrayList<>();
+    private List<ModelPart> components = new ArrayList<>();
 
     @Getter
     private boolean transparent = false;
@@ -35,42 +37,42 @@ public class BlockShape {
         return components.isEmpty();
     }
 
-    public BlockShape add(BlockComponent component) {
+    public BlockShape add(ModelPart component) {
         components.add(component);
         return this;
     }
 
-    public BlockShape add(BlockComponent... components) {
+    public BlockShape add(ModelPart... components) {
         this.components.addAll(Arrays.asList(components));
         return this;
     }
 
-    public BlockShape add(Collection<BlockComponent> components) {
+    public BlockShape add(Collection<ModelPart> components) {
         this.components.addAll(components);
         return this;
     }
 
-    public BlockShape remove(BlockComponent component) {
+    public BlockShape remove(ModelPart component) {
         components.remove(component);
         return this;
     }
 
-    public BlockShape remove(Collection<BlockComponent> components) {
+    public BlockShape remove(Collection<ModelPart> components) {
         this.components.removeAll(components);
         return this;
     }
 
     public int compile(Matrix4f matrix, ByteBuffer buffer) {
         int vertices = 0;
-        for (BlockComponent component : components) {
+        for (ModelPart component : components) {
             vertices += component.compile(new Matrix4f(matrix), buffer);
         }
         return vertices;
     }
 
-    public int cleanCompile(int x, int y, int z, LocalWorld area, Matrix4f matrix, ByteBuffer buffer) {
+    public int cleanCompile(int x, int y, int z, WorldView area, Matrix4f matrix, ByteBuffer buffer) {
         int vertices = 0;
-        for (BlockComponent component : components) {
+        for (ModelPart component : components) {
             vertices += component.cleanCompile(x, y, z, area, matrix, buffer);
         }
         return vertices;
@@ -87,10 +89,10 @@ public class BlockShape {
     }
 
     public int getVerticesCount() {
-        return components.size() * BlockCubeComponent.VERTICES_COUNT;
+        return components.size() * Cube.VERTICES_COUNT;
     }
 
     public int getDataCount() {
-        return components.size() * BlockCubeComponent.DATA_COUNT;
+        return components.size() * Cube.DATA_COUNT;
     }
 }

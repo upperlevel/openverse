@@ -2,11 +2,10 @@ package xyz.upperlevel.opencraft.client;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
-import xyz.upperlevel.opencraft.client.render.LocalWorld;
-import xyz.upperlevel.opencraft.client.render.WorldViewer;
-import xyz.upperlevel.opencraft.client.render.texture.TextureBakery;
-import xyz.upperlevel.opencraft.server.OpenCraftServer;
-import xyz.upperlevel.opencraft.server.world.Location;
+import xyz.upperlevel.opencraft.client.view.WorldView;
+import xyz.upperlevel.opencraft.client.view.WorldViewer;
+import xyz.upperlevel.opencraft.client.resource.texture.TextureBakery;
+import xyz.upperlevel.opencraft.common.world.Location;
 import xyz.upperlevel.ulge.opengl.shader.Program;
 import xyz.upperlevel.ulge.opengl.shader.ShaderType;
 import xyz.upperlevel.ulge.opengl.shader.ShaderUtil;
@@ -75,7 +74,7 @@ public class MainTest {
         Uniformer uniformer = program.bind();
 
         OpenCraftServer server = OpenCraftServer.get();
-        OpenCraftClient client = OpenCraftClient.get();
+        Openverse client = Openverse.get();
         // INITIALIZES PLAYER!
         VIEWER = client.getViewer();
 
@@ -96,7 +95,7 @@ public class MainTest {
 
         win.setVSync(true);
 
-        LocalWorld w = client.getViewer().getWorld();
+        WorldView w = client.getViewer().getWorld();
         w.demand();
 
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

@@ -11,6 +11,7 @@
 
     <modules>
         <module>opencraft-client</module>
+        <module>opencraft-common</module>
         <module>opencraft-server</module>
     </modules>
 

@@ -22,7 +22,7 @@ public class AskChunkAreaPacketListener extends EventListener<AskChunkAreaPacket
         /*
         SingleplayerServer.connection().sendPacket(new ChunkAreaPacket(
                 cx, cy, cz,
-                OpenCraftServer.get().getWorld()
+                OpenCraftServer.getChunk().getWorld()
                         .getChunk(cx, cy, cz)
                         .getArea())
         );
