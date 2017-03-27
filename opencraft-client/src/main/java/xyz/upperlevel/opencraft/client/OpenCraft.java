@@ -1,7 +1,7 @@
 package xyz.upperlevel.opencraft.client;
 
 import lombok.Getter;
-import xyz.upperlevel.opencraft.client.resource.model.Cube;
+import xyz.upperlevel.opencraft.client.asset.shape.Cube;
 import xyz.upperlevel.opencraft.client.asset.shape.BlockShape;
 import xyz.upperlevel.opencraft.client.asset.shape.BlockShapeRegistry;
 import xyz.upperlevel.opencraft.client.asset.shape.Zone3f;

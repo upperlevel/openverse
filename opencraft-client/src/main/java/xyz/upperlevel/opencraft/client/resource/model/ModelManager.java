@@ -1,8 +1,6 @@
 package xyz.upperlevel.opencraft.client.resource.model;
 
-
 import lombok.NonNull;
-import xyz.upperlevel.opencraft.client.asset.shape.BlockShape;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -10,28 +8,28 @@ import java.util.Map;
 
 public class ModelManager {
 
-    private Map<String, BlockShape> shapes = new HashMap<>();
+    private Map<String, Model> models = new HashMap<>();
 
     public ModelManager() {
     }
 
-    public void register(BlockShape shape) {
-        shapes.put(shape.getId(), shape);
+    public void register(@NonNull Model model) {
+        models.put(model.getId(), model);
     }
 
-    public BlockShape get(String id) {
-        return shapes.get(id);
+    public Model get(String id) {
+        return models.get(id);
     }
 
     public void unregister(String id) {
-        shapes.remove(id);
+        models.remove(id);
     }
 
-    public void unregister(@NonNull BlockShape shape) {
-        shapes.remove(shape.getId());
+    public void unregister(@NonNull Model model) {
+        models.remove(model.getId());
     }
 
-    public Collection<BlockShape> getShapes() {
-        return shapes.values();
+    public Collection<Model> getAll() {
+        return models.values();
     }
 }
