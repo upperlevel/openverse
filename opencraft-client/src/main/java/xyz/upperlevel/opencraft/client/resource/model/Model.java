@@ -2,12 +2,14 @@ package xyz.upperlevel.opencraft.client.resource.model;
 
 import lombok.Getter;
 import lombok.NonNull;
+import org.joml.Matrix4f;
 import xyz.upperlevel.opencraft.common.physic.collision.Box;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Model {
+public class ModelNode implements Model {
 
     @Getter
     private String id;
@@ -16,17 +18,17 @@ public class Model {
     private Box box = new Box();
 
     @Getter
-    private List<ModelPart> parts = new ArrayList<>();
+    private List<Model> models = new ArrayList<>();
 
-    public Model(@NonNull String id) {
+    public ModelNode(@NonNull String id) {
         this.id = id;
     }
 
-    public void add(@NonNull ModelPart part) {
-        parts.add(part);
+    public void add(@NonNull Model m) {
+        models.add(m);
     }
 
-    public void remove(ModelPart part) {
-        parts.remove(part);
+    public void remove(@NonNull Model m) {
+        models.remove(m);
     }
 }
