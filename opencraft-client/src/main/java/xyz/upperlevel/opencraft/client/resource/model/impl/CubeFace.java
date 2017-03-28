@@ -1,57 +1,35 @@
-package xyz.upperlevel.opencraft.client.resource.model;
+package xyz.upperlevel.opencraft.client.resource.model.impl;
 
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import xyz.upperlevel.opencraft.client.resource.texture.Texture;
+import xyz.upperlevel.ulge.util.Color;
 
-<<<<<<< HEAD
-=======
-import java.nio.ByteBuffer;
-
->>>>>>> 06eecab13fbfd6cb7388c12be9d345d48be77c19
 public class CubeFace {
 
     @Getter
     private Cube cube;
 
     @Getter
-    private FacePosition position;
+    private CubeFacePosition position;
 
     @Getter
     @Setter
-    private Texture texture;
+    private Quad quad;
 
-    public CubeFace(@NonNull Cube cube, @NonNull FacePosition position) {
+    public CubeFace(@NonNull Cube cube, @NonNull CubeFacePosition position) {
         this.cube = cube;
-<<<<<<< HEAD
         this.position = position;
-=======
-        position = pos;
-        box = pos.getBox(cube.getBox());
+
+        quad = new Quad(position.getBox(cube.getBox()));
     }
 
-    public void setTexture(Texture texture) {
+    public void setTexture(@NonNull Texture texture) {
         quad.setTexture(texture);
     }
 
-    public void setColor(Color color) {
+    public void setColor(@NonNull Color color) {
         quad.setColor(color);
-    }
-
-    @Override
-    public int compile(Matrix4f trans, ByteBuffer buf) {
-        Box b = cube.getBox();
-
-        Vector3f sz = new Vector3f(
-                (float) b.width,
-                (float) b.height,
-                (float) b.depth
-        );
-
-
-        quad.compile(trans, buf);
-        return 4;
->>>>>>> 06eecab13fbfd6cb7388c12be9d345d48be77c19
     }
 }

@@ -1,6 +1,7 @@
 package xyz.upperlevel.opencraft.client.resource.texture;
 
 import lombok.NonNull;
+import xyz.upperlevel.opencraft.client.render.texture.TextureBakery;
 import xyz.upperlevel.ulge.opengl.texture.loader.ImageContent;
 
 import javax.imageio.ImageIO;
