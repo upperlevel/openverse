@@ -1,4 +1,15 @@
-package xyz.upperlevel.opencraft.client.resource.model;
+package xyz.upperlevel.opencraft.client.resource.model.impl;
 
-public class QuadVertex {
+import lombok.Getter;
+import lombok.Setter;
+import xyz.upperlevel.ulge.util.Color;
+
+public class Vertex {
+
+    @Getter
+    @Setter
+    private Color color = Color.WHITE;
+
+    public Vertex() {
+    }
 }

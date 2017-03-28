@@ -1,13 +1,50 @@
-package xyz.upperlevel.opencraft.client.resource.model;
+package xyz.upperlevel.opencraft.client.resource.model.impl;
 
-public enum FacePosition {
+import xyz.upperlevel.opencraft.common.physic.collision.Box;
 
-    UP,
-    DOWN,
+public enum CubeFacePosition {
 
-    LEFT,
-    RIGHT,
+    UP {
+        @Override
+        public Box getBox(Box c) {
+            return new Box(c.x, c.y + c.height, c.z, c.width, 0, c.depth);
+        }
+    },
+    DOWN {
+        @Override
+        public Box getBox(Box c) {
+            return new Box(c.x, c.y, c.z, c.width, 0, c.depth);
+        }
+    },
 
-    FRONT,
-    BACK
+    RIGHT {
+        @Override
+        public Box getBox(Box c) {
+            return new Box(c.x + c.width, c.y, c.z, 0, c.height, c.depth);
+        }
+    },
+    LEFT {
+        @Override
+        public Box getBox(Box c) {
+            return new Box(c.x, c.y, c.z, 0, c.height, c.depth);
+        }
+    },
+
+    FRONT {
+        @Override
+        public Box getBox(Box c) {
+            return new Box(c.x, c.y, c.z + c.depth, c.width, c.height, 0);
+        }
+    },
+    BACK {
+        @Override
+        public Box getBox(Box c) {
+            return new Box(c.x, c.y, c.z, c.width, c.height, 0);
+        }
+    };
+
+    CubeFacePosition() {
+    }
+
+    public abstract Box getBox(Box cube);
 }

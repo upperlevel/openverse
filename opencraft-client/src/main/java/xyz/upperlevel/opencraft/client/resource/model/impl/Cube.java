@@ -1,15 +1,19 @@
-package xyz.upperlevel.opencraft.client.resource.model;
+package xyz.upperlevel.opencraft.client.resource.model.impl;
 
 import lombok.Getter;
+import xyz.upperlevel.opencraft.client.resource.model.ModelPart;
 import xyz.upperlevel.opencraft.client.resource.texture.Texture;
 import xyz.upperlevel.opencraft.common.physic.collision.Box;
 import xyz.upperlevel.ulge.util.Color;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
+
+import static xyz.upperlevel.ulge.util.Color.*;
 
 
-public class Cube implements Model {
+public class Cube implements ModelPart {
 
     private Map<CubeFacePosition, CubeFace> faces = new HashMap<>();
 
@@ -17,12 +21,12 @@ public class Cube implements Model {
         for (CubeFacePosition position : CubeFacePosition.values())
             faces.put(position, new CubeFace(this, position));
         {
-            faces.get(BACKWARD).setColor(YELLOW);
-            faces.get(FORWARD).setColor(RED);
-            faces.get(RIGHT).setColor(GREEN);
-            faces.get(LEFT).setColor(BLUE);
-            faces.get(DOWN).setColor(AQUA);
-            faces.get(UP).setColor(WHITE);
+            faces.get(CubeFacePosition.BACK).setColor(YELLOW);
+            faces.get(CubeFacePosition.FRONT).setColor(RED);
+            faces.get(CubeFacePosition.RIGHT).setColor(GREEN);
+            faces.get(CubeFacePosition.LEFT).setColor(BLUE);
+            faces.get(CubeFacePosition.DOWN).setColor(AQUA);
+            faces.get(CubeFacePosition.UP).setColor(WHITE);
         }
     }
     @Getter
@@ -33,11 +37,6 @@ public class Cube implements Model {
 
     public Cube(Box box) {
         this.box = box;
-    }
-
-    @Override
-    public String getId() {
-        return "cube";
     }
 
     public void setTexture(Texture texture) {

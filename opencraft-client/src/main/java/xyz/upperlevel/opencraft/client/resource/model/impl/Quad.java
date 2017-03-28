@@ -1,43 +1,45 @@
-package xyz.upperlevel.opencraft.client.resource.model;
+package xyz.upperlevel.opencraft.client.resource.model.impl;
 
 import lombok.Getter;
-import lombok.Setter;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
+import lombok.NonNull;
+import xyz.upperlevel.opencraft.client.resource.model.ModelPart;
 import xyz.upperlevel.opencraft.client.resource.texture.Texture;
-import xyz.upperlevel.opencraft.client.resource.texture.TextureBakery;
+import xyz.upperlevel.opencraft.common.physic.collision.Box;
 import xyz.upperlevel.ulge.util.Color;
 
-import java.nio.ByteBuffer;
-
-import static xyz.upperlevel.opencraft.client.resource.model.QuadVertexBufferStorer.putColor;
-import static xyz.upperlevel.opencraft.client.resource.model.QuadVertexBufferStorer.putPosition;
-import static xyz.upperlevel.opencraft.client.resource.model.QuadVertexBufferStorer.putTextureCoordinates;
-
-public class Quad {
+public class Quad implements ModelPart {
 
     @Getter
-    @Setter
+    private Box box;
+
+    @Getter
     private Texture texture;
 
     @Getter
-    private QuadVertex[] vertices = new QuadVertex[4];
+    private Vertex[] vertices = new Vertex[QuadVertexPosition.values().length];
 
     {
-        for (int i = 0; i < vertices.length; i++) {
-            vertices[i] = QuadVertexPosition.values()[i].create();
-        }
+        for (int i = 0; i < vertices.length; i++)
+            vertices[i] = new Vertex();
     }
 
     public Quad() {
     }
 
-    public void setColor(Color color) {
-        for (QuadVertex v : vertices)
-            v.setColor(color);
+    public Quad(@NonNull Box box) {
+        this.box = box;
     }
 
-    public QuadVertex getVertex(QuadVertexPosition pos) {
+    public void setTexture(@NonNull Texture texture) {
+        this.texture = texture;
+    }
+
+    public void setColor(@NonNull Color color) {
+        for (Vertex vertex : vertices)
+            vertex.setColor(color);
+    }
+
+    public Vertex getVertex(QuadVertexPosition pos) {
         return vertices[pos.ordinal()];
     }
 }
