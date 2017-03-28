@@ -10,13 +10,12 @@
         <version>FINAL</version>
     </parent>
 
-    <groupId>xyz.upperlevel.opencraft.client</groupId>
     <artifactId>opencraft-client</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
-            <groupId>xyz.upperlevel.opencraft.common</groupId>
+            <groupId>xyz.upperlevel.opencraft</groupId>
             <artifactId>opencraft</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
