@@ -17,11 +17,7 @@ import java.util.Map;
 import static xyz.upperlevel.opencraft.client.resource.model.CubeFacePosition.*;
 import static xyz.upperlevel.ulge.util.Color.*;
 
-public class Cube implements ModelPart {
-
-    public static final int VERTICES_COUNT = CubeFace.VERTICES_COUNT * 6;
-
-    public static final int DATA_COUNT = CubeFace.DATA_COUNT * VERTICES_COUNT;
+public class Cube implements Model {
 
     private Map<CubeFacePosition, CubeFace> faces = new HashMap<>();
 
@@ -49,6 +45,11 @@ public class Cube implements ModelPart {
         this.box = box;
     }
 
+    @Override
+    public String getId() {
+        return "cube";
+    }
+
     public void setTexture(Texture texture) {
         getFaces().forEach(f -> f.setTexture(texture));
     }
@@ -63,44 +64,5 @@ public class Cube implements ModelPart {
 
     public Collection<CubeFace> getFaces() {
         return faces.values();
-    }
-
-    @Override
-    public int getVertices() {
-        return VERTICES_COUNT;
-    }
-
-    @Override
-    public int compile(Matrix4f matrix, ByteBuffer buffer) {
-        matrix = new Matrix4f(matrix)
-                .translate(zone.getSize()
-                        .add(box.x, box.y, box.z)
-                        .mul(1f, 1f, -1f));
-
-        int vertices = 0;
-        for (CubeFace face : getFaces())
-            vertices += face.compile(new Matrix4f(matrix), buffer);
-        return vertices;
-    }
-
-    public boolean canCompile(CubeFace face, BlockShape relative) {
-        return relative == null || relative.isEmpty() || relative.isTransparent() || !relative.isInside(face.getMirrorZone());
-    }
-
-    @Override
-    public int cleanCompile(int x, int y, int z, WorldView world, Matrix4f matrix, ByteBuffer buffer) {
-        int vertices = 0;
-        for (CubeFacePosition position : CubeFacePosition.values()) {
-            CubeFace face = getFace(position);
-            // if the face is visible
-            if (canCompile(face, world.getShape(
-                    x + position.getDirectionX(),
-                    y + position.getDirectionY(),
-                    z + position.getDirectionZ()))) {
-                // compiles it
-                vertices += face.compile(matrix, buffer);
-            }
-        }
-        return vertices;
     }
 }

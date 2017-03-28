@@ -10,12 +10,7 @@ import xyz.upperlevel.ulge.util.Color;
 
 import java.nio.ByteBuffer;
 
-@Accessors(chain = true)
-public class CubeFace implements ModelCompiler {
-
-    public static final int VERTICES_COUNT = QuadVertex.VERTICES_COUNT * 4;
-
-    public static final int DATA_COUNT = QuadVertex.DATA_COUNT * VERTICES_COUNT;
+public class CubeFace {
 
     @Getter
     private Cube cube;
@@ -53,12 +48,6 @@ public class CubeFace implements ModelCompiler {
                 (float) b.depth
         );
 
-        trans = new Matrix4f(trans)
-                .translate(position.getDirection().mul(sz))
-                .scale(sz)
-                .translate(.5f, .5f, .5f)
-                .rotate(position.getRotation())
-                .translate(-.5f, -.5f, -.5f);
 
         quad.compile(trans, buf);
         return 4;

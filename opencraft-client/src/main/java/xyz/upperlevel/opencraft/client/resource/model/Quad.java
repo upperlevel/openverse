@@ -14,7 +14,7 @@ import static xyz.upperlevel.opencraft.client.resource.model.QuadVertexBufferSto
 import static xyz.upperlevel.opencraft.client.resource.model.QuadVertexBufferStorer.putPosition;
 import static xyz.upperlevel.opencraft.client.resource.model.QuadVertexBufferStorer.putTextureCoordinates;
 
-public class Quad implements ModelCompiler {
+public class Quad {
 
     @Getter
     @Setter
@@ -39,38 +39,5 @@ public class Quad implements ModelCompiler {
 
     public QuadVertex getVertex(QuadVertexPosition pos) {
         return vertices[pos.ordinal()];
-    }
-
-    @Override
-    public int compile(Matrix4f trans, ByteBuffer buf) {
-        int texLayer = TextureBakery.SIMPLE_INST.getId(texture);
-
-        QuadVertex v;
-        
-        // top left
-        v = getVertex(QuadVertexPosition.TOP_LEFT);
-        putPosition(buf, trans.transformPosition(v.getX(), v.getY(), 0f, new Vector3f()));
-        putColor(buf, v.getColor());
-        putTextureCoordinates(buf, v.getU(), v.getV(), texLayer);
-
-        // bottom left
-        v = getVertex(QuadVertexPosition.BOTTOM_LEFT);
-        putPosition(buf, trans.transformPosition(v.getX(), v.getY(), 0f, new Vector3f()));
-        putColor(buf, v.getColor());
-        putTextureCoordinates(buf, v.getU(), v.getV(), texLayer);
-
-        // bottom right
-        v = getVertex(QuadVertexPosition.BOTTOM_RIGHT);
-        putPosition(buf, trans.transformPosition(v.getX(), v.getY(), 0f, new Vector3f()));
-        putColor(buf, v.getColor());
-        putTextureCoordinates(buf, v.getU(), v.getV(), texLayer);
-
-        // top right
-        v = getVertex(QuadVertexPosition.TOP_RIGHT);
-        putPosition(buf, trans.transformPosition(v.getX(), v.getY(), 0f, new Vector3f()));
-        putColor(buf, v.getColor());
-        putTextureCoordinates(buf, v.getU(), v.getV(), texLayer);
-
-        return 4;
     }
 }
