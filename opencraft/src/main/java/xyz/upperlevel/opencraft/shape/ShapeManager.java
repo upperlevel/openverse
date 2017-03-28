@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.common.shape;
+package xyz.upperlevel.opencraft.shape;
 
 import lombok.NonNull;
 

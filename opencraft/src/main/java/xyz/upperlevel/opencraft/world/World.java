@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.common.world;
+package xyz.upperlevel.opencraft.world;
 
 public interface World {
 

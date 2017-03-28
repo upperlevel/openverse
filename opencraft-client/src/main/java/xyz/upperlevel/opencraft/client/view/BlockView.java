@@ -5,7 +5,6 @@ import lombok.NonNull;
 import xyz.upperlevel.opencraft.common.block.BlockType;
 import xyz.upperlevel.opencraft.common.world.Block;
 
-import static xyz.upperlevel.opencraft.common.world.util.CoordConverter.*;
 import static xyz.upperlevel.opencraft.common.world.util.CoordConverter.chunkPosY;
 import static xyz.upperlevel.opencraft.common.world.util.CoordConverter.chunkPosZ;
 

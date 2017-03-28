@@ -4,8 +4,6 @@ import xyz.upperlevel.opencraft.client.asset.shape.BlockShape;
 import xyz.upperlevel.opencraft.common.block.BlockType;
 import xyz.upperlevel.opencraft.common.world.ChunkData;
 
-import static xyz.upperlevel.opencraft.common.world.ChunkStorer.*;
-
 public class ChunkModeler implements ChunkData {
 
     private BlockType[][][] blocks = new BlockType[WIDTH][HEIGHT][LENGTH];
