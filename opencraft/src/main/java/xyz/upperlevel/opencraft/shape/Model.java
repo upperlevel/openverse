@@ -1,7 +1,7 @@
-package xyz.upperlevel.opencraft.common.shape;
+package xyz.upperlevel.opencraft.shape;
 
 import lombok.NonNull;
-import xyz.upperlevel.opencraft.common.physic.collision.Box;
+import xyz.upperlevel.opencraft.physic.collision.Box;
 
 import java.util.List;
 

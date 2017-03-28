@@ -1,7 +1,7 @@
-package xyz.upperlevel.opencraft.common.world;
+package xyz.upperlevel.opencraft.world;
 
 import lombok.Getter;
-import xyz.upperlevel.opencraft.common.block.BlockType;
+import xyz.upperlevel.opencraft.block.BlockType;
 
 public class ChunkStorer {
 

@@ -1,6 +1,6 @@
-package xyz.upperlevel.opencraft.common.world.util;
+package xyz.upperlevel.opencraft.world.util;
 
-import xyz.upperlevel.opencraft.common.world.Chunk;
+import xyz.upperlevel.opencraft.world.Chunk;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.floor;

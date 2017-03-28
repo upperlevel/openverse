@@ -1,13 +1,12 @@
-package xyz.upperlevel.opencraft.common.physic;
+package xyz.upperlevel.opencraft.physic;
 
 import org.joml.Vector3f;
-import xyz.upperlevel.opencraft.common.block.BlockType;
-import xyz.upperlevel.opencraft.common.entity.Entity;
-import xyz.upperlevel.opencraft.common.physic.collision.Box;
-import xyz.upperlevel.opencraft.common.shape.Model;
-import xyz.upperlevel.opencraft.common.shape.Model;
-import xyz.upperlevel.opencraft.common.world.Location;
-import xyz.upperlevel.opencraft.common.world.World;
+import xyz.upperlevel.opencraft.block.BlockType;
+import xyz.upperlevel.opencraft.entity.Entity;
+import xyz.upperlevel.opencraft.physic.collision.Box;
+import xyz.upperlevel.opencraft.shape.Model;
+import xyz.upperlevel.opencraft.world.Location;
+import xyz.upperlevel.opencraft.world.World;
 
 import java.util.HashSet;
 import java.util.Set;
