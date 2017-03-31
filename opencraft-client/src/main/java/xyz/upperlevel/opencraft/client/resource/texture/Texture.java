@@ -14,9 +14,7 @@ public class Texture {
     @Setter
     private ImageContent image;
 
-    public Texture(
-            @NonNull String id,
-            @NonNull ImageContent image) {
+    public Texture(@NonNull String id, @NonNull ImageContent image) {
         this.id = id;
         this.image = image;
     }

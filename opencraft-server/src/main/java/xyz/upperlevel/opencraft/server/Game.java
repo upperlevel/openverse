@@ -1,7 +1,7 @@
 package xyz.upperlevel.opencraft.server;
 
 import lombok.Getter;
-import xyz.upperlevel.opencraft.common.world.World;
+import xyz.upperlevel.opencraft.world.World;
 import xyz.upperlevel.opencraft.server.world.ServerWorld;
 
 public class Game {

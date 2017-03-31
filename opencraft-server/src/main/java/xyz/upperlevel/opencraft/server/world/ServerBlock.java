@@ -2,8 +2,8 @@ package xyz.upperlevel.opencraft.server.world;
 
 import lombok.Getter;
 import lombok.NonNull;
-import xyz.upperlevel.opencraft.common.block.BlockType;
-import xyz.upperlevel.opencraft.common.world.Block;
+import xyz.upperlevel.opencraft.resource.block.BlockType;
+import xyz.upperlevel.opencraft.world.Block;
 
 import static java.lang.Math.floor;
 import static java.lang.Math.floorMod;

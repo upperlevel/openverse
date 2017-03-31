@@ -1,10 +1,9 @@
 package xyz.upperlevel.opencraft.physic;
 
 import org.joml.Vector3f;
-import xyz.upperlevel.opencraft.block.BlockType;
-import xyz.upperlevel.opencraft.entity.Entity;
-import xyz.upperlevel.opencraft.physic.collision.Box;
-import xyz.upperlevel.opencraft.shape.Model;
+import xyz.upperlevel.opencraft.world.entity.Entity;
+import xyz.upperlevel.opencraft.resource.block.BlockType;
+import xyz.upperlevel.opencraft.resource.model.Model;
 import xyz.upperlevel.opencraft.world.Location;
 import xyz.upperlevel.opencraft.world.World;
 
@@ -24,9 +23,9 @@ public class PhysicEngine {
         forces.forEach(f -> f.apply(entity, delta));
 
         Location loc = entity.getLocation();
-        float sx = loc.getX();
-        float sy = loc.getY();
-        float sz = loc.getZ();
+        float sx = loc.x();
+        float sy = loc.y();
+        float sz = loc.z();
 
         Vector3f vel = entity.getVelocity();
         float vx = vel.x;
@@ -50,7 +49,7 @@ public class PhysicEngine {
             bb.add(bx, by, bz);
 
             // entity box
-            Box eb = entity.getType().getShape().getBox().copy();
+            Box eb = entity.getType().getModel().getBox().copy();
             eb.add(ex, ey, ez);
 
             // if collides

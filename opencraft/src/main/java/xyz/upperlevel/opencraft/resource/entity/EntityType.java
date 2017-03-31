@@ -1,9 +1,9 @@
-package xyz.upperlevel.opencraft.entity;
+package xyz.upperlevel.opencraft.resource.entity;
 
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import xyz.upperlevel.opencraft.shape.Model;
+import xyz.upperlevel.opencraft.resource.model.Model;
 
 public class EntityType {
 

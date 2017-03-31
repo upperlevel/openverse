@@ -1,7 +1,7 @@
 package xyz.upperlevel.opencraft.client.resource.texture;
 
 import lombok.NonNull;
-import xyz.upperlevel.opencraft.client.render.texture.TextureBakery;
+import xyz.upperlevel.opencraft.client.render.texture.TextureAtlas;
 import xyz.upperlevel.ulge.opengl.texture.loader.ImageContent;
 
 import javax.imageio.ImageIO;
@@ -55,7 +55,7 @@ public class TextureManager {
 
                 Texture texture = new Texture(removeExtension(file.getName()), new ImageContent(image));
                 register(texture);
-                TextureBakery.SIMPLE_INST.register(texture);
+                TextureAtlas.SIMPLE_INST.add(texture);
                 counter++;
             }
         }

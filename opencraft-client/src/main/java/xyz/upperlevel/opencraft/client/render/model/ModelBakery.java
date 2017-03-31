@@ -1,32 +1,44 @@
 package xyz.upperlevel.opencraft.client.render.model;
 
 import lombok.NonNull;
-import xyz.upperlevel.opencraft.common.shape.Model;
+import org.joml.Matrix4f;
+import xyz.upperlevel.opencraft.client.render.RenderContext;
+import xyz.upperlevel.opencraft.resource.model.Shape;
 
+import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ModelBakerManager {
+@SuppressWarnings("unchecked")
+public class ModelBakery {
 
-    private Map<Class<?>, ModelBaker> bakers = new HashMap<>();
+    private Map<Class<? extends Shape>, Compiler> compilers = new HashMap<>();
 
-    public ModelBakerManager() {
+    public ModelBakery() {
     }
 
-    public void register(ModelBaker comp) {
-        bakers.put(comp.getModel(), comp);
+    public void register(Compiler baker) {
+        compilers.put(baker.getModelClass(), baker);
     }
 
-    public ModelBaker get(Model m) {
-        return bakers.get(m.getClass());
+    public <M extends Shape> Compiler<M> get(M shape) {
+        return compilers.get(shape.getClass());
     }
 
-    public void unregister(@NonNull ModelBaker comp) {
-        bakers.remove(comp.getModel());
+    public void unregister(@NonNull Compiler baker) {
+        compilers.remove(baker.getModelClass());
     }
 
-    public Collection<ModelBaker> getAll() {
-        return bakers.values();
+    public Collection<Compiler> getAll() {
+        return compilers.values();
+    }
+
+    public int bake(Shape shape, RenderContext bakery, ByteBuffer out) {
+        return get(shape).bake(shape, bakery, out);
+    }
+
+    public int bake(Shape shape, RenderContext bakery, Matrix4f in, ByteBuffer out) {
+        return get(shape).bake(shape, bakery, in, out);
     }
 }

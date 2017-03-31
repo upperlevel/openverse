@@ -2,12 +2,12 @@ package xyz.upperlevel.opencraft.client.resource.model.impl;
 
 import lombok.Getter;
 import lombok.NonNull;
-import xyz.upperlevel.opencraft.client.resource.model.ModelPart;
+import xyz.upperlevel.opencraft.resource.model.Shape;
 import xyz.upperlevel.opencraft.client.resource.texture.Texture;
-import xyz.upperlevel.opencraft.common.physic.collision.Box;
+import xyz.upperlevel.opencraft.physic.Box;
 import xyz.upperlevel.ulge.util.Color;
 
-public class Quad implements ModelPart {
+public class Quad implements Shape {
 
     @Getter
     private Box box;
@@ -16,11 +16,10 @@ public class Quad implements ModelPart {
     private Texture texture;
 
     @Getter
-    private Vertex[] vertices = new Vertex[QuadVertexPosition.values().length];
-
+    private Vertex[] vertices = new Vertex[QuadVertex.values().length];
     {
         for (int i = 0; i < vertices.length; i++)
-            vertices[i] = new Vertex();
+            vertices[i] = QuadVertex.values()[i].create();
     }
 
     public Quad() {
@@ -39,7 +38,7 @@ public class Quad implements ModelPart {
             vertex.setColor(color);
     }
 
-    public Vertex getVertex(QuadVertexPosition pos) {
+    public Vertex getVertex(QuadVertex pos) {
         return vertices[pos.ordinal()];
     }
 }

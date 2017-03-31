@@ -1,9 +1,9 @@
-package xyz.upperlevel.opencraft.block;
+package xyz.upperlevel.opencraft.resource.block;
 
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import xyz.upperlevel.opencraft.shape.Model;
+import xyz.upperlevel.opencraft.resource.model.Model;
 
 public class BlockType {
 

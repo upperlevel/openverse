@@ -1,9 +1,10 @@
-package xyz.upperlevel.opencraft.entity;
+package xyz.upperlevel.opencraft.world.entity;
 
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import org.joml.Vector3f;
+import xyz.upperlevel.opencraft.resource.entity.EntityType;
 import xyz.upperlevel.opencraft.world.Location;
 
 public class Entity {

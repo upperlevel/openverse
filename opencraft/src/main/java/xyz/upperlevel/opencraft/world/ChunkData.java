@@ -1,10 +1,11 @@
 package xyz.upperlevel.opencraft.world;
 
-import xyz.upperlevel.opencraft.block.BlockType;
+import lombok.NonNull;
+import xyz.upperlevel.opencraft.resource.block.BlockType;
 
 public interface ChunkData {
 
     BlockType getType(int x, int y, int z);
 
-    void setType(int x, int y, int z, BlockType type);
+    void setType(int x, int y, int z, @NonNull BlockType type);
 }

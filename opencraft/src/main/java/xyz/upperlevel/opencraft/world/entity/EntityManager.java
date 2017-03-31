@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.entity;
+package xyz.upperlevel.opencraft.world.entity;
 
 import lombok.NonNull;
 

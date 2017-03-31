@@ -8,7 +8,15 @@ public class Vertex {
 
     @Getter
     @Setter
+    private float x, y, z;
+
+    @Getter
+    @Setter
     private Color color = Color.WHITE;
+
+    @Getter
+    @Setter
+    private float u, v;
 
     public Vertex() {
     }

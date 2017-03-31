@@ -1,9 +1,9 @@
 package xyz.upperlevel.opencraft.client.resource.model.impl;
 
 import lombok.Getter;
-import xyz.upperlevel.opencraft.client.resource.model.ModelPart;
+import xyz.upperlevel.opencraft.client.resource.model.VertexShape;
 import xyz.upperlevel.opencraft.client.resource.texture.Texture;
-import xyz.upperlevel.opencraft.common.physic.collision.Box;
+import xyz.upperlevel.opencraft.physic.Box;
 import xyz.upperlevel.ulge.util.Color;
 
 import java.util.Collection;
@@ -13,7 +13,7 @@ import java.util.Map;
 import static xyz.upperlevel.ulge.util.Color.*;
 
 
-public class Cube implements ModelPart {
+public class Cube implements VertexShape {
 
     private Map<CubeFacePosition, CubeFace> faces = new HashMap<>();
 
@@ -29,6 +29,7 @@ public class Cube implements ModelPart {
             faces.get(CubeFacePosition.UP).setColor(WHITE);
         }
     }
+
     @Getter
     private Box box = new Box();
 

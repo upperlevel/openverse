@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.physic.collision;
+package xyz.upperlevel.opencraft.physic;
 
 import lombok.Getter;
 import lombok.Setter;

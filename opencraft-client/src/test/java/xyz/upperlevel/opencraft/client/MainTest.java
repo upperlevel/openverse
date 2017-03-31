@@ -2,10 +2,10 @@ package xyz.upperlevel.opencraft.client;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
-import xyz.upperlevel.opencraft.client.view.WorldView;
-import xyz.upperlevel.opencraft.client.view.WorldViewer;
+import xyz.upperlevel.opencraft.client.world.WorldView;
+import xyz.upperlevel.opencraft.client.world.WorldViewer;
 import xyz.upperlevel.opencraft.client.resource.texture.TextureBakery;
-import xyz.upperlevel.opencraft.common.world.Location;
+import xyz.upperlevel.opencraft.world.Location;
 import xyz.upperlevel.ulge.opengl.shader.Program;
 import xyz.upperlevel.ulge.opengl.shader.ShaderType;
 import xyz.upperlevel.ulge.opengl.shader.ShaderUtil;
@@ -78,7 +78,7 @@ public class MainTest {
         // INITIALIZES PLAYER!
         VIEWER = client.getViewer();
 
-        TextureBakery.SIMPLE_INST.getCompiled().bind();
+        TextureBakery.SIMPLE_INST.getAtlas().bind();
 
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);

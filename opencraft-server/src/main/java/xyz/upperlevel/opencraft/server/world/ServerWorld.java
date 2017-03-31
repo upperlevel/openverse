@@ -3,8 +3,8 @@ package xyz.upperlevel.opencraft.server.world;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import xyz.upperlevel.opencraft.common.entity.EntityManager;
-import xyz.upperlevel.opencraft.common.world.World;
+import xyz.upperlevel.opencraft.world.entity.EntityManager;
+import xyz.upperlevel.opencraft.world.World;
 
 import java.util.HashSet;
 import java.util.Set;

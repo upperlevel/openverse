@@ -1,6 +1,7 @@
 package xyz.upperlevel.opencraft.client.resource.model;
 
 import lombok.NonNull;
+import xyz.upperlevel.opencraft.resource.model.Model;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,20 +14,23 @@ public class ModelManager {
     public ModelManager() {
     }
 
-    public void register(@NonNull Model model) {
+    public ModelManager register(@NonNull Model model) {
         models.put(model.getId(), model);
+        return this;
     }
 
     public Model get(String id) {
         return models.get(id);
     }
 
-    public void unregister(String id) {
+    public ModelManager unregister(String id) {
         models.remove(id);
+        return this;
     }
 
-    public void unregister(@NonNull Model model) {
+    public ModelManager unregister(@NonNull Model model) {
         models.remove(model.getId());
+        return this;
     }
 
     public Collection<Model> getAll() {

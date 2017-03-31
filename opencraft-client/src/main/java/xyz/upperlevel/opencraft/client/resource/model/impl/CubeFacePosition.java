@@ -1,49 +1,61 @@
 package xyz.upperlevel.opencraft.client.resource.model.impl;
 
-import xyz.upperlevel.opencraft.common.physic.collision.Box;
+import lombok.Getter;
+import org.joml.Vector3i;
+import xyz.upperlevel.opencraft.physic.Box;
 
 public enum CubeFacePosition {
 
-    UP {
+    UP(0, 1, 0) {
         @Override
         public Box getBox(Box c) {
             return new Box(c.x, c.y + c.height, c.z, c.width, 0, c.depth);
         }
     },
-    DOWN {
+    DOWN(0, -1, 0) {
         @Override
         public Box getBox(Box c) {
             return new Box(c.x, c.y, c.z, c.width, 0, c.depth);
         }
     },
 
-    RIGHT {
+    RIGHT(1, 0, 0) {
         @Override
         public Box getBox(Box c) {
             return new Box(c.x + c.width, c.y, c.z, 0, c.height, c.depth);
         }
     },
-    LEFT {
+    LEFT(-1, 0, 0) {
         @Override
         public Box getBox(Box c) {
             return new Box(c.x, c.y, c.z, 0, c.height, c.depth);
         }
     },
 
-    FRONT {
+    FRONT(0, 0, 1) {
         @Override
         public Box getBox(Box c) {
             return new Box(c.x, c.y, c.z + c.depth, c.width, c.height, 0);
         }
     },
-    BACK {
+    BACK(0, 0, -1) {
         @Override
         public Box getBox(Box c) {
             return new Box(c.x, c.y, c.z, c.width, c.height, 0);
         }
     };
 
-    CubeFacePosition() {
+    @Getter
+    public final int dirX, dirY, dirZ;
+
+    CubeFacePosition(int dx, int dy, int dz) {
+        dirX = dx;
+        dirY = dy;
+        dirZ = dz;
+    }
+
+    public Vector3i getDir() {
+        return new Vector3i(dirX, dirY, dirZ);
     }
 
     public abstract Box getBox(Box cube);
