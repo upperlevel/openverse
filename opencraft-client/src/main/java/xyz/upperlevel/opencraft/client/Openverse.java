@@ -1,20 +1,15 @@
 package xyz.upperlevel.opencraft.client;
 
-import lombok.Getter;
-import xyz.upperlevel.opencraft.client.render.RenderContext;
-import xyz.upperlevel.opencraft.client.resource.ResourceManager;
+import xyz.upperlevel.opencraft.client.render.world.BufferedChunk;
+import xyz.upperlevel.opencraft.client.render.world.WorldView;
 import xyz.upperlevel.ulge.window.Glfw;
 import xyz.upperlevel.ulge.window.Window;
 
 public class Openverse {
 
-    public static final Openverse instance = new Openverse();
+    public static final Openverse get = new Openverse();
 
-    @Getter
-    private ResourceManager resources = new ResourceManager();
-
-    @Getter
-    private RenderContext bakery = new RenderContext();
+    private WorldView view;
 
     public Openverse() {
     }
@@ -23,13 +18,19 @@ public class Openverse {
         Window window = Glfw.createWindow(1000, 1000, "Openverse", false);
         window.contextualize();
         window.show();
+
+        view = new WorldView(1);
+
+        BufferedChunk chunk = new BufferedChunk(view, 0, 0, 0);
+        view.setChunk(0, 0, 0, chunk);
+
     }
 
     public void stop() {
 
     }
 
-    public static Openverse g() {
-        return instance;
+    public static Openverse get() {
+        return get;
     }
 }

@@ -1,13 +1,13 @@
-package xyz.upperlevel.opencraft.client.resource.model.impl;
+package xyz.upperlevel.opencraft.resource.model.impl;
 
 import lombok.Getter;
 import lombok.NonNull;
-import xyz.upperlevel.opencraft.resource.model.Shape;
+import xyz.upperlevel.opencraft.resource.model.Model;
 import xyz.upperlevel.opencraft.client.resource.texture.Texture;
 import xyz.upperlevel.opencraft.physic.Box;
 import xyz.upperlevel.ulge.util.Color;
 
-public class Quad implements Shape {
+public class Quad implements Model {
 
     @Getter
     private Box box;

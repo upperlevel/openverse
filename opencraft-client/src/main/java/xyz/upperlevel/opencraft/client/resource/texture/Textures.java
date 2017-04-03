@@ -1,7 +1,8 @@
 package xyz.upperlevel.opencraft.client.resource.texture;
 
 import lombok.NonNull;
-import xyz.upperlevel.opencraft.client.render.texture.TextureAtlas;
+import xyz.upperlevel.opencraft.client.render.texture.TextureContainer;
+import xyz.upperlevel.opencraft.client.resource.Resources;
 import xyz.upperlevel.ulge.opengl.texture.loader.ImageContent;
 
 import javax.imageio.ImageIO;
@@ -14,11 +15,19 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TextureManager {
+public class Textures {
 
     private Map<String, Texture> textures = new HashMap<>();
 
-    public TextureManager() {
+    public Textures() {
+    }
+
+    public void load(Resources resources) {
+        // todo
+    }
+
+    public void unload() {
+        textures.clear();
     }
 
     public void register(@NonNull Texture texture) {
@@ -55,7 +64,7 @@ public class TextureManager {
 
                 Texture texture = new Texture(removeExtension(file.getName()), new ImageContent(image));
                 register(texture);
-                TextureAtlas.SIMPLE_INST.add(texture);
+                TextureContainer.SIMPLE_INST.add(texture);
                 counter++;
             }
         }
@@ -67,16 +76,16 @@ public class TextureManager {
         return textures.get(id);
     }
 
+    public Collection<Texture> get() {
+        return textures.values();
+    }
+
     public void unregister(String id) {
         textures.remove(id);
     }
 
     public void unregister(@NonNull Texture texture) {
         unregister(texture.getId());
-    }
-
-    public Collection<Texture> getAll() {
-        return textures.values();
     }
 
     private static String removeExtension(String str) {//I'm ashamed to write a so-commonly used method in a class like this

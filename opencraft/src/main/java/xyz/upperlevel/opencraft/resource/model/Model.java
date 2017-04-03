@@ -1,10 +1,8 @@
 package xyz.upperlevel.opencraft.resource.model;
 
-import java.util.List;
+import xyz.upperlevel.opencraft.physic.Box;
 
-public interface Model<S extends Shape> extends Shape {
+public interface Model {
 
-    String getId();
-
-    List<S> getShapes();
+    Box getBox();
 }

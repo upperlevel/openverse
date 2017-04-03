@@ -3,9 +3,9 @@ package xyz.upperlevel.opencraft.client.render.model;
 import org.joml.Vector3f;
 import xyz.upperlevel.opencraft.physic.Box;
 
-public final class CompilerHelper {
+public final class BoxCompilerHelper {
 
-    private CompilerHelper() {
+    private BoxCompilerHelper() {
     }
 
     public static Vector3f boxPosition(Box box) {

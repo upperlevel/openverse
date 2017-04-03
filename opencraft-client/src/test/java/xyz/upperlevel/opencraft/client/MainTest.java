@@ -2,7 +2,7 @@ package xyz.upperlevel.opencraft.client;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
-import xyz.upperlevel.opencraft.client.world.WorldView;
+import xyz.upperlevel.opencraft.client.render.world.WorldView;
 import xyz.upperlevel.opencraft.client.world.WorldViewer;
 import xyz.upperlevel.opencraft.client.resource.texture.TextureBakery;
 import xyz.upperlevel.opencraft.world.Location;

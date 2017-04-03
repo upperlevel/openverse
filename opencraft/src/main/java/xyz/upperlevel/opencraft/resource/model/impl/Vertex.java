@@ -1,4 +1,4 @@
-package xyz.upperlevel.opencraft.client.resource.model.impl;
+package xyz.upperlevel.opencraft.resource.model.impl;
 
 import lombok.Getter;
 import lombok.Setter;
