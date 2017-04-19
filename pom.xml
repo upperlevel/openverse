@@ -4,15 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>xyz.upperlevel.opencraft</groupId>
-    <artifactId>opencraft-parent</artifactId>
+    <groupId>xyz.upperlevel.openverse</groupId>
+    <artifactId>openverse-parent</artifactId>
     <packaging>pom</packaging>
     <version>FINAL</version>
 
     <modules>
-        <module>opencraft</module>
-        <module>opencraft-client</module>
-        <module>opencraft-server</module>
+        <module>openverse</module>
+        <module>openverse-client</module>
+        <module>openverse-server</module>
     </modules>
 
     <dependencies>
