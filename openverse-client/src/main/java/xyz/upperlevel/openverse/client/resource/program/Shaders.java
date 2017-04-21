@@ -1,7 +1,7 @@
 package xyz.upperlevel.openverse.client.resource.program;
 
 import lombok.NonNull;
-import xyz.upperlevel.openverse.client.resource.Resources;
+import xyz.upperlevel.openverse.client.resource.ResourceManager;
 import xyz.upperlevel.ulge.opengl.shader.Shader;
 
 import java.util.Collection;
@@ -15,7 +15,7 @@ public class Shaders {
     public Shaders() {
     }
 
-    public void load(Resources resources) {
+    public void load(ResourceManager resourceManager) {
     }
 
     public void unload() {

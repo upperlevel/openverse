@@ -1,7 +1,7 @@
 package xyz.upperlevel.openverse.world;
 
 import lombok.NonNull;
-import xyz.upperlevel.openverse.resource.block.BlockType;
+import xyz.upperlevel.openverse.resource.BlockType;
 
 public interface ChunkData {
 

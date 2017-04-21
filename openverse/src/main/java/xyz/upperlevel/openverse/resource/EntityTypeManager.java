@@ -1,4 +1,4 @@
-package xyz.upperlevel.openverse.resource.entity;
+package xyz.upperlevel.openverse.resource;
 
 import lombok.NonNull;
 
@@ -6,14 +6,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EntityTypes {
+public class EntityTypeManager {
 
     private Map<String, EntityType> entities = new HashMap<>();
 
-    public EntityTypes() {
+    public EntityTypeManager() {
     }
 
-    public EntityTypes register(@NonNull EntityType type) {
+    public EntityTypeManager register(@NonNull EntityType type) {
         entities.put(type.getId(), type);
         return this;
     }

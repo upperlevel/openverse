@@ -1,4 +1,4 @@
-package xyz.upperlevel.openverse.client.resource.texture;
+package xyz.upperlevel.openverse.client.resource;
 
 import lombok.Getter;
 import lombok.NonNull;

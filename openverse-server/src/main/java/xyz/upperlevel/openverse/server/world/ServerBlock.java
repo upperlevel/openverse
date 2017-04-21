@@ -2,7 +2,7 @@ package xyz.upperlevel.openverse.server.world;
 
 import lombok.Getter;
 import lombok.NonNull;
-import xyz.upperlevel.openverse.resource.block.BlockType;
+import xyz.upperlevel.openverse.resource.BlockType;
 import xyz.upperlevel.openverse.world.Block;
 
 import static java.lang.Math.floor;

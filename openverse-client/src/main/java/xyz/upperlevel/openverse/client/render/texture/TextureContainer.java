@@ -2,7 +2,7 @@ package xyz.upperlevel.openverse.client.render.texture;
 
 import lombok.Getter;
 import lombok.NonNull;
-import xyz.upperlevel.openverse.client.resource.texture.Texture;
+import xyz.upperlevel.openverse.client.resource.Texture;
 import xyz.upperlevel.ulge.opengl.texture.Texture2dArray;
 
 import java.util.ArrayList;

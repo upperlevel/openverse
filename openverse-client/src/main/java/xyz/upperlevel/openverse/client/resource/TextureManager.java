@@ -1,8 +1,6 @@
-package xyz.upperlevel.openverse.client.resource.texture;
+package xyz.upperlevel.openverse.client.resource;
 
 import lombok.NonNull;
-import xyz.upperlevel.openverse.client.render.texture.TextureContainer;
-import xyz.upperlevel.openverse.client.resource.Resources;
 import xyz.upperlevel.ulge.opengl.texture.loader.ImageContent;
 
 import javax.imageio.ImageIO;
@@ -15,14 +13,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Textures {
+public class TextureManager {
 
     private Map<String, Texture> textures = new HashMap<>();
 
-    public Textures() {
+    public TextureManager() {
     }
 
-    public void load(Resources resources) {
+    public void load(ResourceManager resourceManager) {
         // todo
     }
 
@@ -64,7 +62,6 @@ public class Textures {
 
                 Texture texture = new Texture(removeExtension(file.getName()), new ImageContent(image));
                 register(texture);
-                TextureContainer.SIMPLE_INST.add(texture);
                 counter++;
             }
         }

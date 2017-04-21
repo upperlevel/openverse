@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import org.joml.Vector3f;
-import xyz.upperlevel.openverse.resource.entity.EntityType;
+import xyz.upperlevel.openverse.resource.EntityType;
 import xyz.upperlevel.openverse.world.Location;
 
 public class Entity {
