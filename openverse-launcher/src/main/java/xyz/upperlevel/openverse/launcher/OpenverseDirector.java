@@ -1,4 +1,4 @@
-package xyz.upperlevel.openverse.client;
+package xyz.upperlevel.openverse.launcher;
 
 import xyz.upperlevel.ulge.game.Scene;
 import xyz.upperlevel.ulge.game.Stage;
@@ -9,7 +9,8 @@ public class OpenverseDirector extends Stage {
     }
 
     @Override
-    public void onPreEnable(Scene prev) {
-        stage(new ResourceLoading());
+    public void onEnable(Scene prev) {
+        stage(new SingleplayerScene());
+        super.onEnable(prev);
     }
 }

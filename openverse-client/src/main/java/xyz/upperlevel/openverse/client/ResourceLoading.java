@@ -1,8 +1,6 @@
 package xyz.upperlevel.openverse.client;
 
-import lombok.NonNull;
 import xyz.upperlevel.ulge.game.Scene;
-import xyz.upperlevel.ulge.game.Stage;
 
 import static org.lwjgl.opengl.GL11.glClearColor;
 
