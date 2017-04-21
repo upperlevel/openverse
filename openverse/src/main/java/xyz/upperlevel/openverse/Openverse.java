@@ -1,26 +1,20 @@
 package xyz.upperlevel.openverse;
 
-import lombok.NonNull;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import xyz.upperlevel.hermes.Endpoint;
 import xyz.upperlevel.openverse.resource.ResourceManager;
-import xyz.upperlevel.openverse.world.World;
+import xyz.upperlevel.openverse.world.Universe;
 
 import java.util.List;
-import java.util.Map;
 
 @RequiredArgsConstructor
 public final class Openverse {
 
+    @Getter
+    @Setter
     public static OpenverseProxy proxy;
-
-    public static void setProxy(OpenverseProxy proxy) {
-        Openverse.proxy = proxy;
-    }
-
-    public static OpenverseProxy getProxy() {
-        return proxy;
-    }
 
 
     public static ResourceManager getResourceManager() {
@@ -31,8 +25,8 @@ public final class Openverse {
         return proxy.getPlayers();
     }
 
-    public static Map<String, World> getWorlds() {
-        return proxy.getWorlds();
+    public static Universe getWorlds() {
+        return proxy.getUniverse();
     }
 
     public static Endpoint getEndpoint() {

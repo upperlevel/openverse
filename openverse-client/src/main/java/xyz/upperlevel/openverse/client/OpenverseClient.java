@@ -17,35 +17,8 @@ public class OpenverseClient implements OpenverseProxy {//TODO Implement
     @Getter
     private ResourceManager resourceManager = new ResourceManager();
 
-    public OpenverseClient() {
-    }
-
-    @Override
-    public ResourceManager getResourceManager() {
-        return null;
-    }
-
-    @Override
-    public void setResourceManager(ResourceManager resourceManager) {
-
-    }
-
     @Override
     public List<?> getPlayers() {
-        return singletonList(getPlayers());
-    }
-
-    public Object getPlayer() {
-        return null;
-    }
-
-    @Override
-    public Map<String, World> getWorlds() {
-        return null;
-    }
-
-    @Override
-    public Endpoint getEndpoint() {
-        return null;
+        return singletonList(getPlayer());
     }
 }
