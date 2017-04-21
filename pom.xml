@@ -13,6 +13,8 @@
         <module>openverse</module>
         <module>openverse-client</module>
         <module>openverse-server</module>
+        <module>openverse-client-launcher</module>
+        <module>openverse-server-launcher</module>
     </modules>
 
     <dependencies>
