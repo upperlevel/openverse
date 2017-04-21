@@ -7,6 +7,7 @@ import org.lwjgl.BufferUtils;
 import xyz.upperlevel.openverse.client.render.Rendering;
 import xyz.upperlevel.openverse.client.render.model.ModelCompiler;
 import xyz.upperlevel.openverse.client.render.model.ModelCompilers;
+import xyz.upperlevel.openverse.client.world.WorldView;
 import xyz.upperlevel.openverse.resource.block.BlockType;
 import xyz.upperlevel.openverse.resource.model.Model;
 import xyz.upperlevel.openverse.world.Block;

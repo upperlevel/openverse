@@ -1,9 +1,10 @@
-package xyz.upperlevel.openverse.client.render.world;
+package xyz.upperlevel.openverse.client.world;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.joml.Matrix4f;
 import xyz.upperlevel.openverse.client.render.Rendering;
+import xyz.upperlevel.openverse.client.render.world.BufferedChunk;
 import xyz.upperlevel.openverse.world.Block;
 import xyz.upperlevel.openverse.world.Chunk;
 import xyz.upperlevel.openverse.world.World;

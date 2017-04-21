@@ -1,33 +1,42 @@
 package xyz.upperlevel.openverse.client;
 
-import xyz.upperlevel.openverse.client.render.world.BufferedChunk;
-import xyz.upperlevel.openverse.client.render.world.WorldView;
-import xyz.upperlevel.ulge.window.Glfw;
-import xyz.upperlevel.ulge.window.Window;
+import lombok.Getter;
+import xyz.upperlevel.openverse.client.resource.Resources;
+import xyz.upperlevel.ulge.game.Game;
+import xyz.upperlevel.ulge.game.GamePresettings;
 
-public class Openverse {
+public final class Openverse {
+
+    @Getter
+    private Resources resources = new Resources();
+
+    @Getter
+    private Game game = new Game(GamePresettings.builder()
+            .width(500)
+            .height(500)
+            .title("Openverse")
+            .build()
+    );
+
+    @Getter
+    private OpenverseDirector director = new OpenverseDirector();
+
+    public Openverse() {
+        game.getStage().stage(new OpenverseDirector());
+    }
+
+    private void launch() {
+        game.start();
+    }
+
+    public void destroy() {
+        game.stop();
+    }
 
     public static final Openverse get = new Openverse();
 
-    private WorldView view;
-
-    public Openverse() {
-    }
-
-    public void start() {
-        Window window = Glfw.createWindow(1000, 1000, "Openverse", false);
-        window.contextualize();
-        window.show();
-
-        view = new WorldView(1);
-
-        BufferedChunk chunk = new BufferedChunk(view, 0, 0, 0);
-        view.setChunk(0, 0, 0, chunk);
-
-    }
-
-    public void stop() {
-
+    public static void main(String[] args) {
+        get.launch();
     }
 
     public static Openverse get() {
