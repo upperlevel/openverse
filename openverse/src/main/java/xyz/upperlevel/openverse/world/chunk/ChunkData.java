@@ -1,4 +1,4 @@
-package xyz.upperlevel.openverse.world;
+package xyz.upperlevel.openverse.world.chunk;
 
 import lombok.NonNull;
 import xyz.upperlevel.openverse.resource.BlockType;

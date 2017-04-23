@@ -1,6 +1,6 @@
 package xyz.upperlevel.openverse.world.util;
 
-import xyz.upperlevel.openverse.world.Chunk;
+import xyz.upperlevel.openverse.world.chunk.Chunk;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.floor;

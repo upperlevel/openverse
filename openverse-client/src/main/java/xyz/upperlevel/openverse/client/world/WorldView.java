@@ -6,14 +6,14 @@ import org.joml.Matrix4f;
 import xyz.upperlevel.openverse.client.render.Rendering;
 import xyz.upperlevel.openverse.client.render.world.BufferedChunk;
 import xyz.upperlevel.openverse.world.Block;
-import xyz.upperlevel.openverse.world.Chunk;
+import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.ulge.opengl.shader.Program;
 
 import static java.lang.Math.floor;
 import static java.lang.Math.floorMod;
 import static org.lwjgl.BufferUtils.createFloatBuffer;
-import static xyz.upperlevel.openverse.world.Chunk.*;
+import static xyz.upperlevel.openverse.world.chunk.Chunk.*;
 
 public class WorldView implements World {
 

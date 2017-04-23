@@ -1,20 +1,36 @@
 package xyz.upperlevel.openverse.world;
 
+import lombok.Getter;
 import xyz.upperlevel.openverse.resource.BlockType;
+import xyz.upperlevel.openverse.world.chunk.Chunk;
 
-public interface Block {
+public class Block {
 
-    World getWorld();
+    @Getter
+    private final World world;
 
-    int getX();
+    @Getter
+    private final int x, y, z;
 
-    int getY();
+    @Getter
+    private final Chunk chunk;
 
-    int getZ();
+    private final int chx, chy, chz;
 
-    Chunk getChunk();
+    public Block(Chunk chunk, int x, int y, int z) {
+        checkInside(chunk, x, y, z);
+        this.world = chunk.getWorld();
+        this.chunk = chunk;
+        this.x = x;
+        this.y = y;
+        this.z = z;
 
-    default Block getRelative(int x, int y, int z) {
+        this.chx = x & 0xF;
+        this.chy = y % 0xF;
+        this.chz = z & 0xF;
+    }
+
+    public Block getRelative(int x, int y, int z) {
         return getWorld().getBlock(
                 getX() + x,
                 getY() + y,
@@ -22,7 +38,19 @@ public interface Block {
         );
     }
 
-    BlockType getType();
+    public BlockType getType() {
+        return chunk.getData().getType(chx, chy, chz);
+    }
 
-    void setType(BlockType type);
+    public void setType(BlockType type) {
+        chunk.getData().setType(chx, chy, chz, type);
+    }
+
+
+    //The JVM will easily optimize this method away if it's not needed (assert are disabled by default)
+    private static void checkInside(Chunk chunk, int x, int y, int z) {
+        assert chunk.getX() == (x >> 4);
+        assert chunk.getY() == (y >> 4);
+        assert chunk.getZ() == (z >> 4);
+    }
 }
