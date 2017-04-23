@@ -1,7 +1,7 @@
 package xyz.upperlevel.openverse.client;
 
 import lombok.Getter;
-import xyz.upperlevel.openverse.client.world.WorldView;
+import xyz.upperlevel.openverse.client.world.ClientWorld;
 import xyz.upperlevel.openverse.client.world.WorldViewer;
 import xyz.upperlevel.ulge.game.Scene;
 import xyz.upperlevel.ulge.window.event.action.Action;
@@ -13,7 +13,7 @@ public class WorldScene implements Scene {
     private WorldViewer viewer = new WorldViewer();
 
     @Getter
-    private WorldView view = new WorldView(1);
+    private ClientWorld view = new ClientWorld(1);
 
     public WorldScene() {
     }

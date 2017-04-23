@@ -2,7 +2,7 @@ package xyz.upperlevel.openverse.client;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
-import xyz.upperlevel.openverse.client.world.WorldView;
+import xyz.upperlevel.openverse.client.world.ClientWorld;
 import xyz.upperlevel.openverse.client.world.WorldViewer;
 import xyz.upperlevel.openverse.client.resource.texture.TextureBakery;
 import xyz.upperlevel.openverse.world.Location;
@@ -95,7 +95,7 @@ public class MainTest {
 
         win.setVSync(true);
 
-        WorldView w = client.getViewer().getWorld();
+        ClientWorld w = client.getViewer().getWorld();
         w.demand();
 
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

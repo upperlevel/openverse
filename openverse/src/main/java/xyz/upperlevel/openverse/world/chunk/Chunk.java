@@ -32,10 +32,6 @@ public class Chunk {
         this.z = z;
     }
 
-    public void regenerate() {
-        world.getGenerator().generate(this);
-    }
-
     public Chunk getRelative(int x, int y, int z) {
         return getWorld().getChunk(
                 this.x + x,

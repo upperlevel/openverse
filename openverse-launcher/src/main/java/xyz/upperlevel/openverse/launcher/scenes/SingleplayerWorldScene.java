@@ -1,14 +1,14 @@
 package xyz.upperlevel.openverse.launcher.scenes;
 
 import lombok.Getter;
-import xyz.upperlevel.openverse.client.world.WorldView;
+import xyz.upperlevel.openverse.client.world.ClientWorld;
 import xyz.upperlevel.openverse.client.world.WorldViewer;
 import xyz.upperlevel.ulge.game.Scene;
 
 public class SingleplayerWorldScene implements Scene {
 
     @Getter
-    private WorldView view = new WorldView(1);
+    private ClientWorld view = new ClientWorld(1);
 
     @Getter
     private WorldViewer viewer = new WorldViewer();

@@ -9,6 +9,7 @@ public class World {
     @Getter
     private final String name;
 
+    @Getter
     private final ChunkSystem chunks;
 
     public World(String name, ChunkSystem chunks) {

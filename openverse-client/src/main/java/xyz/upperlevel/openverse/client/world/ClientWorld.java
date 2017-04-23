@@ -15,7 +15,7 @@ import static java.lang.Math.floorMod;
 import static org.lwjgl.BufferUtils.createFloatBuffer;
 import static xyz.upperlevel.openverse.world.chunk.Chunk.*;
 
-public class WorldView implements World {
+public class ClientWorld implements World {
 
     // world
 
@@ -29,7 +29,7 @@ public class WorldView implements World {
     @Getter
     private BufferedChunk[][][] chunks;
 
-    public WorldView(int radius) {
+    public ClientWorld(int radius) {
         this.radius = radius;
         side = radius * 2 + 1;
         chunks = new BufferedChunk[side][side][side];

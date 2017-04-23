@@ -7,7 +7,7 @@ import org.lwjgl.BufferUtils;
 import xyz.upperlevel.openverse.client.render.Rendering;
 import xyz.upperlevel.openverse.client.render.model.ModelCompiler;
 import xyz.upperlevel.openverse.client.render.model.ModelCompilers;
-import xyz.upperlevel.openverse.client.world.WorldView;
+import xyz.upperlevel.openverse.client.world.ClientWorld;
 import xyz.upperlevel.openverse.resource.BlockType;
 import xyz.upperlevel.openverse.resource.model.Model;
 import xyz.upperlevel.openverse.world.Block;
@@ -33,7 +33,7 @@ public class BufferedChunk implements Chunk {
     private Vbo vbo = new Vbo();
 
     @Getter
-    private WorldView world;
+    private ClientWorld world;
 
     @Getter
     private int x, y, z;
@@ -41,7 +41,7 @@ public class BufferedChunk implements Chunk {
     @Getter
     private BufferedChunkData data = new BufferedChunkData();
 
-    public BufferedChunk(@NonNull WorldView world, int x, int y, int z) {
+    public BufferedChunk(@NonNull ClientWorld world, int x, int y, int z) {
         this.world = world;
         this.x = x;
         this.y = y;
