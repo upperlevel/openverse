@@ -1,18 +1,21 @@
 package xyz.upperlevel.openverse.client.world;
 
 import lombok.Getter;
+import lombok.Setter;
 import xyz.upperlevel.openverse.client.render.world.BufferedChunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkSystem;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class RadiusSquareChunkChooser extends PlayerChunkMap {
     @Getter
+    @Setter
     private int radius;
 
     @Getter
-    private List<BufferedChunk> chunks;
+    private List<BufferedChunk> chunks = Collections.emptyList();
 
     public RadiusSquareChunkChooser(ClientWorld handle, int radius) {
         super(handle);

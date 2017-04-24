@@ -20,5 +20,5 @@ public  abstract class ChunkSystem {
 
     public abstract Chunk get(int x, int y, int z);
 
-    public abstract Chunk get(ChunkLoc loc);
+    public abstract Chunk get(ChunkLocation loc);
 }

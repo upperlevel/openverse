@@ -8,11 +8,11 @@ package xyz.upperlevel.openverse.world.chunk;
  * and tha last 10 bits are taken by the y
  * 11 + 11 + 10 = 32
  */
-public class ChunkLoc {
+public class ChunkLocation {
     public final int x, y, z;
     private final int hashCode;
 
-    public ChunkLoc(int x, int y, int z) {
+    public ChunkLocation(int x, int y, int z) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -29,15 +29,15 @@ public class ChunkLoc {
 
     @Override
     public boolean equals(Object other) {
-        if(other instanceof ChunkLoc) {
-            ChunkLoc c = (ChunkLoc) other;
+        if(other instanceof ChunkLocation) {
+            ChunkLocation c = (ChunkLocation) other;
             return  c.x == x &&
                     c.y == y &&
                     c.z == z;
         } else return false;
     }
 
-    public static ChunkLoc loc(Chunk chunk) {
-        return new ChunkLoc(chunk.getX(), chunk.getY(), chunk.getZ());
+    public static ChunkLocation loc(Chunk chunk) {
+        return new ChunkLocation(chunk.getX(), chunk.getY(), chunk.getZ());
     }
 }
