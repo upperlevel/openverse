@@ -1,6 +1,7 @@
 package xyz.upperlevel.openverse.world;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.joml.Vector3d;
@@ -11,23 +12,39 @@ public class Location {
 
     @Getter
     @Setter
+    @NonNull
+    private World world;
+
+    @Getter
+    @Setter
     public double x, y, z, yaw, pitch;
 
     public Location() {
     }
 
-    public Location(double x, double y, double z) {
+    public Location(World world, double x, double y, double z) {
+        this.world = world;
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public Location(double x, double y, double z, double yaw, double pitch) {
+    public Location(World world, double x, double y, double z, double yaw, double pitch) {
+        this.world = world;
         this.x = x;
         this.y = y;
         this.z = z;
         this.yaw = yaw;
         this.pitch = pitch;
+    }
+
+    public Location(Location loc) {
+        world = loc.world;
+        x = loc.x;
+        y = loc.y;
+        z = loc.z;
+        yaw = loc.yaw;
+        pitch = loc.pitch;
     }
 
 
