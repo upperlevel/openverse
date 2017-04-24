@@ -1,7 +1,6 @@
 package xyz.upperlevel.openverse.client.render.world;
 
 import lombok.Getter;
-import lombok.NonNull;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import xyz.upperlevel.openverse.client.render.Rendering;
@@ -10,10 +9,8 @@ import xyz.upperlevel.openverse.client.render.model.ModelCompilers;
 import xyz.upperlevel.openverse.client.world.ClientWorld;
 import xyz.upperlevel.openverse.resource.BlockType;
 import xyz.upperlevel.openverse.resource.model.Model;
-import xyz.upperlevel.openverse.world.Block;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkData;
-import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.ulge.opengl.buffer.DrawMode;
 import xyz.upperlevel.ulge.opengl.buffer.Vbo;
 import xyz.upperlevel.ulge.opengl.buffer.VboDataUsage;
@@ -21,10 +18,8 @@ import xyz.upperlevel.ulge.opengl.buffer.VertexLinker;
 
 import java.nio.ByteBuffer;
 
-import static java.lang.Math.floorMod;
 
-
-public class BufferedChunk implements Chunk {
+public class BufferedChunk extends Chunk {
 
     @Getter
     private int allocVertCount = 0, allocDataCount = 0, drawVertCount = 0;
@@ -32,20 +27,18 @@ public class BufferedChunk implements Chunk {
     @Getter
     private Vbo vbo = new Vbo();
 
-    @Getter
-    private ClientWorld world;
+    public BufferedChunk(BufferedChunkData data, ClientWorld world, int x, int y, int z) {
+        super(data, world, x, y, z);
+    }
 
-    @Getter
-    private int x, y, z;
+    public BufferedChunk(ClientWorld world, int x, int y, int z) {
+        super(null, world, x, y, z);
+        super.data = new BufferedChunkData();//I'm detesting java
+    }
 
-    @Getter
-    private BufferedChunkData data = new BufferedChunkData();
-
-    public BufferedChunk(@NonNull ClientWorld world, int x, int y, int z) {
-        this.world = world;
-        this.x = x;
-        this.y = y;
-        this.z = z;
+    @Override
+    public BufferedChunkData getData() {
+        return (BufferedChunkData) super.getData();
     }
 
     public void build() {
@@ -60,7 +53,7 @@ public class BufferedChunk implements Chunk {
                     Matrix4f in = new Matrix4f()
                             .translate(x, y, z);
 
-                    BlockType block = data.types[x][y][z];
+                    BlockType block = data.getType(x, y, z);
                     if (block != null) {
                         Model model = block.getModel();
                         if (model != null)
@@ -85,12 +78,8 @@ public class BufferedChunk implements Chunk {
         vbo.draw(DrawMode.QUADS, 0, drawVertCount);
     }
 
-    @Override
-    public Block getBlock(int x, int y, int z) {
-        return new ConcreteBlock(x, y, z);
-    }
 
-    public class BufferedChunkData implements ChunkData {
+    public class BufferedChunkData extends ChunkData {
 
         private BlockType[][][] types = new BlockType[WIDTH][HEIGHT][LENGTH];
 
@@ -132,50 +121,6 @@ public class BufferedChunk implements Chunk {
             // rebuilds chunk if requested
             if (update)
                 build();
-        }
-    }
-
-    public class ConcreteBlock implements Block {
-
-        @Getter
-        private int x, y, z;
-
-        public ConcreteBlock(int x, int y, int z) {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-
-        @Override
-        public World getWorld() {
-            return BufferedChunk.this.getWorld();
-        }
-
-        @Override
-        public Chunk getChunk() {
-            return BufferedChunk.this;
-        }
-
-        @Override
-        public BlockType getType() {
-            int cx = floorMod(x, 16);
-            int cy = floorMod(y, 16);
-            int cz = floorMod(z, 16);
-
-            return BufferedChunk.this
-                    .getData()
-                    .getType(cx, cy, cz);
-        }
-
-        @Override
-        public void setType(@NonNull BlockType type) {
-            int cx = floorMod(x, 16);
-            int cy = floorMod(y, 16);
-            int cz = floorMod(z, 16);
-
-            BufferedChunk.this
-                    .getData()
-                    .setType(cx, cy, cz, type);
         }
     }
 }

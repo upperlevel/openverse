@@ -5,82 +5,38 @@ import lombok.Setter;
 import org.joml.Matrix4f;
 import xyz.upperlevel.openverse.client.render.Rendering;
 import xyz.upperlevel.openverse.client.render.world.BufferedChunk;
-import xyz.upperlevel.openverse.world.Block;
-import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.World;
+import xyz.upperlevel.openverse.world.chunk.DefaultChunkSystem;
 import xyz.upperlevel.ulge.opengl.shader.Program;
+import xyz.upperlevel.ulge.opengl.shader.Uniform;
 
-import static java.lang.Math.floor;
-import static java.lang.Math.floorMod;
 import static org.lwjgl.BufferUtils.createFloatBuffer;
-import static xyz.upperlevel.openverse.world.chunk.Chunk.*;
 
-public class ClientWorld implements World {
-
-    // world
-
-    @Getter
-    private int radius, side;
+public class ClientWorld extends World {
 
     @Getter
     @Setter
-    private int x, y, z;
+    private PlayerChunkMap playerChunkMap;
 
-    @Getter
-    private BufferedChunk[][][] chunks;
+    public ClientWorld(String name, int radius) {
+        super(name);
+        setChunkSystem(new DefaultChunkSystem(this));
+        this.playerChunkMap = new RadiusSquareChunkChooser(this, radius);
+    }
 
-    public ClientWorld(int radius) {
-        this.radius = radius;
-        side = radius * 2 + 1;
-        chunks = new BufferedChunk[side][side][side];
+    public ClientWorld(String name, PlayerChunkMap playerChunkMap) {
+        super(name);
+        setChunkSystem(new DefaultChunkSystem(this));
+        this.playerChunkMap = playerChunkMap;
     }
 
     public void setCenter(int x, int y, int z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        // todo load new chunks
-    }
-
-    private int getIndexX(int x) {
-        return x - this.x + radius;
-    }
-
-    private int getIndexY(int y) {
-        return y - this.y + radius;
-    }
-
-    private int getIndexZ(int z) {
-        return z - this.z + radius;
+        playerChunkMap.setCenter(x, y, z);
     }
 
     @Override
-    public Chunk getChunk(int x, int y, int z) {
-        int lx = getIndexX(x);
-        int ly = getIndexY(y);
-        int lz = getIndexZ(z);
-
-        if (lx < 0 || lx >= side || ly < 0 || ly >= side || lz < 0 || lz >= side)
-            return null;
-        return chunks[lx][ly][lz];
-    }
-
-    public void setChunk(int x, int y, int z, BufferedChunk chunk) {
-        chunks[x][y][z] = chunk;
-    }
-
-    @Override
-    public Block getBlock(int x, int y, int z) {
-        int lx = (int) floor(x / (float) WIDTH);
-        int ly = (int) floor(y / (float) HEIGHT);
-        int lz = (int) floor(z / (float) LENGTH);
-
-        int bx = floorMod(x, WIDTH);
-        int by = floorMod(y, HEIGHT);
-        int bz = floorMod(z, LENGTH);
-
-        Chunk c = getChunk(lx, ly, lz);
-        return c != null ? c.getBlock(bx, by, bz) : null;
+    public BufferedChunk getChunk(int x, int y, int z) {
+        return (BufferedChunk) super.getChunk(x, y, z);
     }
 
     public void render() {
@@ -91,22 +47,13 @@ public class ClientWorld implements World {
         if (program == null)
             return;
 
-        for (int x = 0; x < side; x++) {
-            for (int y = 0; y < side; y++) {
-                for (int z = 0; z < side; z++) {
-                    BufferedChunk chunk = chunks[x][y][z];
-                    if (chunk != null) {
-                        Matrix4f in = new Matrix4f()
-                                .translate(16 * x, 16 * y, 16 * z);
-                        program.uniformer.setUniformMatrix4(
-                                "model",
-                                in.get(createFloatBuffer(16))
-                        );
+        Uniform uModel = program.uniformer.get("model");
 
-                        chunk.render();
-                    }
-                }
-            }
+        for(BufferedChunk chunk : playerChunkMap.getChunks()) {
+            Matrix4f in = new Matrix4f().translate(16 * chunk.getX(), 16 * chunk.getY(), 16 * chunk.getZ());
+            uModel.matrix4(in.get(createFloatBuffer(16)));
+
+            chunk.render();
         }
     }
 }

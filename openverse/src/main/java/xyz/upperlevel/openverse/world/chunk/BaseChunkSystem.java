@@ -18,11 +18,15 @@ public abstract class BaseChunkSystem extends ChunkSystem {
     public Chunk get(int x, int y, int z) {
         Chunk chunk = get0(x, y, z);
         if(chunk == null) {
-            chunk = new Chunk(getWorld(), x, y, z);
+            chunk = new Chunk(newChunkData(), getWorld(), x, y, z);
             generator.generate(chunk);
             set0(chunk);
         }
         return chunk;
+    }
+
+    protected ChunkData newChunkData() {
+        return new ChunkData();
     }
 
     protected abstract Chunk get0(int x, int y, int z);

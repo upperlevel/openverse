@@ -19,4 +19,6 @@ public  abstract class ChunkSystem {
     public abstract void setGenerator(ChunkGenerator generator);
 
     public abstract Chunk get(int x, int y, int z);
+
+    public abstract Chunk get(ChunkLoc loc);
 }

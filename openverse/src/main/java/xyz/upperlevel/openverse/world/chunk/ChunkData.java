@@ -3,9 +3,15 @@ package xyz.upperlevel.openverse.world.chunk;
 import lombok.NonNull;
 import xyz.upperlevel.openverse.resource.BlockType;
 
-public interface ChunkData {
+public class ChunkData {
 
-    BlockType getType(int x, int y, int z);
+    protected BlockType[][][] types = new BlockType[Chunk.WIDTH][Chunk.HEIGHT][Chunk.LENGTH];
 
-    void setType(int x, int y, int z, @NonNull BlockType type);
+    public BlockType getType(int x, int y, int z) {
+        return types[x][y][z];
+    }
+
+    public void setType(int x, int y, int z, @NonNull BlockType type) {
+        types[x][y][z] = type;
+    }
 }

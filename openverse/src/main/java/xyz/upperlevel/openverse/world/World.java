@@ -10,10 +10,13 @@ public class World {
     private final String name;
 
     @Getter
-    private final ChunkSystem chunks;
+    private ChunkSystem chunks;
 
-    public World(String name, ChunkSystem chunks) {
+    public World(String name) {
         this.name = name;
+    }
+
+    public void setChunkSystem(ChunkSystem chunks) {
         this.chunks = chunks;
     }
 

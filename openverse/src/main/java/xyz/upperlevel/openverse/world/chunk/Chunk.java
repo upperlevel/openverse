@@ -1,7 +1,6 @@
 package xyz.upperlevel.openverse.world.chunk;
 
 import lombok.Getter;
-import lombok.Setter;
 import xyz.upperlevel.openverse.world.Block;
 import xyz.upperlevel.openverse.world.World;
 
@@ -22,10 +21,10 @@ public class Chunk {
     protected Block blocks[][][] = new Block[WIDTH][HEIGHT][LENGTH];
 
     @Getter
-    @Setter
-    private ChunkData data;
+    protected ChunkData data;
 
-    public Chunk(World world, int x, int y, int z) {
+    public Chunk(ChunkData data, World world, int x, int y, int z) {
+        this.data = data;
         this.world = world;
         this.x = x;
         this.y = y;
