@@ -3,6 +3,7 @@ package xyz.upperlevel.openverse.world;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 @Accessors(fluent = true)
@@ -10,18 +11,18 @@ public class Location {
 
     @Getter
     @Setter
-    public float x, y, z, yaw, pitch;
+    public double x, y, z, yaw, pitch;
 
     public Location() {
     }
 
-    public Location(float x, float y, float z) {
+    public Location(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public Location(float x, float y, float z, float yaw, float pitch) {
+    public Location(double x, double y, double z, double yaw, double pitch) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -30,13 +31,13 @@ public class Location {
     }
 
 
-    public void set(float x, float y, float z) {
+    public void set(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public void set(float x, float y, float z, float yaw, float pitch) {
+    public void set(double x, double y, double z, double yaw, double pitch) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -53,7 +54,7 @@ public class Location {
     }
 
 
-    public void add(float x, float y, float z) {
+    public void add(double x, double y, double z) {
         this.x += x;
         this.y += y;
         this.z += z;
@@ -74,7 +75,7 @@ public class Location {
     }
 
 
-    public void sub(float x, float y, float z) {
+    public void sub(double x, double y, double z) {
         this.x -= x;
         this.y -= y;
         this.z -= z;
@@ -95,13 +96,13 @@ public class Location {
     }
 
 
-    public void mul(float m) {
+    public void mul(double m) {
         this.x *= m;
         this.y *= m;
         this.z *= m;
     }
 
-    public void mul(float x, float y, float z) {
+    public void mul(double x, double y, double z) {
         this.x *= x;
         this.y *= y;
         this.z *= z;
@@ -121,7 +122,7 @@ public class Location {
         );
     }
 
-    public void mul(float m, Location dest) {
+    public void mul(double m, Location dest) {
         dest.set(
                 x * m,
                 y * m,
@@ -130,13 +131,13 @@ public class Location {
     }
 
 
-    public void div(float m) {
+    public void div(double m) {
         this.x /= m;
         this.y /= m;
         this.z /= m;
     }
 
-    public void div(float x, float y, float z) {
+    public void div(double x, double y, double z) {
         this.x /= x;
         this.y /= y;
         this.z /= z;
@@ -148,7 +149,7 @@ public class Location {
         this.z /= loc.z();
     }
 
-    public void div(float m, Location dest) {
+    public void div(double m, Location dest) {
         dest.set(
                 x / m,
                 y / m,
@@ -175,14 +176,14 @@ public class Location {
 
 
     public double distance(Location loc) {
-        float dx = x - loc.x(),
+        double dx = x - loc.x(),
                 dy = y - loc.y(),
                 dz = z - loc.z();
         return Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
 
     public double distanceSq(Location loc) {
-        float dx = x - loc.x(),
+        double dx = x - loc.x(),
                 dy = y - loc.y(),
                 dz = z - loc.z();
         return dx * dx + dy * dy + dz * dz;
@@ -190,14 +191,14 @@ public class Location {
 
 
     public void normalize() {
-        float m = (float) length();
+        double m = (double) length();
         this.x /= m;
         this.y /= m;
         this.z /= m;
     }
 
     public void normalize(Location dest) {
-        float m = (float) length();
+        double m = (double) length();
         dest.set(
                 x / m,
                 y / m,
@@ -206,7 +207,7 @@ public class Location {
     }
 
 
-    public Vector3f toVector() {
-        return new Vector3f(x, y, z);
+    public Vector3d toVector() {
+        return new Vector3d(x, y, z);
     }
 }
