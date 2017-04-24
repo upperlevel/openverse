@@ -8,38 +8,32 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This is something similar to the World manager, in the sense that it stores all the worlds, their ids and the
- * world that the player is currently in
+ * This is something similar to the World manager, in the sense that it stores all the worlds and their ids.
  */
-public class Universe {
+public class Universe<W extends World> {
 
-    private Map<String, World> worlds = new HashMap<>();
+    private Map<String, W> worlds = new HashMap<>();
 
-    @Getter
-    private World current;
-
-    public Universe(World initial) {
-        this.current = initial;
-        worlds.put(initial.getName(), initial);
+    public Universe() {
     }
 
-    public Map<String, World> getWorldMap() {
+    public Map<String, W> getWorldMap() {
         return Collections.unmodifiableMap(worlds);
     }
 
-    public Collection<World> get() {
+    public Collection<W> get() {
         return Collections.unmodifiableCollection(worlds.values());
     }
 
-    public World get(String name) {
+    public W get(String name) {
         return worlds.get(name);
     }
 
-    public boolean add(World world) {
+    public boolean add(W world) {
         return worlds.putIfAbsent(world.getName(), world) == null;
     }
 
-    public boolean remove(World world) {
+    public boolean remove(W world) {
         return worlds.remove(world.getName()) != null;
     }
 
@@ -47,8 +41,10 @@ public class Universe {
         return worlds.remove(name) != null;
     }
 
-    public void move(World world) {
-        assert worlds.containsKey(world.getName());
-        this.current = world;
+    /**
+     * Clears all worlds.
+     */
+    public void clear() {
+        worlds.clear();
     }
 }
