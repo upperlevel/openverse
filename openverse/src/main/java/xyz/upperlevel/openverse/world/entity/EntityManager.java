@@ -8,18 +8,18 @@ import java.util.Map;
 
 public class EntityManager {
 
-    private Map<Integer, Entity> entities = new HashMap<>();
+    private Map<Integer, BaseEntity> entities = new HashMap<>();
 
     public EntityManager() {
     }
 
-    public void add(@NonNull Entity entity) {
+    public void add(@NonNull BaseEntity entity) {
         int s = entities.size();
         entities.put(s, entity);
         entity.setId(s);
     }
 
-    public Entity get(int id) {
+    public BaseEntity get(int id) {
         return entities.get(id);
     }
 
@@ -27,11 +27,11 @@ public class EntityManager {
         entities.remove(id);
     }
 
-    public void remove(@NonNull Entity ent) {
+    public void remove(@NonNull BaseEntity ent) {
         entities.remove(ent.getId());
     }
 
-    public Collection<Entity> getAll() {
+    public Collection<BaseEntity> getAll() {
         return entities.values();
     }
 }

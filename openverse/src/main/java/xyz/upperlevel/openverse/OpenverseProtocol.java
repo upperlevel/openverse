@@ -8,7 +8,7 @@ import xyz.upperlevel.openverse.network.UniverseInfoPacketConverter;
 
 public final class OpenverseProtocol {
 
-    private static Protocol get = Protocol.builder()
+    private static Protocol protocol = Protocol.builder()
             // todo adds packets
             .register(GetUniversePacket.class,  new GetUniversePacketConverter())
             .register(UniverseInfoPacket.class, new UniverseInfoPacketConverter())
@@ -18,6 +18,6 @@ public final class OpenverseProtocol {
     }
 
     public static Protocol get() {
-        return get;
+        return protocol;
     }
 }

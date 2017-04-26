@@ -9,11 +9,13 @@ import xyz.upperlevel.hermes.client.Client;
 import xyz.upperlevel.openverse.OpenverseProtocol;
 import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.client.world.ClientWorld;
+import xyz.upperlevel.openverse.client.world.entity.ClientPlayer;
 import xyz.upperlevel.openverse.network.GetUniversePacket;
 import xyz.upperlevel.openverse.network.UniverseInfoPacket;
 import xyz.upperlevel.openverse.resource.ResourceManager;
 import xyz.upperlevel.openverse.world.Universe;
 import xyz.upperlevel.openverse.world.World;
+import xyz.upperlevel.openverse.world.entity.Player;
 
 import java.util.List;
 import java.util.Map;
@@ -35,6 +37,9 @@ public class OpenverseClient implements OpenverseProxy {//TODO Implement
     @Getter
     private ResourceManager resourceManager = new ResourceManager();
 
+    @Getter
+    private final ClientPlayer player;//TODO: initialize player
+
     public OpenverseClient(@NonNull Client client) {
         this.client = client;
         client.getConnection().setDefaultChannel(channel);
@@ -55,7 +60,7 @@ public class OpenverseClient implements OpenverseProxy {//TODO Implement
     }
 
     @Override
-    public List<?> getPlayers() {
+    public List<Player> getPlayers() {
         return singletonList(getPlayer());
     }
 

@@ -5,7 +5,6 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.joml.Vector3d;
-import org.joml.Vector3f;
 
 @Accessors(fluent = true)
 public class Location {

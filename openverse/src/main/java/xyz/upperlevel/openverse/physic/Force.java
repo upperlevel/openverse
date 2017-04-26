@@ -1,8 +1,8 @@
 package xyz.upperlevel.openverse.physic;
 
-import xyz.upperlevel.openverse.world.entity.Entity;
+import xyz.upperlevel.openverse.world.entity.BaseEntity;
 
 public interface Force {
 
-    void apply(Entity entity, long delta);
+    void apply(BaseEntity entity, long delta);
 }
