@@ -2,6 +2,7 @@ package xyz.upperlevel.openverse.server.world;
 
 import lombok.Getter;
 import lombok.Setter;
+import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.physic.Box;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
@@ -44,7 +45,7 @@ public class RadiusSquareChunkChooser extends PlayerChunkMap {
                         chunks.add(chunkSystem.get(x, y, z));
 
         for(Chunk chunk : chunks)
-            ;//TODO: send chunks to player
+            player.getConnection().send(Openverse.getChannel(), /*packet*/);//TODO: send chunks to player
 
     }
 }

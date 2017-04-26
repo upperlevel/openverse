@@ -1,7 +1,7 @@
 package xyz.upperlevel.openverse.physic;
 
 import org.joml.Vector3f;
-import xyz.upperlevel.openverse.world.entity.Entity;
+import xyz.upperlevel.openverse.world.entity.BaseEntity;
 import xyz.upperlevel.openverse.resource.BlockType;
 import xyz.upperlevel.openverse.resource.model.impl.NodeModel;
 import xyz.upperlevel.openverse.world.Location;
@@ -19,7 +19,7 @@ public class PhysicEngine {
     public PhysicEngine() {
     }
 
-    public void update(Entity entity, World world, long delta) {
+    public void update(BaseEntity entity, World world, long delta) {
         forces.forEach(f -> f.apply(entity, delta));
 
         Location loc = entity.getLocation();

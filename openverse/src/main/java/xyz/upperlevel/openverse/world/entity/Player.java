@@ -1,25 +1,19 @@
 package xyz.upperlevel.openverse.world.entity;
 
+import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.openverse.resource.EntityType;
-import xyz.upperlevel.openverse.world.Location;
 
-public class Player extends Entity {
+public interface Player extends Entity, Nameable {
 
-    public static EntityType TYPE = new EntityType("player");
+    EntityType TYPE = new EntityType("player");
 
 
-    private Location loc;
-
-    public Player(Location firstLoc) {
-        super(TYPE);
-        this.loc = firstLoc;
+    default EntityType getType() {
+        return TYPE;
     }
 
-    public Location getLoc() {
-        return new Location(loc);
-    }
+    @Override
+    String getName();
 
-    public void setLoc(Location loc) {
-        this.loc = loc;
-    }
+    Connection getConnection();
 }

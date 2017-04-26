@@ -14,29 +14,29 @@ public final class CoordConverter {
      * Gets world X from chunk relative X.
      */
     public static double worldX(Chunk chunk, double cpx) {
-        return chunk.getX() * 16 + cpx;
+        return (chunk.getX() << 4) + cpx;
     }
 
     /**
      * Gets world Y from chunk relative Y.
      */
     public static double worldY(Chunk chunk, double cpy) {
-        return chunk.getY() * 16 + cpy;
+        return (chunk.getY() << 4) + cpy;
     }
 
     /**
      * Gets world Z from chunk relative Z.
      */
     public static double worldZ(Chunk chunk, double cpz) {
-        return chunk.getZ() * 16 + cpz;
+        return (chunk.getZ() << 4) + cpz;
     }
 
     // ---
 
     private static double euclideanMod(double x, int y) {
-        double r = abs(x) % abs(y);
+        double r = abs(x) % y;
         r *= Math.signum(x);
-        r = (r + abs(y)) % abs(y);
+        r = (r + y) % y;
         return r;
     }
 
@@ -48,6 +48,13 @@ public final class CoordConverter {
     }
 
     /**
+     * Gets chunk relative X from world X.
+     */
+    public static int chunkPosX(int wx) {
+        return wx % 0xF;
+    }
+
+    /**
      * Gets chunk relative Y from world Y.
      */
     public static double chunkPosY(double wy) {
@@ -55,10 +62,24 @@ public final class CoordConverter {
     }
 
     /**
+     * Gets chunk relative Y from world Y.
+     */
+    public static int chunkPosY(int wy) {
+        return wy & 0xF;
+    }
+
+    /**
      * Gets chunk relative Z from world Z.
      */
     public static double chunkPosZ(double wz) {
         return euclideanMod(wz, 16);
+    }
+
+    /**
+     * Gets chunk relative Z from world Z.
+     */
+    public static int chunkPosZ(int wz) {
+        return wz & 0xF;
     }
 
     // ---

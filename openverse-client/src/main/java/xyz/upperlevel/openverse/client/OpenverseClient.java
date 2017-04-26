@@ -14,10 +14,12 @@ import xyz.upperlevel.openverse.client.resource.ClientResourceManager;
 import xyz.upperlevel.openverse.client.world.ClientWorld;
 import xyz.upperlevel.openverse.client.world.WorldViewer;
 import xyz.upperlevel.openverse.network.EntityTeleportPacket;
+import xyz.upperlevel.openverse.client.world.entity.ClientPlayer;
 import xyz.upperlevel.openverse.network.GetUniversePacket;
 import xyz.upperlevel.openverse.network.UniverseInfoPacket;
 import xyz.upperlevel.openverse.world.Universe;
 import xyz.upperlevel.ulge.game.Scene;
+import xyz.upperlevel.openverse.world.entity.Player;
 
 import java.util.List;
 
@@ -40,6 +42,9 @@ public class OpenverseClient implements OpenverseProxy, Scene {//TODO Implement
 
     @Getter
     private ClientResourceManager resourceManager = new ClientResourceManager();
+
+    @Getter
+    private final ClientPlayer player;//TODO: initialize player
 
     public OpenverseClient(@NonNull Client client) {
         this.client = client;
@@ -91,7 +96,7 @@ public class OpenverseClient implements OpenverseProxy, Scene {//TODO Implement
     }
 
     @Override
-    public List<?> getPlayers() {
+    public List<Player> getPlayers() {
         return singletonList(getPlayer());
     }
 
