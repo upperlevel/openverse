@@ -1,8 +1,8 @@
 package xyz.upperlevel.openverse.client.resource;
 
 import lombok.Getter;
-import xyz.upperlevel.openverse.client.resource.model.ClientNodeModel;
-import xyz.upperlevel.openverse.resource.ModelManager;
+import xyz.upperlevel.openverse.client.resource.model.ClientModel;
+import xyz.upperlevel.openverse.resource.model.ModelManager;
 import xyz.upperlevel.openverse.resource.ResourceManager;
 
 /**
@@ -11,7 +11,7 @@ import xyz.upperlevel.openverse.resource.ResourceManager;
 public class ClientResourceManager extends ResourceManager {
 
     @Getter
-    private final ModelManager<ClientNodeModel> modelManager = new ModelManager<>();
+    private final ModelManager<ClientModel> modelManager = new ModelManager<>();
 
     @Getter
     private final TextureManager textureManager = new TextureManager();

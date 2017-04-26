@@ -1,6 +1,7 @@
 package xyz.upperlevel.openverse.resource;
 
 import lombok.Getter;
+import xyz.upperlevel.openverse.resource.model.ModelManager;
 
 public abstract class ResourceManager {
 

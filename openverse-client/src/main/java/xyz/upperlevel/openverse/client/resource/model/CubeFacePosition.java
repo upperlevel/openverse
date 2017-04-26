@@ -1,12 +1,17 @@
-package xyz.upperlevel.openverse.client.render.model;
+package xyz.upperlevel.openverse.client.resource.model;
 
 import org.joml.AxisAngle4f;
 import org.joml.Vector3f;
-import xyz.upperlevel.openverse.resource.model.impl.CubeFacePosition;
+import xyz.upperlevel.openverse.physic.Box;
 
-public enum CubeFaceCompilerHelper {
+public enum CubeFacePosition {
 
-    UP {
+    UP() {
+        @Override
+        public Box getBox(Box cube) {
+            return new Box(cube.x, cube.y + cube.height, cube.z, cube.width, 0, cube.depth);
+        }
+
         @Override
         public Vector3f getDirection() {
             return new Vector3f(0, 1, 0);
@@ -17,7 +22,12 @@ public enum CubeFaceCompilerHelper {
             return new AxisAngle4f((float) (Math.PI / 2.), -1f, 0f, 0f);
         }
     },
-    DOWN {
+    DOWN() {
+        @Override
+        public Box getBox(Box cube) {
+            return new Box(cube.x, cube.y, cube.z, cube.width, 0, cube.depth);
+        }
+
         @Override
         public Vector3f getDirection() {
             return new Vector3f(0, -1, 0);
@@ -29,7 +39,12 @@ public enum CubeFaceCompilerHelper {
         }
     },
 
-    RIGHT {
+    RIGHT() {
+        @Override
+        public Box getBox(Box cube) {
+            return new Box(cube.x + cube.width, cube.y, cube.z, 0, cube.height, cube.depth);
+        }
+
         @Override
         public Vector3f getDirection() {
             return new Vector3f(1, 0, 0);
@@ -40,7 +55,12 @@ public enum CubeFaceCompilerHelper {
             return new AxisAngle4f((float) (Math.PI / 2.), 0f, 1f, 0f);
         }
     },
-    LEFT {
+    LEFT() {
+        @Override
+        public Box getBox(Box cube) {
+            return new Box(cube.x, cube.y, cube.z, 0, cube.height, cube.depth);
+        }
+
         @Override
         public Vector3f getDirection() {
             return new Vector3f(-1, 0, 0);
@@ -52,7 +72,12 @@ public enum CubeFaceCompilerHelper {
         }
     },
 
-    FRONT {
+    FRONT() {
+        @Override
+        public Box getBox(Box cube) {
+            return new Box(cube.x, cube.y, cube.z + cube.depth, cube.width, cube.height, 0);
+        }
+
         @Override
         public Vector3f getDirection() {
             return new Vector3f(0, 0, 1);
@@ -63,7 +88,12 @@ public enum CubeFaceCompilerHelper {
             return new AxisAngle4f();
         }
     },
-    BACK {
+    BACK() {
+        @Override
+        public Box getBox(Box cube) {
+            return new Box(cube.x, cube.y, cube.z, cube.width, cube.height, 0);
+        }
+
         @Override
         public Vector3f getDirection() {
             return new Vector3f(0, 0, -1);
@@ -75,14 +105,12 @@ public enum CubeFaceCompilerHelper {
         }
     };
 
-    CubeFaceCompilerHelper() {
+    CubeFacePosition() {
     }
+
+    public abstract Box getBox(Box cube);
 
     public abstract Vector3f getDirection();
 
     public abstract AxisAngle4f getRotation();
-
-    public static CubeFaceCompilerHelper from(CubeFacePosition pos) {
-        return values()[pos.ordinal()];
-    }
 }

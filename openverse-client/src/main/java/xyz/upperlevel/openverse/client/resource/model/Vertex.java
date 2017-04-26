@@ -1,4 +1,4 @@
-package xyz.upperlevel.openverse.resource.model.impl;
+package xyz.upperlevel.openverse.client.resource.model;
 
 import lombok.Getter;
 import lombok.Setter;

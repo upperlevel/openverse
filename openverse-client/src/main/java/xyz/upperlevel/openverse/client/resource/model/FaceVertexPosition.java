@@ -1,6 +1,6 @@
-package xyz.upperlevel.openverse.resource.model.impl;
+package xyz.upperlevel.openverse.client.resource.model;
 
-public enum QuadVertex {
+public enum FaceVertexPosition {
 
     TOP_LEFT {
         @Override
@@ -56,7 +56,7 @@ public enum QuadVertex {
         }
     };
 
-    QuadVertex() {
+    FaceVertexPosition() {
     }
 
     public abstract Vertex create();

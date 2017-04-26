@@ -3,7 +3,7 @@ package xyz.upperlevel.openverse.resource;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import xyz.upperlevel.openverse.resource.model.impl.NodeModel;
+import xyz.upperlevel.openverse.resource.model.Model;
 
 public class EntityType {
 
@@ -12,7 +12,7 @@ public class EntityType {
 
     @Getter
     @Setter
-    private NodeModel model;
+    private Model model;
 
     public EntityType(@NonNull String id) {
         this.id = id;

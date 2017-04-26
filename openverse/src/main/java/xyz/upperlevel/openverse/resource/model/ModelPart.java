@@ -1,4 +1,4 @@
-package xyz.upperlevel.openverse.resource.model.impl;
+package xyz.upperlevel.openverse.resource.model;
 
 import xyz.upperlevel.openverse.physic.Box;
 

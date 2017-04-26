@@ -1,7 +1,6 @@
-package xyz.upperlevel.openverse.resource;
+package xyz.upperlevel.openverse.resource.model;
 
 import lombok.NonNull;
-import xyz.upperlevel.openverse.resource.model.impl.NodeModel;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -10,7 +9,7 @@ import java.util.Map;
 /**
  * A class that handles models. A model can be server-side or client-side, that's why the generic.
  */
-public class ModelManager<M extends NodeModel> {
+public class ModelManager<M extends Model> {
 
     private Map<String, M> models = new HashMap<>();
 
@@ -34,7 +33,7 @@ public class ModelManager<M extends NodeModel> {
         models.remove(id);
     }
 
-    public void unregister(@NonNull NodeModel model) {
+    public void unregister(@NonNull Model model) {
         models.remove(model.getId());
     }
 

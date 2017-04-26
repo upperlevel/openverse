@@ -1,4 +1,4 @@
-package xyz.upperlevel.openverse.resource.model.impl;
+package xyz.upperlevel.openverse.resource.model;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -8,7 +8,7 @@ import xyz.upperlevel.openverse.physic.Box;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NodeModel<P extends ModelPart> {
+public class Model<P extends ModelPart> {
 
     @Getter
     private final String id;
@@ -16,11 +16,11 @@ public class NodeModel<P extends ModelPart> {
     @Getter
     private final List<P> parts = new ArrayList<>();
 
-    public NodeModel(@NonNull String id) {
+    public Model(@NonNull String id) {
         this.id = id;
     }
 
-    public NodeModel add(P part) {
+    public Model add(P part) {
         parts.add(part);
         return this;
     }

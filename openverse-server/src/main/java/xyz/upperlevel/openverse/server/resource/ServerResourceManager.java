@@ -1,7 +1,7 @@
 package xyz.upperlevel.openverse.server.resource;
 
 import lombok.Getter;
-import xyz.upperlevel.openverse.resource.ModelManager;
+import xyz.upperlevel.openverse.resource.model.ModelManager;
 import xyz.upperlevel.openverse.resource.ResourceManager;
 
 public class ServerResourceManager extends ResourceManager {

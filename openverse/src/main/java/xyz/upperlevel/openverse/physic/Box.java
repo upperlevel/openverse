@@ -3,6 +3,7 @@ package xyz.upperlevel.openverse.physic;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.joml.Vector3f;
 
 @Accessors(fluent = true)
 public class Box {
@@ -16,6 +17,12 @@ public class Box {
     public double width, height, depth;
 
     public Box() {
+    }
+
+    public Box(double width, double height, double depth) {
+        this.width = width;
+        this.height = height;
+        this.depth = depth;
     }
 
     public Box(double x, double y, double z, double width, double height, double depth) {

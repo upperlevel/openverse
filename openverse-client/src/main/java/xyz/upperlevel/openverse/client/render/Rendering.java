@@ -2,9 +2,6 @@ package xyz.upperlevel.openverse.client.render;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import xyz.upperlevel.openverse.client.render.model.CubeCompiler;
-import xyz.upperlevel.openverse.client.render.model.ModelCompilers;
-import xyz.upperlevel.openverse.client.render.model.QuadCompiler;
 import xyz.upperlevel.openverse.client.render.program.ProgramEnabler;
 import xyz.upperlevel.openverse.client.render.texture.TextureContainer;
 

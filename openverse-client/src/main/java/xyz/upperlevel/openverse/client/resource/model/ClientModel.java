@@ -1,7 +1,7 @@
 package xyz.upperlevel.openverse.client.resource.model;
 
 import org.joml.Matrix4f;
-import xyz.upperlevel.openverse.resource.model.impl.NodeModel;
+import xyz.upperlevel.openverse.resource.model.Model;
 
 import java.nio.ByteBuffer;
 
@@ -9,7 +9,11 @@ import java.nio.ByteBuffer;
  * This class handles vertices and other render stuff
  * related to the model.
  */
-public class ClientNodeModel extends NodeModel<ClientModelPart> implements ModelCompiler {
+public class ClientModel extends Model<ClientModelPart> implements ModelCompiler {
+
+    public ClientModel(String id) {
+        super(id);
+    }
 
     public int getVerticesCount() {
         int vrt = 0;
@@ -31,6 +35,7 @@ public class ClientNodeModel extends NodeModel<ClientModelPart> implements Model
      */
     @Override
     public int compile(Matrix4f in, ByteBuffer out) {
+        // doesn't do anything with the input matrix
         int vrt = 0;
         for (ClientModelPart part : getParts())
             vrt += part.compile(in, out);
