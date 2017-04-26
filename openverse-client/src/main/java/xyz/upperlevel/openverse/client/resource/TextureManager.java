@@ -20,14 +20,6 @@ public class TextureManager {
     public TextureManager() {
     }
 
-    public void load(ResourceManager resourceManager) {
-        // todo
-    }
-
-    public void unload() {
-        textures.clear();
-    }
-
     public void register(@NonNull Texture texture) {
         textures.put(texture.getId(), texture);
     }
@@ -83,6 +75,10 @@ public class TextureManager {
 
     public void unregister(@NonNull Texture texture) {
         unregister(texture.getId());
+    }
+
+    public void clear() {
+        textures.clear();
     }
 
     private static String removeExtension(String str) {//I'm ashamed to write a so-commonly used method in a class like this

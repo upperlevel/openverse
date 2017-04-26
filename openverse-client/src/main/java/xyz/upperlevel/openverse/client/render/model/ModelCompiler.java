@@ -1,11 +1,11 @@
 package xyz.upperlevel.openverse.client.render.model;
 
 import org.joml.Matrix4f;
-import xyz.upperlevel.openverse.resource.model.Model;
+import xyz.upperlevel.openverse.resource.model.impl.NodeModel;
 
 import java.nio.ByteBuffer;
 
-public interface ModelCompiler<M extends Model> {
+public interface ModelCompiler<M extends NodeModel> {
 
     Class<M> getModel();
 

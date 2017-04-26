@@ -1,28 +1,20 @@
-package xyz.upperlevel.openverse.client.resource.program;
+package xyz.upperlevel.openverse.client.resource;
 
 import lombok.NonNull;
-import xyz.upperlevel.openverse.client.resource.ResourceManager;
 import xyz.upperlevel.ulge.opengl.shader.Program;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Programs {
+public class ProgramManager {
 
     private Map<String, Program> programs = new HashMap<>();
 
-    public Programs() {
+    public ProgramManager() {
     }
 
-    public void load(ResourceManager resourceManager) {
-    }
-
-    public void unload() {
-        programs.clear();
-    }
-
-    public Programs register(@NonNull String id, @NonNull Program program) {
+    public ProgramManager register(@NonNull String id, @NonNull Program program) {
         programs.put(id, program);
         return this;
     }
@@ -35,8 +27,12 @@ public class Programs {
         return programs.values();
     }
 
-    public Programs unregister(String id) {
+    public ProgramManager unregister(String id) {
         programs.remove(id);
         return this;
+    }
+
+    public void clear() {
+        programs.clear();
     }
 }

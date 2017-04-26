@@ -1,7 +1,26 @@
 package xyz.upperlevel.openverse.launcher.scenes;
 
+import lombok.Getter;
+import lombok.NonNull;
+import xyz.upperlevel.ulge.game.Scene;
+import xyz.upperlevel.ulge.game.Stage;
+
 /**
- * Created by loryruta on 23/04/17.
+ * This class handles singleplayer game state. It is used while a player
+ * is playing in the world and handles guis.
  */
-public class SingleplayerGameScene {
+public class SingleplayerGameScene extends Stage {
+
+    @Getter
+    private final SingleplayerUniverseScene parent;
+
+    public SingleplayerGameScene(@NonNull SingleplayerUniverseScene parent) {
+        this.parent = parent;
+    }
+
+    @Override
+    public void onRender() {
+        super.onRender();
+
+    }
 }

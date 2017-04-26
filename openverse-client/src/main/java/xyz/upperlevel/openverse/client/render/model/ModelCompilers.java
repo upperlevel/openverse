@@ -1,7 +1,7 @@
 package xyz.upperlevel.openverse.client.render.model;
 
 import lombok.NonNull;
-import xyz.upperlevel.openverse.resource.model.Model;
+import xyz.upperlevel.openverse.resource.model.impl.NodeModel;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -10,7 +10,7 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class ModelCompilers {
 
-    private Map<Class<? extends Model>, ModelCompiler> compilers = new HashMap<>();
+    private Map<Class<? extends NodeModel>, ModelCompiler> compilers = new HashMap<>();
 
     public ModelCompilers() {
     }
@@ -20,7 +20,7 @@ public class ModelCompilers {
         return this;
     }
 
-    public <M extends Model> ModelCompiler<M> get(Class<M> model) {
+    public <M extends NodeModel> ModelCompiler<M> get(Class<M> model) {
         return compilers.get(model);
     }
 
@@ -28,7 +28,7 @@ public class ModelCompilers {
         return compilers.values();
     }
 
-    public void unregister(Class<? extends Model> model) {
+    public void unregister(Class<? extends NodeModel> model) {
         compilers.remove(model);
     }
 

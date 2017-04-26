@@ -2,17 +2,17 @@ package xyz.upperlevel.openverse.resource;
 
 import lombok.Getter;
 
-public class ResourceManager {
+public abstract class ResourceManager {
 
     @Getter
-    private ModelManager modelManager = new ModelManager();
-
-    @Getter
-    private EntityTypeManager entityTypeManager = new EntityTypeManager();
-
-    @Getter
-    private BlockTypeManager blockTypeManager = new BlockTypeManager();
+    protected final BlockTypeManager blockTypeManager = new BlockTypeManager();
 
     public ResourceManager() {
     }
+
+    public abstract ModelManager getModelManager();
+
+    public abstract void load();
+
+    public abstract void unload();
 }

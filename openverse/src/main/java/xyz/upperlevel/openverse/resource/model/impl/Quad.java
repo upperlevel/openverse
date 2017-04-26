@@ -2,12 +2,11 @@ package xyz.upperlevel.openverse.resource.model.impl;
 
 import lombok.Getter;
 import lombok.NonNull;
-import xyz.upperlevel.openverse.resource.model.Model;
 import xyz.upperlevel.openverse.client.resource.texture.Texture;
 import xyz.upperlevel.openverse.physic.Box;
 import xyz.upperlevel.ulge.util.Color;
 
-public class Quad implements Model {
+public class Quad implements NodeModel {
 
     @Getter
     private Box box;

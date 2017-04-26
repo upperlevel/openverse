@@ -1,6 +1,7 @@
 package xyz.upperlevel.openverse.world;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -11,6 +12,10 @@ import java.util.Map;
  * This is something similar to the World manager, in the sense that it stores all the worlds and their ids.
  */
 public class Universe<W extends World> {
+
+    @Getter
+    @Setter
+    private Location spawn = new Location();
 
     private Map<String, W> worlds = new HashMap<>();
 

@@ -1,28 +1,27 @@
-package xyz.upperlevel.openverse.client.resource.program;
+package xyz.upperlevel.openverse.client.resource;
 
 import lombok.NonNull;
-import xyz.upperlevel.openverse.client.resource.ResourceManager;
 import xyz.upperlevel.ulge.opengl.shader.Shader;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Shaders {
+public class ShaderManager {
 
     private Map<String, Shader> shaders = new HashMap<>();
 
-    public Shaders() {
+    public ShaderManager() {
     }
 
-    public void load(ResourceManager resourceManager) {
+    public void load(ClientResourceManager resourceManager) {
     }
 
     public void unload() {
         shaders.clear();
     }
 
-    public Shaders register(@NonNull String id, @NonNull Shader shader) {
+    public ShaderManager register(@NonNull String id, @NonNull Shader shader) {
         shaders.put(id, shader);
         return this;
     }

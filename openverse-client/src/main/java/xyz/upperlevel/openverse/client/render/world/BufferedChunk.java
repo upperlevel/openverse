@@ -8,7 +8,7 @@ import xyz.upperlevel.openverse.client.render.model.ModelCompiler;
 import xyz.upperlevel.openverse.client.render.model.ModelCompilers;
 import xyz.upperlevel.openverse.client.world.ClientWorld;
 import xyz.upperlevel.openverse.resource.BlockType;
-import xyz.upperlevel.openverse.resource.model.Model;
+import xyz.upperlevel.openverse.resource.model.impl.NodeModel;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkData;
 import xyz.upperlevel.ulge.opengl.buffer.DrawMode;
@@ -55,10 +55,10 @@ public class BufferedChunk extends Chunk {
 
                     BlockType block = data.getType(x, y, z);
                     if (block != null) {
-                        Model model = block.getModel();
+                        NodeModel model = block.getModel();
                         if (model != null)
                             drawVertCount += compilers
-                                    .get((Class<Model>) model.getClass())
+                                    .get((Class<NodeModel>) model.getClass())
                                     .compile(model, in, buffer);
                     }
                 }
@@ -97,8 +97,8 @@ public class BufferedChunk extends Chunk {
         }
 
         public void setType(int x, int y, int z, BlockType type, boolean update) {
-            Model oldModel = types[x][y][z] != null ? types[x][y][z].getModel() : null;
-            Model newModel = type != null ? type.getModel() : null;
+            NodeModel oldModel = types[x][y][z] != null ? types[x][y][z].getModel() : null;
+            NodeModel newModel = type != null ? type.getModel() : null;
 
             types[x][y][z] = type;
 

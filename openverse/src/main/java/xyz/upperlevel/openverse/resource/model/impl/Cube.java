@@ -3,7 +3,6 @@ package xyz.upperlevel.openverse.resource.model.impl;
 import lombok.Getter;
 import xyz.upperlevel.openverse.client.resource.texture.Texture;
 import xyz.upperlevel.openverse.physic.Box;
-import xyz.upperlevel.openverse.resource.model.Model;
 import xyz.upperlevel.ulge.util.Color;
 
 import java.util.Collection;
@@ -13,21 +12,13 @@ import java.util.Map;
 import static xyz.upperlevel.ulge.util.Color.*;
 
 
-public class Cube implements Model {
+public class Cube implements NodeModel {
 
     private Map<CubeFacePosition, CubeFace> faces = new HashMap<>();
 
     {
         for (CubeFacePosition position : CubeFacePosition.values())
             faces.put(position, new CubeFace(this, position));
-        {
-            faces.get(CubeFacePosition.BACK).setColor(YELLOW);
-            faces.get(CubeFacePosition.FRONT).setColor(RED);
-            faces.get(CubeFacePosition.RIGHT).setColor(GREEN);
-            faces.get(CubeFacePosition.LEFT).setColor(BLUE);
-            faces.get(CubeFacePosition.DOWN).setColor(AQUA);
-            faces.get(CubeFacePosition.UP).setColor(WHITE);
-        }
     }
 
     @Getter

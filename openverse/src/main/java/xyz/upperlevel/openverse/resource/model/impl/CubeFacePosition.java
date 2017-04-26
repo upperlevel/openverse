@@ -8,40 +8,40 @@ public enum CubeFacePosition {
 
     UP(0, 1, 0) {
         @Override
-        public Box getBox(Box c) {
-            return new Box(c.x, c.y + c.height, c.z, c.width, 0, c.depth);
+        public Box getBox(Box cube) {
+            return new Box(cube.x, cube.y + cube.height, cube.z, cube.width, 0, cube.depth);
         }
     },
     DOWN(0, -1, 0) {
         @Override
-        public Box getBox(Box c) {
-            return new Box(c.x, c.y, c.z, c.width, 0, c.depth);
+        public Box getBox(Box cube) {
+            return new Box(cube.x, cube.y, cube.z, cube.width, 0, cube.depth);
         }
     },
 
     RIGHT(1, 0, 0) {
         @Override
-        public Box getBox(Box c) {
-            return new Box(c.x + c.width, c.y, c.z, 0, c.height, c.depth);
+        public Box getBox(Box cube) {
+            return new Box(cube.x + cube.width, cube.y, cube.z, 0, cube.height, cube.depth);
         }
     },
     LEFT(-1, 0, 0) {
         @Override
-        public Box getBox(Box c) {
-            return new Box(c.x, c.y, c.z, 0, c.height, c.depth);
+        public Box getBox(Box cube) {
+            return new Box(cube.x, cube.y, cube.z, 0, cube.height, cube.depth);
         }
     },
 
     FRONT(0, 0, 1) {
         @Override
-        public Box getBox(Box c) {
-            return new Box(c.x, c.y, c.z + c.depth, c.width, c.height, 0);
+        public Box getBox(Box cube) {
+            return new Box(cube.x, cube.y, cube.z + cube.depth, cube.width, cube.height, 0);
         }
     },
     BACK(0, 0, -1) {
         @Override
-        public Box getBox(Box c) {
-            return new Box(c.x, c.y, c.z, c.width, c.height, 0);
+        public Box getBox(Box cube) {
+            return new Box(cube.x, cube.y, cube.z, cube.width, cube.height, 0);
         }
     };
 

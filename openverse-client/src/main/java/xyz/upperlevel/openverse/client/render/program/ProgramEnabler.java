@@ -2,7 +2,7 @@ package xyz.upperlevel.openverse.client.render.program;
 
 import lombok.Getter;
 import lombok.NonNull;
-import xyz.upperlevel.openverse.client.resource.program.Programs;
+import xyz.upperlevel.openverse.client.resource.ProgramManager;
 import xyz.upperlevel.ulge.opengl.shader.Program;
 
 public class ProgramEnabler {
@@ -13,12 +13,12 @@ public class ProgramEnabler {
     public ProgramEnabler() {
     }
 
-    private Program get(@NonNull Programs programs, String id) {
-        return programs.get(id);
+    private Program get(@NonNull ProgramManager programManager, String id) {
+        return programManager.get(id);
     }
 
-    public void enable(@NonNull Programs programs, String id) {
-        enable(get(programs, id));
+    public void enable(@NonNull ProgramManager programManager, String id) {
+        enable(get(programManager, id));
     }
 
     public void enable(Program program) {
@@ -26,8 +26,8 @@ public class ProgramEnabler {
         enabled = program;
     }
 
-    public void disable(@NonNull Programs programs, String id) {
-        disable(get(programs, id));
+    public void disable(@NonNull ProgramManager programManager, String id) {
+        disable(get(programManager, id));
     }
 
     public void disable(Program program) {

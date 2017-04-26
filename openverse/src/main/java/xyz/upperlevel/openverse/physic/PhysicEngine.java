@@ -3,7 +3,7 @@ package xyz.upperlevel.openverse.physic;
 import org.joml.Vector3f;
 import xyz.upperlevel.openverse.world.entity.Entity;
 import xyz.upperlevel.openverse.resource.BlockType;
-import xyz.upperlevel.openverse.resource.model.Model;
+import xyz.upperlevel.openverse.resource.model.impl.NodeModel;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.World;
 
@@ -42,7 +42,7 @@ public class PhysicEngine {
         BlockType bt = world.getBlock(bx, by, bz).getType();
 
         if (bt != null && bt.isSolid()) {
-            Model s = bt.getModel();
+            NodeModel s = bt.getModel();
 
             // block box
             Box bb = s.getBox().copy();
