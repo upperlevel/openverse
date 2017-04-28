@@ -1,6 +1,7 @@
 package xyz.upperlevel.openverse.client.resource.model;
 
 import org.joml.Matrix4f;
+import xyz.upperlevel.openverse.client.resource.TextureBakery;
 import xyz.upperlevel.openverse.resource.model.Model;
 
 import java.nio.ByteBuffer;
@@ -34,11 +35,11 @@ public class ClientModel extends Model<ClientModelPart> implements ModelCompiler
      * returns the number of vertices added.
      */
     @Override
-    public int compile(Matrix4f in, ByteBuffer out) {
+    public int compile(TextureBakery bakery, Matrix4f in, ByteBuffer out) {
         // doesn't do anything with the input matrix
         int vrt = 0;
         for (ClientModelPart part : getParts())
-            vrt += part.compile(in, out);
+            vrt += part.compile(bakery, in, out);
         return vrt;
     }
 }

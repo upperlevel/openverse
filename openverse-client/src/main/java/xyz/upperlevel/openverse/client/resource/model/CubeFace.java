@@ -5,8 +5,8 @@ import lombok.NonNull;
 import lombok.Setter;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import xyz.upperlevel.openverse.client.render.Rendering;
 import xyz.upperlevel.openverse.client.resource.Texture;
+import xyz.upperlevel.openverse.client.resource.TextureBakery;
 import xyz.upperlevel.openverse.physic.Box;
 import xyz.upperlevel.ulge.util.Color;
 
@@ -72,7 +72,7 @@ public class CubeFace implements ClientModelPart {
     }
 
     @Override
-    public int compile(Matrix4f in, ByteBuffer out) {
+    public int compile(TextureBakery bakery, Matrix4f in, ByteBuffer out) {
         in = new Matrix4f(in)
                 // put the face in the right cube position
                 .translate(position.getDirection().mul(size))
@@ -82,9 +82,8 @@ public class CubeFace implements ClientModelPart {
                 .rotate(position.getRotation())
                 .translate(-.5f, -.5f, -.5f);
 
-        int tex = Rendering.get()
-                .textures()
-                .getId(texture);
+        // retrieves texture layer from passed bakery
+        int layer = bakery.getLayer(texture);
 
         for (Vertex v : vertices) {
             // position
@@ -103,7 +102,7 @@ public class CubeFace implements ClientModelPart {
             // tex coords
             out.putFloat(v.getU())
                     .putFloat(v.getV())
-                    .putFloat((float) tex); // texture id
+                    .putFloat((float) layer); // texture id
         }
         return 0;
     }

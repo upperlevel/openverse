@@ -3,7 +3,6 @@ package xyz.upperlevel.openverse.client.render.world;
 import lombok.Getter;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
-import xyz.upperlevel.openverse.client.render.Rendering;
 import xyz.upperlevel.openverse.client.world.ClientWorld;
 import xyz.upperlevel.openverse.resource.BlockType;
 import xyz.upperlevel.openverse.resource.model.Model;

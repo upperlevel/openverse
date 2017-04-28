@@ -1,6 +1,7 @@
 package xyz.upperlevel.openverse.client.resource.model;
 
 import org.joml.Matrix4f;
+import xyz.upperlevel.openverse.client.resource.TextureBakery;
 
 import java.nio.ByteBuffer;
 
@@ -10,5 +11,5 @@ public interface ModelCompiler {
 
     int getDataCount();
 
-    int compile(Matrix4f in, ByteBuffer out);
+    int compile(TextureBakery bakery, Matrix4f in, ByteBuffer out);
 }

@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import xyz.upperlevel.openverse.client.resource.Texture;
+import xyz.upperlevel.openverse.client.resource.TextureBakery;
 import xyz.upperlevel.openverse.physic.Box;
 import xyz.upperlevel.openverse.resource.model.Cube;
 import xyz.upperlevel.ulge.util.Color;
@@ -75,7 +76,7 @@ public class ClientCube extends Cube implements ClientModelPart {
     }
 
     @Override
-    public int compile(Matrix4f in, ByteBuffer out) {
+    public int compile(TextureBakery bakery, Matrix4f in, ByteBuffer out) {
         // moves the model part to its position related to block space
         in = new Matrix4f(in).translate(size.add(position));
 

@@ -1,6 +1,9 @@
 package xyz.upperlevel.openverse.client.resource;
 
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import xyz.upperlevel.ulge.opengl.texture.Texture2dArray;
 import xyz.upperlevel.ulge.opengl.texture.loader.ImageContent;
 
 import javax.imageio.ImageIO;
@@ -13,15 +16,20 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class handles texture instances by indexing them using an id.
+ */
+@RequiredArgsConstructor
 public class TextureManager {
 
-    private Map<String, Texture> textures = new HashMap<>();
+    @Getter
+    private final Map<String, Texture> texturesMap = new HashMap<>();
 
-    public TextureManager() {
-    }
+    @Getter
+    private final int textureWidth, textureHeight;
 
     public void register(@NonNull Texture texture) {
-        textures.put(texture.getId(), texture);
+        texturesMap.put(texture.getId(), texture);
     }
 
     public int registerDirectory(@NonNull URL dir) {
@@ -45,7 +53,7 @@ public class TextureManager {
                 try {
                     image = ImageIO.read(file);
                 } catch (IOException e) {
-                    System.err.println("Error loading textures from " + dir);
+                    System.err.println("Error loading texturesMap from " + dir);
                     e.printStackTrace();
                     image = null;
                 }
@@ -62,15 +70,15 @@ public class TextureManager {
     }
 
     public Texture get(String id) {
-        return textures.get(id);
+        return texturesMap.get(id);
     }
 
     public Collection<Texture> get() {
-        return textures.values();
+        return texturesMap.values();
     }
 
     public void unregister(String id) {
-        textures.remove(id);
+        texturesMap.remove(id);
     }
 
     public void unregister(@NonNull Texture texture) {
@@ -78,7 +86,7 @@ public class TextureManager {
     }
 
     public void clear() {
-        textures.clear();
+        texturesMap.clear();
     }
 
     private static String removeExtension(String str) {//I'm ashamed to write a so-commonly used method in a class like this
