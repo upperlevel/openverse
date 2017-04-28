@@ -1,8 +1,10 @@
-package xyz.upperlevel.openverse.client.render.world;
+package xyz.upperlevel.openverse.client.render;
 
 import lombok.Getter;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
+import xyz.upperlevel.openverse.client.resource.TextureBakery;
+import xyz.upperlevel.openverse.client.resource.model.ClientModel;
 import xyz.upperlevel.openverse.client.world.ClientWorld;
 import xyz.upperlevel.openverse.resource.BlockType;
 import xyz.upperlevel.openverse.resource.model.Model;
@@ -39,7 +41,8 @@ public class BufferedChunk extends Chunk {
     }
 
     public void build() {
-        ModelCompilers compilers = Rendering.get().models();
+        // todo get texture bakery
+        TextureBakery bakery = null;
 
         // initializes a byte-buffer with max dimensions it can assume
         ByteBuffer buffer = BufferUtils.createByteBuffer(allocDataCount * Float.BYTES);
@@ -52,11 +55,9 @@ public class BufferedChunk extends Chunk {
 
                     BlockType block = data.getType(x, y, z);
                     if (block != null) {
-                        Model model = block.getModel();
-                        if (model != null)
-                            drawVertCount += compilers
-                                    .get((Class<Model>) model.getClass())
-                                    .compile(model, in, buffer);
+                        ClientModel mdl = (ClientModel) block.getModel();
+                        if (mdl != null)
+                            drawVertCount += mdl.compile(bakery, in, buffer);
                     }
                 }
             }
@@ -78,6 +79,8 @@ public class BufferedChunk extends Chunk {
 
     public class BufferedChunkData extends ChunkData {
 
+        // fix cannot init an array with generics
+        // blocks types here contained must have a ClientModel as model without having to cast it
         private BlockType[][][] types = new BlockType[WIDTH][HEIGHT][LENGTH];
 
         public BufferedChunkData() {
@@ -93,27 +96,22 @@ public class BufferedChunk extends Chunk {
             setType(x, y, z, type, true);
         }
 
-        public void setType(int x, int y, int z, BlockType type, boolean update) {
-            Model oldModel = types[x][y][z] != null ? types[x][y][z].getModel() : null;
-            Model newModel = type != null ? type.getModel() : null;
+        public void setType(int x, int y, int z, BlockType<ClientModel> type, boolean update) {
+            ClientModel old_mdl = types[x][y][z] != null ? (ClientModel) types[x][y][z].getModel() : null;
+            ClientModel new_mdl = type != null ? type.getModel() : null;
 
             types[x][y][z] = type;
 
-            // gets compilers
-            ModelCompilers compilers = Rendering.get().models();
-            ModelCompiler oldCmp = oldModel == null ? null : compilers.get(oldModel.getClass());
-            ModelCompiler newCmp = newModel == null ? null : compilers.get(newModel.getClass());
-
             // gets vertices/data count for old and new model
-            int oVert = oldCmp == null ? 0 : oldCmp.getVerticesCount();
-            int nVert = newCmp == null ? 0 : newCmp.getVerticesCount();
+            int old_vrt = old_mdl == null ? 0 : old_mdl.getVerticesCount();
+            int new_vrt = new_mdl == null ? 0 : new_mdl.getVerticesCount();
 
-            int oData = oldCmp == null ? 0 : oldCmp.getDataCount();
-            int nData = newCmp == null ? 0 : newCmp.getDataCount();
+            int old_data = old_mdl == null ? 0 : old_mdl.getDataCount();
+            int new_data = new_mdl == null ? 0 : new_mdl.getDataCount();
 
             // updates vertices/data count
-            allocVertCount += nVert - oVert;
-            allocDataCount += nData - oData;
+            allocVertCount += new_vrt  - old_vrt;
+            allocDataCount += new_data - old_data;
 
             // rebuilds chunk if requested
             if (update)

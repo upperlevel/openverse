@@ -2,27 +2,18 @@ package xyz.upperlevel.openverse.resource;
 
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import xyz.upperlevel.openverse.resource.model.Model;
 
-public class BlockType {
+@RequiredArgsConstructor
+public class BlockType<M extends Model> {
 
     @Getter
-    private String id;
-
-    @Getter
-    @Setter
-    private boolean solid = true;
+    @NonNull
+    private final String id;
 
     @Getter
     @Setter
-    private boolean transparent = false;
-
-    @Getter
-    @Setter
-    private Model model;
-
-    public BlockType(@NonNull String id) {
-        this.id = id;
-    }
+    private M model;
 }
