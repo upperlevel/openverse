@@ -2,7 +2,7 @@ package xyz.upperlevel.openverse.client.world;
 
 import lombok.Getter;
 import lombok.Setter;
-import xyz.upperlevel.openverse.client.render.world.BufferedChunk;
+import xyz.upperlevel.openverse.client.render.BufferedChunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkSystem;
 
 import java.util.Arrays;

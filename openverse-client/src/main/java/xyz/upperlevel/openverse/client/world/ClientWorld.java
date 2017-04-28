@@ -3,12 +3,12 @@ package xyz.upperlevel.openverse.client.world;
 import lombok.Getter;
 import lombok.Setter;
 import org.joml.Matrix4f;
-import xyz.upperlevel.openverse.client.render.Rendering;
-import xyz.upperlevel.openverse.client.render.world.BufferedChunk;
+import xyz.upperlevel.openverse.client.render.BufferedChunk;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.chunk.DefaultChunkSystem;
 import xyz.upperlevel.ulge.opengl.shader.Program;
 import xyz.upperlevel.ulge.opengl.shader.Uniform;
+import xyz.upperlevel.ulge.opengl.shader.Uniformer;
 
 import static org.lwjgl.BufferUtils.createFloatBuffer;
 
@@ -39,15 +39,8 @@ public class ClientWorld extends World {
         return (BufferedChunk) super.getChunk(x, y, z);
     }
 
-    public void render() {
-        Program program = Rendering.get()
-                .programs()
-                .getEnabled();
-
-        if (program == null)
-            return;
-
-        Uniform uModel = program.uniformer.get("model");
+    public void render(Uniformer uniformer) {
+        Uniform uModel = uniformer.get("model");
 
         for(BufferedChunk chunk : playerChunkMap.getChunks()) {
             Matrix4f in = new Matrix4f().translate(16 * chunk.getX(), 16 * chunk.getY(), 16 * chunk.getZ());
