@@ -2,7 +2,6 @@ package xyz.upperlevel.openverse.server.world.entity;
 
 import lombok.Getter;
 import xyz.upperlevel.hermes.Connection;
-import xyz.upperlevel.openverse.world.entity.BaseEntity;
 import xyz.upperlevel.openverse.world.entity.Player;
 
 public class ServerPlayer extends BaseEntity implements Player {

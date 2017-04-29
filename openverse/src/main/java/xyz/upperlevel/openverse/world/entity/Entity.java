@@ -9,7 +9,9 @@ public interface Entity {
 
     EntityType getType();
 
-    Location getLocation();
+    World getWorld();
+
+    EntityLocation getLocation();
 
     void setLocation(Location location);
 
@@ -17,19 +19,10 @@ public interface Entity {
 
     void setVelocity(Vector3f velocity);
 
-
-    double getYaw();
-
-    void setYaw(double yaw);
-
-    double getPitch();
-
-    void setPitch(double pitch);
-
-    void setRotation(double yaw, double pitch);
-
-    World getWorld();
-
+    default void setRotation(double yaw, double pitch) {
+        getLocation().setYaw(yaw);
+        getLocation().setPitch(pitch);
+    }
 
     int getId();
 

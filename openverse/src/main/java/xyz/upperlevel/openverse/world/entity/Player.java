@@ -15,5 +15,7 @@ public interface Player extends Entity, Nameable {
     @Override
     String getName();
 
+    EntityLocation getLocation();
+
     Connection getConnection();
 }

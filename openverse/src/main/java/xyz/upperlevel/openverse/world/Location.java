@@ -6,29 +6,33 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.joml.Vector3d;
 
-@Accessors(fluent = true)
-public class Location {
+/**
+ * A location a class that identify a position somewhere in a world.
+ * @param <W> A world may be client-side or server-side
+ */
+public class Location<W extends World> {
 
     @Getter
     @Setter
     @NonNull
-    private World world;
+    private W world;
 
     @Getter
     @Setter
-    public double x, y, z, yaw, pitch;
+    private double x, y, z, yaw, pitch;
 
-    public Location() {
+    public Location(W world) {
+        this.world  = world;
     }
 
-    public Location(World world, double x, double y, double z) {
+    public Location(W world, double x, double y, double z) {
         this.world = world;
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public Location(World world, double x, double y, double z, double yaw, double pitch) {
+    public Location(W world, double x, double y, double z, double yaw, double pitch) {
         this.world = world;
         this.x = x;
         this.y = y;
@@ -37,13 +41,13 @@ public class Location {
         this.pitch = pitch;
     }
 
-    public Location(Location loc) {
-        world = loc.world;
-        x = loc.x;
-        y = loc.y;
-        z = loc.z;
-        yaw = loc.yaw;
-        pitch = loc.pitch;
+    public Location(Location<W> location) {
+        world = location.world;
+        x = location.x;
+        y = location.y;
+        z = location.z;
+        yaw = location.yaw;
+        pitch = location.pitch;
     }
 
 
@@ -61,12 +65,12 @@ public class Location {
         this.pitch = pitch;
     }
 
-    public void set(Location o) {
-        x = o.x();
-        y = o.y();
-        z = o.z();
-        yaw = o.yaw();
-        pitch = o.pitch();
+    public void set(Location other) {
+        x = other.getX();
+        y = other.getY();
+        z = other.getZ();
+        yaw = other.getYaw();
+        pitch = other.getPitch();
     }
 
 
@@ -76,17 +80,17 @@ public class Location {
         this.z += z;
     }
 
-    public void add(Location loc) {
-        x += loc.x();
-        y += loc.y();
-        z += loc.z();
+    public void add(Location location) {
+        x += location.getX();
+        y += location.getY();
+        z += location.getZ();
     }
 
-    public void add(Location loc, Location dest) {
+    public void add(Location location, Location dest) {
         dest.set(
-                x + loc.x(),
-                y + loc.y(),
-                z + loc.z()
+                x + location.getX(),
+                y + location.getY(),
+                z + location.getZ()
         );
     }
 
@@ -97,17 +101,17 @@ public class Location {
         this.z -= z;
     }
 
-    public void sub(Location loc) {
-        x -= loc.x();
-        y -= loc.y();
-        z -= loc.z();
+    public void sub(Location location) {
+        x -= location.getX();
+        y -= location.getY();
+        z -= location.getZ();
     }
 
-    public void sub(Location loc, Location dest) {
+    public void sub(Location location, Location dest) {
         dest.set(
-                x - loc.x(),
-                y - loc.y(),
-                z - loc.z()
+                x - location.getX(),
+                y - location.getY(),
+                z - location.getZ()
         );
     }
 
@@ -124,17 +128,17 @@ public class Location {
         this.z *= z;
     }
 
-    public void mul(Location loc) {
-        this.x *= loc.x();
-        this.y *= loc.y();
-        this.z *= loc.z();
+    public void mul(Location location) {
+        this.x *= location.getX();
+        this.y *= location.getY();
+        this.z *= location.getZ();
     }
 
-    public void mul(Location loc, Location dest) {
+    public void mul(Location location, Location dest) {
         dest.set(
-                x * loc.x(),
-                y * loc.y(),
-                z * loc.z()
+                x * location.getX(),
+                y * location.getY(),
+                z * location.getZ()
         );
     }
 
@@ -159,10 +163,10 @@ public class Location {
         this.z /= z;
     }
 
-    public void div(Location loc) {
-        this.x /= loc.x();
-        this.y /= loc.y();
-        this.z /= loc.z();
+    public void div(Location location) {
+        this.x /= location.getX();
+        this.y /= location.getY();
+        this.z /= location.getZ();
     }
 
     public void div(double m, Location dest) {
@@ -173,11 +177,11 @@ public class Location {
         );
     }
 
-    public void div(Location loc, Location dest) {
+    public void div(Location location, Location dest) {
         dest.set(
-                x / loc.x(),
-                y / loc.y(),
-                z / loc.z()
+                x / location.getX(),
+                y / location.getY(),
+                z / location.getZ()
         );
     }
 
@@ -191,17 +195,17 @@ public class Location {
     }
 
 
-    public double distance(Location loc) {
-        double dx = x - loc.x(),
-                dy = y - loc.y(),
-                dz = z - loc.z();
+    public double distance(Location location) {
+        double dx = x - location.getX(),
+                dy = y - location.getY(),
+                dz = z - location.getZ();
         return Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
 
-    public double distanceSq(Location loc) {
-        double dx = x - loc.x(),
-                dy = y - loc.y(),
-                dz = z - loc.z();
+    public double distanceSq(Location location) {
+        double dx = x - location.getX(),
+                dy = y - location.getY(),
+                dz = z - location.getZ();
         return dx * dx + dy * dy + dz * dz;
     }
 

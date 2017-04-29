@@ -17,9 +17,11 @@ import xyz.upperlevel.openverse.network.EntityTeleportPacket;
 import xyz.upperlevel.openverse.client.world.entity.ClientPlayer;
 import xyz.upperlevel.openverse.network.GetUniversePacket;
 import xyz.upperlevel.openverse.network.UniverseInfoPacket;
+import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.Universe;
 import xyz.upperlevel.ulge.game.Scene;
 import xyz.upperlevel.openverse.world.entity.Player;
+import xyz.upperlevel.ulge.opengl.shader.Uniformer;
 
 import java.util.List;
 
@@ -43,8 +45,9 @@ public class OpenverseClient implements OpenverseProxy, Scene {//TODO Implement
     @Getter
     private ClientResourceManager resourceManager = new ClientResourceManager();
 
+    // the main player (just one atm)
     @Getter
-    private final ClientPlayer player;//TODO: initialize player
+    private final ClientPlayer player;
 
     public OpenverseClient(@NonNull Client client) {
         this.client = client;
@@ -54,6 +57,9 @@ public class OpenverseClient implements OpenverseProxy, Scene {//TODO Implement
         conn.setDefaultChannel(channel);
         if (!conn.isOpen())
             throw new IllegalStateException("Client connection is closed");
+
+        ClientWorld world = null; // todo get world
+        player = new ClientPlayer(new Location<>(world), "test", conn);
 
         universe = new Universe<>();
         viewer = new WorldViewer();
@@ -85,14 +91,8 @@ public class OpenverseClient implements OpenverseProxy, Scene {//TODO Implement
 
     @Override
     public void onRender() {
-
-    }
-
-    /**
-     * Gets main player.
-     */
-    public WorldViewer getPlayer() {
-        return viewer;
+        Uniformer uniformer = null; // todo get uniformer somewhere
+        player.render(uniformer);
     }
 
     @Override
