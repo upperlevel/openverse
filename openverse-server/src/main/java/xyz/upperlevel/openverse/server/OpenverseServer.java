@@ -8,6 +8,7 @@ import xyz.upperlevel.openverse.OpenverseProtocol;
 import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.resource.ResourceManager;
 import xyz.upperlevel.openverse.world.Universe;
+import xyz.upperlevel.openverse.world.entity.Player;
 
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class OpenverseServer implements OpenverseProxy {
     }
 
     @Override
-    public List<?> getPlayers() {
+    public List<Player> getPlayers() {
         return null;
     }
 

@@ -28,7 +28,7 @@
         </dependency>
         <!-- connection api -->
         <dependency>
-            <groupId>xyz.upperlevel.util.packet</groupId>
+            <groupId>xyz.upperlevel.hermes</groupId>
             <artifactId>hermes-client</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
