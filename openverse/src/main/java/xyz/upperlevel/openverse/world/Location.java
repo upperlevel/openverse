@@ -5,34 +5,31 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.joml.Vector3d;
+import org.joml.Vector3f;
 
-/**
- * A location a class that identify a position somewhere in a world.
- * @param <W> A world may be client-side or server-side
- */
-public class Location<W extends World> {
+public class Location {
 
     @Getter
     @Setter
     @NonNull
-    private W world;
+    private World world;
 
     @Getter
     @Setter
     private double x, y, z, yaw, pitch;
 
-    public Location(W world) {
+    public Location(World world) {
         this.world  = world;
     }
 
-    public Location(W world, double x, double y, double z) {
+    public Location(World world, double x, double y, double z) {
         this.world = world;
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public Location(W world, double x, double y, double z, double yaw, double pitch) {
+    public Location(World world, double x, double y, double z, double yaw, double pitch) {
         this.world = world;
         this.x = x;
         this.y = y;
@@ -41,7 +38,7 @@ public class Location<W extends World> {
         this.pitch = pitch;
     }
 
-    public Location(Location<W> location) {
+    public Location(Location location) {
         world = location.world;
         x = location.x;
         y = location.y;
@@ -78,6 +75,12 @@ public class Location<W extends World> {
         this.x += x;
         this.y += y;
         this.z += z;
+    }
+
+    public void add(Vector3f vector) {
+        x += vector.x;
+        y += vector.y;
+        z += vector.z;
     }
 
     public void add(Location location) {
@@ -202,7 +205,7 @@ public class Location<W extends World> {
         return Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
 
-    public double distanceSq(Location location) {
+    public double distanceSquared(Location location) {
         double dx = x - location.getX(),
                 dy = y - location.getY(),
                 dz = z - location.getZ();

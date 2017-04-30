@@ -14,20 +14,29 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <dependencies>
+        <!-- openverse common -->
         <dependency>
             <groupId>xyz.upperlevel.openverse</groupId>
             <artifactId>openverse</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
+        <!-- openverse server -->
         <dependency>
             <groupId>xyz.upperlevel.openverse</groupId>
             <artifactId>openverse-server</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
+        <!-- connection api -->
         <dependency>
             <groupId>xyz.upperlevel.util.packet</groupId>
             <artifactId>hermes-client</artifactId>
             <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <!-- graphic engine -->
+        <dependency>
+            <groupId>xyz.upperlevel.ulge</groupId>
+            <artifactId>ulge</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

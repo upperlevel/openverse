@@ -11,6 +11,8 @@ public interface Entity {
 
     World getWorld();
 
+    PlayerDriver getDriver();
+
     EntityLocation getLocation();
 
     void setLocation(Location location);
