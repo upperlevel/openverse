@@ -20,9 +20,18 @@ public class OpenverseServer implements OpenverseProxy {
     private final Channel channel = new Channel("main")
             .setProtocol(OpenverseProtocol.get());
 
+    // we don't know if the server is locally connected or use the network
     public OpenverseServer(@NonNull Server server) {
         this.server = server;
         server.setDefaultChannel(channel);
+    }
+
+    public void start() {
+        // when start we have to set up all packets listeners
+    }
+
+    public void stop() {
+        // when stop we have to delete all listeners
     }
 
     @Override
