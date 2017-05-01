@@ -12,6 +12,7 @@ import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.server.resource.ServerResourceManager;
 import xyz.upperlevel.openverse.server.world.entity.ServerPlayer;
 import xyz.upperlevel.openverse.world.Universe;
+
 import xyz.upperlevel.openverse.world.entity.EntityManager;
 import xyz.upperlevel.openverse.world.entity.Player;
 
@@ -60,10 +61,6 @@ public class OpenverseServer implements OpenverseProxy {
         });
 
         resourceManager.load();
-    }
-
-    public void stop() {
-        players.clear();
     }
 
     @Override
