@@ -10,7 +10,7 @@ import xyz.upperlevel.openverse.world.World;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UniverseInfoPacket implements Packet {
+public class SendUniversePacket implements Packet {
 
     @Getter
     private final String spawnWorld;
@@ -21,7 +21,7 @@ public class UniverseInfoPacket implements Packet {
     @Getter
     private final List<String> worlds;
 
-    public UniverseInfoPacket(
+    public SendUniversePacket(
             @NonNull String spawnWorld,
             double spawnX, double spawnY, double spawnZ,
             @NonNull List<String> worlds
@@ -33,7 +33,7 @@ public class UniverseInfoPacket implements Packet {
         this.worlds = worlds;
     }
 
-    public UniverseInfoPacket(@NonNull Universe<? extends World> universe) {
+    public SendUniversePacket(@NonNull Universe<? extends World> universe) {
         Location spawn = universe.getSpawn();
         spawnWorld = spawn.world().getName();
         spawnX = spawn.x();

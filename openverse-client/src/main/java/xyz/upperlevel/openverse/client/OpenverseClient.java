@@ -11,29 +11,26 @@ import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.client.network.EntityTeleportPacketReceiveListener;
 import xyz.upperlevel.openverse.client.network.UniverseInfoPacketReceiveListener;
 import xyz.upperlevel.openverse.client.resource.ClientResourceManager;
+import xyz.upperlevel.openverse.client.world.ClientUniverse;
 import xyz.upperlevel.openverse.client.world.ClientWorld;
 import xyz.upperlevel.openverse.client.world.WorldViewer;
 import xyz.upperlevel.openverse.network.EntityTeleportPacket;
 import xyz.upperlevel.openverse.client.world.entity.ClientPlayer;
 import xyz.upperlevel.openverse.network.GetUniversePacket;
-import xyz.upperlevel.openverse.network.UniverseInfoPacket;
-import xyz.upperlevel.openverse.world.Location;
+import xyz.upperlevel.openverse.network.SendUniversePacket;
 import xyz.upperlevel.openverse.world.Universe;
+import xyz.upperlevel.openverse.world.entity.EntityManager;
 import xyz.upperlevel.ulge.game.Scene;
 import xyz.upperlevel.openverse.world.entity.Player;
 import xyz.upperlevel.ulge.opengl.shader.Uniformer;
 
-import java.util.List;
+import java.util.Collection;
 
 import static java.util.Collections.singletonList;
 
 public class OpenverseClient implements OpenverseProxy, Scene {//TODO Implement
 
-    @Getter
     private final Client client;
-
-    @Getter
-    private final Universe<ClientWorld> universe;
 
     @Getter
     private final WorldViewer viewer;
@@ -43,11 +40,16 @@ public class OpenverseClient implements OpenverseProxy, Scene {//TODO Implement
             .setProtocol(OpenverseProtocol.get());
 
     @Getter
-    private ClientResourceManager resourceManager = new ClientResourceManager();
+    private final ClientUniverse universe;
 
-    // the main player (just one atm)
     @Getter
-    private final ClientPlayer player;
+    private final ClientPlayerManager playerManager;
+
+    @Getter
+    private final EntityManager entityManager;
+
+    @Getter
+    private ClientResourceManager resourceManager = new ClientResourceManager();
 
     public OpenverseClient(@NonNull Client client) {
         this.client = client;
@@ -58,27 +60,14 @@ public class OpenverseClient implements OpenverseProxy, Scene {//TODO Implement
         if (!conn.isOpen())
             throw new IllegalStateException("Client connection is closed");
 
-        ClientWorld world = null; // todo get world
-        player = new ClientPlayer(new Location<>(world), "test", conn);
-
-        universe = new Universe<>();
-        viewer = new WorldViewer();
+        universe      = new ClientUniverse(this);
+        playerManager = new ClientPlayerManager(this);
+        entityManager = new EntityManager(this);
     }
 
     @Override
     public void onEnable(Scene prev) {
-        resourceManager.load(); // loads resources first
-
-        // here we send all initialize packets
-        Connection conn = client.getConnection();
-
-        conn.send(channel, new GetUniversePacket());
-
-        // here we register all listener to packets received
-        ConnectionEventManager events = channel.getEventManager();
-
-        events.register(UniverseInfoPacket.class,   new UniverseInfoPacketReceiveListener(this));
-        events.register(EntityTeleportPacket.class, new EntityTeleportPacketReceiveListener(this));
+        resourceManager.load(); // loads LOCAL resources first
     }
 
     @Override
@@ -93,11 +82,6 @@ public class OpenverseClient implements OpenverseProxy, Scene {//TODO Implement
     public void onRender() {
         Uniformer uniformer = null; // todo get uniformer somewhere
         player.render(uniformer);
-    }
-
-    @Override
-    public List<Player> getPlayers() {
-        return singletonList(getPlayer());
     }
 
     @Override

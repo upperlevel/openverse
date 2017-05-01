@@ -24,7 +24,7 @@ public final class Openverse {
     }
 
     public static List<Player> getPlayers() {
-        return proxy.getPlayers();
+        return proxy.getPlayerManager();
     }
 
     public static Universe getWorlds() {

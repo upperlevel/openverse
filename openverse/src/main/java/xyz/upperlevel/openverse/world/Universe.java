@@ -13,9 +13,7 @@ import java.util.Map;
  */
 public class Universe<W extends World> {
 
-    @Getter
-    @Setter
-    private Location spawn = new Location();
+    // the spawn location is just server side
 
     private Map<String, W> worlds = new HashMap<>();
 

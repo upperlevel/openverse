@@ -6,26 +6,23 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * A class that handles models. A model can be server-side or client-side, that's why the generic.
- */
-public class ModelManager<M extends Model> {
+public class ModelManager {
 
-    private Map<String, M> models = new HashMap<>();
+    private Map<String, Model> models = new HashMap<>();
 
     public ModelManager() {
     }
 
-    public ModelManager register(@NonNull M model) {
+    public ModelManager register(@NonNull Model model) {
         models.put(model.getId(), model);
         return this;
     }
 
-    public M get(String id) {
+    public Model get(String id) {
         return models.get(id);
     }
 
-    public Collection<M> get() {
+    public Collection<Model> get() {
         return models.values();
     }
 

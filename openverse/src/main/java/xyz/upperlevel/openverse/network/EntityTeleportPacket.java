@@ -12,6 +12,9 @@ import xyz.upperlevel.openverse.world.Location;
 public class EntityTeleportPacket implements Packet {
 
     @Getter
+    private long id;
+
+    @Getter
     private String worldName;
 
     @Getter
@@ -21,10 +24,12 @@ public class EntityTeleportPacket implements Packet {
     private double yaw, pitch;
 
     public EntityTeleportPacket(
+            long id,
             @NonNull String worldName,
             double x, double y, double z,
             double yaw, double pitch
     ) {
+        this.id = id;
         this.worldName = worldName;
         this.x = x;
         this.y = y;
@@ -33,12 +38,13 @@ public class EntityTeleportPacket implements Packet {
         this.pitch = pitch;
     }
 
-    public EntityTeleportPacket(int id, Location to) {
-        worldName = to.world().getName();
-        x = to.x();
-        y = to.y();
-        z = to.z();
-        yaw = to.yaw();
-        pitch = to.pitch();
+    public EntityTeleportPacket(long id, @NonNull Location to) {
+        this.id = id;
+        worldName = to.getWorld().getName();
+        x = to.getX();
+        y = to.getY();
+        z = to.getZ();
+        yaw = to.getYaw();
+        pitch = to.getPitch();
     }
 }

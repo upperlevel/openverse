@@ -1,24 +1,39 @@
 package xyz.upperlevel.openverse.server.resource;
 
 import lombok.Getter;
+import xyz.upperlevel.openverse.resource.*;
+import xyz.upperlevel.openverse.resource.model.Cube;
+import xyz.upperlevel.openverse.resource.model.Model;
 import xyz.upperlevel.openverse.resource.model.ModelManager;
-import xyz.upperlevel.openverse.resource.ResourceManager;
+import xyz.upperlevel.openverse.resource.model.ModelPart;
 
 public class ServerResourceManager extends ResourceManager {
 
-    @Getter
-    private final ModelManager modelManager = new ModelManager();
-
-    public ServerResourceManager() {
-    }
-
     @Override
-    public void load() {
+    public void onLoad() {
+        // here we load our server resource (not from file at the moment)
+        // todo from file
 
-    }
+        // REGISTERS TEST ENTITY MODEL
+        Model entityModel = new Model("player")
+                .add(new Cube());
+        getModelManager()
+                .register(entityModel);
 
-    @Override
-    public void unload() {
+        // REGISTERS TEST ENTITY
+        getEntityTypeManager()
+                .register(new EntityType("player")
+                        .setModel(entityModel));
 
+        // REGISTERS TEST BLOCK MODEL
+        Model blockModel = new Model("hello_world")
+                .add(new Cube());
+        getModelManager()
+                .register(blockModel);
+
+        // REGISTERS TEST BLOCK
+        getBlockTypeManager()
+                .register(new BlockType("hello_world")
+                        .setModel(blockModel));
     }
 }

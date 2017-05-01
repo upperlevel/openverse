@@ -9,6 +9,7 @@ package xyz.upperlevel.openverse.world.chunk;
  * 11 + 11 + 10 = 32
  */
 public class ChunkLocation {
+
     public final int x, y, z;
     private final int hashCode;
 
@@ -35,9 +36,5 @@ public class ChunkLocation {
                     c.y == y &&
                     c.z == z;
         } else return false;
-    }
-
-    public static ChunkLocation loc(Chunk chunk) {
-        return new ChunkLocation(chunk.getX(), chunk.getY(), chunk.getZ());
     }
 }

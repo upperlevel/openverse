@@ -19,7 +19,7 @@ public class Location {
     private double x, y, z, yaw, pitch;
 
     public Location(World world) {
-        this.world  = world;
+        this.world = world;
     }
 
     public Location(World world, double x, double y, double z) {
@@ -47,19 +47,18 @@ public class Location {
         pitch = location.pitch;
     }
 
-
-    public void set(double x, double y, double z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
-
     public void set(double x, double y, double z, double yaw, double pitch) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.yaw = yaw;
         this.pitch = pitch;
+    }
+
+    public void set(double x, double y, double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
     public void set(Location other) {
@@ -69,7 +68,6 @@ public class Location {
         yaw = other.getYaw();
         pitch = other.getPitch();
     }
-
 
     public void add(double x, double y, double z) {
         this.x += x;
@@ -84,9 +82,9 @@ public class Location {
     }
 
     public void add(Location location) {
-        x += location.getX();
-        y += location.getY();
-        z += location.getZ();
+        x += location.x;
+        y += location.y;
+        z += location.z;
     }
 
     public void add(Location location, Location dest) {
@@ -96,7 +94,6 @@ public class Location {
                 z + location.getZ()
         );
     }
-
 
     public void sub(double x, double y, double z) {
         this.x -= x;
@@ -193,7 +190,7 @@ public class Location {
         return Math.sqrt(x * x + y * y + z * z);
     }
 
-    public double lengthSq() {
+    public double lengthSquared() {
         return x * x + y * y + z * z;
     }
 

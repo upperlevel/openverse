@@ -4,7 +4,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import xyz.upperlevel.openverse.world.Location;
 
-public class PlayerDriver implements EntityDriver<Player> {
+public class SimpleEntityDriver implements EntityDriver<Player> {
 
     private Matrix4f getOrientation(Entity entity) {
         Location location = entity.getLocation();

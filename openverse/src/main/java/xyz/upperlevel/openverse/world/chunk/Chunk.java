@@ -1,6 +1,7 @@
 package xyz.upperlevel.openverse.world.chunk;
 
 import lombok.Getter;
+import lombok.NonNull;
 import xyz.upperlevel.openverse.world.Block;
 import xyz.upperlevel.openverse.world.World;
 
@@ -16,26 +17,40 @@ public class Chunk {
 
     //The chunk-coordinates (to translate to blocks you must do x * 16 or x << 4)
     @Getter
-    private final int x, y, z;
+    private final ChunkLocation location;
 
     protected Block blocks[][][] = new Block[WIDTH][HEIGHT][LENGTH];
 
     @Getter
-    protected ChunkData data;
+    protected final ChunkData data;
 
-    public Chunk(ChunkData data, World world, int x, int y, int z) {
+    public Chunk(@NonNull ChunkData data, @NonNull World world, @NonNull ChunkLocation location) {
         this.data = data;
         this.world = world;
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.location = location;
+    }
+
+    public Chunk(@NonNull ChunkData data, @NonNull World world, int x, int y, int z) {
+        this(data, world, new ChunkLocation(x, y, z));
+    }
+
+    public int getX() {
+        return location.x;
+    }
+
+    public int getY() {
+        return location.y;
+    }
+
+    public int getZ() {
+        return location.z;
     }
 
     public Chunk getRelative(int x, int y, int z) {
         return getWorld().getChunk(
-                this.x + x,
-                this.y + y,
-                this.z + z
+                location.x + x,
+                location.y + y,
+                location.z + z
         );
     }
 

@@ -15,11 +15,11 @@ public class DefaultChunkSystem extends BaseChunkSystem {
 
 
     public void set0(Chunk chunk) {
-        chunks.put(ChunkLocation.loc(chunk), chunk);
+        chunks.put(ChunkLocation.location(chunk), chunk);
     }
 
     public void remove(Chunk chunk) {
-        chunks.remove(ChunkLocation.loc(chunk));
+        chunks.remove(ChunkLocation.location(chunk));
     }
 
     @Override

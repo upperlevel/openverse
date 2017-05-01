@@ -6,14 +6,31 @@ import xyz.upperlevel.openverse.resource.model.ModelManager;
 public abstract class ResourceManager {
 
     @Getter
-    protected final BlockTypeManager blockTypeManager = new BlockTypeManager();
+    private final ModelManager modelManager = new ModelManager();
+
+    @Getter
+    private final BlockTypeManager blockTypeManager = new BlockTypeManager();
+
+    @Getter
+    private final EntityTypeManager entityTypeManager = new EntityTypeManager();
 
     public ResourceManager() {
     }
 
-    public abstract ModelManager getModelManager();
+    public void load() {
+        onLoad();
+    }
 
-    public abstract void load();
+    protected void onLoad() {
+    }
 
-    public abstract void unload();
+    public void unload() {
+        entityTypeManager.clear();
+        blockTypeManager.clear();
+        modelManager.clear();
+        onUnload();
+    }
+
+    protected void onUnload() {
+    }
 }

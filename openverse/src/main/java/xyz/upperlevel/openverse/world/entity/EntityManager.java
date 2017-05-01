@@ -1,37 +1,59 @@
 package xyz.upperlevel.openverse.world.entity;
 
+import lombok.Getter;
 import lombok.NonNull;
+import xyz.upperlevel.event.EventHandler;
+import xyz.upperlevel.event.Listener;
+import xyz.upperlevel.openverse.OpenverseProxy;
+import xyz.upperlevel.openverse.network.EntityTeleportPacket;
+import xyz.upperlevel.openverse.world.Location;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EntityManager {
+public class EntityManager implements Listener {
 
-    private Map<Integer, BaseEntity> entities = new HashMap<>();
+    @Getter
+    private final OpenverseProxy handle;
 
-    public EntityManager() {
+    private long nextId = 0;
+    private final Map<Long, Entity> entitiesById = new HashMap<>();
+
+    public EntityManager(@NonNull OpenverseProxy handle) {
+        this.handle = handle;
+        handle.getChannel().getEventManager().register(this);
     }
 
-    public void add(@NonNull BaseEntity entity) {
-        int s = entities.size();
-        entities.put(s, entity);
-        entity.setId(s);
+    public void register(Entity entity) {
+        entitiesById.put(entity.getId(), entity);
+        entity.setId(nextId++);
     }
 
-    public BaseEntity get(int id) {
-        return entities.get(id);
+    public void unregister(long id) {
+        entitiesById.remove(id);
     }
 
-    public void remove(int id) {
-        entities.remove(id);
+    public void unregister(@NonNull Entity entity) {
+        entitiesById.remove(entity.getId());
     }
 
-    public void remove(@NonNull BaseEntity ent) {
-        entities.remove(ent.getId());
+    public void clear() {
+        entitiesById.clear();
+        nextId = 0;
     }
 
-    public Collection<BaseEntity> getAll() {
-        return entities.values();
+    @EventHandler
+    public void onTeleport(EntityTeleportPacket event) {
+        Entity entity = entitiesById.get(event.getId());
+
+        Location location = entity.getLocation();
+        location.set(
+                event.getX(),
+                event.getY(),
+                event.getZ(),
+                event.getYaw(),
+                event.getPitch()
+        );
+        entity.setLocation(location, false);
     }
 }

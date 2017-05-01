@@ -4,10 +4,12 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import xyz.upperlevel.openverse.resource.model.Model;
 
+@Accessors(chain = true)
 @RequiredArgsConstructor
-public class BlockType<M extends Model> {
+public class BlockType {
 
     @Getter
     @NonNull
@@ -15,5 +17,5 @@ public class BlockType<M extends Model> {
 
     @Getter
     @Setter
-    private M model;
+    private Model model;
 }

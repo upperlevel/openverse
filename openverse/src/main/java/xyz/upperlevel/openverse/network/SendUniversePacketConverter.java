@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UniverseInfoPacketConverter implements PacketConverter<UniverseInfoPacket> {
+public class SendUniversePacketConverter implements PacketConverter<SendUniversePacket> {
 
     // gets world names total byte size
     private int getSize(List<String> wn) {
@@ -26,7 +26,7 @@ public class UniverseInfoPacketConverter implements PacketConverter<UniverseInfo
     }
 
     @Override
-    public byte[] toData(UniverseInfoPacket packet) {
+    public byte[] toData(SendUniversePacket packet) {
         List<String> worlds = packet.getWorlds();
 
         ByteBuffer out = ByteBuffer.allocate(
@@ -57,7 +57,7 @@ public class UniverseInfoPacketConverter implements PacketConverter<UniverseInfo
     }
 
     @Override
-    public UniverseInfoPacket toPacket(byte[] data) {
+    public SendUniversePacket toPacket(byte[] data) {
         ByteBuffer in = ByteBuffer.wrap(data);
 
         // spawn location
@@ -71,7 +71,7 @@ public class UniverseInfoPacketConverter implements PacketConverter<UniverseInfo
         while (in.hasRemaining())
             worlds.add(readString(in));
 
-        return new UniverseInfoPacket(
+        return new SendUniversePacket(
                 worldSpawn,
                 spawnX,
                 spawnY,

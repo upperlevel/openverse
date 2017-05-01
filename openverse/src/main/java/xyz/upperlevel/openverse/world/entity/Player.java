@@ -2,6 +2,7 @@ package xyz.upperlevel.openverse.world.entity;
 
 import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.openverse.resource.EntityType;
+import xyz.upperlevel.openverse.world.Location;
 
 public interface Player extends Entity, Nameable {
 
@@ -15,7 +16,7 @@ public interface Player extends Entity, Nameable {
     @Override
     String getName();
 
-    EntityLocation getLocation();
+    Location getLocation();
 
     Connection getConnection();
 }

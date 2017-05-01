@@ -11,11 +11,17 @@ public interface Entity {
 
     World getWorld();
 
-    PlayerDriver getDriver();
+    EntityDriver getDriver();
 
-    EntityLocation getLocation();
+    void setDriver(EntityDriver driver);
 
-    void setLocation(Location location);
+    Location getLocation();
+
+    default void setLocation(Location location) {
+        setLocation(location, true);
+    }
+
+    void setLocation(Location location, boolean update);
 
     Vector3f getVelocity();
 
@@ -26,7 +32,7 @@ public interface Entity {
         getLocation().setPitch(pitch);
     }
 
-    int getId();
+    long getId();
 
-    void setId(int id);
+    void setId(long id);
 }

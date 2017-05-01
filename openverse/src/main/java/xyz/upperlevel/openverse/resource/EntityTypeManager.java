@@ -1,29 +1,25 @@
 package xyz.upperlevel.openverse.resource;
 
-import lombok.Getter;
 import lombok.NonNull;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BlockTypeManager {
+public class EntityTypeManager {
 
-    private Map<String, BlockType> types = new HashMap<>();
+    private final Map<String, EntityType> types = new HashMap<>();
 
-    public BlockTypeManager() {
-    }
-
-    public BlockTypeManager register(@NonNull BlockType type) {
+    public EntityTypeManager register(@NonNull EntityType type) {
         types.put(type.getId(), type);
         return this;
     }
 
-    public BlockType get(String id) {
+    public EntityType get(String id) {
         return types.get(id);
     }
 
-    public Collection<BlockType> get() {
+    public Collection<EntityType> get() {
         return types.values();
     }
 
