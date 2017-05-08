@@ -26,15 +26,16 @@ public class ShaderManager {
         return this;
     }
 
-    public Shader get(String id) {
+
+    public boolean unregister(String id) {
+        return shaders.remove(id) != null;
+    }
+
+    public Shader getShader(String id) {
         return shaders.get(id);
     }
 
-    public Collection<Shader> get() {
+    public Collection<Shader> getShaders() {
         return shaders.values();
-    }
-
-    public void unregister(String id) {
-        shaders.remove(id);
     }
 }

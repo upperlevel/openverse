@@ -82,7 +82,7 @@ public class ClientCube extends Cube implements ClientModelPart {
 
         int vrt = 0;
         for (CubeFace f : getFaces())
-            vrt += f.compile(in, out);
+            vrt += f.compile(bakery, in, out);
         return vrt;
     }
 }

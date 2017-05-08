@@ -2,7 +2,6 @@ package xyz.upperlevel.openverse.client.world;
 
 import lombok.Getter;
 import lombok.Setter;
-import xyz.upperlevel.openverse.client.render.BufferedChunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkSystem;
 
 import java.util.Arrays;
@@ -24,14 +23,14 @@ public class RadiusSquareChunkChooser extends PlayerChunkMap {
 
     @Override
     public void setCenter(int x, int y, int z) {
-        chunks = Arrays.asList(new BufferedChunk[x*y*z]);
+        chunks = Arrays.asList(new BufferedChunk[x * y * z]);
 
-        ChunkSystem chks = getHandle().getChunks();
-
+        ChunkSystem chunkSys = getHandle().getChunkSystem();
         for (int ix = x - radius; ix <= x + radius; ++x)
             for (int iy = y - radius; iy <= y + radius; ++iy)
-                for(int iz = z - radius; iz <= z + radius; ++iz)
-                    chunks.add((BufferedChunk) chks.get(ix, iy, iz));
+                for (int iz = z - radius; iz <= z + radius; ++iz)
+                    // each time the center changes it creates a new list
+                    chunks.add((BufferedChunk) chunkSys.getChunk(ix, iy, iz));
     }
 
     /*@RequiredArgsConstructor

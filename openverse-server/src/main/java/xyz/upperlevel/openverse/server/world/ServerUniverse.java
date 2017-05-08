@@ -1,24 +1,25 @@
 package xyz.upperlevel.openverse.server.world;
 
-import xyz.upperlevel.event.EventHandler;
+import lombok.Getter;
+import lombok.NonNull;
 import xyz.upperlevel.event.Listener;
-import xyz.upperlevel.hermes.Connection;
-import xyz.upperlevel.openverse.network.GetChunkPacket;
-import xyz.upperlevel.openverse.network.SendChunkPacket;
+import xyz.upperlevel.openverse.resource.BlockType;
+import xyz.upperlevel.openverse.server.OpenverseServer;
 import xyz.upperlevel.openverse.world.Universe;
-import xyz.upperlevel.openverse.world.chunk.Chunk;
-
-import static xyz.upperlevel.openverse.Openverse.getChannel;
 
 public class ServerUniverse extends Universe<ServerWorld> implements Listener {
 
-    public ServerUniverse() {
-        getChannel().getEventManager().register(this);
+    @Getter
+    private final OpenverseServer handle;
+
+    public ServerUniverse(@NonNull OpenverseServer handle) {
+        this.handle = handle;
+        handle.getChannel().getEventManager().register(this);
     }
 
-    @EventHandler
-    public void onGetChunk(Connection connection, GetChunkPacket event) {
-        Chunk chunk = get(event.getWorld()).getChunk(event.getLocation());
-        connection.send(getChannel(), new SendChunkPacket(chunk));
+    public void load() {
+        ServerWorld world = new ServerWorld("hello");
+        addWorld(world);
+        world.getBlock(0, 0, 0).setType(new BlockType("drug"));
     }
 }

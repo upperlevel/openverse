@@ -5,7 +5,6 @@ import lombok.NonNull;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.client.OpenverseClient;
-import xyz.upperlevel.openverse.network.GetUniversePacket;
 import xyz.upperlevel.openverse.network.SendChunkPacket;
 import xyz.upperlevel.openverse.network.SendUniversePacket;
 import xyz.upperlevel.openverse.resource.BlockType;
@@ -28,17 +27,19 @@ public class ClientUniverse extends Universe<ClientWorld> implements Listener {
         handle.getChannel().register(this);
     }
 
+    // when the client receives this packet it initializes universe's worlds
     @EventHandler
     public void onUniverseReceive(SendUniversePacket packet) {
         out.println("It has been received the universe packet.");
         out.println("Initializing " + packet.getWorlds().size() + " worlds...");
 
-        packet.getWorlds().forEach(world -> add(
+        packet.getWorlds().forEach(world -> addWorld(
                 new ClientWorld(world, /* todo temp radius init */ 1))
         );
         initialized = true;
     }
 
+    // when the client receives a chunk it sets it into the referred client world
     @EventHandler
     public void onChunkReceive(SendChunkPacket packet) {
         long startAt = currentTimeMillis();
@@ -50,7 +51,7 @@ public class ClientUniverse extends Universe<ClientWorld> implements Listener {
                 "y=" + location.y + " " +
                 "z=" + location.z);
 
-        ClientWorld world = get(packet.getWorld());
+        ClientWorld world = getWorld(packet.getWorld());
         if (world == null) {
             err.println("The world '" + packet.getWorld() + "' has not been found in client universe.");
             return;

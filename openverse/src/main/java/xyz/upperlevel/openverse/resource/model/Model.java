@@ -8,24 +8,24 @@ import xyz.upperlevel.openverse.physic.Box;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Model {
+public class Model<P extends ModelPart> {
 
     @Getter
     private final String id;
 
     @Getter
-    private final List<ModelPart> parts = new ArrayList<>();
+    private final List<P> parts = new ArrayList<>();
 
     public Model(@NonNull String id) {
         this.id = id;
     }
 
-    public Model add(ModelPart part) {
+    public Model add(P part) {
         parts.add(part);
         return this;
     }
 
-    public boolean remove(ModelPart part) {
+    public boolean remove(P part) {
         return parts.remove(part);
     }
 

@@ -2,6 +2,7 @@ package xyz.upperlevel.openverse.client.resource;
 
 import lombok.Getter;
 import xyz.upperlevel.openverse.client.resource.model.ClientModel;
+import xyz.upperlevel.openverse.client.resource.model.ClientModelManager;
 import xyz.upperlevel.openverse.resource.model.ModelManager;
 import xyz.upperlevel.openverse.resource.ResourceManager;
 
@@ -11,15 +12,18 @@ import xyz.upperlevel.openverse.resource.ResourceManager;
 public class ClientResourceManager extends ResourceManager {
 
     @Getter
-    private final ModelManager<ClientModel> modelManager = new ModelManager<>();
+    private final ClientModelManager modelManager;
 
     @Getter
-    private final TextureManager textureManager = new TextureManager();
+    private final TextureManager textureManager;
 
     @Getter
-    private final ProgramManager programManager = new ProgramManager();
+    private final ShaderProgramManager shaderProgramManager;
 
     public ClientResourceManager() {
+        modelManager = new ClientModelManager();
+        textureManager = new TextureManager(16, 16);
+        shaderProgramManager = new ShaderProgramManager();
     }
 
     @Override
@@ -30,6 +34,6 @@ public class ClientResourceManager extends ResourceManager {
     @Override
     public void unload() {
         textureManager.clear();
-        programManager.clear();
+        shaderProgramManager.clear();
     }
 }

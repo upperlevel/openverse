@@ -4,7 +4,7 @@ import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.openverse.resource.EntityType;
 import xyz.upperlevel.openverse.world.Location;
 
-public interface Player extends Entity, Nameable {
+public interface Player extends Entity {
 
     EntityType TYPE = new EntityType("player");
 
@@ -13,7 +13,6 @@ public interface Player extends Entity, Nameable {
         return TYPE;
     }
 
-    @Override
     String getName();
 
     Location getLocation();

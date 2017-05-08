@@ -1,18 +1,15 @@
-package xyz.upperlevel.openverse.world.chunk;
+package xyz.upperlevel.openverse.world.event;
 
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import xyz.upperlevel.event.Event;
 import xyz.upperlevel.openverse.world.World;
 
 @RequiredArgsConstructor
-public abstract class ChunkSystem {
+public class WorldCreateEvent implements Event {
 
     @Getter
     @NonNull
     private final World world;
-
-    public abstract Chunk getChunk(int x, int y, int z);
-
-    public abstract Chunk getChunk(ChunkLocation location);
 }

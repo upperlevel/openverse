@@ -3,9 +3,10 @@ package xyz.upperlevel.openverse.world;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
+import xyz.upperlevel.openverse.world.block.Block;
+import xyz.upperlevel.openverse.world.chunk.Chunk;
 
 public class Location {
 
@@ -45,6 +46,14 @@ public class Location {
         z = location.z;
         yaw = location.yaw;
         pitch = location.pitch;
+    }
+
+    public Chunk getChunk() {
+        return world.getChunk(x, y, z);
+    }
+
+    public Block getBlock() {
+        return world.getBlock(x, y, z);
     }
 
     public void set(double x, double y, double z, double yaw, double pitch) {

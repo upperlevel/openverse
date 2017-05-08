@@ -7,8 +7,9 @@ import xyz.upperlevel.openverse.world.entity.Player;
 
 @RequiredArgsConstructor
 public abstract class PlayerChunkMap {
+
     @Getter
     private final ServerWorld handle;
 
-    public abstract void onChunkMove(ChunkLocation oldLoc, ChunkLocation newLoc, Player player);
+    public abstract void onChunkChange(ChunkLocation from, ChunkLocation to, Player player);
 }

@@ -5,7 +5,6 @@ import lombok.NonNull;
 import xyz.upperlevel.hermes.Packet;
 import xyz.upperlevel.openverse.resource.BlockType;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
-import xyz.upperlevel.openverse.world.chunk.ChunkData;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 
 public class SendChunkPacket implements Packet {

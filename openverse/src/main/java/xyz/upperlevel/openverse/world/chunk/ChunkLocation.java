@@ -1,5 +1,7 @@
 package xyz.upperlevel.openverse.world.chunk;
 
+import lombok.Getter;
+
 /*
  * This is a location 3d location class optimized for SinglePlayer storage:
  * The hashCode is different for chunks that are near each other
@@ -10,7 +12,9 @@ package xyz.upperlevel.openverse.world.chunk;
  */
 public class ChunkLocation {
 
+    @Getter
     public final int x, y, z;
+
     private final int hashCode;
 
     public ChunkLocation(int x, int y, int z) {

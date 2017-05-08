@@ -29,6 +29,8 @@ public class ClientPlayer extends ClientEntity implements Player {
         ClientWorld world = getWorld();
         if (world == null)
             return;
-        world.render(uniformer);
+        world.render(uniformer); // renders the world
+
+        // todo render player shape
     }
 }

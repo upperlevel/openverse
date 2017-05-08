@@ -3,10 +3,7 @@ package xyz.upperlevel.openverse.client.world;
 import lombok.Getter;
 import lombok.Setter;
 import org.joml.Matrix4f;
-import xyz.upperlevel.openverse.client.render.BufferedChunk;
 import xyz.upperlevel.openverse.world.World;
-import xyz.upperlevel.openverse.world.chunk.DefaultChunkSystem;
-import xyz.upperlevel.ulge.opengl.shader.Program;
 import xyz.upperlevel.ulge.opengl.shader.Uniform;
 import xyz.upperlevel.ulge.opengl.shader.Uniformer;
 
@@ -20,13 +17,11 @@ public class ClientWorld extends World {
 
     public ClientWorld(String name, int radius) {
         super(name);
-        setChunkSystem(new DefaultChunkSystem(this));
         this.playerChunkMap = new RadiusSquareChunkChooser(this, radius);
     }
 
     public ClientWorld(String name, PlayerChunkMap playerChunkMap) {
         super(name);
-        setChunkSystem(new DefaultChunkSystem(this));
         this.playerChunkMap = playerChunkMap;
     }
 

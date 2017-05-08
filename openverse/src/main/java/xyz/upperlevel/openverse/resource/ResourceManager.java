@@ -6,15 +6,14 @@ import xyz.upperlevel.openverse.resource.model.ModelManager;
 public abstract class ResourceManager {
 
     @Getter
-    private final ModelManager modelManager = new ModelManager();
+    private final BlockTypeManager blockTypeManager;
 
     @Getter
-    private final BlockTypeManager blockTypeManager = new BlockTypeManager();
-
-    @Getter
-    private final EntityTypeManager entityTypeManager = new EntityTypeManager();
+    private final EntityTypeManager entityTypeManager;
 
     public ResourceManager() {
+        blockTypeManager = new BlockTypeManager();
+        entityTypeManager = new EntityTypeManager();
     }
 
     public void load() {
@@ -27,10 +26,12 @@ public abstract class ResourceManager {
     public void unload() {
         entityTypeManager.clear();
         blockTypeManager.clear();
-        modelManager.clear();
+        getModelManager().clear();
         onUnload();
     }
 
     protected void onUnload() {
     }
+
+    public abstract ModelManager getModelManager();
 }

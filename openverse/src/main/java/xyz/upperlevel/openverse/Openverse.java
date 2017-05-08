@@ -3,6 +3,7 @@ package xyz.upperlevel.openverse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import xyz.upperlevel.event.impl.def.EventManager;
 import xyz.upperlevel.hermes.Endpoint;
 import xyz.upperlevel.hermes.channel.Channel;
 import xyz.upperlevel.openverse.resource.ResourceManager;
@@ -18,16 +19,15 @@ public final class Openverse {
     @Setter
     private static OpenverseProxy proxy;
 
+    public static EventManager getEventManager() {
+        return proxy.getEventManager();
+    }
 
     public static ResourceManager getResourceManager() {
         return proxy.getResourceManager();
     }
 
-    public static List<Player> getPlayers() {
-        return proxy.getPlayerManager();
-    }
-
-    public static Universe getWorlds() {
+    public static Universe getUniverse() {
         return proxy.getUniverse();
     }
 
@@ -36,6 +36,6 @@ public final class Openverse {
     }
 
     public static Channel getChannel() {
-        return proxy.getChannel();//TODO: create common channel
+        return proxy.getChannel(); //TODO: create common channel
     }
 }

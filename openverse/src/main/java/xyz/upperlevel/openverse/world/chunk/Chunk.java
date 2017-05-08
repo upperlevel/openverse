@@ -2,15 +2,15 @@ package xyz.upperlevel.openverse.world.chunk;
 
 import lombok.Getter;
 import lombok.NonNull;
-import xyz.upperlevel.openverse.world.Block;
+import xyz.upperlevel.openverse.world.block.Block;
+import xyz.upperlevel.openverse.world.block.BlockSystem;
+import xyz.upperlevel.openverse.world.block.DefaultBlockSystem;
 import xyz.upperlevel.openverse.world.World;
 
 //TODO: use one-dimensional array for better performance
 public class Chunk {
 
-    public static final int WIDTH = 16;
-    public static final int HEIGHT = 16;
-    public static final int LENGTH = 16;
+    public static final int WIDTH = 16, HEIGHT = 16, LENGTH = 16;
 
     @Getter
     private final World world;
@@ -19,19 +19,17 @@ public class Chunk {
     @Getter
     private final ChunkLocation location;
 
-    protected Block blocks[][][] = new Block[WIDTH][HEIGHT][LENGTH];
-
     @Getter
-    protected final ChunkData data;
+    private final BlockSystem blockSystem;
 
-    public Chunk(@NonNull ChunkData data, @NonNull World world, @NonNull ChunkLocation location) {
-        this.data = data;
+    public Chunk(@NonNull World world, @NonNull ChunkLocation location) {
         this.world = world;
         this.location = location;
+        blockSystem = new DefaultBlockSystem(this);
     }
 
-    public Chunk(@NonNull ChunkData data, @NonNull World world, int x, int y, int z) {
-        this(data, world, new ChunkLocation(x, y, z));
+    public Chunk(@NonNull World world, int x, int y, int z) {
+        this(world, new ChunkLocation(x, y, z));
     }
 
     public int getX() {
@@ -55,6 +53,6 @@ public class Chunk {
     }
 
     public Block getBlock(int x, int y, int z) {
-        return blocks[x][y][z];
+        return blockSystem.getBlock(x, y, z);
     }
 }

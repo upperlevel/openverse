@@ -1,9 +1,12 @@
 package xyz.upperlevel.openverse.world;
 
 import lombok.Getter;
+import lombok.Setter;
+import xyz.upperlevel.openverse.world.block.Block;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 import xyz.upperlevel.openverse.world.chunk.ChunkSystem;
+import xyz.upperlevel.openverse.world.chunk.DefaultChunkSystem;
 
 import static java.lang.Math.floor;
 
@@ -13,22 +16,20 @@ public class World {
     private final String name;
 
     @Getter
-    private ChunkSystem chunks;
+    @Setter
+    private ChunkSystem chunkSystem;
 
     public World(String name) {
         this.name = name;
-    }
-
-    public void setChunkSystem(ChunkSystem chunks) {
-        this.chunks = chunks;
+        chunkSystem = new DefaultChunkSystem(this);
     }
 
     public Chunk getChunk(int x, int y, int z) {
-        return chunks.get(x, y, z);
+        return chunkSystem.getChunk(x, y, z);
     }
 
     public Chunk getChunk(ChunkLocation location) {
-        return getChunk(location.x, location.y, location.z);
+        return chunkSystem.getChunk(location);
     }
 
     public Chunk getChunk(double x, double y, double z) {
@@ -42,5 +43,9 @@ public class World {
 
     public Block getBlock(double x, double y, double z) {
         return getBlock((int) floor(x), (int) floor(y), (int) floor(z));
+    }
+
+    public Block getBlock(Location location) {
+        return getBlock(location.getX(), location.getY(), location.getZ());
     }
 }

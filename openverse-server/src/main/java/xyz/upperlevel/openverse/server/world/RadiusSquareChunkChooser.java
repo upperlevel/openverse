@@ -1,51 +1,55 @@
 package xyz.upperlevel.openverse.server.world;
 
 import lombok.Getter;
-import lombok.Setter;
-import xyz.upperlevel.openverse.Openverse;
+import lombok.NonNull;
+import xyz.upperlevel.openverse.network.SendChunkPacket;
 import xyz.upperlevel.openverse.physic.Box;
-import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
-import xyz.upperlevel.openverse.world.chunk.ChunkSystem;
 import xyz.upperlevel.openverse.world.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import static xyz.upperlevel.openverse.Openverse.getChannel;
 
 public class RadiusSquareChunkChooser extends PlayerChunkMap {
 
     @Getter
-    @Setter
-    private int radius;
-
-    @Getter
-    private List<Chunk> chunks = Collections.emptyList();
+    private int radius, side;
 
     public RadiusSquareChunkChooser(ServerWorld handle, int radius) {
         super(handle);
+        setRadius(radius);
+    }
+
+    public void setRadius(int radius) {
         this.radius = radius;
+        side = radius * 2 + 1;
     }
 
     @Override
-    public void onChunkMove(ChunkLocation oldLoc, ChunkLocation newLoc, Player player) {
-        Box oldBox = new Box(oldLoc.x - radius, oldLoc.y - radius, oldLoc.z - radius, radius, radius, radius);
+    public void onChunkChange(ChunkLocation from, @NonNull ChunkLocation to, @NonNull Player player) {
+        Box oldChunkArea = from != null ? new Box(
+                from.x - radius,
+                from.y - radius,
+                from.z - radius,
+                side,
+                side,
+                side
+        ) : new Box();
 
-        int ix = oldLoc.x - radius, iy = oldLoc.y + radius, iz = oldLoc.z + radius;
-        int ex = oldLoc.x + radius, ey = oldLoc.y + radius, ez = oldLoc.z + radius;
+        for (int x = -radius; x <= radius; x++) {
+            for (int y = -radius; y <= radius; y++) {
+                for (int z = -radius; z <= radius; z++) {
+                    int cx = to.x + x;
+                    int cy = to.y + y;
+                    int cz = to.z + z;
 
-        List<Chunk> chunks = new ArrayList<>();
-
-        ChunkSystem chunkSystem = getHandle().getChunks();
-
-        for(int x = ix; x < ex; x++)
-            for(int y = iy; y < ey; y++)
-                for(int z = iz; z < ez; z++)
-                    if(!oldBox.isIn(x, y, z))
-                        chunks.add(chunkSystem.get(x, y, z));
-
-        for(Chunk chunk : chunks)
-            player.getConnection().send(Openverse.getChannel(), /*packet*/);//TODO: send chunks to player
-
+                    // if the chunk isn't inside the old chunk area
+                    if (!oldChunkArea.isIn(new Box(cx, cy, cz, 1, 1, 1)))
+                        player.getConnection()
+                                .send(getChannel(), new SendChunkPacket(
+                                        getHandle().getChunk(x, y, z))
+                                );
+                }
+            }
+        }
     }
 }
