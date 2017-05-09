@@ -1,4 +1,4 @@
-package xyz.upperlevel.openverse.client.render;
+package xyz.upperlevel.openverse.client.render.world;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -8,6 +8,7 @@ import xyz.upperlevel.openverse.client.resource.TextureBakery;
 import xyz.upperlevel.openverse.client.resource.model.ClientModel;
 import xyz.upperlevel.openverse.resource.BlockType;
 import xyz.upperlevel.openverse.world.block.Block;
+import xyz.upperlevel.openverse.world.block.BlockSystem;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 import xyz.upperlevel.ulge.opengl.buffer.DrawMode;
@@ -54,10 +55,14 @@ public class RenderChunk {
     }
 
     public void load(@NonNull Chunk chunk) {
+        load(chunk.getBlockSystem());
+    }
+
+    public void load(@NonNull BlockSystem blockSystem) {
         for (int x = 0; x < WIDTH; x++)
             for (int y = 0; y < HEIGHT; y++)
                 for (int z = 0; z < LENGTH; z++)
-                    setBlockType(chunk.getBlock(x, y, z), false);
+                    setBlockType(blockSystem.getBlock(x, y, z), false);
         build();
     }
 

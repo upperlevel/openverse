@@ -1,4 +1,4 @@
-package xyz.upperlevel.openverse.client.render;
+package xyz.upperlevel.openverse.client.render.world;
 
 import lombok.Getter;
 import lombok.NonNull;
