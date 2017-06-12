@@ -7,7 +7,7 @@ import xyz.upperlevel.openverse.resource.BlockType;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 
-public class SendChunkPacket implements Packet {
+public class ChunkPacket implements Packet {
 
     @Getter
     private final String world;
@@ -18,13 +18,13 @@ public class SendChunkPacket implements Packet {
     // a 3d-array of block types ids for this chunk
     private final String[][][] blockTypes;
 
-    public SendChunkPacket(@NonNull Chunk chunk) {
+    public ChunkPacket(@NonNull Chunk chunk) {
         this(chunk.getWorld().getName(),
                 chunk.getLocation(),
                 chunk.getData());
     }
 
-    public SendChunkPacket(@NonNull String world, int x, int y, int z, @NonNull ChunkData chunkData) {
+    public ChunkPacket(@NonNull String world, int x, int y, int z, @NonNull ChunkData chunkData) {
         this(world, x, y, z, new String[16][16][16]);
 
         for (int ix = 0; ix < 16; ix++) {
@@ -38,7 +38,7 @@ public class SendChunkPacket implements Packet {
         }
     }
 
-    public SendChunkPacket(@NonNull String world, int x, int y, int z, @NonNull String[][][] blockTypes) {
+    public ChunkPacket(@NonNull String world, int x, int y, int z, @NonNull String[][][] blockTypes) {
         this.world = world;
         this.x = x;
         this.y = y;

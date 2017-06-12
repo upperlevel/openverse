@@ -1,7 +1,6 @@
 package xyz.upperlevel.openverse.launcher.scenes;
 
 import lombok.Getter;
-import xyz.upperlevel.hermes.channel.Channel;
 import xyz.upperlevel.hermes.client.impl.direct.DirectClient;
 import xyz.upperlevel.hermes.client.impl.direct.DirectClientConnection;
 import xyz.upperlevel.hermes.server.impl.direct.DirectServer;
@@ -12,7 +11,7 @@ import xyz.upperlevel.ulge.game.Scene;
 import xyz.upperlevel.ulge.game.Stage;
 
 /**
- * This stage that handles client connection to a singleplayer universe.
+ * This setScene that handles client connection to a singleplayer universe.
  * It has a client and a server that are connected each other.
  */
 public class SingleplayerUniverseScene extends Stage {
@@ -24,25 +23,22 @@ public class SingleplayerUniverseScene extends Stage {
     private final OpenverseServer server;
 
     public SingleplayerUniverseScene() {
-        // creates client and server and connect them together
-        DirectClient drCl = new DirectClient();
-        DirectClientConnection clCon = drCl.getConnection();
-        client = new OpenverseClient(new DirectClient());
+        DirectClient client = new DirectClient();
+        DirectClientConnection clientConnection = client.getConnection();
+        clientConnection.setCopy(true);
+        this.client = new OpenverseClient(client);
 
-        DirectServer drSe = new DirectServer();
-        DirectServerConnection seCon = drSe.newConnection(drCl.getConnection());
-        server = new OpenverseServer(new DirectServer());
-
-        seCon.setOther(clCon);
-
-        // todo put copy to false if all works
-        clCon.setCopy(true);
-        seCon.setCopy(true);
+        DirectServer server = new DirectServer();
+        DirectServerConnection serverConnection = server.newConnection(clientConnection);
+        serverConnection.setCopy(true);
+        serverConnection.setOther(clientConnection);
+        this.server = new OpenverseServer(server);
     }
 
     @Override
-    public void onEnable(Scene prev) {
-        stage(new SingleplayerResourceLoadingScene(this));
-        super.onEnable(prev);
+    public void onEnable(Scene previous) {
+        Scene scene = new SingleplayerResourceLoadingScene(this);
+        setScene(scene);
+        scene.onEnable(null);
     }
 }

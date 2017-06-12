@@ -5,10 +5,9 @@ import lombok.NonNull;
 import xyz.upperlevel.ulge.game.Scene;
 import xyz.upperlevel.ulge.game.Stage;
 
-/**
- * This class handles singleplayer game state. It is used while a player
- * is playing in the world and handles guis.
- */
+import static java.lang.System.out;
+
+// this scene handles world rendering
 public class SingleplayerGameScene extends Stage {
 
     @Getter
@@ -19,8 +18,12 @@ public class SingleplayerGameScene extends Stage {
     }
 
     @Override
-    public void onRender() {
-        super.onRender();
+    public void onEnable(Scene previous) {
+        out.println("Game scene has been started.");
+    }
 
+    @Override
+    public void onRender() {
+        // todo render player
     }
 }

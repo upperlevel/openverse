@@ -2,7 +2,7 @@ package xyz.upperlevel.openverse.server.world;
 
 import lombok.Getter;
 import lombok.NonNull;
-import xyz.upperlevel.openverse.network.SendChunkPacket;
+import xyz.upperlevel.openverse.network.ChunkPacket;
 import xyz.upperlevel.openverse.physic.Box;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 import xyz.upperlevel.openverse.world.entity.Player;
@@ -45,7 +45,7 @@ public class RadiusSquareChunkChooser extends PlayerChunkMap {
                     // if the chunk isn't inside the old chunk area
                     if (!oldChunkArea.isIn(new Box(cx, cy, cz, 1, 1, 1)))
                         player.getConnection()
-                                .send(getChannel(), new SendChunkPacket(
+                                .send(getChannel(), new ChunkPacket(
                                         getHandle().getChunk(x, y, z))
                                 );
                 }

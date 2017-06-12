@@ -1,13 +1,9 @@
 package xyz.upperlevel.openverse.server.world;
 
 import lombok.Getter;
-import xyz.upperlevel.openverse.network.SendChunkPacket;
 import xyz.upperlevel.openverse.world.World;
-import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 import xyz.upperlevel.openverse.world.entity.Player;
-
-import static xyz.upperlevel.openverse.Openverse.getChannel;
 
 public class ServerWorld extends World {
 
