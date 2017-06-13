@@ -8,37 +8,26 @@ import xyz.upperlevel.openverse.physic.Box;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Model<P extends ModelPart> {
+@Getter
+public class Model<S extends Shape> {
 
-    @Getter
     private final String id;
-
-    @Getter
-    private final List<P> parts = new ArrayList<>();
+    private final List<S> shapes = new ArrayList<>();
 
     public Model(@NonNull String id) {
         this.id = id;
     }
 
-    public Model add(P part) {
-        parts.add(part);
-        return this;
-    }
-
-    public boolean remove(P part) {
-        return parts.remove(part);
-    }
-
-    public void clear() {
-        parts.clear();
+    public void add(S part) {
+        shapes.add(part);
     }
 
     public Box getBox() {
         Vector3d min = null,
                 max = null;
 
-        for (ModelPart part : parts) {
-            Box box = part.getBox();
+        for (Shape shape : shapes) {
+            Box box = shape.getBox();
             double x, y, z;
 
             // checks if current box min pos is lower than cached

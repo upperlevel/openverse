@@ -1,10 +1,9 @@
-package xyz.upperlevel.openverse.client.render.world;
+package xyz.upperlevel.openverse.client.render;
 
 import lombok.Getter;
 import lombok.NonNull;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
-import xyz.upperlevel.openverse.client.resource.TextureBakery;
 import xyz.upperlevel.openverse.client.resource.model.ClientModel;
 import xyz.upperlevel.openverse.resource.BlockType;
 import xyz.upperlevel.openverse.world.block.Block;
@@ -13,7 +12,6 @@ import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 import xyz.upperlevel.ulge.opengl.buffer.DrawMode;
 import xyz.upperlevel.ulge.opengl.buffer.Vbo;
-import xyz.upperlevel.ulge.opengl.buffer.VboDataUsage;
 import xyz.upperlevel.ulge.opengl.buffer.VertexLinker;
 
 import java.nio.ByteBuffer;
@@ -21,23 +19,19 @@ import java.nio.ByteBuffer;
 import static xyz.upperlevel.openverse.world.chunk.Chunk.*;
 import static xyz.upperlevel.ulge.opengl.buffer.VboDataUsage.STATIC_DRAW;
 
+@Getter
 public class RenderChunk {
 
-    @Getter
     private final ChunkLocation location;
-
-    @Getter
     private final BlockType[][][] blockTypes = new BlockType[WIDTH][HEIGHT][LENGTH];
-
-    @Getter
     private Vbo vbo;
 
     private int
-            allocVertCount = 0, // vertices to allocate on vbo init
-            allocDataCount = 0; // data to allocate on vbo init
+            allocateVerticesCount = 0, // vertices to allocate on vbo init
+            allocateDataCount = 0; // data to allocate on vbo init
 
     private int
-            drawVertCount = 0; // draw vertices count on drawing
+            drawVerticesCount = 0; // draw vertices count on drawing
 
     public RenderChunk(@NonNull ChunkLocation location) {
         this.location = location;
@@ -66,14 +60,6 @@ public class RenderChunk {
         build();
     }
 
-    public void clear() {
-        vbo.loadData(new byte[0], STATIC_DRAW);
-
-        allocVertCount = 0;
-        allocDataCount = 0;
-        drawVertCount = 0;
-    }
-
     public BlockType getBlockType(int x, int y, int z) {
         return blockTypes[x][y][z];
     }
@@ -85,15 +71,15 @@ public class RenderChunk {
         blockTypes[x][y][z] = type;
 
         // gets vertices/data count for old and new model
-        int oldVrt = oldModel == null ? 0 : oldModel.getVerticesCount();
-        int newVrt = newModel == null ? 0 : newModel.getVerticesCount();
+        int oldVrt = oldModel == null ? 0 : Graphics.getShapeCompilerManager().getVerticesCount(oldModel);
+        int newVrt = newModel == null ? 0 : Graphics.getShapeCompilerManager().getVerticesCount(newModel);
 
-        int oldData = oldModel == null ? 0 : oldModel.getDataCount();
-        int newData = newModel == null ? 0 : newModel.getDataCount();
+        int oldData = oldModel == null ? 0 : Graphics.getShapeCompilerManager().getDataCount(oldModel);
+        int newData = newModel == null ? 0 : Graphics.getShapeCompilerManager().getDataCount(newModel);
 
         // updates vertices/data count
-        allocVertCount += newVrt - oldVrt;
-        allocDataCount += newData - oldData;
+        allocateVerticesCount += newVrt - oldVrt;
+        allocateDataCount += newData - oldData;
 
         // rebuilds chunk if requested
         if (update)
@@ -121,12 +107,11 @@ public class RenderChunk {
     }
 
     public void build() {
-        // todo getWorld texture bakery
-        TextureBakery bakery = null;
+        TextureBakery bakery = Graphics.getTextureBakery();
 
         // initializes a byte-buffer with max dimensions it can assume
-        ByteBuffer buffer = BufferUtils.createByteBuffer(allocDataCount * Float.BYTES);
-        drawVertCount = 0;
+        ByteBuffer buffer = BufferUtils.createByteBuffer(allocateDataCount * Float.BYTES);
+        drawVerticesCount = 0;
         for (int x = 0; x < WIDTH; x++) {
             for (int y = 0; y < HEIGHT; y++) {
                 for (int z = 0; z < LENGTH; z++) {
@@ -135,9 +120,9 @@ public class RenderChunk {
 
                     BlockType block = getBlockType(x, y, z);
                     if (block != null) {
-                        ClientModel mdl = (ClientModel) block.getModel();
-                        if (mdl != null)
-                            drawVertCount += mdl.compile(bakery, in, buffer);
+                        ClientModel model = (ClientModel) block.getModel();
+                        if (model != null)
+                            drawVerticesCount += Graphics.getShapeCompilerManager().compile(model, in, buffer);
                     }
                 }
             }
@@ -145,8 +130,7 @@ public class RenderChunk {
         vbo.loadData(buffer, STATIC_DRAW);
     }
 
-    // todo I don't like it LOL
-    private static final VertexLinker vertexLinker =new VertexLinker()
+    private static final VertexLinker vertexLinker = new VertexLinker()
             .attrib(0, 3)
             .attrib(1, 4)
             .attrib(2, 3);
@@ -155,8 +139,7 @@ public class RenderChunk {
     public void render() {
         vertexLinker.setup();
         // todo remove quads drawing
-        // todo
-        vbo.draw(DrawMode.QUADS, 0, drawVertCount);
+        vbo.draw(DrawMode.QUADS, 0, drawVerticesCount);
     }
 
     public void destroy() {

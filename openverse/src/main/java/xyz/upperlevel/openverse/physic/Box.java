@@ -35,6 +35,22 @@ public class Box {
         this.depth = depth;
     }
 
+    public Vector3f getPosition() {
+        return new Vector3f(
+                (float) x,
+                (float) y,
+                (float) z
+        );
+    }
+
+    public Vector3f getSize() {
+        return new Vector3f(
+                (float) width,
+                (float) height,
+                (float) depth
+        );
+    }
+
     public double minX() {
         return x;
     }

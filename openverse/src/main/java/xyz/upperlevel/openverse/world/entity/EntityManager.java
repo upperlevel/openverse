@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
+import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.network.EntityTeleportPacket;
 import xyz.upperlevel.openverse.world.Location;
@@ -13,15 +14,11 @@ import java.util.Map;
 
 public class EntityManager implements Listener {
 
-    @Getter
-    private final OpenverseProxy handle;
-
     private long nextId = 0;
     private final Map<Long, Entity> entitiesById = new HashMap<>();
 
-    public EntityManager(@NonNull OpenverseProxy handle) {
-        this.handle = handle;
-        handle.getChannel().getEventManager().register(this);
+    public EntityManager() {
+        Openverse.getProxy().getChannel().getEventManager().register(this);
     }
 
     public void register(Entity entity) {

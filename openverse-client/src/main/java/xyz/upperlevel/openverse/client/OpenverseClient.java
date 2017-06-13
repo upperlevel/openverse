@@ -8,50 +8,50 @@ import xyz.upperlevel.hermes.channel.Channel;
 import xyz.upperlevel.hermes.client.Client;
 import xyz.upperlevel.openverse.OpenverseProtocol;
 import xyz.upperlevel.openverse.OpenverseProxy;
+import xyz.upperlevel.openverse.client.render.Graphics;
 import xyz.upperlevel.openverse.client.resource.ClientResourceManager;
 import xyz.upperlevel.openverse.client.world.ClientUniverse;
 import xyz.upperlevel.openverse.client.world.entity.ClientPlayer;
 import xyz.upperlevel.openverse.world.entity.EntityManager;
-import xyz.upperlevel.ulge.game.Scene;
-import xyz.upperlevel.ulge.opengl.shader.Uniformer;
 
+@Getter
 public class OpenverseClient implements OpenverseProxy {//TODO Implement
 
-    @Getter
+    private static OpenverseClient instance;
+
+    // connection
     private final Client endpoint;
+    private final Channel channel;
 
-    @Getter
-    private final Channel channel = new Channel("main")
-            .setProtocol(OpenverseProtocol.get());
-
-    @Getter
+    // world
     private final ClientUniverse universe;
-
-    @Getter
-    // the only player to render
     private final ClientPlayer player;
-
-    @Getter
     private final EntityManager entityManager;
 
-    @Getter
-    // resources are loaded per universe
-    private final ClientResourceManager resourceManager;
+    // resources
+    private final ClientResourceManager resourceManager; // resources are loaded per universe
 
-    @Getter
+
+    // events
     private final EventManager eventManager;
 
     public OpenverseClient(@NonNull Client client) {
-        this.endpoint = client;
+        instance = this; // for static access
 
-        // if connection is closed refuse
+        endpoint = client;
         Connection connection = client.getConnection();
+        channel = new Channel("main").setProtocol(OpenverseProtocol.get());
         connection.setDefaultChannel(channel);
 
         universe = new ClientUniverse(this);
         player = new ClientPlayer("my_player", connection);
         entityManager = new EntityManager(this);
+
         eventManager = new EventManager();
         resourceManager = new ClientResourceManager();
+    }
+
+    public static OpenverseClient get() {
+        return instance;
     }
 }

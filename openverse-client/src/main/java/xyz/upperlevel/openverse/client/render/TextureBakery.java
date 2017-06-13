@@ -1,6 +1,5 @@
 package xyz.upperlevel.openverse.client.render;
 
-import lombok.Getter;
 import lombok.NonNull;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
@@ -12,17 +11,18 @@ import xyz.upperlevel.ulge.opengl.texture.Texture2dArray;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.lwjgl.opengl.GL11.GL_RGBA8;
+
 public class TextureBakery implements Listener {
 
-    @Getter
-    private final OpenverseClient client;
+    private final List<Texture> layers = new ArrayList<>(100);
+    private final Texture2dArray array;
 
-    private final List<Texture> layers = new ArrayList<>();
-    private final Texture2dArray array = new Texture2dArray();
+    public TextureBakery() {
+        array = new Texture2dArray();
+        array.allocate(4, GL_RGBA8, 16, 16, 100);
 
-    public TextureBakery(OpenverseClient client) {
-        this.client = client;
-        client.getEventManager().register(this);
+        OpenverseClient.get().getEventManager().register(this);
     }
 
     public int getLayer(@NonNull Texture texture) {
@@ -38,4 +38,6 @@ public class TextureBakery implements Listener {
     public void onTextureAdd(TextureAddEvent event) {
         bake(event.getTexture());
     }
+
+    // textures cannot be removed
 }

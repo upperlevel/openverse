@@ -17,14 +17,10 @@ import static xyz.upperlevel.openverse.Openverse.getResourceManager;
 public class ClientUniverse extends Universe<ClientWorld> implements Listener {
 
     @Getter
-    private final OpenverseClient handle;
-
-    @Getter
     private boolean initialized = false;
 
-    public ClientUniverse(@NonNull OpenverseClient handle) {
-        this.handle = handle;
-        handle.getChannel().register(this);
+    public ClientUniverse() {
+        OpenverseClient.get().getChannel().register(this);
     }
 
     // when the client receives this packet it initializes universe's worlds

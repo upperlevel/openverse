@@ -1,4 +1,4 @@
-package xyz.upperlevel.openverse.client.render.world;
+package xyz.upperlevel.openverse.client.render;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -12,6 +12,7 @@ import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 import xyz.upperlevel.openverse.world.chunk.event.ChunkCreateEvent;
 import xyz.upperlevel.openverse.world.chunk.event.ChunkDeleteEvent;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,9 +24,26 @@ public class RenderWorld implements Listener {
 
     private final Map<ChunkLocation, RenderChunk> chunksByLoc = new HashMap<>();
 
-    public RenderWorld(@NonNull OpenverseClient client, @NonNull String name) {
+    public RenderWorld(@NonNull String name) {
         this.name = name;
-        client.getEventManager().register(this);
+        OpenverseClient.get().getEventManager().register(this);
+    }
+
+    public RenderChunk getChunk(ChunkLocation location) {
+        return chunksByLoc.get(location);
+    }
+
+    public Collection<RenderChunk> getChunks() {
+        return chunksByLoc.values();
+    }
+
+    public void render() {
+        getChunks().forEach(RenderChunk::render);
+    }
+
+    public void destroy() {
+        getChunks().forEach(RenderChunk::destroy);
+        chunksByLoc.clear();
     }
 
     @EventHandler
@@ -46,24 +64,9 @@ public class RenderWorld implements Listener {
         Block block = event.getBlock();
         Chunk chunk = block.getChunk();
 
-        RenderChunk render = chunksByLoc.get(chunk.getLocation());
-        if (render == null)
-            return; // if the chunk isn't found just skip it
-
+        RenderChunk render = getChunk(chunk.getLocation());
+        if (render == null) // if the chunk isn't loaded just skip it
+            return; // todo the block must be changed when the chunk is loaded
         render.setBlockType(block);
-    }
-
-    public void clear() {
-        chunksByLoc.values().forEach(RenderChunk::clear);
-    }
-
-    public void render() {
-        chunksByLoc.values().forEach(RenderChunk::render);
-    }
-
-    public void destroy() {
-        chunksByLoc.values().forEach(RenderChunk::destroy);
-
-        chunksByLoc.clear();
     }
 }

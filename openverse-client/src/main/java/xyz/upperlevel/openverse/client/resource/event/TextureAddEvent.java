@@ -1,12 +1,10 @@
 package xyz.upperlevel.openverse.client.resource.event;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Data;
 import xyz.upperlevel.openverse.client.resource.Texture;
 
-@RequiredArgsConstructor
+@Data
 public class TextureAddEvent {
 
-    @Getter
     private final Texture texture;
 }

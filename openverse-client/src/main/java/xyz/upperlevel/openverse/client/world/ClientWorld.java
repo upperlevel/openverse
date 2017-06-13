@@ -28,20 +28,4 @@ public class ClientWorld extends World {
     public void setCenter(int x, int y, int z) {
         playerChunkMap.setCenter(x, y, z);
     }
-
-    @Override
-    public BufferedChunk getChunk(int x, int y, int z) {
-        return (BufferedChunk) super.getChunk(x, y, z);
-    }
-
-    public void render(Uniformer uniformer) {
-        Uniform uModel = uniformer.get("model");
-
-        for(BufferedChunk chunk : playerChunkMap.getChunks()) {
-            Matrix4f in = new Matrix4f().translate(16 * chunk.getX(), 16 * chunk.getY(), 16 * chunk.getZ());
-            uModel.matrix4(in.get(createFloatBuffer(16)));
-
-            chunk.render();
-        }
-    }
 }

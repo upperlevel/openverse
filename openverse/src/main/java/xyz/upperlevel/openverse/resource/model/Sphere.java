@@ -1,11 +1,10 @@
 package xyz.upperlevel.openverse.resource.model;
 
 import lombok.Getter;
-import lombok.NonNull;
 import xyz.upperlevel.openverse.physic.Box;
 
 // todo implement in client-side
-public class Sphere implements ModelPart {
+public class Sphere implements Shape {
 
     @Getter
     private final int radius;

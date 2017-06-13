@@ -1,28 +1,31 @@
-package xyz.upperlevel.openverse.client.render.world;
+package xyz.upperlevel.openverse.client.render;
 
-import lombok.Getter;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.client.OpenverseClient;
 import xyz.upperlevel.openverse.world.event.WorldCreateEvent;
 import xyz.upperlevel.openverse.world.event.WorldDeleteEvent;
 
+import java.nio.IntBuffer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class RenderUniverse implements Listener {
 
-    @Getter
-    private final OpenverseClient client;
-
     private final Map<String, RenderWorld> worldsByName = new HashMap<>();
 
     // listens for events by client universe
+    public RenderUniverse() {
+        OpenverseClient.get().getEventManager().register(this);
+    }
 
-    public RenderUniverse(OpenverseClient client) {
-        this.client = client;
-        client.getEventManager().register(this);
+    public void addWorld(RenderWorld world) {
+        worldsByName.put(world.getName(), world);
+    }
+
+    public boolean removeWorld(String name) {
+        return worldsByName.remove(name) != null;
     }
 
     public RenderWorld getWorld(String name) {
@@ -36,11 +39,11 @@ public class RenderUniverse implements Listener {
     @EventHandler
     public void onWorldCreate(WorldCreateEvent event) {
         String name = event.getWorld().getName();
-        worldsByName.put(name, new RenderWorld(client, name));
+        addWorld(new RenderWorld(name));
     }
 
     @EventHandler
     public void onWorldDelete(WorldDeleteEvent event) {
-        worldsByName.remove(event.getWorld().getName());
+        removeWorld(event.getWorld().getName());
     }
 }

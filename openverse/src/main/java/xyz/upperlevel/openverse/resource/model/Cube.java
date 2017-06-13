@@ -6,7 +6,7 @@ import lombok.Setter;
 import xyz.upperlevel.openverse.physic.Box;
 
 // this cube class have not to contain faces
-public class Cube implements ModelPart {
+public class Cube implements Shape {
 
     @Getter
     @Setter
