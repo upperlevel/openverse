@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SendUniversePacketConverter implements PacketConverter<UniversePacket> {
+public class UniversePacketConverter implements PacketConverter<UniversePacket> {
 
     // gets world names total byte size
     private int getSize(List<String> wn) {
