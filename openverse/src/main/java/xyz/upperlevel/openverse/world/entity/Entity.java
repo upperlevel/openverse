@@ -1,6 +1,6 @@
 package xyz.upperlevel.openverse.world.entity;
 
-import org.joml.Vector3f;
+import org.joml.Vector3d;
 import xyz.upperlevel.openverse.resource.EntityType;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.World;
@@ -23,9 +23,9 @@ public interface Entity {
 
     void setLocation(Location location, boolean update);
 
-    Vector3f getVelocity();
+    Vector3d getVelocity();
 
-    void setVelocity(Vector3f velocity);
+    void setVelocity(Vector3d velocity);
 
     default void setRotation(double yaw, double pitch) {
         getLocation().setYaw(yaw);

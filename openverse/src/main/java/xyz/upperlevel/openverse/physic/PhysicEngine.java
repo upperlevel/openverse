@@ -1,10 +1,11 @@
 package xyz.upperlevel.openverse.physic;
 
-import org.joml.Vector3f;
+import org.joml.Vector3d;
 import xyz.upperlevel.openverse.resource.BlockType;
 import xyz.upperlevel.openverse.resource.model.Model;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.World;
+import xyz.upperlevel.openverse.world.entity.Entity;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,35 +14,43 @@ import static java.lang.Math.max;
 
 public class PhysicEngine {
 
-    private Set<Force> forces = new HashSet<>();
+    protected Set<Force> globalForces = new HashSet<>();
 
-    public PhysicEngine() {
+
+
+    public void addGlobalForce(Force force) {
+        globalForces.add(force);
     }
 
-    public void update(BaseEntity entity, World world, long delta) {
-        forces.forEach(f -> f.apply(entity, delta));
+    public void removeGlobalForce(Force force) {
+        globalForces.remove(force);
+    }
+
+
+    public void update(Entity entity, World world, long delta) {
+        globalForces.forEach(f -> f.apply(entity, delta));
 
         Location loc = entity.getLocation();
-        float sx = loc.x();
-        float sy = loc.y();
-        float sz = loc.z();
+        double sx = loc.getX();
+        double sy = loc.getY();
+        double sz = loc.getZ();
 
-        Vector3f vel = entity.getVelocity();
-        float vx = vel.x;
-        float vy = vel.y;
-        float vz = vel.z;
+        Vector3d vel = entity.getVelocity();
+        double vx = vel.x;
+        double vy = vel.y;
+        double vz = vel.z;
 
-        float ex = sx + vx;
-        float ey = sy + vy;
-        float ez = sz + vz;
+        double ex = sx + vx;
+        double ey = sy + vy;
+        double ez = sz + vz;
 
         int bx = (int) ex;
         int by = (int) ey;
         int bz = (int) ez;
-        BlockType bt = world.getBlock(bx, by, bz).getType();
+        BlockType blockType = world.getBlock(bx, by, bz).getType();
 
-        if (bt != null && bt.isSolid()) {
-            Model s = bt.getModel();
+        if (blockType != null && blockType.isSolid()) {
+            Model s = blockType.getModel();
 
             // block box
             Box bb = s.getBox().copy();

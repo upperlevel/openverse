@@ -3,8 +3,7 @@ package xyz.upperlevel.openverse.world.entity;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import org.joml.Vector3f;
-import xyz.upperlevel.openverse.Openverse;
+import org.joml.Vector3d;
 import xyz.upperlevel.openverse.network.EntityTeleportPacket;
 import xyz.upperlevel.openverse.resource.EntityType;
 import xyz.upperlevel.openverse.world.Location;
@@ -28,7 +27,7 @@ public class BaseEntity implements Entity {
     @Getter
     @Setter
     @NonNull
-    private Vector3f velocity = new Vector3f();
+    private Vector3d velocity = new Vector3d();
 
     @Getter
     @Setter

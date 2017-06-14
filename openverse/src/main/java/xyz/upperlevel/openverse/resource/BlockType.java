@@ -15,14 +15,18 @@ public class BlockType {
     private final String id;
 
     @Getter
+    private final boolean solid;
+
+    @Getter
     @Setter
     private Model model;
 
-    public BlockType(String id) {
+    public BlockType(String id, boolean solid) {
         if(id == null || id.isEmpty())
             throw new IllegalArgumentException("id is empty!");
         if(id.length() > MAX_ID_LENGTH)
             throw new IllegalArgumentException("id length better than " + MAX_ID_LENGTH);
         this.id = id;
+        this.solid = solid;
     }
 }

@@ -20,6 +20,6 @@ public class ServerUniverse extends Universe<ServerWorld> implements Listener {
     public void load() {
         ServerWorld world = new ServerWorld("hello");
         addWorld(world);
-        world.getBlock(0, 0, 0).setType(new BlockType("drug"));
+        world.getBlock(0, 0, 0).setType(new BlockType("drug", true));
     }
 }

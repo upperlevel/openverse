@@ -30,7 +30,7 @@ public class ServerResourceManager extends ResourceManager {
 
         // REGISTERS TEST BLOCK
         getBlockTypeManager()
-                .register(new BlockType("hello_world")
+                .register(new BlockType("hello_world", true)
                         .setModel(blockModel));
     }
 }
