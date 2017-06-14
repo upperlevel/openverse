@@ -1,53 +1,39 @@
 package xyz.upperlevel.openverse.network;
 
 import xyz.upperlevel.hermes.PacketConverter;
-import xyz.upperlevel.openverse.resource.BlockType;
-import xyz.upperlevel.openverse.world.block.Block;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+
+import static xyz.upperlevel.openverse.network.SerialUtil.*;
 
 public class ChunkPacketConverter implements PacketConverter<ChunkPacket> {
-
-    private static final Charset CHARSET = StandardCharsets.UTF_8;
 
     @Override
     public byte[] toData(ChunkPacket packet) {
         ByteBuffer buffer = ByteBuffer.allocate(
-                packet.getWorld().length() + 1 +         //World name
-                3*Integer.BYTES +                        //Location
-                (16*16*16)*(BlockType.MAX_ID_LENGTH + 1) //Blocks
+                        packet.getWorld().length() + 1 +    //World name
+                        3 * Integer.BYTES +                 //Location
+                        getBlocksSize(packet)               //Blocks
         );
 
-        {//Name
-            buffer.put(packet.getWorld().getBytes(CHARSET));
-            buffer.put((byte) '\0');
-        }
+        //Name
+        writeString(packet.getWorld(), buffer);
 
-        {//Location
-            final ChunkLocation loc = packet.getLocation();
-            buffer.putInt(loc.x);
-            buffer.putInt(loc.y);
-            buffer.putInt(loc.z);
-        }
+        //Location
+        writeChunkLocation(packet.getLocation(), buffer);
 
-        {//Blocks
-            for (int x = 0; x < 16; x++) {
-                for (int y = 0; y < 16; y++) {
-                    for (int z = 0; z < 16; z++) {
-                        // put all three coordinates in int
-                        //short id = x << 16 | y << 8 | z;
-                        final String id = packet.getBlockType(x, y, z);
-                        if (id != null)
-                            buffer.put(id.getBytes(CHARSET));
-                        buffer.put((byte) 0);
-                    }
+        //Blocks
+        for (int x = 0; x < 16; x++) {
+            for (int y = 0; y < 16; y++) {
+                for (int z = 0; z < 16; z++) {
+                    final String id = packet.getBlockType(x, y, z);
+                    writeString(id != null ? id : "", buffer);
                 }
             }
         }
+
+        //Serialize
         buffer.flip();
         byte[] res = new byte[buffer.remaining()];
         buffer.get(res);
@@ -60,15 +46,15 @@ public class ChunkPacketConverter implements PacketConverter<ChunkPacket> {
         ChunkLocation location;
         String[][][] blocks = new String[16][16][16];
 
-        IntBuffer index = IntBuffer.wrap(new int[]{0});
+        ByteBuffer in = ByteBuffer.wrap(data);
 
-        name = getString(data, index);
-        location = getLoc(data, index);
+        name = readString(in);
+        location = readChunkLocation(in);
 
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
                 for (int z = 0; z < 16; z++) {
-                    final String id = getString(data, index);
+                    final String id = readString(in);
                     if(!id.isEmpty())
                         blocks[x][y][z] = id;
                 }
@@ -77,24 +63,13 @@ public class ChunkPacketConverter implements PacketConverter<ChunkPacket> {
         return new ChunkPacket(name, location, blocks);
     }
 
-    private static String getString(byte[] data, IntBuffer index) {
-        final int start = index.get();
-        int i = start;
-        while(data[i++] != '\0');
-        index.put(i);
-        final int end = i - 1;
-        return new String(data, start, (end - start), CHARSET);
+    private int getBlocksSize(ChunkPacket packet) {
+        int i = 0;
+        for (int x = 0; x < 16; x++)
+            for (int y = 0; y < 16; y++)
+                for (int z = 0; z < 16; z++)
+                    i += packet.getBlockType(x, y, z).length() + 1;
+        return i;
     }
 
-    private static ChunkLocation getLoc(byte[] data, IntBuffer index) {
-        final ByteBuffer in = ByteBuffer.wrap(data, index.get(), 3*Integer.BYTES);//Wtap ByteBuffer
-
-        index.put(in.position());//Update index
-
-        return new ChunkLocation(//And finally get the location
-                in.getInt(),
-                in.getInt(),
-                in.getInt()
-        );
-    }
 }

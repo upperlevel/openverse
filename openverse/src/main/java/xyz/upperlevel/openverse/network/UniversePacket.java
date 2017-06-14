@@ -13,32 +13,13 @@ import java.util.List;
 public class UniversePacket implements Packet {
 
     @Getter
-    private final String spawnWorld;
-
-    @Getter
-    private final double spawnX, spawnY, spawnZ;
-
-    @Getter
     private final List<String> worlds;
 
-    public UniversePacket(
-            @NonNull String spawnWorld,
-            double spawnX, double spawnY, double spawnZ,
-            @NonNull List<String> worlds
-            ) {
-        this.spawnWorld = spawnWorld;
-        this.spawnX = spawnX;
-        this.spawnY = spawnY;
-        this.spawnZ = spawnZ;
+    public UniversePacket(@NonNull List<String> worlds) {
         this.worlds = worlds;
     }
 
     public UniversePacket(@NonNull Universe<? extends World> universe) {
-        Location spawn = universe.getSpawn();
-        spawnWorld = spawn.world().getName();
-        spawnX = spawn.x();
-        spawnY = spawn.y();
-        spawnZ = spawn.z();
         worlds = new ArrayList<>(universe.getWorldMap().keySet());
     }
 }

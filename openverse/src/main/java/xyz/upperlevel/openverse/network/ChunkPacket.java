@@ -1,6 +1,5 @@
 package xyz.upperlevel.openverse.network;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import xyz.upperlevel.hermes.Packet;
