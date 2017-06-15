@@ -3,9 +3,7 @@ package xyz.upperlevel.openverse.server.world.entity;
 import lombok.Getter;
 import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.openverse.resource.EntityType;
-import xyz.upperlevel.openverse.server.world.ServerWorld;
 import xyz.upperlevel.openverse.world.Location;
-import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.entity.Player;
 
 public class ServerPlayer extends ServerEntity implements Player {

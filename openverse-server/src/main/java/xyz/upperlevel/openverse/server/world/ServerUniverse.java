@@ -6,8 +6,9 @@ import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.resource.BlockType;
 import xyz.upperlevel.openverse.server.OpenverseServer;
 import xyz.upperlevel.openverse.world.Universe;
+import xyz.upperlevel.openverse.world.World;
 
-public class ServerUniverse extends Universe<ServerWorld> implements Listener {
+public class ServerUniverse extends Universe implements Listener {
 
     @Getter
     private final OpenverseServer handle;
@@ -18,7 +19,7 @@ public class ServerUniverse extends Universe<ServerWorld> implements Listener {
     }
 
     public void load() {
-        ServerWorld world = new ServerWorld("hello");
+        World world = new World("hello");
         addWorld(world);
         world.getBlock(0, 0, 0).setType(new BlockType("drug", true));
     }
