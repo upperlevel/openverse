@@ -5,15 +5,12 @@ import lombok.NonNull;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.client.OpenverseClient;
-import xyz.upperlevel.openverse.client.render.event.RenderOptionsChangeEvent;
+import xyz.upperlevel.openverse.client.render.event.ChunkVisibilityChangeEvent;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.block.Block;
 import xyz.upperlevel.openverse.world.block.event.BlockChangeEvent;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
-import xyz.upperlevel.openverse.world.chunk.event.ChunkCreateEvent;
-import xyz.upperlevel.openverse.world.chunk.event.ChunkDeleteEvent;
-import xyz.upperlevel.openverse.world.entity.event.PlayerMoveEvent;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -54,16 +51,14 @@ public class RenderWorld implements Listener {
     }
 
     @EventHandler
-    public void onChunkCreate(ChunkCreateEvent event) {
-        Chunk ck = event.getChunk();
-        ChunkLocation loc = ck.getLocation();
+    public void onChunkVisibleChange(ChunkVisibilityChangeEvent event) {
+        for(Chunk chunk : event.getRemovedChunks())
+            chunksByLoc.remove(chunk.getLocation());
 
-        chunksByLoc.put(ck.getLocation(), new RenderChunk(loc));
-    }
-
-    @EventHandler
-    public void onChunkDelete(ChunkDeleteEvent event) {
-        chunksByLoc.remove(event.getChunk().getLocation());
+        for(Chunk chunk : event.getAddedChunks()) {
+            ChunkLocation loc = chunk.getLocation();
+            chunksByLoc.put(loc, new RenderChunk(loc));
+        }
     }
 
     @EventHandler
