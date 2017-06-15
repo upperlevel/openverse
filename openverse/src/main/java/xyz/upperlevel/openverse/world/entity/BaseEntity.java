@@ -4,10 +4,12 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import org.joml.Vector3d;
+import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.network.EntityTeleportPacket;
 import xyz.upperlevel.openverse.resource.EntityType;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.World;
+import xyz.upperlevel.openverse.world.entity.event.EntityMoveEvent;
 
 import static xyz.upperlevel.openverse.Openverse.getChannel;
 import static xyz.upperlevel.openverse.Openverse.getEndpoint;
@@ -52,6 +54,10 @@ public class BaseEntity implements Entity {
     }
 
     public void setLocation(Location location, boolean update) {
+        EntityMoveEvent event = new EntityMoveEvent(this, location);
+        Openverse.getEventManager().call(event);
+        if(event.isCancelled()) return;
+
         this.location = location;
         // todo if the location is null sends a packet that removes from the world where it is
         if (location != null && update)

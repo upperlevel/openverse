@@ -43,14 +43,7 @@ public class EntityManager implements Listener {
     public void onTeleport(EntityTeleportPacket event) {
         Entity entity = entitiesById.get(event.getId());
 
-        Location location = entity.getLocation();
-        location.set(
-                event.getX(),
-                event.getY(),
-                event.getZ(),
-                event.getYaw(),
-                event.getPitch()
-        );
+        Location location = new Location(entity.getWorld(), event.getX(), event.getY(), event.getZ(), event.getYaw(), event.getPitch());
         entity.setLocation(location, false);
     }
 }

@@ -1,10 +1,6 @@
 package xyz.upperlevel.openverse.world;
 
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.world.event.WorldCreateEvent;
 import xyz.upperlevel.openverse.world.event.WorldDeleteEvent;
 

@@ -2,7 +2,6 @@ package xyz.upperlevel.openverse.client;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
-import xyz.upperlevel.openverse.client.world.ClientWorld;
 import xyz.upperlevel.openverse.client.world.WorldViewer;
 import xyz.upperlevel.openverse.client.resource.texture.TextureBakery;
 import xyz.upperlevel.openverse.world.Location;

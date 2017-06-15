@@ -1,6 +1,5 @@
 package xyz.upperlevel.openverse.client.world.entity;
 
-import xyz.upperlevel.openverse.client.world.ClientWorld;
 import xyz.upperlevel.openverse.resource.EntityType;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.entity.BaseEntity;

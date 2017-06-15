@@ -5,12 +5,15 @@ import lombok.NonNull;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.client.OpenverseClient;
+import xyz.upperlevel.openverse.client.render.event.RenderOptionsChangeEvent;
+import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.block.Block;
 import xyz.upperlevel.openverse.world.block.event.BlockChangeEvent;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 import xyz.upperlevel.openverse.world.chunk.event.ChunkCreateEvent;
 import xyz.upperlevel.openverse.world.chunk.event.ChunkDeleteEvent;
+import xyz.upperlevel.openverse.world.entity.event.PlayerMoveEvent;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,12 +23,16 @@ import java.util.Map;
 public class RenderWorld implements Listener {
 
     @Getter
-    private final String name;
+    private final World world;
 
     private final Map<ChunkLocation, RenderChunk> chunksByLoc = new HashMap<>();
 
-    public RenderWorld(@NonNull String name) {
-        this.name = name;
+    @Getter
+    private final VisibleChunkManager visibleChunkManager;
+
+    public RenderWorld(@NonNull World world) {
+        this.world = world;
+        this.visibleChunkManager = new VisibleChunkManager(world, RenderOptions.get().getRenderDistance());
         OpenverseClient.get().getEventManager().register(this);
     }
 
