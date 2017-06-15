@@ -41,4 +41,9 @@ public class ChunkLocation {
                     c.z == z;
         } else return false;
     }
+
+
+    public static ChunkLocation of(int x, int y, int z) {
+        return new ChunkLocation(x, y, z);
+    }
 }

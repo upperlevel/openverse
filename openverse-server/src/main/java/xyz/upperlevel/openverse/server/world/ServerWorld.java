@@ -12,7 +12,7 @@ public class ServerWorld extends World {
 
     public ServerWorld(String name) {
         super(name);
-        chunkMap = new RadiusSquareChunkChooser(this, 3); // depends on configured
+        chunkMap = new PlayerChunkMap(this, 3); // depends on configured
     }
 
     public void onChunkChange(ChunkLocation from, ChunkLocation to, Player player) {

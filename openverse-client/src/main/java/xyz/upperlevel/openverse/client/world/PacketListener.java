@@ -1,25 +1,25 @@
 package xyz.upperlevel.openverse.client.world;
 
 import lombok.Getter;
-import lombok.NonNull;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.client.OpenverseClient;
-import xyz.upperlevel.openverse.network.ChunkPacket;
+import xyz.upperlevel.openverse.network.ChunkCreatePacket;
 import xyz.upperlevel.openverse.network.UniversePacket;
 import xyz.upperlevel.openverse.resource.BlockType;
 import xyz.upperlevel.openverse.world.Universe;
+import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 
 import static java.lang.System.*;
 import static xyz.upperlevel.openverse.Openverse.getResourceManager;
 
-public class ClientUniverse extends Universe<ClientWorld> implements Listener {
+public class PacketListener implements Listener {
 
     @Getter
     private boolean initialized = false;
 
-    public ClientUniverse() {
+    public PacketListener() {
         OpenverseClient.get().getChannel().register(this);
     }
 
@@ -29,29 +29,22 @@ public class ClientUniverse extends Universe<ClientWorld> implements Listener {
         out.println("It has been received the universe packet.");
         out.println("Initializing " + packet.getWorlds().size() + " worlds...");
 
-        packet.getWorlds().forEach(world -> addWorld(
-                new ClientWorld(world, /* todo temp radius init */ 1))
-        );
+        packet.getWorlds().forEach(world -> Universe.get().addWorld(new World(world)));
         initialized = true;
     }
 
     // when the client receives a chunk it sets it into the referred client world
     @EventHandler
-    public void onChunkReceive(ChunkPacket packet) {
+    public void onChunkReceive(ChunkCreatePacket packet) {
         long startAt = currentTimeMillis();
 
         ChunkLocation location = packet.getLocation();
         out.println("It has been received the chunk at: " +
-                "world=" + packet.getWorld() + " " +
                 "x=" + location.x + " " +
                 "y=" + location.y + " " +
                 "z=" + location.z);
 
-        ClientWorld world = getWorld(packet.getWorld());
-        if (world == null) {
-            err.println("The world '" + packet.getWorld() + "' has not been found in client universe.");
-            return;
-        }
+        World world = OpenverseClient.get().getPlayer().getWorld();
 
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {

@@ -2,6 +2,7 @@ package xyz.upperlevel.openverse.client.world.entity;
 
 import xyz.upperlevel.openverse.resource.EntityType;
 import xyz.upperlevel.openverse.world.Location;
+import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.entity.BaseEntity;
 import xyz.upperlevel.ulge.opengl.shader.Uniformer;
 
@@ -12,9 +13,9 @@ public abstract class ClientEntity extends BaseEntity {
     }
 
     @Override
-    public ClientWorld getWorld() {
+    public World getWorld() {
         Location location = getLocation();
-        return location == null ? null : (ClientWorld) location.getWorld();
+        return location == null ? null : location.getWorld();
     }
 
     public abstract void render(Uniformer uniformer);

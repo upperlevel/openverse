@@ -12,17 +12,19 @@ import java.util.Map;
 /**
  * This is something similar to the World manager, in the sense that it stores all the worlds and their ids.
  */
-public class Universe<W extends World> {
+public class Universe {
+
+    private static Universe instance = new Universe();
 
     // the spawn location is just server side
 
-    private final Map<String, W> worlds = new HashMap<>();
+    private final Map<String, World> worlds = new HashMap<>();
 
-    public W getWorld(String name) {
+    public World getWorld(String name) {
         return worlds.get(name);
     }
 
-    public boolean addWorld(W world) {
+    public boolean addWorld(World world) {
         if (worlds.putIfAbsent(world.getName(), world) == null) {
             Openverse.getProxy().getEventManager().call(new WorldCreateEvent(world));
             return true;
@@ -30,7 +32,7 @@ public class Universe<W extends World> {
         return false;
     }
 
-    public boolean removeWorld(W world) {
+    public boolean removeWorld(World world) {
         return removeWorld(world.getName());
     }
 
@@ -43,11 +45,20 @@ public class Universe<W extends World> {
         return false;
     }
 
-    public Map<String, W> getWorldMap() {
+    public Map<String, World> getWorldMap() {
         return Collections.unmodifiableMap(worlds);
     }
 
-    public Collection<W> getWorlds() {
+    public Collection<World> getWorlds() {
         return Collections.unmodifiableCollection(worlds.values());
+    }
+
+
+    public static Universe get() {
+        return instance;
+    }
+
+    public static void set(Universe universe) {
+        instance = universe;
     }
 }

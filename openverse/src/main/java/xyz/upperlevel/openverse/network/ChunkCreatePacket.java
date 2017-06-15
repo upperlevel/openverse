@@ -8,18 +8,14 @@ import xyz.upperlevel.openverse.world.block.BlockSystem;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 
-public class ChunkPacket implements Packet {
-
-    @Getter
-    private final String world;
-
+public class ChunkCreatePacket implements Packet {
     @Getter
     private final ChunkLocation location;
 
     // a 3d-array of block types ids for this chunk
     private final String[][][] blockTypes;
 
-    public ChunkPacket(@NonNull Chunk chunk) {
+    public ChunkCreatePacket(@NonNull Chunk chunk) {
         this(
                 chunk.getWorld().getName(),
                 chunk.getLocation(),
@@ -27,8 +23,8 @@ public class ChunkPacket implements Packet {
         );
     }
 
-    public ChunkPacket(@NonNull String world, ChunkLocation location, @NonNull BlockSystem blocks) {
-        this(world, location, new String[16][16][16]);
+    public ChunkCreatePacket(@NonNull String world, ChunkLocation location, @NonNull BlockSystem blocks) {
+        this(location, new String[16][16][16]);
 
         for (int ix = 0; ix < 16; ix++) {
             for (int iy = 0; iy < 16; iy++) {
@@ -41,8 +37,7 @@ public class ChunkPacket implements Packet {
         }
     }
 
-    public ChunkPacket(@NonNull String world, ChunkLocation location, @NonNull String[][][] blockTypes) {
-        this.world = world;
+    public ChunkCreatePacket(ChunkLocation location, @NonNull String[][][] blockTypes) {
         this.location = location;
         this.blockTypes = blockTypes;
     }

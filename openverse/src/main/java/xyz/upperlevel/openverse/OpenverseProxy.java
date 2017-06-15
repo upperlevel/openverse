@@ -12,8 +12,6 @@ public interface OpenverseProxy {
 
     ResourceManager getResourceManager();
 
-    Universe getUniverse();
-
     Endpoint getEndpoint();
 
     Channel getChannel();

@@ -23,23 +23,4 @@ public class ServerPlayer extends ServerEntity implements Player {
         this.name = name;
         this.connection = connection;
     }
-
-    @Override
-    public void setLocation(Location location) {
-        // when the location changes, if chunks are different,
-        // the chunks must be sent to the client
-        Chunk from = getLocation().getChunk();
-        Chunk to = location.getChunk();
-
-        if (!from.equals(to)) {
-            ((ServerWorld) getWorld()).onChunkChange(
-                    from.getLocation(),
-                    to.getLocation(),
-                    this
-            );
-        }
-
-        // now we can send teleport packet to the player
-        super.setLocation(location);
-    }
 }

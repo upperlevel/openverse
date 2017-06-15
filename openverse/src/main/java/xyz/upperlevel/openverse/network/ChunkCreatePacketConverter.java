@@ -7,18 +7,14 @@ import java.nio.ByteBuffer;
 
 import static xyz.upperlevel.openverse.network.SerialUtil.*;
 
-public class ChunkPacketConverter implements PacketConverter<ChunkPacket> {
+public class ChunkCreatePacketConverter implements PacketConverter<ChunkCreatePacket> {
 
     @Override
-    public byte[] toData(ChunkPacket packet) {
+    public byte[] toData(ChunkCreatePacket packet) {
         ByteBuffer buffer = ByteBuffer.allocate(
-                        packet.getWorld().length() + 1 +    //World name
                         3 * Integer.BYTES +                 //Location
                         getBlocksSize(packet)               //Blocks
         );
-
-        //Name
-        writeString(packet.getWorld(), buffer);
 
         //Location
         writeChunkLocation(packet.getLocation(), buffer);
@@ -41,14 +37,12 @@ public class ChunkPacketConverter implements PacketConverter<ChunkPacket> {
     }
 
     @Override
-    public ChunkPacket toPacket(byte[] data) {
-        String name;
+    public ChunkCreatePacket toPacket(byte[] data) {
         ChunkLocation location;
         String[][][] blocks = new String[16][16][16];
 
         ByteBuffer in = ByteBuffer.wrap(data);
 
-        name = readString(in);
         location = readChunkLocation(in);
 
         for (int x = 0; x < 16; x++) {
@@ -60,10 +54,10 @@ public class ChunkPacketConverter implements PacketConverter<ChunkPacket> {
                 }
             }
         }
-        return new ChunkPacket(name, location, blocks);
+        return new ChunkCreatePacket(location, blocks);
     }
 
-    private int getBlocksSize(ChunkPacket packet) {
+    private int getBlocksSize(ChunkCreatePacket packet) {
         int i = 0;
         for (int x = 0; x < 16; x++)
             for (int y = 0; y < 16; y++)
