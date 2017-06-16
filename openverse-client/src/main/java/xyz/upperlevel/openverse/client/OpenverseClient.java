@@ -9,11 +9,12 @@ import xyz.upperlevel.hermes.client.Client;
 import xyz.upperlevel.openverse.OpenverseProtocol;
 import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.client.resource.ClientResourceManager;
-import xyz.upperlevel.openverse.client.world.entity.ClientPlayer;
+import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.entity.EntityManager;
+import xyz.upperlevel.openverse.world.entity.Player;
 
 @Getter
-public class OpenverseClient implements OpenverseProxy {//TODO Implement
+public class OpenverseClient implements OpenverseProxy {
 
     private static OpenverseClient instance;
 
@@ -22,7 +23,7 @@ public class OpenverseClient implements OpenverseProxy {//TODO Implement
     private final Channel channel;
 
     // world
-    private final ClientPlayer player;
+    private final Player player;
     private final EntityManager entityManager;
 
     // resources
@@ -40,8 +41,8 @@ public class OpenverseClient implements OpenverseProxy {//TODO Implement
         channel = new Channel("main").setProtocol(OpenverseProtocol.get());
         connection.setDefaultChannel(channel);
 
-        player = new ClientPlayer("my_player", connection);
-        entityManager = new EntityManager(this);
+        player = new Player(new Location(null, 0, 0, 0), "my_player", connection);
+        entityManager = new EntityManager();
 
         eventManager = new EventManager();
         resourceManager = new ClientResourceManager();
