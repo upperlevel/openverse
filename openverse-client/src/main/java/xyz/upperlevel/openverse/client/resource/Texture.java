@@ -11,7 +11,7 @@ import java.nio.ByteBuffer;
 public class Texture {
 
     @Getter
-    private String id;
+    private final String id;
 
     @Getter
     @Setter
