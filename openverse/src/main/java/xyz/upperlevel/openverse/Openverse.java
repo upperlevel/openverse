@@ -27,10 +27,6 @@ public final class Openverse {
         return proxy.getResourceManager();
     }
 
-    public static Universe getUniverse() {
-        return proxy.getUniverse();
-    }
-
     public static Endpoint getEndpoint() {
         return proxy.getEndpoint();
     }

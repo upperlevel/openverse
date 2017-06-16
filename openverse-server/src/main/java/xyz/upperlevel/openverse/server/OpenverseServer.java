@@ -40,7 +40,7 @@ public class OpenverseServer implements OpenverseProxy {
         server.setDefaultChannel(channel);
 
         universe      = new ServerUniverse(this);
-        entityManager = new EntityManager(this);
+        entityManager = new EntityManager();
         playerManager = new ServerPlayerManager(this);
     }
 

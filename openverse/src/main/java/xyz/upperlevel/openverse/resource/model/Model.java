@@ -18,8 +18,9 @@ public class Model<S extends Shape> {
         this.id = id;
     }
 
-    public void add(S part) {
+    public Model<S> add(S part) {
         shapes.add(part);
+        return this;
     }
 
     public Box getBox() {

@@ -1,11 +1,9 @@
 package xyz.upperlevel.openverse.world.entity;
 
-import lombok.Getter;
 import lombok.NonNull;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.network.EntityTeleportPacket;
 import xyz.upperlevel.openverse.world.Location;
 
