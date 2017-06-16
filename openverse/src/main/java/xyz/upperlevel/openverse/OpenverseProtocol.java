@@ -7,6 +7,7 @@ public final class OpenverseProtocol {
 
     private static Protocol protocol = Protocol.builder()
             // todo adds packets
+            .subChannels()//Register sub-channel related packets
             .register(EntityTeleportPacket.class, new EntityTeleportPacketConverter())
             .register(UniversePacket.class, new UniversePacketConverter())
             .register(ChunkCreatePacket.class, new ChunkCreatePacketConverter())
