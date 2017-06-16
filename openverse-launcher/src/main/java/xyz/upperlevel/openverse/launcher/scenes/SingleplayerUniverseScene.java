@@ -10,10 +10,6 @@ import xyz.upperlevel.openverse.server.OpenverseServer;
 import xyz.upperlevel.ulge.game.Scene;
 import xyz.upperlevel.ulge.game.Stage;
 
-/**
- * This setScene that handles client connection to a singleplayer universe.
- * It has a client and a server that are connected each other.
- */
 public class SingleplayerUniverseScene extends Stage {
 
     @Getter

@@ -11,7 +11,12 @@ public class OpenverseLauncher {
     private final Game game;
 
     public OpenverseLauncher() {
-        game = new Game(new GameSettings());
+        game = new Game(new GameSettings()
+                .width(500)
+                .height(500)
+                .title("Openverse")
+                .fullscreen(false)
+        );
     }
 
     public static Game getGame() {
