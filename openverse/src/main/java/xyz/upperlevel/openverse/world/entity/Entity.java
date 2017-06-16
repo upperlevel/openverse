@@ -1,38 +1,76 @@
 package xyz.upperlevel.openverse.world.entity;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import org.joml.Vector3d;
+import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.network.EntityTeleportPacket;
 import xyz.upperlevel.openverse.resource.EntityType;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.World;
+import xyz.upperlevel.openverse.world.entity.event.EntityMoveEvent;
 
-public interface Entity {
+import static xyz.upperlevel.openverse.Openverse.getChannel;
+import static xyz.upperlevel.openverse.Openverse.getEndpoint;
 
-    EntityType getType();
+public class Entity {
 
-    World getWorld();
+    @Getter
+    @Setter
+    private long id = -1;
 
-    EntityDriver getDriver();
+    @Getter
+    private final EntityType type;
 
-    void setDriver(EntityDriver driver);
+    @NonNull
+    private Location location;
 
-    Location getLocation();
+    @Getter
+    @Setter
+    @NonNull
+    private Vector3d velocity = new Vector3d();
 
-    default void setLocation(Location location) {
+    @Getter
+    @Setter
+    private EntityDriver driver = new SimpleEntityDriver(); // by default
+
+    public Entity(EntityType type, Location location) {
+        this.type = type;
+        this.location = location;
+    }
+
+    public World getWorld() {
+        return location.getWorld();
+    }
+
+    /**
+     * Returns a <b>copy</b> of its location.
+     */
+    public Location getLocation() {
+        return new Location(location);
+    }
+
+    public void setLocation(Location location, boolean update) {
+        EntityMoveEvent event = new EntityMoveEvent(this, location);
+        Openverse.getEventManager().call(event);
+        if(event.isCancelled()) return;
+
+        this.location = location;
+        // todo if the location is null sends a packet that removes from the world where it is
+        if (location != null && update)
+            getEndpoint().getConnections().forEach(connection ->
+                    connection.send(getChannel(), new EntityTeleportPacket(id, location))
+            );
+    }
+
+    public void setLocation(Location location) {
         setLocation(location, true);
     }
 
-    void setLocation(Location location, boolean update);
-
-    Vector3d getVelocity();
-
-    void setVelocity(Vector3d velocity);
-
-    default void setRotation(double yaw, double pitch) {
-        getLocation().setYaw(yaw);
-        getLocation().setPitch(pitch);
+    public void setRotation(double yaw, double pitch) {
+        final Location loc = getLocation();
+        loc.setYaw(yaw);
+        loc.setPitch(pitch);
     }
-
-    long getId();
-
-    void setId(long id);
 }

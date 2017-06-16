@@ -1,21 +1,28 @@
 package xyz.upperlevel.openverse.world.entity;
 
+import lombok.Getter;
 import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.openverse.resource.EntityType;
 import xyz.upperlevel.openverse.world.Location;
 
-public interface Player extends Entity {
+public class Player extends Entity {
 
-    EntityType TYPE = new EntityType("player");
+    public static final EntityType TYPE = new EntityType("player");
 
+    @Getter
+    private final String name;
 
-    default EntityType getType() {
-        return TYPE;
+    @Getter
+    private final Connection connection;
+
+    public Player(Location location, String name, Connection connection) {
+        super(TYPE, location);
+        this.name = name;
+        this.connection = connection;
     }
 
-    String getName();
 
-    Location getLocation();
-
-    Connection getConnection();
+    public EntityType getType() {
+        return TYPE;
+    }
 }
