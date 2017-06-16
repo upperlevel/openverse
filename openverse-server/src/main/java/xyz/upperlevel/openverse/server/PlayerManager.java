@@ -1,4 +1,4 @@
-package xyz.upperlevel.openverse;
+package xyz.upperlevel.openverse.server;
 
 import lombok.NonNull;
 import xyz.upperlevel.event.EventHandler;
@@ -7,40 +7,46 @@ import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.hermes.event.impl.ConnectionCloseEvent;
 import xyz.upperlevel.hermes.event.impl.ConnectionOpenEvent;
+import xyz.upperlevel.hermes.server.Server;
+import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.OpenverseProxy;
+import xyz.upperlevel.openverse.world.Location;
+import xyz.upperlevel.openverse.world.Universe;
 import xyz.upperlevel.openverse.world.entity.Player;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class PlayerManager<P extends Player> implements Listener {
+public class PlayerManager implements Listener {
+    public static final Location SPAWN = new Location(Universe.get().getWorlds().iterator().next(), 0, 0, 0);
+    public static final String PLAYER_NAME = "Test";
 
-    private final Map<String, P> playersByName = new HashMap<>();
-    private final Map<Connection, P> playersByConnection = new HashMap<>();
+    private final Map<String, Player> playersByName = new HashMap<>();
+    private final Map<Connection, Player> playersByConnection = new HashMap<>();
 
-    public PlayerManager(@NonNull OpenverseProxy proxy) {
-        proxy.getEndpoint().getConnections().forEach(connection ->
-                connection.getEventManager().register(this));
+    public PlayerManager() {
+        ((Server)Openverse.getEndpoint()).getEventManager().register(this);
     }
 
-    public void register(@NonNull P player) {
+    public void register(@NonNull Player player) {
         playersByName.put(player.getName(), player);
         playersByConnection.put(player.getConnection(), player);
     }
 
-    public P get(String name) {
+    public Player get(String name) {
         return playersByName.get(name);
     }
 
-    public P get(Connection connection) {
+    public Player get(Connection connection) {
         return playersByConnection.get(connection);
     }
 
-    public Collection<P> get() {
+    public Collection<Player> get() {
         return playersByName.values();
     }
 
-    public void unregister(@NonNull P player) {
+    public void unregister(@NonNull Player player) {
         playersByName.remove(player.getName());
         playersByConnection.remove(player.getConnection());
     }
@@ -50,7 +56,9 @@ public abstract class PlayerManager<P extends Player> implements Listener {
         playersByConnection.clear();
     }
 
-    public abstract P createPlayer(Connection connection);
+    protected Player createPlayer(Connection connection) {
+        return new Player(SPAWN.copy(), PLAYER_NAME, connection);
+    }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onConnect(ConnectionOpenEvent event) {

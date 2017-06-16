@@ -235,6 +235,10 @@ public class Location {
         );
     }
 
+    public Location copy() {
+        return new Location(this);
+    }
+
 
     public Vector3d toVector() {
         return new Vector3d(x, y, z);
