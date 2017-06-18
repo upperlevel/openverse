@@ -27,7 +27,7 @@ public class SingleplayerUniverseScene extends Stage {
         DirectServer server = new DirectServer();
         DirectServerConnection serverConnection = server.newConnection(clientConnection);
         serverConnection.setCopy(true);
-        serverConnection.setOther(clientConnection);
+        clientConnection.setOther(serverConnection);
         this.server = new OpenverseServer(server);
     }
 
