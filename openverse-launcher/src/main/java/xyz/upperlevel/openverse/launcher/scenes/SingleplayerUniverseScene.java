@@ -6,6 +6,8 @@ import xyz.upperlevel.hermes.client.impl.direct.DirectClientConnection;
 import xyz.upperlevel.hermes.server.impl.direct.DirectServer;
 import xyz.upperlevel.hermes.server.impl.direct.DirectServerConnection;
 import xyz.upperlevel.openverse.client.OpenverseClient;
+import xyz.upperlevel.openverse.launcher.loaders.ClientLoader;
+import xyz.upperlevel.openverse.launcher.loaders.ServerLoader;
 import xyz.upperlevel.openverse.server.OpenverseServer;
 import xyz.upperlevel.ulge.game.Scene;
 import xyz.upperlevel.ulge.game.Stage;
@@ -22,13 +24,17 @@ public class SingleplayerUniverseScene extends Stage {
         DirectClient client = new DirectClient();
         DirectClientConnection clientConnection = client.getConnection();
         clientConnection.setCopy(true);
-        this.client = new OpenverseClient(client);
+        ClientLoader clientLoader = new ClientLoader();
+        clientLoader.load();
+        this.client = clientLoader.createClient(client);
 
         DirectServer server = new DirectServer();
         DirectServerConnection serverConnection = server.newConnection(clientConnection);
         serverConnection.setCopy(true);
         clientConnection.setOther(serverConnection);
-        this.server = new OpenverseServer(server);
+        ServerLoader serverLoader = new ServerLoader();
+        serverLoader.load();
+        this.server = serverLoader.createServer(server);
     }
 
     @Override
