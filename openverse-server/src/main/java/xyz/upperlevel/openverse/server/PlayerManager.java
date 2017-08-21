@@ -19,14 +19,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerManager implements Listener {
-    public static final Location SPAWN = new Location(Universe.get().getWorlds().iterator().next(), 0, 0, 0);
     public static final String PLAYER_NAME = "Test";
 
     private final Map<String, Player> playersByName = new HashMap<>();
     private final Map<Connection, Player> playersByConnection = new HashMap<>();
 
     public PlayerManager() {
-        ((Server)Openverse.getEndpoint()).getEventManager().register(this);
+        ((Server) Openverse.getEndpoint()).getEventManager().register(this);
     }
 
     public void register(@NonNull Player player) {
@@ -57,7 +56,7 @@ public class PlayerManager implements Listener {
     }
 
     protected Player createPlayer(Connection connection) {
-        return new Player(SPAWN.copy(), PLAYER_NAME, connection);
+        return new Player(new Location(Universe.get().getWorlds().iterator().next(), 0, 0, 0).copy(), PLAYER_NAME, connection);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

@@ -5,21 +5,25 @@ import xyz.upperlevel.hermes.client.impl.direct.DirectClient;
 import xyz.upperlevel.hermes.client.impl.direct.DirectClientConnection;
 import xyz.upperlevel.hermes.server.impl.direct.DirectServer;
 import xyz.upperlevel.hermes.server.impl.direct.DirectServerConnection;
+import xyz.upperlevel.openverse.launcher.OpenverseLauncher;
 import xyz.upperlevel.openverse.launcher.ProxyWrapper;
 import xyz.upperlevel.openverse.launcher.loaders.ClientLoader;
 import xyz.upperlevel.openverse.launcher.loaders.ServerLoader;
 import xyz.upperlevel.ulge.game.Scene;
 import xyz.upperlevel.ulge.game.Stage;
 
+import java.util.logging.Level;
+
+@Getter
 public class SingleplayerScene extends Stage {
+    private final OpenverseLauncher launcher;
 
-    @Getter
     private final ProxyWrapper client;
-
-    @Getter
     private final ProxyWrapper server;
 
-    public SingleplayerScene() {
+    public SingleplayerScene(OpenverseLauncher launcher) {
+        this.launcher = launcher;
+
         DirectClient client = new DirectClient();
         DirectClientConnection clientConnection = client.getConnection();
         clientConnection.setCopy(true);
@@ -38,6 +42,7 @@ public class SingleplayerScene extends Stage {
 
     @Override
     public void onEnable(Scene previous) {
+        launcher.getLogger().log(Level.INFO, "Singleplayer scene has been started!");
         Scene scene = new SingleplayerResourceScene(this);
         setScene(scene);
         scene.onEnable(null);

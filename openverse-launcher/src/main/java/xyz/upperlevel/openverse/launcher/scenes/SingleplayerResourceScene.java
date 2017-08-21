@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import xyz.upperlevel.ulge.game.Scene;
 
+import java.util.logging.Level;
+
 import static java.lang.System.out;
 import static org.lwjgl.opengl.GL11.glClearColor;
 
@@ -19,6 +21,8 @@ public class SingleplayerResourceScene implements Scene {
 
     @Override
     public void onEnable(Scene previous) {
+        parent.getLauncher().getLogger().log(Level.INFO, "Singleplayer scene has been started!");
+
         out.println("Attempting to load client resources...");
         parent.getClient().loadResources();
         out.println("Client resources has been loaded.");

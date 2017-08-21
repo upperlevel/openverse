@@ -13,5 +13,7 @@
     <artifactId>openverse-server-launcher</artifactId>
     <version>FINAL</version>
 
-    
+    <build>
+        <finalName>openverse_server_launcher</finalName>
+    </build>
 </project>

@@ -8,7 +8,7 @@ import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 
 public class ServerLoader {
-    private static final String PATH_TO_SERVER = "bin/Server.jar";
+    private static final String PATH_TO_SERVER = "bin/openverse_server.jar";
     private static final String OPENVERSE_SERVER_PATH = "xyz.upperlevel.openverse.server.OpenverseServer";
     private ServerClassLoader loader;
 

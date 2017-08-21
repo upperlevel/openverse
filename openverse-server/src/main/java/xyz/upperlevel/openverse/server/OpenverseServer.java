@@ -11,34 +11,22 @@ import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.server.resource.ServerResourceManager;
 import xyz.upperlevel.openverse.server.world.ServerUniverse;
 
+@Getter
 public class OpenverseServer implements OpenverseProxy, Listener {
-
-
-    private final Server server;
-
-    @Getter
-    private final Channel channel = new Channel("main")
-            .setProtocol(OpenverseProtocol.get());
-
-    @Getter
-    private final EventManager eventManager = new EventManager();
-
-    @Getter
+    private final Server endpoint;
+    private final Channel channel;
     private final ServerUniverse universe;
-
-    @Getter
+    private final EventManager eventManager = new EventManager();
     private final ServerResourceManager resourceManager = new ServerResourceManager();
-
-    @Getter
     private final PlayerManager playerManager;
 
     // we don't know if the server is locally connected or use the network
     public OpenverseServer(@NonNull Server server) {
-        this.server = server;
-        server.setDefaultChannel(channel);
-
-        universe      = new ServerUniverse(this);
-        playerManager = new PlayerManager();
+        this.endpoint = server;
+        this.channel = new Channel("main").setProtocol(OpenverseProtocol.get());
+        this.endpoint.setDefaultChannel(channel);
+        this.universe = new ServerUniverse(this);
+        this.playerManager = new PlayerManager();
     }
 
     public void start() {
@@ -46,10 +34,5 @@ public class OpenverseServer implements OpenverseProxy, Listener {
     }
 
     public void stop() {
-    }
-
-    @Override
-    public Server getEndpoint() {
-        return server;
     }
 }
