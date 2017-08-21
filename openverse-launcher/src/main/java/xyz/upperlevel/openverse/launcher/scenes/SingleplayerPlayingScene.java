@@ -8,12 +8,12 @@ import xyz.upperlevel.ulge.game.Stage;
 import static java.lang.System.out;
 
 // this scene handles world rendering
-public class SingleplayerGameScene extends Stage {
+public class SingleplayerPlayingScene extends Stage {
 
     @Getter
-    private final SingleplayerUniverseScene parent;
+    private final SingleplayerScene parent;
 
-    public SingleplayerGameScene(@NonNull SingleplayerUniverseScene parent) {
+    public SingleplayerPlayingScene(@NonNull SingleplayerScene parent) {
         this.parent = parent;
     }
 

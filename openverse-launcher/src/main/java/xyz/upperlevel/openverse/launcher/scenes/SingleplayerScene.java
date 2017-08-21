@@ -12,7 +12,7 @@ import xyz.upperlevel.openverse.server.OpenverseServer;
 import xyz.upperlevel.ulge.game.Scene;
 import xyz.upperlevel.ulge.game.Stage;
 
-public class SingleplayerUniverseScene extends Stage {
+public class SingleplayerScene extends Stage {
 
     @Getter
     private final OpenverseClient client;
@@ -20,7 +20,7 @@ public class SingleplayerUniverseScene extends Stage {
     @Getter
     private final OpenverseServer server;
 
-    public SingleplayerUniverseScene() {
+    public SingleplayerScene() {
         System.out.println("START");
         DirectClient client = new DirectClient();
         DirectClientConnection clientConnection = client.getConnection();
@@ -44,7 +44,7 @@ public class SingleplayerUniverseScene extends Stage {
 
     @Override
     public void onEnable(Scene previous) {
-        Scene scene = new SingleplayerResourceLoadingScene(this);
+        Scene scene = new SingleplayerResourceScene(this);
         setScene(scene);
         scene.onEnable(null);
     }

@@ -1,13 +1,12 @@
 package xyz.upperlevel.openverse.launcher;
 
-import xyz.upperlevel.openverse.launcher.scenes.SingleplayerUniverseScene;
+import lombok.Getter;
+import xyz.upperlevel.openverse.launcher.scenes.SingleplayerScene;
 import xyz.upperlevel.ulge.game.Game;
 import xyz.upperlevel.ulge.game.GameSettings;
 
+@Getter
 public class OpenverseLauncher {
-
-    private static OpenverseLauncher instance;
-
     private final Game game;
 
     public OpenverseLauncher() {
@@ -19,14 +18,12 @@ public class OpenverseLauncher {
         );
     }
 
-    public static Game getGame() {
-        return instance.game;
+    public void launch() {
+        game.setStage(new SingleplayerScene());
+        game.start();
     }
 
     public static void main(String[] args) {
-        instance =  new OpenverseLauncher();
-
-        instance.game.setStage(new SingleplayerUniverseScene());
-        instance.game.start();
+        new OpenverseLauncher().launch();
     }
 }

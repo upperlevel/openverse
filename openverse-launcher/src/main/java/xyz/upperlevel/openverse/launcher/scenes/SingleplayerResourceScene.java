@@ -4,18 +4,16 @@ import lombok.Getter;
 import lombok.NonNull;
 import xyz.upperlevel.ulge.game.Scene;
 
-import java.io.File;
-
 import static java.lang.System.out;
 import static org.lwjgl.opengl.GL11.glClearColor;
 
 // this scene is used to load client and server resources
-public class SingleplayerResourceLoadingScene implements Scene {
+public class SingleplayerResourceScene implements Scene {
 
     @Getter
-    private final SingleplayerUniverseScene parent;
+    private final SingleplayerScene parent;
 
-    public SingleplayerResourceLoadingScene(@NonNull SingleplayerUniverseScene parent) {
+    public SingleplayerResourceScene(@NonNull SingleplayerScene parent) {
         this.parent = parent;
     }
 
@@ -29,7 +27,7 @@ public class SingleplayerResourceLoadingScene implements Scene {
         parent.getServer().getResourceManager().load();
         out.println("Server resources has been loaded.");
 
-        parent.setScene(new SingleplayerGameScene(parent));
+        parent.setScene(new SingleplayerPlayingScene(parent));
     }
 
     @Override
