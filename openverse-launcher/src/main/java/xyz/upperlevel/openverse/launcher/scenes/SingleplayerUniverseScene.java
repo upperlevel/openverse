@@ -21,12 +21,15 @@ public class SingleplayerUniverseScene extends Stage {
     private final OpenverseServer server;
 
     public SingleplayerUniverseScene() {
+        System.out.println("START");
         DirectClient client = new DirectClient();
         DirectClientConnection clientConnection = client.getConnection();
         clientConnection.setCopy(true);
         ClientLoader clientLoader = new ClientLoader();
         clientLoader.load();
         this.client = clientLoader.createClient(client);
+
+        System.out.println("MIDDLE");
 
         DirectServer server = new DirectServer();
         DirectServerConnection serverConnection = server.newConnection(clientConnection);
@@ -35,6 +38,8 @@ public class SingleplayerUniverseScene extends Stage {
         ServerLoader serverLoader = new ServerLoader();
         serverLoader.load();
         this.server = serverLoader.createServer(server);
+
+        System.out.println("END");
     }
 
     @Override

@@ -28,18 +28,18 @@ public class ServerLoader {
         try {
             serverClass = (Class<OpenverseServer>) loader.loadClass(OPENVERSE_SERVER_PATH);
         } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("Cannot find OpenverseServer class!");
+            throw new IllegalStateException("Cannot find OpenverseServer class!", e);
         }
         Constructor<OpenverseServer> constructor;
         try {
             constructor = serverClass.getConstructor(Client.class);
         } catch (NoSuchMethodException e) {
-            throw new IllegalStateException("Cannot find OpenverseServer constructor!");
+            throw new IllegalStateException("Cannot find OpenverseServer constructor!", e);
         }
         try {
             return constructor.newInstance(connection);
         } catch (Exception e) {
-            throw new IllegalStateException("Cannot initialize OpenverseServer!");
+            throw new IllegalStateException("Cannot initialize OpenverseServer!", e);
         }
     }
 }
