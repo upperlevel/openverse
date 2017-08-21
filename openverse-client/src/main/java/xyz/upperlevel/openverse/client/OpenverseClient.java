@@ -24,11 +24,9 @@ public class OpenverseClient implements OpenverseProxy {
 
     // world
     private final Player player;
-    private final EntityManager entityManager;
 
     // resources
     private final ClientResourceManager resourceManager; // resources are loaded per universe
-
 
     // events
     private final EventManager eventManager;
@@ -42,7 +40,6 @@ public class OpenverseClient implements OpenverseProxy {
         connection.setDefaultChannel(channel);
 
         player = new Player(new Location(null, 0, 0, 0), "my_player", connection);
-        entityManager = new EntityManager();
 
         eventManager = new EventManager();
         resourceManager = new ClientResourceManager();

@@ -26,7 +26,7 @@ public class OpenverseLauncher {
     public static void main(String[] args) {
         instance =  new OpenverseLauncher();
 
-        instance.game.start();
         instance.game.setStage(new SingleplayerUniverseScene());
+        instance.game.start();
     }
 }
