@@ -1,7 +1,7 @@
 package xyz.upperlevel.openverse.launcher.loaders;
 
 import xyz.upperlevel.hermes.client.Client;
-import xyz.upperlevel.openverse.client.OpenverseClient;
+import xyz.upperlevel.openverse.launcher.ProxyWrapper;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -22,21 +22,21 @@ public class ClientLoader {
     }
 
     @SuppressWarnings("unchecked")
-    public OpenverseClient createClient(Client connection) {
-        Class<OpenverseClient> clientClass;
+    public ProxyWrapper createClient(Client connection) {
+        Class<?> clientClass;
         try {
-             clientClass = (Class<OpenverseClient>) loader.loadClass(OPENVERSE_CLIENT_PATH);
+             clientClass = loader.loadClass(OPENVERSE_CLIENT_PATH);
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException("Cannot find OpenverseClient class!", e);
         }
-        Constructor<OpenverseClient> constructor;
+        Constructor<?> constructor;
         try {
             constructor = clientClass.getConstructor(Client.class);
         } catch (NoSuchMethodException e) {
             throw new IllegalStateException("Cannot find OpenverseClient constructor!", e);
         }
         try {
-            return constructor.newInstance(connection);
+            return new ProxyWrapper(constructor.newInstance(connection));
         } catch (Exception e) {
             throw new IllegalStateException("Cannot initialize OpenverseClient!", e);
         }
