@@ -16,23 +16,16 @@ import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.Universe;
 import xyz.upperlevel.openverse.world.entity.EntityManager;
 import xyz.upperlevel.openverse.world.entity.Player;
+import xyz.upperlevel.ulge.game.Stage;
 
 @Getter
-public class OpenverseClient implements OpenverseProxy {
-
+public class OpenverseClient extends Stage implements OpenverseProxy {
     private static OpenverseClient instance;
 
-    // connection
     private final Client endpoint;
     private final Channel channel;
-
-    // world
     private final Player player;
-
-    // resources
     private final ClientResourceManager resourceManager; // resources are loaded per universe
-
-    // events
     private final EventManager eventManager;
 
     private final ClientUniverse universe;

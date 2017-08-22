@@ -18,7 +18,7 @@ public class Entity {
 
     @Getter
     @Setter
-    private long id = -1;
+    private int id = -1;
 
     @Getter
     private final EntityType type;
