@@ -24,16 +24,10 @@ public class SingleplayerResourceScene implements Scene {
 
     @Override
     public void onEnable(Scene previous) {
-        System.out.println("> Singleplayer resource scene!");
-
         parent.getClient().loadResources();
         parent.getServer().loadResources();
-        System.out.println("Resources loaded!");
-    }
 
-    @Override
-    public void onFps() {
-        System.out.println("Fps: " + launcher.getGame().getFps());
+        parent.setScene(new SingleplayerPlayingScene(parent));
     }
 
     @Override

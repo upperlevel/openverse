@@ -43,9 +43,6 @@ public class SingleplayerScene extends Stage {
 
     @Override
     public void onEnable(Scene previous) {
-        System.out.println("> Singleplayer scene!");
-        Scene scene = new SingleplayerResourceScene(this);
-        setScene(scene);
-        scene.onEnable(null);
+        setScene(new SingleplayerResourceScene(this));
     }
 }

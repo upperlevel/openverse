@@ -24,7 +24,7 @@ public class SingleplayerPlayingScene extends Stage {
 
     @Override
     public void onEnable(Scene previous) {
-        System.out.println("> Singleplayer playing scene!");
+
     }
 
     @Override
