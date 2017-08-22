@@ -13,6 +13,7 @@ import xyz.upperlevel.ulge.game.Scene;
 import xyz.upperlevel.ulge.game.Stage;
 
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Getter
 public class SingleplayerScene extends Stage {
@@ -42,7 +43,7 @@ public class SingleplayerScene extends Stage {
 
     @Override
     public void onEnable(Scene previous) {
-        launcher.getLogger().log(Level.INFO, "Singleplayer scene has been started!");
+        System.out.println("> Singleplayer scene!");
         Scene scene = new SingleplayerResourceScene(this);
         setScene(scene);
         scene.onEnable(null);

@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 
 @Getter
 public class OpenverseLauncher {
-    private final Logger logger = Logger.getLogger("openverse_launcher");
     private final Game game;
 
     public OpenverseLauncher() {
@@ -19,10 +18,11 @@ public class OpenverseLauncher {
                 .title("Openverse")
                 .fullscreen(false)
         );
+        game.setup();
     }
 
     public void launch() {
-        game.setStage(new SingleplayerScene(this));
+        game.getStage().setScene(new SingleplayerScene(this));
         game.start();
     }
 

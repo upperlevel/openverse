@@ -2,40 +2,42 @@ package xyz.upperlevel.openverse.launcher.scenes;
 
 import lombok.Getter;
 import lombok.NonNull;
+import xyz.upperlevel.openverse.launcher.OpenverseLauncher;
 import xyz.upperlevel.ulge.game.Scene;
 
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static java.lang.System.out;
 import static org.lwjgl.opengl.GL11.glClearColor;
 
 // this scene is used to load client and server resources
+@Getter
 public class SingleplayerResourceScene implements Scene {
-
-    @Getter
+    private final OpenverseLauncher launcher;
     private final SingleplayerScene parent;
 
     public SingleplayerResourceScene(@NonNull SingleplayerScene parent) {
+        this.launcher = parent.getLauncher();
         this.parent = parent;
     }
 
     @Override
     public void onEnable(Scene previous) {
-        parent.getLauncher().getLogger().log(Level.INFO, "Singleplayer scene has been started!");
+        System.out.println("> Singleplayer resource scene!");
 
-        out.println("Attempting to load client resources...");
         parent.getClient().loadResources();
-        out.println("Client resources has been loaded.");
-
-        out.println("Attempting to load server resources...");
         parent.getServer().loadResources();
-        out.println("Server resources has been loaded.");
+        System.out.println("Resources loaded!");
+    }
 
-        parent.setScene(new SingleplayerPlayingScene(parent));
+    @Override
+    public void onFps() {
+        System.out.println("Fps: " + launcher.getGame().getFps());
     }
 
     @Override
     public void onRender() {
-        glClearColor(1, 0, 0, 1);
+        glClearColor(1f, 0, 0, 0);
     }
 }
