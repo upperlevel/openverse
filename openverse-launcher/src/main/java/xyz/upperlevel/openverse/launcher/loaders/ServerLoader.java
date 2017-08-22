@@ -1,7 +1,6 @@
 package xyz.upperlevel.openverse.launcher.loaders;
 
 import xyz.upperlevel.hermes.server.Server;
-import xyz.upperlevel.openverse.launcher.ProxyWrapper;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -10,12 +9,12 @@ import java.net.MalformedURLException;
 public class ServerLoader {
     private static final String PATH_TO_SERVER = "bin/openverse_server.jar";
     private static final String OPENVERSE_SERVER_PATH = "xyz.upperlevel.openverse.server.OpenverseServer";
-    private ServerClassLoader loader;
+    private ProxyClassLoader loader;
 
 
     public void load() {
         try {
-            loader = new ServerClassLoader(new File(PATH_TO_SERVER).toURI().toURL());
+            loader = new ProxyClassLoader(new File(PATH_TO_SERVER).toURI().toURL());
         } catch (MalformedURLException e) {
             throw new IllegalStateException("Cannot load url: \"" + PATH_TO_SERVER + "\"", e);
         }

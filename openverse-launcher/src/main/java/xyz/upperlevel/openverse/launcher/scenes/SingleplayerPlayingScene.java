@@ -29,6 +29,6 @@ public class SingleplayerPlayingScene extends Stage {
 
     @Override
     public void onRender() {
-        // todo render player
+        parent.getClient().render();
     }
 }

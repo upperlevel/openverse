@@ -58,6 +58,10 @@ public class OpenverseClient implements OpenverseProxy {
         return instance;
     }
 
+    public void render() {
+        Graphics.getRenderWorld().render();
+    }
+
     @Override
     public ClientUniverse getUniverse() {
         return universe;
