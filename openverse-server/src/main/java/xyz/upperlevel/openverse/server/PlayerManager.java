@@ -23,7 +23,6 @@ public class PlayerManager implements Listener {
 
     private final Map<String, Player> playersByName = new HashMap<>();
     private final Map<Connection, Player> playersByConnection = new HashMap<>();
-
     public PlayerManager() {
         ((Server) Openverse.getEndpoint()).getEventManager().register(this);
     }

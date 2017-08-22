@@ -14,8 +14,6 @@ import java.util.Map;
  */
 public class Universe {
 
-    private static Universe instance = new Universe();
-
     // the spawn location is just server side
 
     private final Map<String, World> worlds = new HashMap<>();
@@ -55,10 +53,6 @@ public class Universe {
 
 
     public static Universe get() {
-        return instance;
-    }
-
-    public static void set(Universe universe) {
-        instance = universe;
+        return Openverse.getUniverse();
     }
 }

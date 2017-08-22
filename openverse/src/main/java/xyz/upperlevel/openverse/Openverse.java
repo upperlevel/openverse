@@ -34,4 +34,8 @@ public final class Openverse {
     public static Channel getChannel() {
         return proxy.getChannel(); //TODO: create common channel
     }
+
+    public static Universe getUniverse() {
+        return proxy.getUniverse();
+    }
 }

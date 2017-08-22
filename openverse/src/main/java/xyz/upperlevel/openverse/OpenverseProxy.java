@@ -15,4 +15,6 @@ public interface OpenverseProxy {
     Endpoint getEndpoint();
 
     Channel getChannel();
+
+    Universe getUniverse();
 }

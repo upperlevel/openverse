@@ -6,10 +6,14 @@ import xyz.upperlevel.event.impl.def.EventManager;
 import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.hermes.channel.Channel;
 import xyz.upperlevel.hermes.client.Client;
+import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.OpenverseProtocol;
 import xyz.upperlevel.openverse.OpenverseProxy;
+import xyz.upperlevel.openverse.client.render.Graphics;
 import xyz.upperlevel.openverse.client.resource.ClientResourceManager;
+import xyz.upperlevel.openverse.client.world.ClientUniverse;
 import xyz.upperlevel.openverse.world.Location;
+import xyz.upperlevel.openverse.world.Universe;
 import xyz.upperlevel.openverse.world.entity.EntityManager;
 import xyz.upperlevel.openverse.world.entity.Player;
 
@@ -31,7 +35,10 @@ public class OpenverseClient implements OpenverseProxy {
     // events
     private final EventManager eventManager;
 
+    private final ClientUniverse universe;
+
     public OpenverseClient(@NonNull Client client) {
+        Openverse.setProxy(this);
         instance = this; // for static access
 
         endpoint = client;
@@ -43,9 +50,16 @@ public class OpenverseClient implements OpenverseProxy {
 
         eventManager = new EventManager();
         resourceManager = new ClientResourceManager();
+
+        universe = new ClientUniverse();
     }
 
     public static OpenverseClient get() {
         return instance;
+    }
+
+    @Override
+    public ClientUniverse getUniverse() {
+        return universe;
     }
 }
