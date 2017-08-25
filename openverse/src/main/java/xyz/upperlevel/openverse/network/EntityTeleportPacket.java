@@ -1,14 +1,20 @@
 package xyz.upperlevel.openverse.network;
 
+import io.netty.buffer.ByteBuf;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import xyz.upperlevel.hermes.Packet;
 import xyz.upperlevel.openverse.world.Location;
+
+import static xyz.upperlevel.openverse.network.SerialUtil.readString;
+import static xyz.upperlevel.openverse.network.SerialUtil.writeString;
 
 /**
  * At the moment the EntityTeleportPacket teleports always the only player the world has.
  * We have no entity system at the moment.
  */
+@NoArgsConstructor
 public class EntityTeleportPacket implements Packet {
 
     @Getter
@@ -46,5 +52,27 @@ public class EntityTeleportPacket implements Packet {
         z = to.getZ();
         yaw = to.getYaw();
         pitch = to.getPitch();
+    }
+
+    @Override
+    public void toData(ByteBuf out) {
+        out.writeLong(id);
+        writeString(worldName, out);
+        out.writeDouble(x);
+        out.writeDouble(y);
+        out.writeDouble(z);
+        out.writeDouble(yaw);
+        out.writeDouble(pitch);
+    }
+
+    @Override
+    public void fromData(ByteBuf in) {
+        id = in.readLong();
+        worldName = readString(in);
+        x = in.readDouble();
+        y = in.readDouble();
+        z = in.readDouble();
+        yaw = in.readDouble();
+        pitch = in.readDouble();
     }
 }

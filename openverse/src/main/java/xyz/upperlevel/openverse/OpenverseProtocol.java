@@ -3,15 +3,16 @@ package xyz.upperlevel.openverse;
 import xyz.upperlevel.hermes.Protocol;
 import xyz.upperlevel.openverse.network.*;
 
+import static xyz.upperlevel.hermes.PacketSide.*;
+
 public final class OpenverseProtocol {
 
     private static Protocol protocol = Protocol.builder()
-            // todo adds packets
-            .subChannels()//Register sub-channel related packets
-            .register(EntityTeleportPacket.class, new EntityTeleportPacketConverter())
-            .register(UniversePacket.class, new UniversePacketConverter())
-            .register(ChunkCreatePacket.class, new ChunkCreatePacketConverter())
-            .register(ChunkUnloadPacket.class, new ChunkUnloadPacketConverter())
+            .enableSubChannels()//Register sub-channel related packets
+            .packet(SHARED, EntityTeleportPacket.class)
+            .packet(CLIENT, UniversePacket.class)
+            .packet(CLIENT, ChunkCreatePacket.class)
+            .packet(CLIENT, ChunkUnloadPacket.class)
             .build();
 
     private OpenverseProtocol() {

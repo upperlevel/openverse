@@ -11,20 +11,20 @@
     </parent>
 
     <artifactId>openverse-server</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>${version}</version>
 
     <dependencies>
         <!-- openverse common -->
         <dependency>
             <groupId>xyz.upperlevel.openverse</groupId>
             <artifactId>openverse</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${version}</version>
         </dependency>
         <!-- hermes server -->
         <dependency>
             <groupId>xyz.upperlevel.hermes</groupId>
             <artifactId>hermes-server</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${hermesVersion}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

@@ -1,14 +1,27 @@
 package xyz.upperlevel.openverse.network;
 
+import io.netty.buffer.ByteBuf;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import xyz.upperlevel.hermes.Packet;
 
 /**
  * This packet is sent from the server to the client to remove an entity.
  */
 @Getter
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class EntityRemovePacket implements Packet {
-    private final int entityId;
+    private int entityId;
+
+    @Override
+    public void toData(ByteBuf out) {
+        out.writeInt(entityId);
+    }
+
+    @Override
+    public void fromData(ByteBuf in) {
+        entityId = in.readInt();
+    }
 }

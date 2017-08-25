@@ -1,5 +1,6 @@
 package xyz.upperlevel.openverse.network;
 
+import io.netty.buffer.ByteBuf;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 
 import java.nio.ByteBuffer;
@@ -19,30 +20,30 @@ public final class SerialUtil {
         return i;
     }
 
-    public static String readString(ByteBuffer buf) {
+    public static String readString(ByteBuf in) {
         StringBuilder out = new StringBuilder();
         char c;
-        while ((c = (char) buf.get()) != TERMINATOR)
+        while ((c = in.readChar()) != TERMINATOR)
             out.append(c);
         return out.toString();
     }
 
-    public static void writeString(String str, ByteBuffer out) {
-        out     .put(str.getBytes(CHARSET))
-                .put((byte) TERMINATOR);
+    public static void writeString(String str, ByteBuf out) {
+        out     .writeBytes(str.getBytes(CHARSET))
+                .writeByte(TERMINATOR);
     }
 
 
-    public static ChunkLocation readChunkLocation(ByteBuffer in) {
+    public static ChunkLocation readChunkLocation(ByteBuf in) {
         return new ChunkLocation(//And finally get the location
-                in.getInt(),
-                in.getInt(),
-                in.getInt()
+                in.readInt(),
+                in.readInt(),
+                in.readInt()
         );
     }
-    public static void writeChunkLocation(ChunkLocation loc, ByteBuffer out) {
-        out.putInt(loc.x);
-        out.putInt(loc.y);
-        out.putInt(loc.z);
+    public static void writeChunkLocation(ChunkLocation loc, ByteBuf out) {
+        out.writeInt(loc.x);
+        out.writeInt(loc.y);
+        out.writeInt(loc.z);
     }
 }

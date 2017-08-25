@@ -1,6 +1,8 @@
 package xyz.upperlevel.openverse.network;
 
+import io.netty.buffer.ByteBuf;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import xyz.upperlevel.hermes.Packet;
 import xyz.upperlevel.openverse.resource.BlockType;
@@ -8,12 +10,15 @@ import xyz.upperlevel.openverse.world.block.BlockSystem;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 
+import static xyz.upperlevel.openverse.network.SerialUtil.*;
+
+@NoArgsConstructor
 public class ChunkCreatePacket implements Packet {
     @Getter
-    private final ChunkLocation location;
+    private ChunkLocation location;
 
     // a 3d-array of block types ids for this chunk
-    private final String[][][] blockTypes;
+    private String[][][] blockTypes;
 
     public ChunkCreatePacket(@NonNull Chunk chunk) {
         this(
@@ -44,5 +49,39 @@ public class ChunkCreatePacket implements Packet {
 
     public String getBlockType(int x, int y, int z) {
         return blockTypes[x][y][z];
+    }
+
+    @Override
+    public void toData(ByteBuf out) {
+
+        //Location
+        writeChunkLocation(location, out);
+
+        //Blocks
+        for (int x = 0; x < 16; x++) {
+            for (int y = 0; y < 16; y++) {
+                for (int z = 0; z < 16; z++) {
+                    final String id = getBlockType(x, y, z);
+                    writeString(id != null ? id : "", out);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void fromData(ByteBuf in) {
+        location = readChunkLocation(in);
+
+        blockTypes = new String[16][16][16];
+
+        for (int x = 0; x < 16; x++) {
+            for (int y = 0; y < 16; y++) {
+                for (int z = 0; z < 16; z++) {
+                    final String id = readString(in);
+                    if(!id.isEmpty())
+                        blockTypes[x][y][z] = id;
+                }
+            }
+        }
     }
 }

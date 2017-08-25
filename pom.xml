@@ -9,6 +9,11 @@
     <packaging>pom</packaging>
     <version>FINAL</version>
 
+    <properties>
+        <hermesVersion>1.1</hermesVersion>
+        <version>1.0.0-SNAPSHOT</version>
+    </properties>
+
     <modules>
         <module>openverse</module>
         <module>openverse-client</module>
