@@ -3,7 +3,7 @@ package xyz.upperlevel.openverse.server;
 import lombok.Getter;
 import lombok.NonNull;
 import xyz.upperlevel.event.Listener;
-import xyz.upperlevel.event.impl.def.EventManager;
+import xyz.upperlevel.event.EventManager;
 import xyz.upperlevel.hermes.PacketSide;
 import xyz.upperlevel.hermes.channel.Channel;
 import xyz.upperlevel.hermes.server.Server;

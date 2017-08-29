@@ -2,16 +2,14 @@ package xyz.upperlevel.openverse.client;
 
 import lombok.Getter;
 import lombok.NonNull;
-import xyz.upperlevel.event.impl.def.EventManager;
+import xyz.upperlevel.event.EventManager;
 import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.hermes.PacketSide;
 import xyz.upperlevel.hermes.channel.Channel;
 import xyz.upperlevel.hermes.client.Client;
-import xyz.upperlevel.hermes.impl.id.IdPacketConverter;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.client.resource.ClientResources;
-import xyz.upperlevel.openverse.launcher.OpenverseLauncher;
 import xyz.upperlevel.ulge.game.Stage;
 
 import java.util.logging.Logger;
