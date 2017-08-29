@@ -36,7 +36,6 @@ public class OpenverseClient implements OpenverseProxy {
         endpoint = client;
         Connection connection = client.getConnection();
         channel = new Channel("main").setProtocol(PROTOCOL.compile(PacketSide.CLIENT));
-        System.out.println("CLIENT: " + channel.getProtocol().getRegistered());
         connection.setDefaultChannel(channel);
         eventManager = new EventManager();
         resources = new ClientResources(Logger.getLogger("OpenverseClient"));
