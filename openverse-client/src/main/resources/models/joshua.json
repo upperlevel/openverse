@@ -1,0 +1,42 @@
+{
+  "color": "green",
+  "texture": "lol.png",
+  "shapes": [
+    {
+      "type": "cube",
+      "x": 2,
+      "y": 1,
+      "z": 3,
+      "width": 10,
+      "height": 0.5,
+      "length": 0.1,
+      "texture": "grass.png",
+      "color": "blue",
+      "faces": [
+        {
+          "position": "right",
+          "texture": "something.png",
+          "color": "red",
+          "vertices": [
+            {
+              "position": "top right",
+              "color": "yellow"
+            }
+          ]
+        },
+        {
+          "position": "top",
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "type": "sphere",
+      "x": 2,
+      "y": 1,
+      "z": 3,
+      "radius": 10,
+      "texture": "thing_2.png"
+    }
+  ]
+}

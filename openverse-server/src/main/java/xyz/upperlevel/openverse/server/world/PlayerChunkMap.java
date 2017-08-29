@@ -16,10 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class PlayerChunkMap {
-
-    @Getter
     private final World handle;
-    @Getter
     private int radius;
 
     private Map<ChunkLocation, PlayerChunk> chunks = new HashMap<>();

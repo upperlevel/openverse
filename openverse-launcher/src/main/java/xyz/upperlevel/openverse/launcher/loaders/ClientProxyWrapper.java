@@ -10,6 +10,7 @@ public class ClientProxyWrapper extends ProxyWrapper {
     public ClientProxyWrapper(Object handle) {
         super(handle);
         try {
+            System.out.println("AHHA FOUND IT!");
             render = handle.getClass().getMethod("render");
         } catch (NoSuchMethodException e) {
             throw new IllegalStateException("Cannot find render method!", e);

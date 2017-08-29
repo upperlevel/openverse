@@ -24,9 +24,12 @@ public class SingleplayerResourceScene implements Scene {
 
     @Override
     public void onEnable(Scene previous) {
+        System.out.println("Loading client and server resources...");
         parent.getClient().loadResources();
         parent.getServer().loadResources();
+        System.out.println("Resources loaded!");
 
+        System.out.println("Setting up playing scene...");
         parent.setScene(new SingleplayerPlayingScene(parent));
     }
 

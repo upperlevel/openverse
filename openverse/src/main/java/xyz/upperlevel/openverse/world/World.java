@@ -10,13 +10,9 @@ import xyz.upperlevel.openverse.world.chunk.DefaultChunkSystem;
 
 import static java.lang.Math.floor;
 
+@Getter
 public class World {
-
-    @Getter
     private final String name;
-
-    @Getter
-    @Setter
     private ChunkSystem chunkSystem;
 
     public World(String name) {
@@ -28,12 +24,29 @@ public class World {
         return chunkSystem.getChunk(x, y, z);
     }
 
-    public Chunk getChunk(ChunkLocation location) {
-        return chunkSystem.getChunk(location);
+    public Chunk getChunk(ChunkLocation loc) {
+        // todo review chunk system chunk locs
+        return chunkSystem.getChunk(loc.x, loc.y, loc.z);
     }
 
     public Chunk getChunk(double x, double y, double z) {
         return getChunk((int) floor(x), (int) floor(y), (int) floor(z));
+    }
+
+    public void setChunk(int x, int y, int z, Chunk chunk) {
+        chunkSystem.setChunk(x, y, z, chunk);
+    }
+
+    public void setChunk(ChunkLocation loc, Chunk chunk) {
+        chunkSystem.setChunk(loc.x, loc.y, loc.z, chunk);
+    }
+
+    public void unloadChunk(int x, int y, int z) {
+        chunkSystem.destroyChunk(x, y, z);
+    }
+
+    public void unloadChunk(ChunkLocation loc) {
+        chunkSystem.destroyChunk(loc.x, loc.y, loc.z);
     }
 
     public Block getBlock(int x, int y, int z) {

@@ -7,34 +7,32 @@ import xyz.upperlevel.event.impl.def.EventManager;
 import xyz.upperlevel.hermes.channel.Channel;
 import xyz.upperlevel.hermes.server.Server;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.OpenverseProtocol;
 import xyz.upperlevel.openverse.OpenverseProxy;
-import xyz.upperlevel.openverse.server.resource.ServerResourceManager;
-import xyz.upperlevel.openverse.server.world.ServerUniverse;
+import xyz.upperlevel.openverse.resource.Resources;
+import xyz.upperlevel.openverse.server.world.Universe;
+
+import java.util.logging.Logger;
 
 @Getter
 public class OpenverseServer implements OpenverseProxy, Listener {
     private final Server endpoint;
-    private final Channel channel;
-    private final ServerUniverse universe;
+    private Channel channel;
+    private Universe universe;
     private final EventManager eventManager = new EventManager();
-    private final ServerResourceManager resourceManager = new ServerResourceManager();
+    private final Resources resources = new Resources(Logger.getLogger("CIAO"));
     private final PlayerManager playerManager;
 
     // we don't know if the server is locally connected or use the network
     public OpenverseServer(@NonNull Server server) {
         Openverse.setProxy(this);
         this.endpoint = server;
-        this.channel = new Channel("main").setProtocol(OpenverseProtocol.get());
+        //this.channel = new Channel("main").setProtocol(OpenverseProtocol.get());
         this.endpoint.setDefaultChannel(channel);
-        this.universe = new ServerUniverse(this);
         this.playerManager = new PlayerManager();
-
-        universe.load();
     }
 
     public void start() {
-        resourceManager.load();
+        resources.load();
     }
 
     public void stop() {
@@ -42,5 +40,10 @@ public class OpenverseServer implements OpenverseProxy, Listener {
 
     public static OpenverseServer get() {
         return (OpenverseServer) Openverse.getProxy();
+    }
+
+    @Override
+    public Resources getResources() {
+        return null;
     }
 }

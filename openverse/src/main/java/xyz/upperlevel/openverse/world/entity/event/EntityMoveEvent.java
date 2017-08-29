@@ -1,23 +1,22 @@
 package xyz.upperlevel.openverse.world.entity.event;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import xyz.upperlevel.event.CancellableEvent;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.entity.Entity;
 
+@Getter
+@RequiredArgsConstructor
 public class EntityMoveEvent extends CancellableEvent {
-    @Getter
     private final Entity entity;
-
-    @Getter
     private final Location oldLocation;
-    @Getter
-    private Location location;
+    private final Location location;
 
     public EntityMoveEvent(Entity entity, Location newLocation) {
         this.entity = entity;
-        oldLocation = entity.getLocation();
-        location = newLocation;
+        this.oldLocation = entity.getLocation();
+        this.location = newLocation;
     }
 
     public void setLocation(Location location) {

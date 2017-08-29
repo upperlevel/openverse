@@ -9,26 +9,23 @@ import xyz.upperlevel.hermes.client.Client;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.OpenverseProtocol;
 import xyz.upperlevel.openverse.OpenverseProxy;
-import xyz.upperlevel.openverse.client.render.Graphics;
-import xyz.upperlevel.openverse.client.resource.ClientResourceManager;
-import xyz.upperlevel.openverse.client.world.ClientUniverse;
+import xyz.upperlevel.openverse.client.resource.ClientResources;
+import xyz.upperlevel.openverse.resource.Resources;
 import xyz.upperlevel.openverse.world.Location;
-import xyz.upperlevel.openverse.world.Universe;
-import xyz.upperlevel.openverse.world.entity.EntityManager;
 import xyz.upperlevel.openverse.world.entity.Player;
 import xyz.upperlevel.ulge.game.Stage;
+
+import java.util.logging.Logger;
 
 @Getter
 public class OpenverseClient extends Stage implements OpenverseProxy {
     private static OpenverseClient instance;
 
     private final Client endpoint;
-    private final Channel channel;
+    private Channel channel;
     private final Player player;
-    private final ClientResourceManager resourceManager; // resources are loaded per universe
+    private final ClientResources resourceManager; // resources are loaded per universe
     private final EventManager eventManager;
-
-    private final ClientUniverse universe;
 
     public OpenverseClient(@NonNull Client client) {
         Openverse.setProxy(this);
@@ -36,27 +33,21 @@ public class OpenverseClient extends Stage implements OpenverseProxy {
 
         endpoint = client;
         Connection connection = client.getConnection();
-        channel = new Channel("main").setProtocol(OpenverseProtocol.get());
+        //channel = new Channel("main").setProtocol(OpenverseProtocol.get());
         connection.setDefaultChannel(channel);
 
         player = new Player(new Location(null, 0, 0, 0), "my_player", connection);
 
         eventManager = new EventManager();
-        resourceManager = new ClientResourceManager();
-
-        universe = new ClientUniverse();
+        resourceManager = new ClientResources(Logger.getLogger("OpenverseClient"));
     }
 
     public static OpenverseClient get() {
         return instance;
     }
 
-    public void render() {
-        Graphics.getRenderWorld().render();
-    }
-
     @Override
-    public ClientUniverse getUniverse() {
-        return universe;
+    public ClientResources getResources() {
+        return new ClientResources(Logger.getLogger("ClientResources"));
     }
 }

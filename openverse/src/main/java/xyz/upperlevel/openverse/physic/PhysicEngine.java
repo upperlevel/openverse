@@ -1,7 +1,7 @@
 package xyz.upperlevel.openverse.physic;
 
 import org.joml.Vector3d;
-import xyz.upperlevel.openverse.resource.BlockType;
+import xyz.upperlevel.openverse.resource.block.BlockType;
 import xyz.upperlevel.openverse.resource.model.Model;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.World;

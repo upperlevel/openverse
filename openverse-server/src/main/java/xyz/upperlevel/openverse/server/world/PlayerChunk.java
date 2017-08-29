@@ -13,14 +13,12 @@ public class PlayerChunk {
     @Getter
     private final ChunkLocation loc;
 
-    //TODO too memory consumption?
+    //TODO too memory waste?
     private Set<Player> players = new HashSet<>();
-
 
     public PlayerChunk(ChunkLocation loc) {
         this.loc = loc;
     }
-
 
     public void addPlayer(Player player) {
         players.add(player);

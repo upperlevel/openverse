@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class DefaultChunkSystem extends ChunkSystem {
 
-    private final Map<ChunkLocation, Chunk> chunkCache = new HashMap<>();
+    private final Map<ChunkLocation, Chunk> chunks = new HashMap<>();
 
     @Getter
     @Setter
@@ -20,7 +20,7 @@ public class DefaultChunkSystem extends ChunkSystem {
     }
 
     public boolean isLoaded(ChunkLocation location) {
-        return chunkCache.containsKey(location);
+        return chunks.containsKey(location);
     }
 
     public boolean isLoaded(Chunk chunk) {
@@ -28,7 +28,7 @@ public class DefaultChunkSystem extends ChunkSystem {
     }
 
     private void addChunk(Chunk chunk) {
-        chunkCache.put(chunk.getLocation(), chunk);
+        chunks.put(chunk.getLocation(), chunk);
         if (generator != null)
             generator.generate(chunk);
     }
@@ -40,18 +40,24 @@ public class DefaultChunkSystem extends ChunkSystem {
     }
 
     public boolean removeChunk(ChunkLocation location) {
-        return chunkCache.remove(location) != null;
+        return chunks.remove(location) != null;
     }
 
     @Override
     public Chunk getChunk(int x, int y, int z) {
-        return getChunk(new ChunkLocation(x, y, z));
+        ChunkLocation loc = new ChunkLocation(x, y, z);
+        if (isLoaded(loc))
+            return chunks.get(loc);
+        return addChunk(loc);
     }
 
     @Override
-    public Chunk getChunk(ChunkLocation location) {
-        if (isLoaded(location))
-            return chunkCache.get(location);
-        return addChunk(location);
+    public void setChunk(int x, int y, int z, Chunk chunk) {
+        chunks.put(new ChunkLocation(x, y, z), chunk);
+    }
+
+    @Override
+    public void destroyChunk(int x, int y, int z) {
+        chunks.remove(new ChunkLocation(x, y, z));
     }
 }

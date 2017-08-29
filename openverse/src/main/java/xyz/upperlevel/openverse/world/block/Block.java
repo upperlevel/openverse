@@ -2,7 +2,7 @@ package xyz.upperlevel.openverse.world.block;
 
 import lombok.Getter;
 import lombok.Setter;
-import xyz.upperlevel.openverse.resource.BlockType;
+import xyz.upperlevel.openverse.resource.block.BlockType;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 

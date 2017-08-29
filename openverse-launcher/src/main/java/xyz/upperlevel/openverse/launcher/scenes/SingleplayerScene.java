@@ -23,6 +23,7 @@ public class SingleplayerScene extends Stage {
     public SingleplayerScene(OpenverseLauncher launcher) {
         this.launcher = launcher;
 
+        System.out.println("Creating client...");
         DirectClient client = new DirectClient();
         DirectClientConnection clientConnection = client.getConnection();
         clientConnection.setCopy(true);
@@ -30,6 +31,7 @@ public class SingleplayerScene extends Stage {
         clientLoader.load();
         this.client = clientLoader.createClient(client);
 
+        System.out.println("Creating server...");
         DirectServer server = new DirectServer();
         DirectServerConnection serverConnection = server.newConnection(clientConnection);
         serverConnection.setCopy(true);
@@ -41,6 +43,7 @@ public class SingleplayerScene extends Stage {
 
     @Override
     public void onEnable(Scene previous) {
+        System.out.println("Enabling resource scene...");
         setScene(new SingleplayerResourceScene(this));
     }
 }

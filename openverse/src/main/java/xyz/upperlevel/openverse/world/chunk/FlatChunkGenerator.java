@@ -2,7 +2,7 @@ package xyz.upperlevel.openverse.world.chunk;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import xyz.upperlevel.openverse.resource.BlockType;
+import xyz.upperlevel.openverse.resource.block.BlockType;
 
 @RequiredArgsConstructor
 public class FlatChunkGenerator implements ChunkGenerator {

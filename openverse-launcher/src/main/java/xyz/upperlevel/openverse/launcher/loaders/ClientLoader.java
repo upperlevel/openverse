@@ -7,7 +7,7 @@ import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 
 public class ClientLoader {
-    private static final String PATH_TO_CLIENT = "bin/openverse_client.jar";
+    private static final String PATH_TO_CLIENT = "client/openverse_client.jar";
     private static final String OPENVERSE_CLIENT_PATH = "xyz.upperlevel.openverse.client.OpenverseClient";
     private ProxyClassLoader loader;
 
@@ -35,7 +35,9 @@ public class ClientLoader {
             throw new IllegalStateException("Cannot find OpenverseClient constructor!", e);
         }
         try {
-            return new ClientProxyWrapper(constructor.newInstance(connection));
+            System.out.println("Instancing handle obj");
+            Object hnd = constructor.newInstance(connection);
+            return new ClientProxyWrapper(hnd);
         } catch (Exception e) {
             throw new IllegalStateException("Cannot initialize OpenverseClient!", e);
         }

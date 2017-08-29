@@ -4,13 +4,17 @@ import lombok.RequiredArgsConstructor;
 
 import java.lang.reflect.InvocationTargetException;
 
-@RequiredArgsConstructor
 public class ProxyWrapper {
     protected final Object handle;
 
+    public ProxyWrapper(Object handle) {
+        this.handle = handle;
+        System.out.println("SUPER!");
+    }
+
     public void loadResources() {
         try {
-            Object resManager = handle.getClass().getMethod("getResourceManager").invoke(handle);
+            Object resManager = handle.getClass().getMethod("getResources").invoke(handle);
             resManager.getClass().getMethod("load").invoke(resManager);
         } catch (IllegalAccessException e) {
             throw new IllegalStateException("Error while accessing resource system", e);

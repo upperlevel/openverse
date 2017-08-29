@@ -1,28 +1,28 @@
 package xyz.upperlevel.openverse.resource.model;
 
 import lombok.Getter;
-import lombok.NonNull;
 import org.joml.Vector3d;
+import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.physic.Box;
+import xyz.upperlevel.openverse.resource.model.shape.Shape;
+import xyz.upperlevel.openverse.resource.model.shape.ShapeType;
+import xyz.upperlevel.openverse.util.config.Config;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @param <S> {@link Shape} objects have a different implementation in client-side.
+ */
 @Getter
 public class Model<S extends Shape> {
-
-    private final String id;
     private final List<S> shapes = new ArrayList<>();
 
-    public Model(@NonNull String id) {
-        this.id = id;
+    public void addShape(S shape) {
+        shapes.add(shape);
     }
 
-    public Model<S> add(S part) {
-        shapes.add(part);
-        return this;
-    }
-
+    // todo re-do (with buffering)!
     public Box getBox() {
         Vector3d min = null,
                 max = null;
@@ -78,5 +78,16 @@ public class Model<S extends Shape> {
                 max.y - min.y,
                 max.z - min.z
         );
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <M extends Model> M deserialize(Config config) {
+        Model<Shape> res = new Model<>();
+        for (Config subCfg : config.getConfigList("shapes")) {
+            ShapeType shapeFac = Openverse.resources().shapes().entry(config.getStringRequired("type"));
+            if (shapeFac != null)
+                res.addShape(shapeFac.create(subCfg));
+        }
+        return (M) res; // we are sure that this is a Model
     }
 }

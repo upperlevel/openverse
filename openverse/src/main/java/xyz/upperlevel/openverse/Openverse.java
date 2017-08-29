@@ -6,11 +6,7 @@ import lombok.Setter;
 import xyz.upperlevel.event.impl.def.EventManager;
 import xyz.upperlevel.hermes.Endpoint;
 import xyz.upperlevel.hermes.channel.Channel;
-import xyz.upperlevel.openverse.resource.ResourceManager;
-import xyz.upperlevel.openverse.world.Universe;
-import xyz.upperlevel.openverse.world.entity.Player;
-
-import java.util.List;
+import xyz.upperlevel.openverse.resource.Resources;
 
 @RequiredArgsConstructor
 public final class Openverse {
@@ -23,8 +19,8 @@ public final class Openverse {
         return proxy.getEventManager();
     }
 
-    public static ResourceManager getResourceManager() {
-        return proxy.getResourceManager();
+    public static Resources resources() {
+        return proxy.getResources();
     }
 
     public static Endpoint getEndpoint() {
@@ -33,9 +29,5 @@ public final class Openverse {
 
     public static Channel getChannel() {
         return proxy.getChannel(); //TODO: create common channel
-    }
-
-    public static Universe getUniverse() {
-        return proxy.getUniverse();
     }
 }

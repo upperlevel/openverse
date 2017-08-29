@@ -18,7 +18,7 @@ public class ChunkVisibilityChangeEvent implements Event {
     }
 
     public Set<Chunk> getAddedChunks() {
-        if(addedChunks == null) {
+        if (addedChunks == null) {
             addedChunks = new HashSet<>(visibleChunks);
             addedChunks.removeAll(oldChunks);
         }
@@ -26,7 +26,7 @@ public class ChunkVisibilityChangeEvent implements Event {
     }
 
     public Set<Chunk> getRemovedChunks() {
-        if(removedChunks == null) {
+        if (removedChunks == null) {
             removedChunks = new HashSet<>(oldChunks);
             oldChunks.removeAll(addedChunks);
         }

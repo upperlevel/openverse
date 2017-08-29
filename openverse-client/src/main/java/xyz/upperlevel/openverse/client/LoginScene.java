@@ -22,7 +22,7 @@ public class LoginScene implements Scene, Listener {
 
     @Override
     public void onEnable(Scene previous) {
-        client.getChannel().register(this);
+        //client.getChannel().register(this);
         client.getEndpoint().getConnection().send(client.getChannel(), new LoginRequestPacket());
     }
 

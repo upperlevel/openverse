@@ -9,9 +9,8 @@ import xyz.upperlevel.hermes.event.impl.ConnectionCloseEvent;
 import xyz.upperlevel.hermes.event.impl.ConnectionOpenEvent;
 import xyz.upperlevel.hermes.server.Server;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.world.Location;
-import xyz.upperlevel.openverse.world.Universe;
+import xyz.upperlevel.openverse.server.world.Universe;
 import xyz.upperlevel.openverse.world.entity.Player;
 
 import java.util.Collection;
@@ -55,7 +54,8 @@ public class PlayerManager implements Listener {
     }
 
     protected Player createPlayer(Connection connection) {
-        return new Player(new Location(Universe.get().getWorlds().iterator().next(), 0, 0, 0).copy(), PLAYER_NAME, connection);
+        // TODO return new Player(new Location(Universe.get().getWorlds().iterator().next(), 0, 0, 0).copy(), PLAYER_NAME, connection);
+        return null;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

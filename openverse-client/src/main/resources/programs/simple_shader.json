@@ -1,0 +1,3 @@
+{
+  "shaders": ["simple_shader.vs", "simple_shader.fs"]
+}

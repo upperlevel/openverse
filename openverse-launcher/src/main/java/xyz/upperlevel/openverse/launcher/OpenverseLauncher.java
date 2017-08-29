@@ -22,7 +22,9 @@ public class OpenverseLauncher {
     }
 
     public void launch() {
+        System.out.println("Setting singleplayer scene...");
         game.getStage().setScene(new SingleplayerScene(this));
+        System.out.println("Starting OpenverseLauncher...");
         game.start();
     }
 

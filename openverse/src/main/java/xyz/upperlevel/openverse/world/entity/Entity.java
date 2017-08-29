@@ -5,8 +5,8 @@ import lombok.NonNull;
 import lombok.Setter;
 import org.joml.Vector3d;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.network.EntityTeleportPacket;
-import xyz.upperlevel.openverse.resource.EntityType;
+import xyz.upperlevel.openverse.network.entity.EntityTeleportPacket;
+import xyz.upperlevel.openverse.resource.entity.EntityType;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.entity.event.EntityMoveEvent;
@@ -60,7 +60,7 @@ public class Entity {
         // todo if the location is null sends a packet that removes from the world where it is
         if (location != null && update)
             getEndpoint().getConnections().forEach(connection ->
-                    connection.send(getChannel(), new EntityTeleportPacket(id, location))
+                    connection.send(getChannel(), new EntityTeleportPacket(id, location.getWorld().getName(), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch()))
             );
     }
 
