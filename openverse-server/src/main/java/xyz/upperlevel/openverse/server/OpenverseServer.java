@@ -21,14 +21,14 @@ public class OpenverseServer implements OpenverseProxy, Listener {
     private Universe universe;
     private final Logger logger = Logger.getLogger("OpenverseServer");
     private final EventManager eventManager = new EventManager();
-    private final Resources resources = new Resources(Logger.getLogger("CIAO"));
+    private final Resources resources = new Resources(Logger.getLogger("ServerResources"));
     private final PlayerManager playerManager;
 
     public OpenverseServer(@NonNull Server server) {
         Openverse.setProxy(this);
         this.endpoint = server;
         this.channel = new Channel("main").setProtocol(Openverse.PROTOCOL.compile(PacketSide.SERVER));
-        server.setDefaultChannel(channel);
+        endpoint.setDefaultChannel(channel);
         this.universe = new Universe();
         this.playerManager = new PlayerManager();
     }

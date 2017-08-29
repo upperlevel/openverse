@@ -2,6 +2,7 @@ package xyz.upperlevel.openverse.client;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.lwjgl.opengl.GL11;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.ulge.game.Scene;
 
@@ -12,9 +13,13 @@ public class ResourceScene implements Scene {
 
     @Override
     public void onEnable(Scene previous) {
+        Openverse.logger().info("Joined resource scene.");
+        Openverse.logger().info("Loading and setting up client resources...");
+
         Openverse.resources().setup();
         Openverse.resources().load();
-        parent.setScene(new LoginScene(parent));
+
+        parent.setScene(new GameScene(parent));
     }
 
     @Override
@@ -31,5 +36,6 @@ public class ResourceScene implements Scene {
 
     @Override
     public void onRender() {
+        GL11.glClearColor(1f, 0, 0, 0);
     }
 }

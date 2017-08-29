@@ -39,7 +39,7 @@ public class ChunkViewRenderer implements Listener {
     private final ArraySlider3d<ChunkRenderer> chunks = new ArraySlider3d<ChunkRenderer>(MAX_RENDER_DISTANCE * 2 + 1) {
         @Override
         public ChunkRenderer ask(int x, int y, int z) {
-            return new ChunkRenderer(world.getChunk(x, y, z));
+            return world != null ? new ChunkRenderer(world.getChunk(x, y, z)) : null;
         }
     };
 

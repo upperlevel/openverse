@@ -7,6 +7,7 @@ import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.hermes.event.impl.ConnectionCloseEvent;
 import xyz.upperlevel.hermes.event.impl.ConnectionOpenEvent;
+import xyz.upperlevel.hermes.reflect.PacketHandler;
 import xyz.upperlevel.hermes.server.Server;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.world.entity.Player;

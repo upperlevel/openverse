@@ -7,6 +7,7 @@ import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.world.WorldViewer;
+import xyz.upperlevel.openverse.launcher.OpenverseLauncher;
 import xyz.upperlevel.openverse.world.entity.Player;
 import xyz.upperlevel.ulge.game.Game;
 import xyz.upperlevel.ulge.game.Scene;
@@ -30,6 +31,7 @@ public class GameScene implements Scene, Listener {
     @Override
     public void onEnable(Scene previous) {
         Openverse.logger().info("Game scene set up!");
+        Openverse.logger().info("Starting rendering world...");
     }
 
     @Override
@@ -47,6 +49,7 @@ public class GameScene implements Scene, Listener {
 
     @Override
     public void onFps() {
+        Openverse.logger().info("Fps: " + OpenverseLauncher.get().getGame().getFps());
     }
 
     @Getter(AccessLevel.NONE)
