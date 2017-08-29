@@ -27,7 +27,9 @@ public class TextureRegistry extends ResourceRegistry<Texture> {
 
     public TextureRegistry(Logger logger, int size) {
         super(FOLDER, logger);
+        System.out.println("..");
         this.atlas = new Texture2dArray();
+        System.out.println("..");
         this.atlas.allocate(4, GL_RGBA8, 16, 16, size);
     }
 

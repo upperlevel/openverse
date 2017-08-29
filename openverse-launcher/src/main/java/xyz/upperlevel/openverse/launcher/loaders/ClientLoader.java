@@ -21,7 +21,7 @@ public class ClientLoader {
     }
 
     @SuppressWarnings("unchecked")
-    public ClientProxyWrapper createClient(Client connection) {
+    public ClientWrapper createClient(Client connection) {
         Class<?> clientClass;
         try {
              clientClass = loader.loadClass(OPENVERSE_CLIENT_PATH);
@@ -35,9 +35,8 @@ public class ClientLoader {
             throw new IllegalStateException("Cannot find OpenverseClient constructor!", e);
         }
         try {
-            System.out.println("Instancing handle obj");
             Object hnd = constructor.newInstance(connection);
-            return new ClientProxyWrapper(hnd);
+            return new ClientWrapper(hnd);
         } catch (Exception e) {
             throw new IllegalStateException("Cannot initialize OpenverseClient!", e);
         }

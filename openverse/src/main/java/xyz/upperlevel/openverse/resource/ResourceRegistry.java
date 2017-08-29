@@ -85,8 +85,7 @@ public abstract class ResourceRegistry<E> extends Registry<E> {
                 onFolderLoad(logger, cnt, folder);
             } else
                 throw new IllegalStateException("Given file is not a folder!");
-        } else
-            throw new IllegalStateException("Given folder not exists!");
+        }
         return cnt;
     }
 

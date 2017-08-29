@@ -21,7 +21,7 @@ public class ServerLoader {
     }
 
     @SuppressWarnings("unchecked")
-    public ProxyWrapper createServer(Server connection) {
+    public ServerWrapper createServer(Server connection) {
         Class<?> serverClass;
         try {
             serverClass = loader.loadClass(OPENVERSE_SERVER_PATH);
@@ -35,7 +35,7 @@ public class ServerLoader {
             throw new IllegalStateException("Cannot find OpenverseServer constructor!", e);
         }
         try {
-            return new ProxyWrapper(constructor.newInstance(connection));
+            return new ServerWrapper(constructor.newInstance(connection));
         } catch (Exception e) {
             throw new IllegalStateException("Cannot initialize OpenverseServer!", e);
         }

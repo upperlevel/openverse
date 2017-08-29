@@ -5,8 +5,12 @@ import xyz.upperlevel.hermes.Endpoint;
 import xyz.upperlevel.hermes.channel.Channel;
 import xyz.upperlevel.openverse.resource.Resources;
 
+import java.util.logging.Logger;
+
 public interface OpenverseProxy {
     EventManager getEventManager();
+
+    Logger getLogger();
 
     Resources getResources();
 

@@ -2,6 +2,7 @@ package xyz.upperlevel.openverse.client.world;
 
 import lombok.Getter;
 import lombok.Setter;
+import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.hermes.reflect.PacketHandler;
 import xyz.upperlevel.hermes.reflect.PacketListener;
 import xyz.upperlevel.openverse.Openverse;
@@ -28,7 +29,7 @@ public class WorldViewer implements PacketListener {
     public WorldViewer() {
         this.worldSession = new WorldSession();
         this.program = ((ClientResources) Openverse.resources()).programs().entry("simple_shader");
-        Openverse.getChannel().register(this);
+        Openverse.channel().register(this);
     }
 
     /**
@@ -54,6 +55,18 @@ public class WorldViewer implements PacketListener {
 
     public void movePosition(float offsetX, float offsetY, float offsetZ) {
         setPosition(x + offsetX, y + offsetY, z + offsetZ);
+    }
+
+    public void forward(float speed) {
+
+    }
+
+    public void right(float speed) {
+
+    }
+
+    public void up(float speed) {
+
     }
 
     /**
@@ -95,17 +108,17 @@ public class WorldViewer implements PacketListener {
     }
 
     @PacketHandler
-    public void onPlayerChangeWorld(PlayerChangeWorldPacket pkt) {
+    public void onPlayerChangeWorld(Connection conn, PlayerChangeWorldPacket pkt) {
         worldSession.setWorld(new ClientWorld(pkt.getWorldName()));
     }
 
     @PacketHandler
-    public void onPlayerChangePosition(PlayerChangePositionPacket pkt) {
+    public void onPlayerChangePosition(Connection conn, PlayerChangePositionPacket pkt) {
         setPosition(pkt);
     }
     
     @PacketHandler
-    public void onPlayerChangeLook(PlayerChangeLookPacket pkt) {
+    public void onPlayerChangeLook(Connection conn, PlayerChangeLookPacket pkt) {
         setLook(pkt);
     }
 }

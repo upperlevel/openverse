@@ -35,6 +35,13 @@
             <version>${version}</version>
             <scope>compile</scope>
         </dependency>
+
+        <dependency>
+            <groupId>xyz.upperlevel.openverse</groupId>
+            <artifactId>openverse-launcher</artifactId>
+            <version>FINAL</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>

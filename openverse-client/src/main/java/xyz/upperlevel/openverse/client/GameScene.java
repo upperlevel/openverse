@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import xyz.upperlevel.event.Listener;
+import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.world.WorldViewer;
 import xyz.upperlevel.openverse.world.entity.Player;
 import xyz.upperlevel.ulge.game.Game;
@@ -14,14 +15,19 @@ import xyz.upperlevel.ulge.window.event.key.Key;
 
 // todo put in openverse launcher
 @Getter
-@RequiredArgsConstructor
 public class GameScene implements Scene, Listener {
-    private final OpenverseClient client;
+    private final ClientScene parent;
+
     private WorldViewer viewer;
+
+    public GameScene(ClientScene parent) {
+        this.parent = parent;
+        this.viewer = new WorldViewer();
+    }
 
     @Override
     public void onEnable(Scene previous) {
-        viewer = new WorldViewer();
+        Openverse.logger().info("Game scene set up!");
     }
 
     @Override
@@ -47,8 +53,29 @@ public class GameScene implements Scene, Listener {
         //g.getWindow().setCursorPosition(0, 0);
     }
 
+    private static final float SPEED = 1.5f;
+
     @Override
     public void onKeyChange(Key key, Action action) {
-        // todo key input
+        switch (key) {
+            case A:
+                viewer.right(-SPEED);
+                break;
+            case D:
+                viewer.right(SPEED);
+                break;
+            case W:
+                viewer.forward(SPEED);
+                break;
+            case S:
+                viewer.forward(-SPEED);
+                break;
+            case SPACE:
+                viewer.up(SPEED);
+                break;
+            case LEFT_SHIFT:
+                viewer.up(-SPEED);
+                break;
+        }
     }
 }

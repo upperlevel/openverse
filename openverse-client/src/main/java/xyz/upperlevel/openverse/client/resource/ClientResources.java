@@ -27,11 +27,15 @@ public class ClientResources extends Resources {
      */
     public ClientResources(Logger logger) {
         super(logger);
+        System.out.println("LOL");
         this.textureRegistry = new TextureRegistry(logger, 100 /*todo find texture size in some way*/);
+        System.out.println("LOL");
         this.shaderRegistry = new ShaderRegistry(logger);
+        System.out.println("LOL");
         this.programRegistry = new ProgramRegistry(logger);
         // overrides
         this.shapeFactoryRegistry = new ClientShapeTypeRegistry();
+        System.out.println("LOL");
         this.modelRegistry = new ClientModelRegistry(logger);
     }
 

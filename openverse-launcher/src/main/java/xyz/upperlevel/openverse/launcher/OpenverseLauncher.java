@@ -1,31 +1,34 @@
 package xyz.upperlevel.openverse.launcher;
 
 import lombok.Getter;
-import xyz.upperlevel.openverse.launcher.scenes.SingleplayerScene;
+import xyz.upperlevel.openverse.launcher.game.singleplayer.SingleplayerScene;
 import xyz.upperlevel.ulge.game.Game;
 import xyz.upperlevel.ulge.game.GameSettings;
 
-import java.util.logging.Logger;
-
 @Getter
 public class OpenverseLauncher {
+    private static OpenverseLauncher instance;
     private final Game game;
 
     public OpenverseLauncher() {
+        instance = this;
         game = new Game(new GameSettings()
                 .width(500)
                 .height(500)
                 .title("Openverse")
                 .fullscreen(false)
+                .createWindow()
         );
         game.setup();
     }
 
     public void launch() {
-        System.out.println("Setting singleplayer scene...");
         game.getStage().setScene(new SingleplayerScene(this));
-        System.out.println("Starting OpenverseLauncher...");
         game.start();
+    }
+
+    public static OpenverseLauncher get() {
+        return instance;
     }
 
     public static void main(String[] args) {

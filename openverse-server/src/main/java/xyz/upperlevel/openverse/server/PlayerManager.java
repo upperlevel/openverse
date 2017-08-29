@@ -9,8 +9,6 @@ import xyz.upperlevel.hermes.event.impl.ConnectionCloseEvent;
 import xyz.upperlevel.hermes.event.impl.ConnectionOpenEvent;
 import xyz.upperlevel.hermes.server.Server;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.world.Location;
-import xyz.upperlevel.openverse.server.world.Universe;
 import xyz.upperlevel.openverse.world.entity.Player;
 
 import java.util.Collection;
@@ -23,7 +21,7 @@ public class PlayerManager implements Listener {
     private final Map<String, Player> playersByName = new HashMap<>();
     private final Map<Connection, Player> playersByConnection = new HashMap<>();
     public PlayerManager() {
-        ((Server) Openverse.getEndpoint()).getEventManager().register(this);
+        ((Server) Openverse.endpoint()).getEventManager().register(this);
     }
 
     public void register(@NonNull Player player) {

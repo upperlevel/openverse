@@ -1,5 +1,6 @@
 package xyz.upperlevel.openverse.client.world;
 
+import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.hermes.reflect.PacketHandler;
 import xyz.upperlevel.hermes.reflect.PacketListener;
 import xyz.upperlevel.openverse.Openverse;
@@ -10,16 +11,16 @@ import xyz.upperlevel.openverse.world.World;
 public class ClientWorld extends World implements PacketListener {
     public ClientWorld(String name) {
         super(name); // may the client know world name?
-        Openverse.getChannel().register(this);
+        Openverse.channel().register(this);
     }
 
     @PacketHandler
-    public void onChunkCreate(ChunkCreatePacket pkt) {
+    public void onChunkCreate(Connection conn, ChunkCreatePacket pkt) {
         setChunk(pkt.getLocation(), pkt.getChunk(this));
     }
 
     @PacketHandler
-    public void onChunkDestroy(ChunkDestroyPacket pkt) {
+    public void onChunkDestroy(Connection conn, ChunkDestroyPacket pkt) {
         unloadChunk(pkt.getLocation());
     }
 }

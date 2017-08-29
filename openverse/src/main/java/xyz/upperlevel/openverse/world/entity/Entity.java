@@ -11,8 +11,8 @@ import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.entity.event.EntityMoveEvent;
 
-import static xyz.upperlevel.openverse.Openverse.getChannel;
-import static xyz.upperlevel.openverse.Openverse.getEndpoint;
+import static xyz.upperlevel.openverse.Openverse.channel;
+import static xyz.upperlevel.openverse.Openverse.endpoint;
 
 public class Entity {
 
@@ -59,8 +59,8 @@ public class Entity {
         this.location = location;
         // todo if the location is null sends a packet that removes from the world where it is
         if (location != null && update)
-            getEndpoint().getConnections().forEach(connection ->
-                    connection.send(getChannel(), new EntityTeleportPacket(id, location.getWorld().getName(), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch()))
+            endpoint().getConnections().forEach(connection ->
+                    connection.send(channel(), new EntityTeleportPacket(id, location.getWorld().getName(), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch()))
             );
     }
 

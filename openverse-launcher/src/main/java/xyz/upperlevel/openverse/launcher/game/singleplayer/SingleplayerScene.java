@@ -1,4 +1,4 @@
-package xyz.upperlevel.openverse.launcher.scenes;
+package xyz.upperlevel.openverse.launcher.game.singleplayer;
 
 import lombok.Getter;
 import xyz.upperlevel.hermes.client.impl.direct.DirectClient;
@@ -7,9 +7,9 @@ import xyz.upperlevel.hermes.server.impl.direct.DirectServer;
 import xyz.upperlevel.hermes.server.impl.direct.DirectServerConnection;
 import xyz.upperlevel.openverse.launcher.OpenverseLauncher;
 import xyz.upperlevel.openverse.launcher.loaders.ClientLoader;
-import xyz.upperlevel.openverse.launcher.loaders.ClientProxyWrapper;
-import xyz.upperlevel.openverse.launcher.loaders.ProxyWrapper;
+import xyz.upperlevel.openverse.launcher.loaders.ClientWrapper;
 import xyz.upperlevel.openverse.launcher.loaders.ServerLoader;
+import xyz.upperlevel.openverse.launcher.loaders.ServerWrapper;
 import xyz.upperlevel.ulge.game.Scene;
 import xyz.upperlevel.ulge.game.Stage;
 
@@ -17,8 +17,8 @@ import xyz.upperlevel.ulge.game.Stage;
 public class SingleplayerScene extends Stage {
     private final OpenverseLauncher launcher;
 
-    private final ClientProxyWrapper client;
-    private final ProxyWrapper server;
+    private final ClientWrapper client;
+    private final ServerWrapper server;
 
     public SingleplayerScene(OpenverseLauncher launcher) {
         this.launcher = launcher;
@@ -29,7 +29,6 @@ public class SingleplayerScene extends Stage {
         clientConnection.setCopy(true);
         ClientLoader clientLoader = new ClientLoader();
         clientLoader.load();
-        this.client = clientLoader.createClient(client);
 
         System.out.println("Creating server...");
         DirectServer server = new DirectServer();
@@ -38,12 +37,15 @@ public class SingleplayerScene extends Stage {
         clientConnection.setOther(serverConnection);
         ServerLoader serverLoader = new ServerLoader();
         serverLoader.load();
+
+        this.client = clientLoader.createClient(client);
         this.server = serverLoader.createServer(server);
     }
 
     @Override
     public void onEnable(Scene previous) {
-        System.out.println("Enabling resource scene...");
-        setScene(new SingleplayerResourceScene(this));
+        System.out.println("Enabling both server and client!");
+        server.join();
+        client.join(this);
     }
 }
