@@ -35,7 +35,7 @@ public class LoginScene implements Scene, PacketListener {
 
     @Override
     public void onDisable(Scene next) {
-        // todo unregister packet listener
+        Openverse.channel().unregister(this);
     }
 
     @Override
