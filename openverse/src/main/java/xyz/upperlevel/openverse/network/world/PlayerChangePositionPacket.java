@@ -16,16 +16,16 @@ public class PlayerChangePositionPacket implements Packet {
     private float x, y, z;
 
     @Override
-    public void toData(ByteBuf byteBuf) {
-        byteBuf.writeFloat(x);
-        byteBuf.writeFloat(y);
-        byteBuf.writeFloat(z);
+    public void toData(ByteBuf out) {
+        out.writeFloat(x);
+        out.writeFloat(y);
+        out.writeFloat(z);
     }
 
     @Override
-    public void fromData(ByteBuf byteBuf) {
-        x = byteBuf.readFloat();
-        y = byteBuf.readFloat();
-        z = byteBuf.readFloat();
+    public void fromData(ByteBuf in) {
+        x = in.readFloat();
+        y = in.readFloat();
+        z = in.readFloat();
     }
 }

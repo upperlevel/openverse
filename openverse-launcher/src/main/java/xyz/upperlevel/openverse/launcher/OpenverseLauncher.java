@@ -19,7 +19,6 @@ public class OpenverseLauncher {
                 .fullscreen(false)
                 .createWindow()
         );
-        game.setup();
     }
 
     public void launch() {

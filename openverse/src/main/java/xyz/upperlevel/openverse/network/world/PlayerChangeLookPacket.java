@@ -16,14 +16,14 @@ public class PlayerChangeLookPacket implements Packet {
     private float yaw, pitch;
 
     @Override
-    public void toData(ByteBuf byteBuf) {
-        byteBuf.writeFloat(yaw);
-        byteBuf.writeFloat(pitch);
+    public void toData(ByteBuf out) {
+        out.writeFloat(yaw);
+        out.writeFloat(pitch);
     }
 
     @Override
-    public void fromData(ByteBuf byteBuf) {
-        yaw = byteBuf.readFloat();
-        pitch = byteBuf.readFloat();
+    public void fromData(ByteBuf in) {
+        yaw = in.readFloat();
+        pitch = in.readFloat();
     }
 }

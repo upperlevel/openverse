@@ -30,7 +30,6 @@ public class OpenverseServer implements OpenverseProxy, Listener {
         this.channel = new Channel("main").setProtocol(Openverse.PROTOCOL.compile(PacketSide.SERVER));
         server.setDefaultChannel(channel);
         this.universe = new Universe();
-        this.endpoint.setDefaultChannel(channel);
         this.playerManager = new PlayerManager();
     }
 

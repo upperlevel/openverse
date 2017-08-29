@@ -16,4 +16,20 @@ public class ResourceScene implements Scene {
         Openverse.resources().load();
         parent.setScene(new LoginScene(parent));
     }
+
+    @Override
+    public void onDisable(Scene scene) {
+    }
+
+    @Override
+    public void onTick() {
+    }
+
+    @Override
+    public void onFps() {
+    }
+
+    @Override
+    public void onRender() {
+    }
 }

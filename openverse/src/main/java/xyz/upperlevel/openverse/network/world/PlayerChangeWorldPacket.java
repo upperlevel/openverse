@@ -19,12 +19,12 @@ public class PlayerChangeWorldPacket implements Packet {
     private String worldName;
 
     @Override
-    public void toData(ByteBuf byteBuf) {
-        writeString(worldName, byteBuf);
+    public void toData(ByteBuf out) {
+        writeString(worldName, out);
     }
 
     @Override
-    public void fromData(ByteBuf byteBuf) {
-        this.worldName = readString(byteBuf);
+    public void fromData(ByteBuf in) {
+        this.worldName = readString(in);
     }
 }

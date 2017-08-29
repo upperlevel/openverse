@@ -7,6 +7,7 @@ import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.hermes.PacketSide;
 import xyz.upperlevel.hermes.channel.Channel;
 import xyz.upperlevel.hermes.client.Client;
+import xyz.upperlevel.hermes.impl.id.IdPacketConverter;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.client.resource.ClientResources;
@@ -35,6 +36,7 @@ public class OpenverseClient implements OpenverseProxy {
         endpoint = client;
         Connection connection = client.getConnection();
         channel = new Channel("main").setProtocol(PROTOCOL.compile(PacketSide.CLIENT));
+        System.out.println("CLIENT: " + channel.getProtocol().getRegistered());
         connection.setDefaultChannel(channel);
         eventManager = new EventManager();
         resources = new ClientResources(Logger.getLogger("OpenverseClient"));

@@ -32,14 +32,15 @@ public class SingleplayerScene extends Stage {
 
         System.out.println("Creating server...");
         DirectServer server = new DirectServer();
-        DirectServerConnection serverConnection = server.newConnection(clientConnection);
-        serverConnection.setCopy(true);
-        clientConnection.setOther(serverConnection);
         ServerLoader serverLoader = new ServerLoader();
         serverLoader.load();
 
         this.client = clientLoader.createClient(client);
         this.server = serverLoader.createServer(server);
+
+        DirectServerConnection serverConnection = server.newConnection(clientConnection);
+        serverConnection.setCopy(true);
+        clientConnection.setOther(serverConnection);
     }
 
     @Override

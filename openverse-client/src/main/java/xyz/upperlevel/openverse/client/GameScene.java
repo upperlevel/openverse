@@ -3,12 +3,14 @@ package xyz.upperlevel.openverse.client;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.world.WorldViewer;
 import xyz.upperlevel.openverse.world.entity.Player;
 import xyz.upperlevel.ulge.game.Game;
 import xyz.upperlevel.ulge.game.Scene;
+import xyz.upperlevel.ulge.window.event.CursorMoveEvent;
 import xyz.upperlevel.ulge.window.event.KeyChangeEvent;
 import xyz.upperlevel.ulge.window.event.action.Action;
 import xyz.upperlevel.ulge.window.event.key.Key;
@@ -39,25 +41,33 @@ public class GameScene implements Scene, Listener {
     public void onDisable(Scene next) {
     }
 
+    @Override
+    public void onTick() {
+    }
+
+    @Override
+    public void onFps() {
+    }
+
     @Getter(AccessLevel.NONE)
     private double lastCursorX, lastCursorY;
 
     // TODO better as event
-    @Override
-    public void onCursorMove(double x, double y) {
-        float dx = (float) (x - lastCursorX);
-        float dy = (float) (y - lastCursorY);
+    @EventHandler
+    public void onCursorMove(CursorMoveEvent e) {
+        float dx = (float) (e.getX() - lastCursorX);
+        float dy = (float) (e.getY() - lastCursorY);
         viewer.rotateLook(dx, dy);
-        lastCursorX = x;
-        lastCursorY = y;
+        lastCursorX = e.getX();
+        lastCursorY = e.getY();
         //g.getWindow().setCursorPosition(0, 0);
     }
 
     private static final float SPEED = 1.5f;
 
-    @Override
-    public void onKeyChange(Key key, Action action) {
-        switch (key) {
+    @EventHandler
+    public void onKeyChange(KeyChangeEvent e) {
+        switch (e.getKey()) {
             case A:
                 viewer.right(-SPEED);
                 break;

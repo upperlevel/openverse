@@ -30,13 +30,20 @@ public class LoginScene implements Scene, PacketListener {
     @Override
     public void onEnable(Scene previous) {
         Openverse.channel().register(this);
-        System.out.println("OTHER: " + ((DirectClientConnection)OpenverseClient.get().getEndpoint().getConnection()).getOther().getDefaultChannel());
         OpenverseClient.get().getEndpoint().getConnection().send(OpenverseClient.get().getChannel(), new LoginRequestPacket());
     }
 
     @Override
     public void onDisable(Scene next) {
         // todo unregister packet listener
+    }
+
+    @Override
+    public void onTick() {
+    }
+
+    @Override
+    public void onFps() {
     }
 
     @Override
