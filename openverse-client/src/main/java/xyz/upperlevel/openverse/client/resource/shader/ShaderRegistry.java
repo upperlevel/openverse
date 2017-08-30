@@ -12,11 +12,10 @@ import java.util.logging.Logger;
  * It may be used after have set a context for OpenGL.
  */
 public class ShaderRegistry extends ResourceRegistry<Shader> {
-    public static final File FOLDER = new File("resources/shaders");
     public static final ShaderLoader LOADER = new ShaderLoader();
 
-    public ShaderRegistry(Logger logger) {
-        super(FOLDER, logger);
+    public ShaderRegistry(File folder, Logger logger) {
+        super(new File(folder, "shaders"), logger);
     }
 
     @Override

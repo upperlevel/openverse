@@ -15,12 +15,10 @@ import java.util.logging.Logger;
  */
 @Getter
 public class ProgramRegistry extends ResourceRegistry<Program> {
-    public static final File FOLDER = new File("resources/programs");
     public static final ProgramLoader LOADER = new ProgramLoader();
 
-    @SuppressWarnings("unchecked")
-    public ProgramRegistry(Logger logger) {
-        super(FOLDER, logger);
+    public ProgramRegistry(File folder, Logger logger) {
+        super(new File(folder, "programs"), logger);
     }
 
     @Override

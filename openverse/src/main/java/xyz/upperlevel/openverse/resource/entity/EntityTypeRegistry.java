@@ -7,11 +7,10 @@ import java.io.File;
 import java.util.logging.Logger;
 
 public class EntityTypeRegistry extends ResourceRegistry<EntityType> {
-    public static final File FOLDER = new File("resources/entities");
     public static final EntityTypeLoader LOADER = new EntityTypeLoader();
 
-    public EntityTypeRegistry(Logger logger) {
-        super(FOLDER, logger);
+    public EntityTypeRegistry(File folder, Logger logger) {
+        super(new File(folder, "entity_types"), logger);
     }
 
     @Override

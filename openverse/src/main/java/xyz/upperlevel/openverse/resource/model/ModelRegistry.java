@@ -8,12 +8,10 @@ import java.util.logging.Logger;
 
 @Getter
 public class ModelRegistry<M extends Model> extends ResourceRegistry<M> {
-    public static final File FOLDER = new File("resources/models");
-
     private final ModelLoader<M> defaultLoader = new ModelLoader<>(); // not static for template
 
-    public ModelRegistry(Logger logger) {
-        super(FOLDER, logger);
+    public ModelRegistry(File folder, Logger logger) {
+        super(folder, logger);
     }
 
     @Override

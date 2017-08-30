@@ -41,6 +41,8 @@ public class Registry<E> {
      * Gets an {@link Identifier} with the fetcher id.
      */
     public Identifier<E> identifier(String id) {
+        if (id == null)
+            return null;
         return identifiers.get(id.toLowerCase(Locale.ENGLISH));
     }
 
@@ -55,6 +57,8 @@ public class Registry<E> {
      * Gets an entry by its id registered in this registry.
      */
     public E entry(String id) {
+        if (id == null)
+            return null;
         return entries.get(id.toLowerCase(Locale.ENGLISH));
     }
 

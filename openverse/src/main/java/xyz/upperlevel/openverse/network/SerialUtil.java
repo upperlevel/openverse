@@ -23,7 +23,7 @@ public final class SerialUtil {
     public static String readString(ByteBuf in) {
         StringBuilder out = new StringBuilder();
         char c;
-        while ((c = in.readChar()) != TERMINATOR)
+        while ((c = (char) in.readByte()) != TERMINATOR)
             out.append(c);
         return out.toString();
     }

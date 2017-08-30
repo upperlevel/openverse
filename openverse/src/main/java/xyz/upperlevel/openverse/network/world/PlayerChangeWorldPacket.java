@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import xyz.upperlevel.hermes.Packet;
+import xyz.upperlevel.openverse.world.World;
 
 import static xyz.upperlevel.openverse.network.SerialUtil.readString;
 import static xyz.upperlevel.openverse.network.SerialUtil.writeString;
@@ -14,9 +15,12 @@ import static xyz.upperlevel.openverse.network.SerialUtil.writeString;
  */
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class PlayerChangeWorldPacket implements Packet {
     private String worldName;
+
+    public PlayerChangeWorldPacket(World world) {
+        this.worldName = world.getName();
+    }
 
     @Override
     public void toData(ByteBuf out) {

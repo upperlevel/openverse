@@ -84,7 +84,7 @@ public class Model<S extends Shape> {
     public static <M extends Model> M deserialize(Config config) {
         Model<Shape> res = new Model<>();
         for (Config subCfg : config.getConfigList("shapes")) {
-            ShapeType shapeFac = Openverse.resources().shapes().entry(config.getStringRequired("type"));
+            ShapeType shapeFac = Openverse.resources().shapes().entry(subCfg.getStringRequired("type"));
             if (shapeFac != null)
                 res.addShape(shapeFac.create(subCfg));
         }

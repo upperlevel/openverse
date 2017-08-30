@@ -26,12 +26,13 @@ public class GameScene implements Scene, Listener {
     public GameScene(ClientScene parent) {
         this.parent = parent;
         this.viewer = new WorldViewer();
+        OpenverseLauncher.get().getGame().getWindow().getEventManager().register(this);
+        OpenverseLauncher.get().getGame().getWindow().disableCursor();
     }
 
     @Override
     public void onEnable(Scene previous) {
-        Openverse.logger().info("Game scene set up!");
-        Openverse.logger().info("Starting rendering world...");
+        System.out.println("[Client] Game scene set up! Start rendering world viewer.");
     }
 
     @Override
@@ -55,40 +56,46 @@ public class GameScene implements Scene, Listener {
     @Getter(AccessLevel.NONE)
     private double lastCursorX, lastCursorY;
 
-    // TODO better as event
     @EventHandler
     public void onCursorMove(CursorMoveEvent e) {
+        // System.out.println("[Client] Detected a cursor movement: " + e.getX() + " " + e.getY());
         float dx = (float) (e.getX() - lastCursorX);
         float dy = (float) (e.getY() - lastCursorY);
         viewer.rotateLook(dx, dy);
         lastCursorX = e.getX();
         lastCursorY = e.getY();
-        //g.getWindow().setCursorPosition(0, 0);
+        // System.out.println("[Client] Player rotate look of: " + dx + " " + dy);
     }
 
     private static final float SPEED = 1.5f;
 
     @EventHandler
     public void onKeyChange(KeyChangeEvent e) {
-        switch (e.getKey()) {
-            case A:
-                viewer.right(-SPEED);
-                break;
-            case D:
-                viewer.right(SPEED);
-                break;
-            case W:
-                viewer.forward(SPEED);
-                break;
-            case S:
-                viewer.forward(-SPEED);
-                break;
-            case SPACE:
-                viewer.up(SPEED);
-                break;
-            case LEFT_SHIFT:
-                viewer.up(-SPEED);
-                break;
+        // System.out.println("[Client] Detected a key input: " + e.getKey().name() + " " + e.getAction().name());
+        if (e.getAction() == Action.PRESS) {
+            switch (e.getKey()) {
+                case A:
+                    viewer.right(-SPEED);
+                    break;
+                case D:
+                    viewer.right(SPEED);
+                    break;
+                case W:
+                    viewer.forward(SPEED);
+                    break;
+                case S:
+                    viewer.forward(-SPEED);
+                    break;
+                case SPACE:
+                    viewer.up(SPEED);
+                    break;
+                case LEFT_SHIFT:
+                    viewer.up(-SPEED);
+                    break;
+                case ESCAPE:
+                    OpenverseLauncher.get().getGame().stop();
+            }
         }
+        // System.out.println("[Client] Move to: " + viewer.getX() + " " + viewer.getY() + " " + viewer.getZ());
     }
 }

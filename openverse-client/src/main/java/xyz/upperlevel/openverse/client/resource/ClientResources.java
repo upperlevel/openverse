@@ -7,6 +7,7 @@ import xyz.upperlevel.openverse.client.resource.shader.ShaderRegistry;
 import xyz.upperlevel.openverse.client.resource.texture.TextureRegistry;
 import xyz.upperlevel.openverse.resource.Resources;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 /**
@@ -26,13 +27,13 @@ public class ClientResources extends Resources {
      * The constructor of {@link ClientResources} initializes all sub resource managers.
      */
     public ClientResources(Logger logger) {
-        super(logger);
-        this.textureRegistry = new TextureRegistry(logger, 100 /*todo find texture size in some way*/);
-        this.shaderRegistry = new ShaderRegistry(logger);
-        this.programRegistry = new ProgramRegistry(logger);
+        super(new File("client/resources"), logger);
+        this.textureRegistry = new TextureRegistry(folder, logger, 100 /*todo find texture size in some way*/);
+        this.shaderRegistry = new ShaderRegistry(folder, logger);
+        this.programRegistry = new ProgramRegistry(folder, logger);
         // overrides
         this.shapeFactoryRegistry = new ClientShapeTypeRegistry();
-        this.modelRegistry = new ClientModelRegistry(logger);
+        this.modelRegistry = new ClientModelRegistry(folder, logger);
     }
 
     /**

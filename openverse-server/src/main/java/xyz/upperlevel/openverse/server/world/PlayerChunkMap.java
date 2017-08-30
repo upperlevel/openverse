@@ -2,12 +2,17 @@ package xyz.upperlevel.openverse.server.world;
 
 import lombok.Getter;
 import xyz.upperlevel.event.EventHandler;
-import xyz.upperlevel.event.EventPriority;
+import xyz.upperlevel.event.Listener;
+import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.network.world.ChunkCreatePacket;
+import xyz.upperlevel.openverse.network.world.ChunkDestroyPacket;
 import xyz.upperlevel.openverse.physic.Box;
 import xyz.upperlevel.openverse.server.event.PlayerJoinEvent;
+import xyz.upperlevel.openverse.server.event.PlayerQuitEvent;
+import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.World;
+import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
-import xyz.upperlevel.openverse.world.entity.Player;
 import xyz.upperlevel.openverse.world.entity.event.PlayerMoveEvent;
 
 import java.util.HashMap;
@@ -15,52 +20,54 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class PlayerChunkMap {
-    private final World handle;
+@Getter
+public class PlayerChunkMap implements Listener {
+    private final World world;
     private int radius;
 
     private Map<ChunkLocation, PlayerChunk> chunks = new HashMap<>();
-    private Set<Player> players = new HashSet<>();
+    private Set<ServerPlayer> players = new HashSet<>();
 
-    public PlayerChunkMap(World handle, int radius) {
-        this.handle = handle;
+    public PlayerChunkMap(World world, int radius) {
+        this.world = world;
         this.radius = radius;
+        Openverse.getEventManager().register(this);
     }
 
-    public void addPlayer(Player player) {
-        ChunkLocation loc = player.getLocation().getChunk().getLocation();
-        final int minX = loc.x - radius;
-        final int maxX = loc.x + radius;
-        final int minY = loc.y - radius;
-        final int maxY = loc.y + radius;
-        final int minZ = loc.z - radius;
-        final int maxZ = loc.z + radius;
+    public void addPlayer(ServerPlayer player, Chunk current) {
+        ChunkLocation loc = current.getLocation();
+        int minX = loc.x - radius;
+        int maxX = loc.x + radius;
+        int minY = loc.y - radius;
+        int maxY = loc.y + radius;
+        int minZ = loc.z - radius;
+        int maxZ = loc.z + radius;
 
-        for(int x = minX; x < maxX; x++)
-            for(int y = minY; y < maxY; y++)
-                for(int z = minZ; z < maxZ; z++)
-                    addPlayer(ChunkLocation.of(x, y, z), player);
+        for (int x = minX; x < maxX; x++)
+            for (int y = minY; y < maxY; y++)
+                for (int z = minZ; z < maxZ; z++)
+                    addPlayer(new ChunkLocation(x, y, z), player);
         players.add(player);
     }
 
-    public void removePlayer(Player player) {
+    public void removePlayer(ServerPlayer player) {
         ChunkLocation loc = player.getLocation().getChunk().getLocation();
-        final int minX = loc.x - radius;
-        final int maxX = loc.x + radius;
-        final int minY = loc.y - radius;
-        final int maxY = loc.y + radius;
-        final int minZ = loc.z - radius;
-        final int maxZ = loc.z + radius;
+        int minX = loc.x - radius;
+        int maxX = loc.x + radius;
+        int minY = loc.y - radius;
+        int maxY = loc.y + radius;
+        int minZ = loc.z - radius;
+        int maxZ = loc.z + radius;
 
-        for(int x = minX; x < maxX; x++)
-            for(int y = minY; y < maxY; y++)
-                for(int z = minZ; z < maxZ; z++)
-                    removePlayer(ChunkLocation.of(x, y, z), player);
+        for (int x = minX; x < maxX; x++)
+            for (int y = minY; y < maxY; y++)
+                for (int z = minZ; z < maxZ; z++)
+                    removePlayer(new ChunkLocation(x, y, z), player);
         players.remove(player);
     }
 
-    public void onPlayerMove(Player player, ChunkLocation old, ChunkLocation loc) {
-        final int side = radius*2;
+    public void onPlayerMove(ServerPlayer player, ChunkLocation old, ChunkLocation loc) {
+        int side = radius * 2;
 
         Box oldBox = new Box(
                 old.x - radius,
@@ -79,7 +86,7 @@ public class PlayerChunkMap {
                 side
         );
 
-        final boolean apart = !oldBox.intersect(newBox);
+        boolean apart = !oldBox.intersect(newBox);
 
         for (int x = -radius; x <= radius; x++) {
             for (int y = -radius; y <= radius; y++) {
@@ -89,14 +96,14 @@ public class PlayerChunkMap {
                     int cy = loc.y + y;
                     int cz = loc.z + z;
 
-                    if(apart || !oldBox.isIn(cx, cy, cz))
-                        addPlayer(ChunkLocation.of(cx, cy, cz), player);
+                    if (apart || !oldBox.isIn(cx, cy, cz))
+                        addPlayer(new ChunkLocation(cx, cy, cz), player);
 
                     //Find toRemove
                     cx = old.x + x;
                     cy = old.y + y;
                     cz = old.z + z;
-                    if(apart || !newBox.isIn(cx, cy, cz))
+                    if (apart || !newBox.isIn(cx, cy, cz))
                         removePlayer(loc, player);
                 }
             }
@@ -104,16 +111,15 @@ public class PlayerChunkMap {
     }
 
     public void setRadius(int radius) {
-        final boolean adding = radius > this.radius;
-
-        for(Player player : players) {
+        boolean adding = radius > this.radius;
+        for (ServerPlayer player : players) {
             ChunkLocation loc = player.getLocation().getChunk().getLocation();
-            for(int x = loc.x - radius; x > loc.x + radius; x++) {
-                for(int y = loc.y - radius; y > loc.y + radius; y++) {
-                    for(int z = loc.z - radius; z > loc.z + radius; z++) {
-                        if(x + y + z > (adding ? this.radius : radius)) {
-                            final ChunkLocation l = ChunkLocation.of(x, y, z);
-                            if(adding)
+            for (int x = loc.x - radius; x > loc.x + radius; x++) {
+                for (int y = loc.y - radius; y > loc.y + radius; y++) {
+                    for (int z = loc.z - radius; z > loc.z + radius; z++) {
+                        if (x + y + z > (adding ? this.radius : radius)) {
+                            ChunkLocation l = new ChunkLocation(x, y, z);
+                            if (adding)
                                 addPlayer(l, player);
                             else
                                 removePlayer(l, player);
@@ -126,13 +132,15 @@ public class PlayerChunkMap {
     }
 
 
-    private void addPlayer(ChunkLocation location, Player player) {
+    private void addPlayer(ChunkLocation location, ServerPlayer player) {
         getOrCreateChunk(location).addPlayer(player);
+        player.getConnection().send(Openverse.channel(), new ChunkCreatePacket(world.getChunk(location)));
     }
 
-    private void removePlayer(ChunkLocation location, Player player) {
+    private void removePlayer(ChunkLocation location, ServerPlayer player) {
         chunks.computeIfPresent(location, (location1, playerChunk) -> {
             playerChunk.removePlayer(player);
+            player.getConnection().send(Openverse.channel(), new ChunkDestroyPacket(location));
             return playerChunk.isEmpty() ? null : playerChunk;
         });
     }
@@ -145,24 +153,28 @@ public class PlayerChunkMap {
         return chunks.computeIfAbsent(loc, PlayerChunk::new);
     }
 
-
-    @EventHandler()
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        addPlayer(event.getPlayer());
-    }
-
-    @EventHandler()
-    public void onPlayerQuit(PlayerJoinEvent event) {
-        removePlayer(event.getPlayer());
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerMove(PlayerMoveEvent event) {
-        if(!event.isCancelled()) {
-            ChunkLocation loc = event.getLocation().getChunk().getLocation();
-            ChunkLocation oldLoc = event.getOldLocation().getChunk().getLocation();
-            if(loc != event.getOldLocation().getChunk().getLocation())
-                onPlayerMove(event.getPlayer(), oldLoc, loc);
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent e) {
+        System.out.println("[Server] Player move!");
+        Location nl = e.getLocation();
+        Location ol = e.getOldLocation();
+        World nw = nl.getWorld();
+        World ow = ol != null ? ol.getWorld() : null;
+        if (ow != nw) {
+            if (nw == world) {
+                System.out.println("[Server] Player joined world: " + nw.getName());
+                addPlayer((ServerPlayer) e.getPlayer(), nl.getChunk());
+            } else if (ow == world) {
+                System.out.println("[Server] Player left world: " + ow.getName());
+                removePlayer((ServerPlayer) e.getPlayer());
+            }
+        } else {
+            ChunkLocation ncl = nl.getChunk().getLocation();
+            ChunkLocation ocl = ol != null ? ol.getChunk().getLocation() : null;
+            if (nw == world && (ocl == null || !ncl.equals(ocl))) {
+                System.out.println("[Server] Player changed chunk to: " + ncl.toString());
+                onPlayerMove((ServerPlayer) e.getPlayer(), ocl, ncl);
+            }
         }
     }
 }

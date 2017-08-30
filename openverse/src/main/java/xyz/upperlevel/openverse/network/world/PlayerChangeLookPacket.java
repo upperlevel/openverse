@@ -13,17 +13,17 @@ import xyz.upperlevel.hermes.Packet;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PlayerChangeLookPacket implements Packet {
-    private float yaw, pitch;
+    private double yaw, pitch;
 
     @Override
     public void toData(ByteBuf out) {
-        out.writeFloat(yaw);
-        out.writeFloat(pitch);
+        out.writeDouble(yaw);
+        out.writeDouble(pitch);
     }
 
     @Override
     public void fromData(ByteBuf in) {
-        yaw = in.readFloat();
-        pitch = in.readFloat();
+        yaw = in.readDouble();
+        pitch = in.readDouble();
     }
 }

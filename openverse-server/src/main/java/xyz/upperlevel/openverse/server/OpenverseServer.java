@@ -8,29 +8,33 @@ import xyz.upperlevel.hermes.PacketSide;
 import xyz.upperlevel.hermes.channel.Channel;
 import xyz.upperlevel.hermes.server.Server;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.OpenverseLogger;
 import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.resource.Resources;
 import xyz.upperlevel.openverse.server.world.Universe;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 @Getter
 public class OpenverseServer implements OpenverseProxy, Listener {
+    private final Logger logger;
     private final Server endpoint;
     private Channel channel;
     private Universe universe;
-    private final Logger logger = Logger.getLogger("OpenverseServer");
     private final EventManager eventManager = new EventManager();
-    private final Resources resources = new Resources(Logger.getLogger("ServerResources"));
+    private final Resources resources;
     private final PlayerManager playerManager;
 
     public OpenverseServer(@NonNull Server server) {
         Openverse.setProxy(this);
+        this.logger = new OpenverseLogger(this);
         this.endpoint = server;
         this.channel = new Channel("main").setProtocol(Openverse.PROTOCOL.compile(PacketSide.SERVER));
         endpoint.setDefaultChannel(channel);
         this.universe = new Universe();
         this.playerManager = new PlayerManager();
+        this.resources = new Resources(new File("server/resources"), logger);
     }
 
     /**

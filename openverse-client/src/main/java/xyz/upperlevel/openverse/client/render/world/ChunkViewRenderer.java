@@ -1,30 +1,10 @@
 package xyz.upperlevel.openverse.client.render.world;
 
 import lombok.Getter;
-import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
-import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.OpenverseClient;
-import xyz.upperlevel.openverse.client.render.RenderOptions;
-import xyz.upperlevel.openverse.client.render.VisibleChunkManager;
-import xyz.upperlevel.openverse.client.render.event.ChunkVisibilityChangeEvent;
 import xyz.upperlevel.openverse.client.render.world.util.ArraySlider3d;
-import xyz.upperlevel.openverse.client.resource.ClientResources;
 import xyz.upperlevel.openverse.client.world.ClientWorld;
-import xyz.upperlevel.openverse.world.Location;
-import xyz.upperlevel.openverse.world.World;
-import xyz.upperlevel.openverse.world.block.Block;
-import xyz.upperlevel.openverse.world.block.event.BlockChangeEvent;
-import xyz.upperlevel.openverse.world.chunk.Chunk;
-import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
-import xyz.upperlevel.openverse.world.chunk.event.ChunkCreateEvent;
-import xyz.upperlevel.openverse.world.chunk.event.ChunkDeleteEvent;
-import xyz.upperlevel.openverse.world.entity.event.PlayerMoveEvent;
-import xyz.upperlevel.ulge.opengl.shader.Program;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This class contains a list of all chunks that have to be rendered.

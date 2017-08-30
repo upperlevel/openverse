@@ -20,16 +20,13 @@ import static org.lwjgl.opengl.GL11.GL_RGBA8;
 @Getter
 public class TextureRegistry extends ResourceRegistry<Texture> {
     public static final TextureLoader LOADER = new TextureLoader();
-    public static final File FOLDER = new File("resources/textures");
 
     private int nextId = 0;
     private final Texture2dArray atlas;
 
-    public TextureRegistry(Logger logger, int size) {
-        super(FOLDER, logger);
-        System.out.println("..");
+    public TextureRegistry(File folder, Logger logger, int size) {
+        super(new File(folder, "textures"), logger);
         this.atlas = new Texture2dArray();
-        System.out.println("..");
         this.atlas.allocate(4, GL_RGBA8, 16, 16, size);
     }
 

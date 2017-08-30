@@ -13,19 +13,19 @@ import xyz.upperlevel.hermes.Packet;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PlayerChangePositionPacket implements Packet {
-    private float x, y, z;
+    private double x, y, z;
 
     @Override
     public void toData(ByteBuf out) {
-        out.writeFloat(x);
-        out.writeFloat(y);
-        out.writeFloat(z);
+        out.writeDouble(x);
+        out.writeDouble(y);
+        out.writeDouble(z);
     }
 
     @Override
     public void fromData(ByteBuf in) {
-        x = in.readFloat();
-        y = in.readFloat();
-        z = in.readFloat();
+        x = in.readDouble();
+        y = in.readDouble();
+        z = in.readDouble();
     }
 }

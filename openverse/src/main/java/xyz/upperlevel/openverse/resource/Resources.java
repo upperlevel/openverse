@@ -8,6 +8,7 @@ import xyz.upperlevel.openverse.resource.model.ModelRegistry;
 import xyz.upperlevel.openverse.resource.model.shape.ShapeType;
 import xyz.upperlevel.openverse.resource.model.shape.ShapeTypeRegistry;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 /**
@@ -16,20 +17,23 @@ import java.util.logging.Logger;
  */
 @RequiredArgsConstructor
 public class Resources {
-    private final Logger logger;
+    protected final File folder;
+    protected final Logger logger;
+
     private final BlockTypeRegistry blockTypeRegistry;
     private final EntityTypeRegistry entityTypeRegistry;
     // overridden by client
     private final ShapeTypeRegistry<ShapeType> shapeTypeRegistry;
     private final ModelRegistry<Model> modelRegistry;
 
-    public Resources(Logger logger) {
+    public Resources(File folder, Logger logger) {
+        this.folder = folder;
         this.logger = logger;
-        this.blockTypeRegistry = new BlockTypeRegistry(logger);
-        this.entityTypeRegistry = new EntityTypeRegistry(logger);
+        this.blockTypeRegistry = new BlockTypeRegistry(folder, logger);
+        this.entityTypeRegistry = new EntityTypeRegistry(folder, logger);
         // on client down here have different implementation
         this.shapeTypeRegistry = new ShapeTypeRegistry<>();
-        this.modelRegistry = new ModelRegistry<>(logger);
+        this.modelRegistry = new ModelRegistry<>(folder, logger);
     }
 
     /**
@@ -59,8 +63,9 @@ public class Resources {
     public void setup() {
         long init = System.currentTimeMillis();
         blockTypeRegistry.setup();
+        entityTypeRegistry.setup();
         onSetup();
-        logger.info("Identifier managers setup in " + (System.currentTimeMillis() - init) + " ms!");
+        logger.info("Resources setup in " + (System.currentTimeMillis() - init) + " ms!");
     }
 
     protected int onLoad() {
@@ -76,6 +81,7 @@ public class Resources {
         int cnt = 0;
         cnt += models().loadFolder();
         cnt += blockTypeRegistry.loadFolder();
+        cnt += entityTypeRegistry.loadFolder();
         cnt += onLoad();
         logger.info("Loaded " + cnt + " resources in " + (System.currentTimeMillis() - init) + " ms!");
         return cnt;

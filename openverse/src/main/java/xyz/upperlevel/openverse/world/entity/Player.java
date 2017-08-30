@@ -8,16 +8,12 @@ import xyz.upperlevel.openverse.world.Location;
 @Getter
 public class Player extends Entity {
     public static final EntityType TYPE = null;
-
     private final String name;
-    private final Connection connection;
 
-    public Player(Location location, String name, Connection connection) {
-        super(TYPE, location);
+    public Player(String name) {
+        super(TYPE);
         this.name = name;
-        this.connection = connection;
     }
-
 
     public EntityType getType() {
         return TYPE;

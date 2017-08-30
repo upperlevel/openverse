@@ -14,12 +14,14 @@ public class ShaderLoader implements ResourceLoader<Shader> {
     @Override
     public Identifier<Shader> load(File file) {
         Shader shader = new Shader(ShaderType.getFromExtension(FileUtil.getExtension(file)));
+        System.out.println("[Client] Loading shader at: " + file.getName());
         try {
             shader.linkSource(file);
         } catch (IOException e) {
             throw new IllegalStateException("Cannot link source on file \"" + file + "\": " + e);
         }
         shader.compileSource();
-        return new Identifier<>(FileUtil.stripExtension(file), shader);
+        System.out.println("[Client] Shader status: " + shader.getCompileStatus().getLog());
+        return new Identifier<>(file.getName(), shader);
     }
 }

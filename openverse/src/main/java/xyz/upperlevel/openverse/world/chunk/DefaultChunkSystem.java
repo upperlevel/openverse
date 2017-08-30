@@ -8,12 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DefaultChunkSystem extends ChunkSystem {
-
     private final Map<ChunkLocation, Chunk> chunks = new HashMap<>();
-
-    @Getter
-    @Setter
-    private ChunkGenerator generator = null;
 
     public DefaultChunkSystem(World world) {
         super(world);
@@ -29,8 +24,6 @@ public class DefaultChunkSystem extends ChunkSystem {
 
     private void addChunk(Chunk chunk) {
         chunks.put(chunk.getLocation(), chunk);
-        if (generator != null)
-            generator.generate(chunk);
     }
 
     public Chunk addChunk(ChunkLocation location) {

@@ -1,49 +1,43 @@
 package xyz.upperlevel.openverse.server.world;
 
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.World;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This is something similar to the World manager, in the sense that it stores all the worlds and their ids.
  */
 public class Universe {
-
     // the spawn location is just server side
+    private Location spawn;
+    private final Map<String, ServerWorld> worlds = new HashMap<>();
 
-    private final Map<String, World> worlds = new HashMap<>();
+    public Location getSpawn() {
+        if (spawn == null) {
+            ServerWorld w = new ServerWorld("world");
+            addWorld(w);
+            spawn = new Location(w, 0, 0, 0);
+        }
+        return spawn;
+    }
 
     public World getWorld(String name) {
         return worlds.get(name);
     }
 
-    public boolean addWorld(World world) {
-        if (worlds.putIfAbsent(world.getName(), world) == null) {
-            //Openverse.getProxy().getEventManager().call(new WorldCreateEvent(world));
-            return true;
-        }
+    public boolean addWorld(ServerWorld world) {
+        worlds.put(world.getName().toLowerCase(Locale.ENGLISH), world);
         return false;
     }
 
-    public boolean removeWorld(World world) {
+    public boolean removeWorld(ServerWorld world) {
         return removeWorld(world.getName());
     }
 
     public boolean removeWorld(String name) {
-        World w =  worlds.remove(name);
-        if (w != null) {
-            //Openverse.getProxy().getEventManager().call(new WorldDeleteEvent(w));
-            return true;
-        }
-        return false;
-    }
-
-    public Map<String, World> getWorldMap() {
-        return Collections.unmodifiableMap(worlds);
+        return worlds.remove(name.toLowerCase(Locale.ENGLISH)) != null;
     }
 
     public Collection<World> getWorlds() {

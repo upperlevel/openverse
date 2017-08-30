@@ -17,15 +17,21 @@ public class ProgramLoader implements ResourceLoader<Program> {
         if (config.has("shaders")) {
             for (String shader : config.getStringList("shaders")) {
                 Shader shad = ((ClientResources) Openverse.resources()).shaders().entry(shader);
-                if (shad != null)
+
+                if (shad != null) {
                     prg.attach(shad);
+                    System.out.println("[Client] Attached shader: " + shader);
+                }
             }
+            prg.link();
+            System.out.println("[Client] Program linked.");
         }
         return prg;
     }
 
     @Override
     public Identifier<Program> load(File file) {
+        System.out.println("[Client] Loading program at: " + file.getName());
         return new Identifier<>(
                 FileUtil.stripExtension(file),
                 load(Config.json(file))

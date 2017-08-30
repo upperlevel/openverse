@@ -9,39 +9,38 @@ import xyz.upperlevel.hermes.event.ConnectionCloseEvent;
 import xyz.upperlevel.hermes.event.ConnectionOpenEvent;
 import xyz.upperlevel.hermes.server.Server;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.world.entity.Player;
+import xyz.upperlevel.openverse.server.world.ServerPlayer;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerManager implements Listener {
-    public static final String PLAYER_NAME = "Test";
+    private final Map<String, ServerPlayer> playersByName = new HashMap<>();
+    private final Map<Connection, ServerPlayer> playersByConnection = new HashMap<>();
 
-    private final Map<String, Player> playersByName = new HashMap<>();
-    private final Map<Connection, Player> playersByConnection = new HashMap<>();
     public PlayerManager() {
         ((Server) Openverse.endpoint()).getEventManager().register(this);
     }
 
-    public void register(@NonNull Player player) {
+    public void register(@NonNull ServerPlayer player) {
         playersByName.put(player.getName(), player);
         playersByConnection.put(player.getConnection(), player);
     }
 
-    public Player get(String name) {
+    public ServerPlayer get(String name) {
         return playersByName.get(name);
     }
 
-    public Player get(Connection connection) {
+    public ServerPlayer get(Connection connection) {
         return playersByConnection.get(connection);
     }
 
-    public Collection<Player> get() {
+    public Collection<ServerPlayer> get() {
         return playersByName.values();
     }
 
-    public void unregister(@NonNull Player player) {
+    public void unregister(@NonNull ServerPlayer player) {
         playersByName.remove(player.getName());
         playersByConnection.remove(player.getConnection());
     }
@@ -51,14 +50,13 @@ public class PlayerManager implements Listener {
         playersByConnection.clear();
     }
 
-    protected Player createPlayer(Connection connection) {
-        // TODO return new Player(new Location(Universe.get().getWorlds().iterator().next(), 0, 0, 0).copy(), PLAYER_NAME, connection);
-        return null;
-    }
-
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onConnect(ConnectionOpenEvent event) {
-        register(createPlayer(event.getConnection()));
+        System.out.println("[Server] New connection reached!");
+        ServerPlayer sp = new ServerPlayer("Hobbit", event.getConnection());
+        register(sp);
+        System.out.println("[Server] Instantiated a new player, spawning him.");
+        sp.setLocation(OpenverseServer.get().getUniverse().getSpawn());
     }
 
     @EventHandler(priority = EventPriority.LOWEST)

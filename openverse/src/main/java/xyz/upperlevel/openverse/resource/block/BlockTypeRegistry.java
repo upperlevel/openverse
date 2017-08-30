@@ -8,12 +8,11 @@ import java.util.logging.Logger;
 
 @Getter
 public class BlockTypeRegistry extends ResourceRegistry<BlockType> {
-    public static final File FOLDER = new File("resources/block_types");
 
     private final BlockTypeLoader defaultLoader;
 
-    public BlockTypeRegistry(Logger logger) {
-        super(FOLDER, logger);
+    public BlockTypeRegistry(File folder, Logger logger) {
+        super(new File(folder, "block_types"), logger);
         this.defaultLoader = new BlockTypeLoader();
     }
 

@@ -11,8 +11,8 @@ public abstract class ResourceRegistry<E> extends Registry<E> {
     private final File defaultFolder;
 
     public ResourceRegistry(File defaultFolder, Logger logger) {
-        this.logger = logger;
         this.defaultFolder = defaultFolder;
+        this.logger = logger;
     }
 
     /**
