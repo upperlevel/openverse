@@ -67,7 +67,6 @@ public class PlayerChunkMap implements Listener {
     public void onPlayerMove(ServerPlayer player, ChunkLocation old, ChunkLocation loc) {
         System.out.println("Player move: " + old + "->" + loc);
         int added = 0, removed = 0;
-        int side = radius * 2;
 
         Box oldBox = new Box(
                 old.x - radius,
@@ -106,7 +105,7 @@ public class PlayerChunkMap implements Listener {
                     cy = old.y + y;
                     cz = old.z + z;
                     if (apart || !newBox.isIn(cx, cy, cz)) {
-                        removePlayer(loc, player);
+                        removePlayer(new ChunkLocation(cx, cy, cz), player);
                         removed++;
                     }
                 }
