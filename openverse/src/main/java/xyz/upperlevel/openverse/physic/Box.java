@@ -5,6 +5,8 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.joml.Vector3f;
 
+import static java.lang.Math.abs;
+
 @Accessors(fluent = true)
 public class Box {
 
@@ -88,17 +90,15 @@ public class Box {
     }
 
     public boolean intersect(Box box) {
-        return isIn(box.x, box.y, box.z) || isIn(box.maxX(), box.maxY(), box.maxZ());
+        return  (abs(x - box.x) * 2 < (width + box.width)) &&
+                (abs(y - box.y) * 2 < (height + box.height)) &&
+                (abs(z - box.z) * 2 < (depth + box.depth));
     }
 
     public boolean isIn(double x, double y, double z) {
         return this.x < x && x < maxX() &&
                 this.y < y && y < maxY() &&
                 this.z < z && z < maxZ();
-    }
-
-    public boolean isIn(Box box) {
-        return isIn(box.x, box.y, box.z) && isIn(box.maxX(), box.maxY(), box.maxZ());
     }
 
     public Box copy() {

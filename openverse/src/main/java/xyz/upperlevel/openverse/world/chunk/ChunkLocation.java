@@ -42,8 +42,18 @@ public class ChunkLocation {
         } else return false;
     }
 
+    @Override
+    public String toString() {
+        return x + ", " + y + ", " + z;
+    }
+
 
     public static ChunkLocation of(int x, int y, int z) {
         return new ChunkLocation(x, y, z);
+    }
+
+    public static ChunkLocation fromBlock(int x, int y, int z) {
+        return new ChunkLocation(x >> 4, y >> 4, z >> 4
+        );
     }
 }

@@ -1,7 +1,6 @@
 package xyz.upperlevel.openverse.world;
 
 import lombok.Getter;
-import lombok.Setter;
 import xyz.upperlevel.openverse.world.block.Block;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
@@ -33,6 +32,10 @@ public class World {
         return getChunk((int) floor(x), (int) floor(y), (int) floor(z));
     }
 
+    public Chunk getChunkFromBlock(int x, int y, int z) {
+        return getChunk(x >> 4, y >> 4, z >> 4);
+    }
+
     public void setChunk(int x, int y, int z, Chunk chunk) {
         chunkSystem.setChunk(x, y, z, chunk);
     }
@@ -50,7 +53,7 @@ public class World {
     }
 
     public Block getBlock(int x, int y, int z) {
-        return   getChunk(x << 4 , y << 4 , z << 4 )
+        return   getChunk(x >> 4 , y >> 4 , z >> 4 )
                 .getBlock(x & 0xF, y & 0xF, z & 0xF);
     }
 

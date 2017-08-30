@@ -8,6 +8,8 @@ import org.joml.Vector3f;
 import xyz.upperlevel.openverse.world.block.Block;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 
+import static java.lang.Math.floor;
+
 public class Location {
 
     @Getter
@@ -49,7 +51,7 @@ public class Location {
     }
 
     public Chunk getChunk() {
-        return world.getChunk(x, y, z);
+        return world.getChunkFromBlock((int)floor(x), (int)floor(y), (int)floor(z));
     }
 
     public Block getBlock() {

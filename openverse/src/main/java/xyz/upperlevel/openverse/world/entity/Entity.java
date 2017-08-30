@@ -19,7 +19,7 @@ import static xyz.upperlevel.openverse.Openverse.endpoint;
 public class Entity {
     private int id = -1;
     private final EntityType type;
-    private Location location;
+    protected Location location;
     private Vector3d velocity = new Vector3d();
     private EntityDriver driver = new SimpleEntityDriver(); // by default
 
@@ -46,6 +46,10 @@ public class Entity {
 
     public void setLocation(Location location) {
         setLocation(location, true);
+    }
+
+    public Location getLocation() {
+        return location == null ? null : new Location(location);
     }
 
     public void setRotation(double yaw, double pitch) {

@@ -7,8 +7,6 @@ import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.network.world.ChunkCreatePacket;
 import xyz.upperlevel.openverse.network.world.ChunkDestroyPacket;
 import xyz.upperlevel.openverse.physic.Box;
-import xyz.upperlevel.openverse.server.event.PlayerJoinEvent;
-import xyz.upperlevel.openverse.server.event.PlayerQuitEvent;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
@@ -67,6 +65,8 @@ public class PlayerChunkMap implements Listener {
     }
 
     public void onPlayerMove(ServerPlayer player, ChunkLocation old, ChunkLocation loc) {
+        System.out.println("Player move: " + old + "->" + loc);
+        int added = 0, removed = 0;
         int side = radius * 2;
 
         Box oldBox = new Box(
@@ -96,18 +96,24 @@ public class PlayerChunkMap implements Listener {
                     int cy = loc.y + y;
                     int cz = loc.z + z;
 
-                    if (apart || !oldBox.isIn(cx, cy, cz))
+                    if (apart || !oldBox.isIn(cx, cy, cz)) {
                         addPlayer(new ChunkLocation(cx, cy, cz), player);
+                        added++;
+                    }
 
                     //Find toRemove
                     cx = old.x + x;
                     cy = old.y + y;
                     cz = old.z + z;
-                    if (apart || !newBox.isIn(cx, cy, cz))
+                    if (apart || !newBox.isIn(cx, cy, cz)) {
                         removePlayer(loc, player);
+                        removed++;
+                    }
                 }
             }
         }
+
+        System.out.println("[Server]Player move: added:" + added + ", removed:" + removed + " (radius:" + radius + ", apart:" + apart + ")");
     }
 
     public void setRadius(int radius) {
