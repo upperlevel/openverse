@@ -32,12 +32,12 @@ public class Model<S extends Shape> {
             double x, y, z;
 
             // checks if current box min pos is lower than cached
-            x = box.minX();
-            y = box.minY();
-            z = box.minZ();
+            x = box.minX;
+            y = box.minY;
+            z = box.minZ;
 
             if (min == null) {
-                min = new Vector3d();
+                min = new Vector3d(x, y, z);
             } else {
                 if (x < min.x)
                     min.x = x;
@@ -48,9 +48,9 @@ public class Model<S extends Shape> {
             }
 
             // checks if current box max pos is higher than cached
-            x = box.maxX();
-            y = box.maxY();
-            z = box.maxZ();
+            x = box.maxX;
+            y = box.maxY;
+            z = box.maxZ;
 
             if (max == null) {
                 max = new Vector3d(x, y, z);
@@ -74,9 +74,9 @@ public class Model<S extends Shape> {
                 min.x,
                 min.y,
                 min.z,
-                max.x - min.x,
-                max.y - min.y,
-                max.z - min.z
+                max.x,
+                max.y,
+                max.z
         );
     }
 

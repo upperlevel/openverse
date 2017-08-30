@@ -62,13 +62,13 @@ public class PhysicEngine {
 
             // if collides
             if (bb.intersect(eb)) {
-                double dx = bb.maxX() - eb.x;
+                double dx = bb.maxX - eb.minX;
                 double tx = dx / (vx == 0 ? Double.POSITIVE_INFINITY : vx);
 
-                double dy = bb.maxY() - eb.y;
+                double dy = bb.maxY - eb.minY;
                 double ty = dy / (vy == 0 ? Double.POSITIVE_INFINITY : vy);
 
-                double dz = bb.maxZ() - eb.z;
+                double dz = bb.maxZ - eb.minZ;
                 double tz = dz / (vz == 0 ? Double.POSITIVE_INFINITY : vz);
 
                 double t = max(tx, max(ty, tz));

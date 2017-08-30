@@ -8,7 +8,7 @@ public enum CubeFacePosition {
     UP() {
         @Override
         public Box getBox(Box cube) {
-            return new Box(cube.x, cube.y + cube.height, cube.z, cube.width, 0, cube.depth);
+            return new Box(cube.minX, cube.maxY, cube.minZ, cube.maxX, cube.maxY, cube.maxZ);
         }
 
         @Override
@@ -24,7 +24,7 @@ public enum CubeFacePosition {
     DOWN() {
         @Override
         public Box getBox(Box cube) {
-            return new Box(cube.x, cube.y, cube.z, cube.width, 0, cube.depth);
+            return new Box(cube.minX, cube.minY, cube.minZ, cube.maxX, cube.minY, cube.maxZ);
         }
 
         @Override
@@ -41,7 +41,7 @@ public enum CubeFacePosition {
     RIGHT() {
         @Override
         public Box getBox(Box cube) {
-            return new Box(cube.x + cube.width, cube.y, cube.z, 0, cube.height, cube.depth);
+            return new Box(cube.maxX, cube.minY, cube.minZ, cube.maxX, cube.maxY, cube.maxZ);
         }
 
         @Override
@@ -57,7 +57,7 @@ public enum CubeFacePosition {
     LEFT() {
         @Override
         public Box getBox(Box cube) {
-            return new Box(cube.x, cube.y, cube.z, 0, cube.height, cube.depth);
+            return new Box(cube.minX, cube.minY, cube.minZ, cube.minX, cube.maxY, cube.maxZ);
         }
 
         @Override
@@ -74,7 +74,7 @@ public enum CubeFacePosition {
     FRONT() {
         @Override
         public Box getBox(Box cube) {
-            return new Box(cube.x, cube.y, cube.z + cube.depth, cube.width, cube.height, 0);
+            return new Box(cube.minX, cube.minY, cube.maxZ, cube.maxX, cube.maxY, cube.maxZ);
         }
 
         @Override
@@ -90,7 +90,7 @@ public enum CubeFacePosition {
     BACK() {
         @Override
         public Box getBox(Box cube) {
-            return new Box(cube.x, cube.y, cube.z, cube.width, cube.height, 0);
+            return new Box(cube.minX, cube.minY, cube.minZ, cube.maxX, cube.maxY, cube.maxZ);
         }
 
         @Override

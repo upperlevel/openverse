@@ -73,17 +73,17 @@ public class PlayerChunkMap implements Listener {
                 old.x - radius,
                 old.y - radius,
                 old.z - radius,
-                side,
-                side,
-                side
+                old.x + radius,
+                old.y + radius,
+                old.z + radius
         );
         Box newBox = new Box(
                 loc.x - radius,
                 loc.y - radius,
                 loc.z - radius,
-                side,
-                side,
-                side
+                loc.x + radius,
+                loc.y + radius,
+                loc.z + radius
         );
 
         boolean apart = !oldBox.intersect(newBox);

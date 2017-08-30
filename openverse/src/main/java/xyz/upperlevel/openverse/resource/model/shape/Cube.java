@@ -23,6 +23,6 @@ public class Cube implements Shape {
         this.width = config.getFloat("width");
         this.height = config.getFloat("height");
         this.length = config.getFloat("length");
-        this.box = new Box(x, y, z, width, height, length);
+        this.box = new Box(x, y, z, x + width, y + height, z + length);
     }
 }

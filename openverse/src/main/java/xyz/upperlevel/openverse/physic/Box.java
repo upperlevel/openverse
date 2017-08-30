@@ -1,107 +1,69 @@
 package xyz.upperlevel.openverse.physic;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.joml.Vector3f;
 
 import static java.lang.Math.abs;
 
-@Accessors(fluent = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class Box {
-
-    @Getter
-    @Setter
-    public double x, y, z;
-
-    @Getter
-    @Setter
-    public double width, height, depth;
-
-    public Box() {
-    }
-
-    public Box(double width, double height, double depth) {
-        this.width = width;
-        this.height = height;
-        this.depth = depth;
-    }
-
-    public Box(double x, double y, double z, double width, double height, double depth) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-
-        this.width = width;
-        this.height = height;
-        this.depth = depth;
-    }
+    public double minX, minY, minZ;
+    public double maxX, maxY, maxZ;
 
     public Vector3f getPosition() {
         return new Vector3f(
-                (float) x,
-                (float) y,
-                (float) z
+                (float) minX,
+                (float) minY,
+                (float) minZ
         );
     }
 
     public Vector3f getSize() {
         return new Vector3f(
-                (float) width,
-                (float) height,
-                (float) depth
+                (float) (maxX - minX),
+                (float) (maxY - minY),
+                (float) (maxZ - minZ)
         );
     }
 
-    public double minX() {
-        return x;
-    }
-
-    public double minY() {
-        return y;
-    }
-
-    public double minZ() {
-        return z;
-    }
-
-    public double maxX() {
-        return x + width;
-    }
-
-    public double maxY() {
-        return y + height;
-    }
-
-    public double maxZ() {
-        return z + depth;
-    }
-
     public void add(double x, double y, double z) {
-        this.x += x;
-        this.y += y;
-        this.z += z;
+        this.minX += x;
+        this.minY += y;
+        this.minZ += z;
+
+        this.maxX += x;
+        this.maxY += y;
+        this.maxZ += z;
     }
 
     public void sub(double x, double y, double z) {
-        this.x -= x;
-        this.y -= y;
-        this.z -= z;
+        this.minX -= x;
+        this.minY -= y;
+        this.minZ -= z;
+
+        this.maxX -= x;
+        this.maxY -= y;
+        this.maxZ -= z;
     }
 
     public boolean intersect(Box box) {
-        return  (abs(x - box.x) * 2 < (width + box.width)) &&
-                (abs(y - box.y) * 2 < (height + box.height)) &&
-                (abs(z - box.z) * 2 < (depth + box.depth));
+        return  (minX <= box.maxX && maxX >= box.minX) &&
+                (minY <= box.maxY && maxY >= box.minY) &&
+                (minZ <= box.maxZ && maxZ >= box.minZ);
     }
 
     public boolean isIn(double x, double y, double z) {
-        return this.x < x && x < maxX() &&
-                this.y < y && y < maxY() &&
-                this.z < z && z < maxZ();
+        return  (x >= minX && x <= maxX) &&
+                (y >= minY && y <= maxY) &&
+                (z >= minZ && z <= maxZ);
     }
 
     public Box copy() {
-        return new Box(x, y, z, width, height, depth);
+        return new Box(minX, minY, minZ, maxX, maxY, maxZ);
     }
 }
