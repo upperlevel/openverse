@@ -154,18 +154,18 @@ public class WorldViewer implements PacketListener {
     @PacketHandler
     public void onPlayerChangeWorld(Connection conn, PlayerChangeWorldPacket pkt) {
         worldSession.setWorld(new ClientWorld(pkt.getWorldName()));
-        System.out.println("[Client] Viewer changed world to: " + pkt.getWorldName());
+        Openverse.logger().info("Viewer changed world to: " + pkt.getWorldName());
     }
 
     @PacketHandler
     public void onPlayerChangePosition(Connection conn, PlayerChangePositionPacket pkt) {
         setPosition(pkt);
-        System.out.println("[Client] Viewer changed position to: " + pkt.getX() + " " + pkt.getY() + " " + pkt.getZ());
+        Openverse.logger().info("Viewer changed position to: " + pkt.getX() + " " + pkt.getY() + " " + pkt.getZ());
     }
 
     @PacketHandler
     public void onPlayerChangeLook(Connection conn, PlayerChangeLookPacket pkt) {
         setLook(pkt);
-        System.out.println("[Client] Viewer changed position to: " + pkt.getYaw() + " " + pkt.getPitch());
+        Openverse.logger().info("Viewer changed position to: " + pkt.getYaw() + " " + pkt.getPitch());
     }
 }

@@ -1,5 +1,6 @@
 package xyz.upperlevel.openverse.client.resource.shader;
 
+import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.resource.Identifier;
 import xyz.upperlevel.openverse.resource.Resources;
 import xyz.upperlevel.openverse.resource.ResourceLoader;
@@ -14,14 +15,14 @@ public class ShaderLoader implements ResourceLoader<Shader> {
     @Override
     public Identifier<Shader> load(File file) {
         Shader shader = new Shader(ShaderType.getFromExtension(FileUtil.getExtension(file)));
-        System.out.println("[Client] Loading shader at: " + file.getName());
+        Openverse.logger().info("Loading shader at: " + file.getName());
         try {
             shader.linkSource(file);
         } catch (IOException e) {
             throw new IllegalStateException("Cannot link source on file \"" + file + "\": " + e);
         }
         shader.compileSource();
-        System.out.println("[Client] Shader status: " + shader.getCompileStatus().getLog());
+        Openverse.logger().info("Shader status: " + shader.getCompileStatus().getLog());
         return new Identifier<>(file.getName(), shader);
     }
 }

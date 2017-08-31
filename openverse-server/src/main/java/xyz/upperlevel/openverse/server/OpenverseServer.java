@@ -8,8 +8,9 @@ import xyz.upperlevel.hermes.PacketSide;
 import xyz.upperlevel.hermes.channel.Channel;
 import xyz.upperlevel.hermes.server.Server;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.logger.OpenverseLogger;
 import xyz.upperlevel.openverse.OpenverseProxy;
+import xyz.upperlevel.openverse.console.log.OpenverseLogger;
+import xyz.upperlevel.openverse.event.ShutdownEvent;
 import xyz.upperlevel.openverse.resource.Resources;
 import xyz.upperlevel.openverse.server.world.Universe;
 
@@ -28,7 +29,7 @@ public class OpenverseServer implements OpenverseProxy, Listener {
 
     public OpenverseServer(@NonNull Server server) {
         Openverse.setProxy(this);
-        this.logger = new OpenverseLogger(this);
+        logger = new OpenverseLogger(this, "Server");
         this.endpoint = server;
         this.channel = new Channel("main").setProtocol(Openverse.PROTOCOL.compile(PacketSide.SERVER));
         endpoint.setDefaultChannel(channel);
@@ -42,12 +43,13 @@ public class OpenverseServer implements OpenverseProxy, Listener {
      * It will just load resources and other saves (including world).
      */
     public void join() {
-        System.out.println("[Server] Loading server resources");
+        Openverse.logger().info("[Server] Loading server resources");
         Openverse.resources().setup();
         Openverse.resources().load();
     }
 
     public void stop() {
+        Openverse.getEventManager().call(new ShutdownEvent());
     }
 
     public static OpenverseServer get() {

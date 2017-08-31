@@ -58,4 +58,10 @@ public class SingleplayerScene extends Stage {
         serverConnection.setCopy(true);
         clientConn.setOther(serverConnection);
     }
+
+    @Override
+    public void onDisable(Scene next) {
+        super.onDisable(next);
+        serverWrp.close();
+    }
 }

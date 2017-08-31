@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
+import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.resource.model.ClientModel;
 import xyz.upperlevel.openverse.resource.block.BlockType;
 import xyz.upperlevel.openverse.world.block.Block;
@@ -40,7 +41,7 @@ public class ChunkRenderer {
         this.location = chunk.getLocation();
         this.vbo = new Vbo();
         load(chunk);
-        System.out.println("[Client] Received chunk loaded!");
+        Openverse.logger().info("Received chunk loaded!");
     }
 
     public void load(Chunk chunk) {
@@ -52,13 +53,13 @@ public class ChunkRenderer {
             for (int y = 0; y < HEIGHT; y++) {
                 for (int z = 0; z < LENGTH; z++) {
                     if (blockSystem.getBlock(x, y, z).getType() != null)
-                        System.out.println("[Client] FOUND BLOCK NON-NULL! " + blockSystem.getBlock(x, y, z).getType().getId());
+                        Openverse.logger().info("[Client] FOUND BLOCK NON-NULL! " + blockSystem.getBlock(x, y, z).getType().getId());
                     setBlockType(blockSystem.getBlock(x, y, z), false);
                 }
             }
         }
         build();
-        System.out.println("[Client] Built up chunk!");
+        Openverse.logger().info("Built up chunk!");
     }
 
     public BlockType getBlockType(int x, int y, int z) {

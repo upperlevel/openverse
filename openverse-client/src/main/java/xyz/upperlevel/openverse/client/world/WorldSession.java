@@ -2,6 +2,7 @@ package xyz.upperlevel.openverse.client.world;
 
 import lombok.Getter;
 import xyz.upperlevel.hermes.reflect.PacketListener;
+import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.render.entity.EntityViewRenderer;
 import xyz.upperlevel.openverse.client.render.world.ChunkViewRenderer;
 
@@ -20,7 +21,7 @@ public class WorldSession implements PacketListener {
     }
 
     public void setWorld(ClientWorld world) {
-        System.out.println("[Client] Setting world to: " + world.getName());
+        Openverse.logger().info("Setting world to: " + world.getName());
         this.world = world;
         chunkView.setWorld(world);
     }

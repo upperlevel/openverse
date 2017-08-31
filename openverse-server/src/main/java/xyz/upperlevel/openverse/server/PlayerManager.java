@@ -52,10 +52,10 @@ public class PlayerManager implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onConnect(ConnectionOpenEvent event) {
-        System.out.println("[Server] New connection reached!");
+        Openverse.logger().info("New connection reached!");
         ServerPlayer sp = new ServerPlayer("Hobbit", event.getConnection());
         register(sp);
-        System.out.println("[Server] Instantiated a new player, spawning him.");
+        Openverse.logger().info("Instantiated a new player, spawning him.");
         sp.setLocation(OpenverseServer.get().getUniverse().getSpawn());
     }
 

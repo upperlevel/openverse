@@ -1,6 +1,7 @@
 package xyz.upperlevel.openverse.resource;
 
 import lombok.Getter;
+import xyz.upperlevel.openverse.Openverse;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -48,12 +49,12 @@ public abstract class ResourceRegistry<E> extends Registry<E> {
     }
 
     public boolean loadFile(ResourceLoader<E> loader, File file) {
-        System.out.println("File: " + file);
+        Openverse.logger().info("File: " + file);
         if (file.exists() && !file.isDirectory()) {
             Identifier<E> res = loader.load(file);
             register(res);
             onFileLoad(logger, file);
-            System.out.println("LOADED!");
+            Openverse.logger().info("LOADED!");
             return true;
         }
         return false;
@@ -76,16 +77,16 @@ public abstract class ResourceRegistry<E> extends Registry<E> {
 
     public int loadFolder(ResourceLoader<E> loader, File folder) {
         int cnt = 0;
-        System.out.println("loading " + folder);
+        Openverse.logger().info("loading " + folder);
         if (folder.exists()) {
-            System.out.println(folder + " exists");
+            Openverse.logger().info(folder + " exists");
             if (folder.isDirectory()) {
-                System.out.println(folder + " is dir");
+                Openverse.logger().info(folder + " is dir");
                 File[] files = folder.listFiles();
                 if (files != null) {
-                    System.out.println(folder + " seems to have files...");
+                    Openverse.logger().info(folder + " seems to have files...");
                     for (File file : files) {
-                        System.out.println(folder + " sub-file: " + file);
+                        Openverse.logger().info(folder + " sub-file: " + file);
                         if (loadFile(loader, file))
                             cnt++;
                     }

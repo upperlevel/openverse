@@ -41,7 +41,7 @@ public class ServerPlayer extends Player implements PacketListener {
             loc.setYaw(pkt.getYaw());
             loc.setPitch(pkt.getPitch());
             setLocation(loc, false);
-            System.out.println("[Server] Received player look change to: " + pkt.getYaw() + " " + pkt.getPitch());
+            Openverse.logger().info("Received player look change to: " + pkt.getYaw() + " " + pkt.getPitch());
         }
     }
 
@@ -53,7 +53,7 @@ public class ServerPlayer extends Player implements PacketListener {
             loc.setY(pkt.getY());
             loc.setZ(pkt.getZ());
             setLocation(loc, false);
-            System.out.println("[Server] Received player position change to: " + pkt.getX() + " " + pkt.getY() + " " + pkt.getZ());
+            Openverse.logger().info("Received player position change to: " + pkt.getX() + " " + pkt.getY() + " " + pkt.getZ());
         }
     }
 }

@@ -8,9 +8,9 @@ import xyz.upperlevel.hermes.PacketSide;
 import xyz.upperlevel.hermes.channel.Channel;
 import xyz.upperlevel.hermes.client.Client;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.logger.OpenverseLogger;
 import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.client.resource.ClientResources;
+import xyz.upperlevel.openverse.console.log.OpenverseLogger;
 import xyz.upperlevel.ulge.game.Stage;
 
 import java.util.logging.Logger;
@@ -26,18 +26,19 @@ public class OpenverseClient implements OpenverseProxy {
     private final Client endpoint;
     private final Channel channel;
     private final ClientResources resources; // resources are loaded per universe
-    private final EventManager eventManager;
+    private final EventManager eventManager = new EventManager();
 
     public OpenverseClient(@NonNull Client client) {
         instance = this;
         Openverse.setProxy(this);
 
-        this.logger = new OpenverseLogger(this);
         endpoint = client;
+
+        logger = new OpenverseLogger(this, "Client");
+
         Connection connection = client.getConnection();
         channel = new Channel("main").setProtocol(PROTOCOL.compile(PacketSide.CLIENT));
         connection.setDefaultChannel(channel);
-        eventManager = new EventManager();
         resources = new ClientResources(logger);
     }
 

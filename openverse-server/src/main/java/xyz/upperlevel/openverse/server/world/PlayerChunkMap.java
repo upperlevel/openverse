@@ -13,6 +13,7 @@ import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 import xyz.upperlevel.openverse.world.entity.event.PlayerMoveEvent;
 
+import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -65,7 +66,7 @@ public class PlayerChunkMap implements Listener {
     }
 
     public void onPlayerMove(ServerPlayer player, ChunkLocation old, ChunkLocation loc) {
-        System.out.println("Player move: " + old + "->" + loc);
+        Openverse.logger().info("Player move: " + old + "->" + loc);
         int added = 0, removed = 0;
 
         Box oldBox = new Box(
@@ -112,7 +113,7 @@ public class PlayerChunkMap implements Listener {
             }
         }
 
-        System.out.println("[Server]Player move: added:" + added + ", removed:" + removed + " (radius:" + radius + ", apart:" + apart + ")");
+        Openverse.logger().info("Player move: added:" + added + ", removed:" + removed + " (radius:" + radius + ", apart:" + apart + ")");
     }
 
     public void setRadius(int radius) {
@@ -160,24 +161,24 @@ public class PlayerChunkMap implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent e) {
-        System.out.println("[Server] Player move!");
+        Openverse.logger().info("Player move!");
         Location nl = e.getLocation();
         Location ol = e.getOldLocation();
         World nw = nl.getWorld();
         World ow = ol != null ? ol.getWorld() : null;
         if (ow != nw) {
             if (nw == world) {
-                System.out.println("[Server] Player joined world: " + nw.getName());
+                Openverse.logger().info("Player joined world: " + nw.getName());
                 addPlayer((ServerPlayer) e.getPlayer(), nl.getChunk());
             } else if (ow == world) {
-                System.out.println("[Server] Player left world: " + ow.getName());
+                Openverse.logger().info("Player left world: " + ow.getName());
                 removePlayer((ServerPlayer) e.getPlayer());
             }
         } else {
             ChunkLocation ncl = nl.getChunk().getLocation();
             ChunkLocation ocl = ol != null ? ol.getChunk().getLocation() : null;
             if (nw == world && (ocl == null || !ncl.equals(ocl))) {
-                System.out.println("[Server] Player changed chunk to: " + ncl.toString());
+                Openverse.logger().info("Player changed chunk to: " + ncl.toString());
                 onPlayerMove((ServerPlayer) e.getPlayer(), ocl, ncl);
             }
         }
