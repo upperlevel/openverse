@@ -9,5 +9,5 @@ uniform sampler2DArray texture;
 
 void main()
 {
-    result = Color * texture(texture, TexCoords);
+    result = vec4(1, 0, 0, 0);// Color * texture(texture, TexCoords);
 }
