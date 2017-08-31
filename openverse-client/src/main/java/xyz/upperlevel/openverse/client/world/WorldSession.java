@@ -20,12 +20,16 @@ public class WorldSession implements PacketListener {
     }
 
     public void setWorld(ClientWorld world) {
+        System.out.println("[Client] Setting world to: " + world.getName());
         this.world = world;
         chunkView.setWorld(world);
     }
 
-    protected void onSetPosition(int x, int y, int z) {
-        // todo chunkView.setPosition(x, y, z);
+    protected void onSetPosition(double x, double y, double z) {
+        chunkView.setPosition(
+                Math.floorMod((int) Math.floor(x), 16),
+                Math.floorMod((int) Math.floor(y), 16),
+                Math.floorMod((int) Math.floor(z), 16));
         // todo entityView.setPosition(x, y, z);
     }
 }

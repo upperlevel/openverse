@@ -5,6 +5,7 @@ import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.client.OpenverseClient;
 import xyz.upperlevel.openverse.client.render.world.util.ArraySlider3d;
 import xyz.upperlevel.openverse.client.world.ClientWorld;
+import xyz.upperlevel.openverse.world.chunk.Chunk;
 
 /**
  * This class contains a list of all chunks that have to be rendered.
@@ -15,28 +16,33 @@ public class ChunkViewRenderer implements Listener {
 
     private ClientWorld world;
 
-    // todo merge ArraySlider3d with this class (only used here)
-    private final ArraySlider3d<ChunkRenderer> chunks = new ArraySlider3d<ChunkRenderer>(MAX_RENDER_DISTANCE * 2 + 1) {
-        @Override
-        public ChunkRenderer ask(int x, int y, int z) {
-            return world != null ? new ChunkRenderer(world.getChunk(x, y, z)) : null;
-        }
-    };
+    private int distance;
+    private int x, y, z, side, size;
+    private ChunkRenderer[] chunks;
 
     public ChunkViewRenderer() {
-        OpenverseClient.get().getEventManager().register(this);
+        this.distance = 1;
+        this.side = distance * 2 + 1;
+        this.size = side * side * side;
+        this.chunks = new ChunkRenderer[size];
+    }
+
+    private int getIndex1d(int x, int y, int z) {
+        return x * side * side + y * side + z;
     }
 
     private void setChunk(int x, int y, int z, ChunkRenderer chunk) {
-        chunks.set(x, y, z, chunk);
+        int i = getIndex1d(x, y, z);
+        if (i < 0 || i >= size)
+            throw new IndexOutOfBoundsException();
+        chunks[i] = chunk;
     }
 
     public ChunkRenderer getChunk(int x, int y, int z) {
-        return chunks.get(x, y, z);
-    }
-
-    public ChunkRenderer[] getChunks() {
-        return chunks.getData();
+        int i = getIndex1d(x, y, z);
+        if (i < 0 || i >= size)
+            return null;
+        return chunks[i];
     }
 
     /**
@@ -44,24 +50,39 @@ public class ChunkViewRenderer implements Listener {
      * The position is equivalent to the middle chunk location.
      */
     public void setPosition(int x, int y, int z) {
-        chunks.slideTo(x, y, z);
+        for (int ix = 0; ix < side; ix++) {
+            for (int iy = 0; iy < side; iy++) {
+                for (int iz = 0; iz < side; iz++) {
+                    chunks[getIndex1d(ix, iy, iz)] = new ChunkRenderer(world.getChunk(
+                            ix - distance + x,
+                            iy - distance + y,
+                            iz - distance + z
+                    ));
+                }
+            }
+        }
     }
 
-    /**
-     * Sets new world and new position.
-     * The position is equivalent to middle chunk's location.
-     */
     public void setWorld(ClientWorld world) {
         this.world = world;
-        chunks.clear();
-        chunks.refresh();
+        for (int i = 0; i < size; i++) {
+            if (chunks[i] != null) {
+                chunks[i].destroy();
+                chunks[i] = null;
+            }
+        }
+        setPosition(x, y, z);
     }
 
     /**
      * Destroys all chunks and remove them from memory.
      */
     public void destroy() {
-        chunks.forEach(ChunkRenderer::destroy);
-        chunks.clear();
+        for (int i = 0; i < size; i++) {
+            if (chunks[i] != null) {
+                chunks[i].destroy();
+                chunks[i] = null;
+            }
+        }
     }
 }

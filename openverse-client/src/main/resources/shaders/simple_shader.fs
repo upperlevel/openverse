@@ -1,15 +1,13 @@
 #version 450
 
-in vec4 Col;
-in vec3 Tex_coord;
+in vec4 Color;
+in vec3 TexCoords;
 
-uniform vec4 cntChk;
+out vec4 result;
 
-out vec4 res;
-
-uniform sampler2DArray tex;
+uniform sampler2DArray texture;
 
 void main()
 {
-    res = cntChk * Col * texture(tex, Tex_coord);
+    result = Color * texture(texture, TexCoords);
 }

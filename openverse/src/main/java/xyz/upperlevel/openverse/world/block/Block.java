@@ -6,20 +6,13 @@ import xyz.upperlevel.openverse.resource.block.BlockType;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 
+@Getter
+@Setter
 public class Block {
-
-    @Getter
     private final World world;
-
-    @Getter
     private final int x, y, z;
-
-    @Getter
     private final Chunk chunk;
-
-    @Getter
-    @Setter
-    private BlockType type = null;
+    private BlockType type;
 
     public Block(Chunk chunk, int x, int y, int z) {
         this.world = chunk.getWorld();

@@ -8,7 +8,7 @@ import xyz.upperlevel.hermes.PacketSide;
 import xyz.upperlevel.hermes.channel.Channel;
 import xyz.upperlevel.hermes.client.Client;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.OpenverseLogger;
+import xyz.upperlevel.openverse.logger.OpenverseLogger;
 import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.client.resource.ClientResources;
 import xyz.upperlevel.ulge.game.Stage;

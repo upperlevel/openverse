@@ -7,10 +7,12 @@ import xyz.upperlevel.openverse.util.config.Config;
 
 @Getter
 public class BlockType {
+    private final String id;
     private Model model;
     private boolean solid;
 
-    public BlockType(Config config) {
+    public BlockType(String id, Config config) {
+        this.id = id;
         this.model = Openverse.resources().models().entry(config.getString("model"));
         this.solid = config.getBool("solid", true);
     }

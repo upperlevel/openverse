@@ -2,6 +2,7 @@ package xyz.upperlevel.openverse.server.world;
 
 import lombok.Getter;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.resource.block.BlockType;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
@@ -13,7 +14,12 @@ public class ServerWorld extends World {
 
     public ServerWorld(String name) {
         super(name);
-        this.generator = new FlatChunkGenerator(1, Openverse.resources().blockTypes().entry("my_squeeze"), Openverse.resources().blockTypes().entry("my_air"));
+        BlockType my_squeeze = Openverse.resources().blockTypes().entry("my_squeeze");
+        BlockType my_air = Openverse.resources().blockTypes().entry("my_air");
+        System.out.println("------------------------->my_squeeze: " + my_squeeze);
+        System.out.println("------------------------->my_air: " + my_air);
+
+        this.generator = new FlatChunkGenerator(1, my_squeeze, my_air);
         this.chunkMap = new PlayerChunkMap(this, 3);
     }
 

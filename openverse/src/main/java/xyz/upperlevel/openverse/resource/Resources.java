@@ -29,11 +29,12 @@ public class Resources {
     public Resources(File folder, Logger logger) {
         this.folder = folder;
         this.logger = logger;
-        this.blockTypeRegistry = new BlockTypeRegistry(folder, logger);
-        this.entityTypeRegistry = new EntityTypeRegistry(folder, logger);
-        // on client down here have different implementation
+        // -- these have different implementation
         this.shapeTypeRegistry = new ShapeTypeRegistry<>();
         this.modelRegistry = new ModelRegistry<>(folder, logger);
+        // --
+        this.blockTypeRegistry = new BlockTypeRegistry(folder, logger);
+        this.entityTypeRegistry = new EntityTypeRegistry(folder, logger);
     }
 
     /**
@@ -79,10 +80,11 @@ public class Resources {
     public int load() {
         long init = System.currentTimeMillis();
         int cnt = 0;
+        cnt += onLoad();
         cnt += models().loadFolder();
+        System.out.println("[Common-DEBUG] joshua.json? " + models().entries().size() + " " + models().entry("joshua"));
         cnt += blockTypeRegistry.loadFolder();
         cnt += entityTypeRegistry.loadFolder();
-        cnt += onLoad();
         logger.info("Loaded " + cnt + " resources in " + (System.currentTimeMillis() - init) + " ms!");
         return cnt;
     }

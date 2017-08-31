@@ -23,15 +23,34 @@ public abstract class ArraySlider3d<T> implements Iterable<T> {
         this(0, 0, 0, side);
     }
 
-    /**
-     * Gets element from relative coordinates.
-     */
     public T get(int x, int y, int z) {
-        return this.data[x * side * side + y * side + z];
+        return data[x * side * side + y * side + z];
+    }
+
+    public T getFromAbsolute(int x, int y, int z) {
+        int dx = this.x - x;
+        int dy = this.y - y;
+        int dz = this.z - z;
+        int i = dx * side * side + dy * side + dz;
+        if (i < 0 || i >= size) {
+            System.out.println("calling ask from getFromAbs(" + x + "," + y + "," + z + ")");
+            return ask(x, y, z);
+        } else
+            return this.data[i];
     }
 
     public void set(int x, int y, int z, T data) {
         this.data[x * side * side + y * side + z] = data;
+    }
+
+    public void setToAbsolute(int x, int y, int z, T data) {
+        int dx = this.x - x;
+        int dy = this.y - y;
+        int dz = this.z - z;
+        int i = dx * side * side + dy * side + dz;
+        if (i < 0 || i >= size)
+            throw new IllegalArgumentException("Element at " + x + " " + y + " " + z + " is out of view!");
+        this.data[i] = data;
     }
 
     /**
@@ -51,7 +70,8 @@ public abstract class ArraySlider3d<T> implements Iterable<T> {
                     int tz = iz + offsetZ;
                     T trg;
                     if (tx >= side || tx < 0 || ty >= side || ty < 0 || tz >= side || tz < 0) {
-                        trg = ask(tx, ty, tz);
+                        System.out.println("asking because of slide");
+                        trg = ask(this.x + offsetX, this.y + offsetY, this.z + offsetZ); // asks the chunk from real coordinates
                     } else {
                         trg = get(tx, ty, tz);
                     }
@@ -85,10 +105,14 @@ public abstract class ArraySlider3d<T> implements Iterable<T> {
         this.x = x;
         this.y = y;
         this.z = z;
-        for (int ix = 0; ix < side; ix++)
-            for (int iy = 0; iy < side; iy++)
-                for (int iz = 0; iz < side; iz++)
+        for (int ix = 0; ix < side; ix++) {
+            for (int iy = 0; iy < side; iy++) {
+                for (int iz = 0; iz < side; iz++) {
+                    System.out.println("asking because of refresh");
                     set(ix, iy, iz, ask(x + ix, y + iy, z + iz));
+                }
+            }
+        }
     }
 
     /**

@@ -38,20 +38,27 @@ public class ChunkRenderer {
 
     public ChunkRenderer(Chunk chunk) {
         this.location = chunk.getLocation();
-        // just to ensure that it'll be init on constructor call
-        vbo = new Vbo();
+        this.vbo = new Vbo();
+        load(chunk);
+        System.out.println("[Client] Received chunk loaded!");
     }
 
-    public void load(@NonNull Chunk chunk) {
+    public void load(Chunk chunk) {
         load(chunk.getBlockSystem());
     }
 
-    public void load(@NonNull BlockSystem blockSystem) {
-        for (int x = 0; x < WIDTH; x++)
-            for (int y = 0; y < HEIGHT; y++)
-                for (int z = 0; z < LENGTH; z++)
+    public void load(BlockSystem blockSystem) {
+        for (int x = 0; x < WIDTH; x++) {
+            for (int y = 0; y < HEIGHT; y++) {
+                for (int z = 0; z < LENGTH; z++) {
+                    if (blockSystem.getBlock(x, y, z).getType() != null)
+                        System.out.println("[Client] FOUND BLOCK NON-NULL! " + blockSystem.getBlock(x, y, z).getType().getId());
                     setBlockType(blockSystem.getBlock(x, y, z), false);
+                }
+            }
+        }
         build();
+        System.out.println("[Client] Built up chunk!");
     }
 
     public BlockType getBlockType(int x, int y, int z) {
@@ -78,8 +85,6 @@ public class ChunkRenderer {
         // rebuilds chunk if requested
         if (update)
             build();
-
-        blockTypes[x][y][z] = type;
     }
 
     public void setBlockType(int x, int y, int z, BlockType type) {
@@ -88,9 +93,9 @@ public class ChunkRenderer {
 
     public void setBlockType(@NonNull Block block, boolean update) {
         setBlockType(
-                block.getX(),
-                block.getY(),
-                block.getZ(),
+                Math.floorMod(block.getX(), 16),
+                Math.floorMod(block.getY(), 16),
+                Math.floorMod(block.getZ(), 16),
                 block.getType(),
                 update
         );
@@ -109,10 +114,9 @@ public class ChunkRenderer {
                 for (int z = 0; z < LENGTH; z++) {
                     Matrix4f in = new Matrix4f()
                             .translate(x, y, z);
-
-                    BlockType block = getBlockType(x, y, z);
-                    if (block != null) {
-                        ClientModel model = (ClientModel) block.getModel();
+                    BlockType ty = blockTypes[x][y][z];
+                    if (ty != null) {
+                        ClientModel model = (ClientModel) ty.getModel();
                         if (model != null)
                             drawVerticesCount += model.store(in, buffer);
                     }
@@ -134,6 +138,7 @@ public class ChunkRenderer {
                 new Matrix4f().translate(location.x * WIDTH, location.y * HEIGHT, location.z * LENGTH).get(BufferUtils.createFloatBuffer(16)));
         vertexLinker.setup();
         // todo remove quads drawing
+        // System.out.println("[Client] Drawing chunk: drawVert:" + drawVerticesCount + " allocVert:" + allocateVerticesCount + " allocData:" + allocateDataCount);
         vbo.draw(DrawMode.QUADS, 0, drawVerticesCount);
     }
 

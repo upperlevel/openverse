@@ -1,19 +1,18 @@
 #version 450
 
-in vec3 pos;
-in vec4 col;
-in vec3 tex_coord;
+in vec3 position;
+in vec4 color;
+in vec3 texCoords;
 
 uniform mat4 model;
-uniform mat4 cam;
+uniform mat4 camera;
 
-out vec4 Col;
-out vec3 Tex_coord;
+out vec4 Color;
+out vec3 TexCoords;
 
 void main()
 {
-    gl_Position = cam * model * vec4(pos, 1.0f);
-
-    Col = col;
-    Tex_coord = tex_coord;
+    gl_Position = camera * model * vec4(pos, 1.0f);
+    Color = color;
+    TexCoords = texCoords;
 }

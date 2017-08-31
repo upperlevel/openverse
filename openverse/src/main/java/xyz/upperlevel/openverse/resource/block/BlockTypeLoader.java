@@ -12,6 +12,6 @@ public class BlockTypeLoader implements ResourceLoader<BlockType> {
     public Identifier<BlockType> load(File file) {
         return new Identifier<>(
                 FileUtils.stripExtension(file),
-                new BlockType(Config.json(file)));
+                new BlockType(FileUtils.stripExtension(file), Config.json(file)));
     }
 }

@@ -11,7 +11,7 @@ public class ModelRegistry<M extends Model> extends ResourceRegistry<M> {
     private final ModelLoader<M> defaultLoader = new ModelLoader<>(); // not static for template
 
     public ModelRegistry(File folder, Logger logger) {
-        super(folder, logger);
+        super(new File(folder, "models"), logger);
     }
 
     @Override

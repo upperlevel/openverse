@@ -1,4 +1,6 @@
-package xyz.upperlevel.openverse;
+package xyz.upperlevel.openverse.logger;
+
+import xyz.upperlevel.openverse.OpenverseProxy;
 
 import java.util.logging.Level;
 import java.util.logging.LogRecord;

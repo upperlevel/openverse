@@ -48,10 +48,12 @@ public abstract class ResourceRegistry<E> extends Registry<E> {
     }
 
     public boolean loadFile(ResourceLoader<E> loader, File file) {
+        System.out.println("File: " + file);
         if (file.exists() && !file.isDirectory()) {
             Identifier<E> res = loader.load(file);
             register(res);
             onFileLoad(logger, file);
+            System.out.println("LOADED!");
             return true;
         }
         return false;
@@ -74,13 +76,19 @@ public abstract class ResourceRegistry<E> extends Registry<E> {
 
     public int loadFolder(ResourceLoader<E> loader, File folder) {
         int cnt = 0;
+        System.out.println("loading " + folder);
         if (folder.exists()) {
+            System.out.println(folder + " exists");
             if (folder.isDirectory()) {
+                System.out.println(folder + " is dir");
                 File[] files = folder.listFiles();
                 if (files != null) {
-                    for (File file : files)
+                    System.out.println(folder + " seems to have files...");
+                    for (File file : files) {
+                        System.out.println(folder + " sub-file: " + file);
                         if (loadFile(loader, file))
                             cnt++;
+                    }
                 }
                 onFolderLoad(logger, cnt, folder);
             } else

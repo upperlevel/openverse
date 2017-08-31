@@ -10,6 +10,7 @@ import xyz.upperlevel.hermes.client.Client;
 import xyz.upperlevel.hermes.reflect.PacketHandler;
 import xyz.upperlevel.hermes.reflect.PacketListener;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.client.render.world.ChunkRenderer;
 import xyz.upperlevel.openverse.client.resource.ClientResources;
 import xyz.upperlevel.openverse.network.world.PlayerChangeLookPacket;
 import xyz.upperlevel.openverse.network.world.PlayerChangePositionPacket;
@@ -33,6 +34,7 @@ public class WorldViewer implements PacketListener {
 
     public WorldViewer() {
         this.worldSession = new WorldSession();
+        this.distance = 1;
         this.program = ((ClientResources) Openverse.resources()).programs().entry("simple_shader");
         Openverse.channel().register(this);
     }
@@ -44,7 +46,7 @@ public class WorldViewer implements PacketListener {
         this.x = x;
         this.y = y;
         this.z = z;
-        // todo update world session
+        worldSession.onSetPosition(x, y, z);
     }
 
     public void setPosition(PlayerChangePositionPacket pkt) {
@@ -123,7 +125,7 @@ public class WorldViewer implements PacketListener {
      */
     public void render() {
         program.bind();
-        program.uniformer.setUniformMatrix4("cam", CameraUtil.getCamera(
+        program.uniformer.setUniformMatrix4("camera", CameraUtil.getCamera(
                 45f,
                 1f,
                 0.01f,
@@ -134,14 +136,18 @@ public class WorldViewer implements PacketListener {
                 (float) y,
                 (float) z
         ).get(BufferUtils.createFloatBuffer(16)));
-        for (int ix = -distance; ix < distance; ix++) {
-            for (int iy = -distance; iy < distance; iy++) {
-                for (int iz = -distance; iz < distance; iz++) {
-                    worldSession.getChunkView().getChunk(ix, iy, iz).render(program);
+
+        int side = distance * 2 + 1;
+        for (int ix = 0; ix < side; ix++) {
+            for (int iy = 0; iy < side; iy++) {
+                for (int iz = 0; iz < side; iz++) {
+                    ChunkRenderer chk = worldSession.getChunkView().getChunk(ix, iy, iz);
+                    if (chk != null)
+                        chk.render(program);
                 }
             }
         }
-        worldSession.getEntityView().render();
+        // worldSession.getEntityView().render();
         // todo render player arms
     }
 

@@ -11,6 +11,6 @@ public class ClientModelRegistry extends ModelRegistry<ClientModel> {
     public static final ClientModelLoader LOADER = new ClientModelLoader();
 
     public ClientModelRegistry(File folder, Logger logger) {
-        super(new File(folder, "models"), logger);
+        super(folder, logger);
     }
 }
