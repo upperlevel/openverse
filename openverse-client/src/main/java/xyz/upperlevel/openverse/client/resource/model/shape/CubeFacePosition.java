@@ -5,7 +5,7 @@ import org.joml.Vector3f;
 import xyz.upperlevel.openverse.physic.Box;
 
 public enum CubeFacePosition {
-    UP() {
+    TOP {
         @Override
         public Box getBox(Box cube) {
             return new Box(cube.minX, cube.maxY, cube.minZ, cube.maxX, cube.maxY, cube.maxZ);
@@ -21,7 +21,7 @@ public enum CubeFacePosition {
             return new AxisAngle4f((float) (Math.PI / 2.), -1f, 0f, 0f);
         }
     },
-    DOWN() {
+    BOTTOM {
         @Override
         public Box getBox(Box cube) {
             return new Box(cube.minX, cube.minY, cube.minZ, cube.maxX, cube.minY, cube.maxZ);
@@ -38,7 +38,7 @@ public enum CubeFacePosition {
         }
     },
 
-    RIGHT() {
+    RIGHT {
         @Override
         public Box getBox(Box cube) {
             return new Box(cube.maxX, cube.minY, cube.minZ, cube.maxX, cube.maxY, cube.maxZ);
@@ -54,7 +54,7 @@ public enum CubeFacePosition {
             return new AxisAngle4f((float) (Math.PI / 2.), 0f, 1f, 0f);
         }
     },
-    LEFT() {
+    LEFT {
         @Override
         public Box getBox(Box cube) {
             return new Box(cube.minX, cube.minY, cube.minZ, cube.minX, cube.maxY, cube.maxZ);
@@ -71,7 +71,7 @@ public enum CubeFacePosition {
         }
     },
 
-    FRONT() {
+    FRONT {
         @Override
         public Box getBox(Box cube) {
             return new Box(cube.minX, cube.minY, cube.maxZ, cube.maxX, cube.maxY, cube.maxZ);
@@ -87,7 +87,7 @@ public enum CubeFacePosition {
             return new AxisAngle4f();
         }
     },
-    BACK() {
+    BACK {
         @Override
         public Box getBox(Box cube) {
             return new Box(cube.minX, cube.minY, cube.minZ, cube.maxX, cube.maxY, cube.maxZ);
@@ -103,9 +103,6 @@ public enum CubeFacePosition {
             return new AxisAngle4f((float) Math.PI, 0f, 1f, 0f);
         }
     };
-
-    CubeFacePosition() {
-    }
 
     public abstract Box getBox(Box cube);
 

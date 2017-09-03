@@ -24,7 +24,6 @@ public class ClientModel extends Model<ClientShape> implements ClientShape {
         int cnt = 0;
         for (ClientShape shape : getShapes())
             cnt += shape.getVerticesCount();
-        Openverse.logger().info("Model vertices!!! " + cnt);
         return cnt;
     }
 
@@ -47,7 +46,6 @@ public class ClientModel extends Model<ClientShape> implements ClientShape {
     }
 
     public static ClientModel clientDeserialize(Config config) {
-        Openverse.logger().info("DESERIALIZING A MODEL");
         ClientModel res = new ClientModel();
         if (config.has("color")) {
             // todo set color

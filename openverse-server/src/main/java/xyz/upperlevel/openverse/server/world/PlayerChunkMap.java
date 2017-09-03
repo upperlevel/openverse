@@ -161,7 +161,6 @@ public class PlayerChunkMap implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent e) {
-        Openverse.logger().info("Player move!");
         Location nl = e.getLocation();
         Location ol = e.getOldLocation();
         World nw = nl.getWorld();

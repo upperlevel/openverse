@@ -16,13 +16,11 @@ public class ClientWorld extends World implements PacketListener {
 
     @PacketHandler
     public void onChunkCreate(Connection conn, ChunkCreatePacket pkt) {
-        setChunk(pkt.getLocation(), pkt.getChunk(this));
-        Openverse.logger().info("Created chunk at: " + pkt.getLocation().toString());
+        loadChunk(pkt.getLocation(), pkt.getChunk(this));
     }
 
     @PacketHandler
     public void onChunkDestroy(Connection conn, ChunkDestroyPacket pkt) {
         unloadChunk(pkt.getLocation());
-        Openverse.logger().info("Destroyed chunk at: " + pkt.getLocation().toString());
     }
 }

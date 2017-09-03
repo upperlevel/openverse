@@ -40,7 +40,7 @@ public class TexturedCube extends Cube implements ClientShape {
             setTexture(((ClientResources) Openverse.resources()).textures().entry(config.getString("texture")));
         if (config.has("faces")) {
             for (Config faceCfg : config.getConfigList("faces")) {
-                CubeFacePosition pos = CubeFacePosition.valueOf(faceCfg.getString("position"));
+                CubeFacePosition pos = faceCfg.getEnum("position", CubeFacePosition.class);
                 faces.put(pos, new TexturedCubeFace(this, pos, faceCfg));
             }
         }

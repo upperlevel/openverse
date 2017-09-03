@@ -1,5 +1,6 @@
 package xyz.upperlevel.openverse.client.resource.model.shape;
 
+import xyz.upperlevel.openverse.resource.Identifier;
 import xyz.upperlevel.openverse.resource.model.shape.ShapeTypeRegistry;
 
 /**
@@ -7,8 +8,8 @@ import xyz.upperlevel.openverse.resource.model.shape.ShapeTypeRegistry;
  */
 public class ClientShapeTypeRegistry extends ShapeTypeRegistry<ClientShapeType> {
     public ClientShapeTypeRegistry() {
-        // registers default shape types
-        // todo URGENT, FIX THIS! register(new Identifier<>("cube", config -> new TexturedCube(config, ...)));
-        // todo register(new Identifier<>("sphere", ClientSphere::new));
+        // do not call super!
+        register(new Identifier<>("cube", TexturedCube::new));
+        // todo sphere
     }
 }

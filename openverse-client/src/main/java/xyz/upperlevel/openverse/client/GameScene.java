@@ -29,7 +29,8 @@ public class GameScene implements Scene, Listener {
 
     @Override
     public void onEnable(Scene previous) {
-        Openverse.logger().info("Game scene set up! Start rendering world viewer.");
+        Openverse.logger().info("Listening for world packets...");
+        viewer.listen();
     }
 
     @Override

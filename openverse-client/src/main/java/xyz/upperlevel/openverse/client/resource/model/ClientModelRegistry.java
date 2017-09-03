@@ -13,4 +13,9 @@ public class ClientModelRegistry extends ModelRegistry<ClientModel> {
     public ClientModelRegistry(File folder, Logger logger) {
         super(folder, logger);
     }
+
+    @Override
+    public ClientModelLoader getDefaultLoader() {
+        return LOADER;
+    }
 }

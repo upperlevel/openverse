@@ -62,11 +62,9 @@ public class Resources {
     }
 
     public void setup() {
-        long init = System.currentTimeMillis();
+        onSetup();
         blockTypeRegistry.setup();
         entityTypeRegistry.setup();
-        onSetup();
-        logger.info("Resources setup in " + (System.currentTimeMillis() - init) + " ms!");
     }
 
     protected int onLoad() {
@@ -78,14 +76,11 @@ public class Resources {
      * Usually at: <b>"resources/%resource_names%"</b>
      */
     public int load() {
-        long init = System.currentTimeMillis();
         int cnt = 0;
         cnt += onLoad();
         cnt += models().loadFolder();
-        System.out.println("[Common-DEBUG] joshua.json? " + models().entries().size() + " " + models().entry("joshua"));
         cnt += blockTypeRegistry.loadFolder();
         cnt += entityTypeRegistry.loadFolder();
-        logger.info("Loaded " + cnt + " resources in " + (System.currentTimeMillis() - init) + " ms!");
         return cnt;
     }
 
@@ -95,6 +90,7 @@ public class Resources {
     public void unload() {
         models().unload();
         blockTypeRegistry.unload();
+        entityTypeRegistry.unload();
         onUnload();
         //entityTypeRegistry.unload();
         logger.info("All resources have been unloaded!");

@@ -25,12 +25,4 @@ public class WorldSession implements PacketListener {
         this.world = world;
         chunkView.setWorld(world);
     }
-
-    protected void onSetPosition(double x, double y, double z) {
-        chunkView.setPosition(
-                Math.floorMod((int) Math.floor(x), 16),
-                Math.floorMod((int) Math.floor(y), 16),
-                Math.floorMod((int) Math.floor(z), 16));
-        // todo entityView.setPosition(x, y, z);
-    }
 }

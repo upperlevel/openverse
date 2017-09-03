@@ -13,11 +13,11 @@ public class ResourceScene implements Scene {
 
     @Override
     public void onEnable(Scene previous) {
-        Openverse.logger().info("Joined resource scene.");
-        Openverse.logger().info("Loading and setting up client resources...");
-
+        long init = System.currentTimeMillis();
+        Openverse.logger().info("Loading resources...");
         Openverse.resources().setup();
         Openverse.resources().load();
+        Openverse.logger().info("Resources loaded in " + (System.currentTimeMillis() - init) + " ms.");
 
         parent.setScene(new GameScene(parent));
     }

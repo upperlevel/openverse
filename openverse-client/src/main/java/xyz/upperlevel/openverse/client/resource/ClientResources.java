@@ -1,5 +1,6 @@
 package xyz.upperlevel.openverse.client.resource;
 
+import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.resource.model.ClientModelRegistry;
 import xyz.upperlevel.openverse.client.resource.model.shape.ClientShapeTypeRegistry;
 import xyz.upperlevel.openverse.client.resource.program.ProgramRegistry;

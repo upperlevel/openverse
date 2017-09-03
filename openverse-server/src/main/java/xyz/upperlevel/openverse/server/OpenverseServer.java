@@ -17,6 +17,9 @@ import xyz.upperlevel.openverse.server.world.Universe;
 import java.io.File;
 import java.util.logging.Logger;
 
+import static xyz.upperlevel.openverse.Openverse.logger;
+import static xyz.upperlevel.openverse.Openverse.resources;
+
 @Getter
 public class OpenverseServer implements OpenverseProxy, Listener {
     private final Logger logger;
@@ -43,9 +46,14 @@ public class OpenverseServer implements OpenverseProxy, Listener {
      * It will just load resources and other saves (including world).
      */
     public void join() {
-        Openverse.logger().info("[Server] Loading server resources");
-        Openverse.resources().setup();
-        Openverse.resources().load();
+        long init = System.currentTimeMillis();
+        logger().info("Loading resources...");
+        resources().setup();
+        resources().load();
+        logger().info("Resources loaded in " + (System.currentTimeMillis() - init) + " ms.");
+
+        logger().info("Listening for incoming connections...");
+        playerManager.start();
     }
 
     public void stop() {

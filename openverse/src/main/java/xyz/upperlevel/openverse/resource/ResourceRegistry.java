@@ -20,9 +20,7 @@ public abstract class ResourceRegistry<E> extends Registry<E> {
      * Creates default folder.
      */
     public void setup() {
-        if (defaultFolder.exists()) {
-            logger.info(defaultFolder + " already exists, skipping it!");
-        } else {
+        if (!defaultFolder.exists()) {
             if (!defaultFolder.mkdirs()) {
                 logger.warning(defaultFolder + " hasn't been created.");
             } else {
@@ -49,12 +47,10 @@ public abstract class ResourceRegistry<E> extends Registry<E> {
     }
 
     public boolean loadFile(ResourceLoader<E> loader, File file) {
-        Openverse.logger().info("File: " + file);
         if (file.exists() && !file.isDirectory()) {
             Identifier<E> res = loader.load(file);
             register(res);
             onFileLoad(logger, file);
-            Openverse.logger().info("LOADED!");
             return true;
         }
         return false;
@@ -77,16 +73,11 @@ public abstract class ResourceRegistry<E> extends Registry<E> {
 
     public int loadFolder(ResourceLoader<E> loader, File folder) {
         int cnt = 0;
-        Openverse.logger().info("loading " + folder);
         if (folder.exists()) {
-            Openverse.logger().info(folder + " exists");
             if (folder.isDirectory()) {
-                Openverse.logger().info(folder + " is dir");
                 File[] files = folder.listFiles();
                 if (files != null) {
-                    Openverse.logger().info(folder + " seems to have files...");
                     for (File file : files) {
-                        Openverse.logger().info(folder + " sub-file: " + file);
                         if (loadFile(loader, file))
                             cnt++;
                     }

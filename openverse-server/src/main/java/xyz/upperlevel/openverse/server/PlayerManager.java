@@ -19,8 +19,18 @@ public class PlayerManager implements Listener {
     private final Map<String, ServerPlayer> playersByName = new HashMap<>();
     private final Map<Connection, ServerPlayer> playersByConnection = new HashMap<>();
 
-    public PlayerManager() {
+    /**
+     * Starts listening for incoming connections.
+     */
+    public void start() {
         ((Server) Openverse.endpoint()).getEventManager().register(this);
+    }
+
+    /**
+     * Stops listening for incoming connections.
+     */
+    public void close() {
+        ((Server) Openverse.endpoint()).getEventManager().unregister(this);
     }
 
     public void register(@NonNull ServerPlayer player) {
@@ -28,39 +38,32 @@ public class PlayerManager implements Listener {
         playersByConnection.put(player.getConnection(), player);
     }
 
-    public ServerPlayer get(String name) {
-        return playersByName.get(name);
-    }
-
-    public ServerPlayer get(Connection connection) {
-        return playersByConnection.get(connection);
-    }
-
-    public Collection<ServerPlayer> get() {
-        return playersByName.values();
-    }
-
-    public void unregister(@NonNull ServerPlayer player) {
+    public void unregister(ServerPlayer player) {
         playersByName.remove(player.getName());
         playersByConnection.remove(player.getConnection());
     }
 
-    public void clear() {
-        playersByName.clear();
-        playersByConnection.clear();
+    public ServerPlayer getPlayer(String name) {
+        return playersByName.get(name);
+    }
+
+    public ServerPlayer getPlayer(Connection connection) {
+        return playersByConnection.get(connection);
+    }
+
+    public Collection<ServerPlayer> getPlayers() {
+        return playersByName.values();
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onConnect(ConnectionOpenEvent event) {
-        Openverse.logger().info("New connection reached!");
         ServerPlayer sp = new ServerPlayer("Hobbit", event.getConnection());
         register(sp);
-        Openverse.logger().info("Instantiated a new player, spawning him.");
         sp.setLocation(OpenverseServer.get().getUniverse().getSpawn());
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onDisconnect(ConnectionCloseEvent event) {
-        unregister(get(event.getConnection()));
+        unregister(getPlayer(event.getConnection()));
     }
 }

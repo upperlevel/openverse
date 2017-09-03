@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
+import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.resource.model.ClientModel;
 import xyz.upperlevel.openverse.resource.block.BlockType;
@@ -11,6 +12,8 @@ import xyz.upperlevel.openverse.world.block.Block;
 import xyz.upperlevel.openverse.world.block.BlockSystem;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
+import xyz.upperlevel.openverse.world.event.ChunkLoadEvent;
+import xyz.upperlevel.openverse.world.event.ChunkUnloadEvent;
 import xyz.upperlevel.ulge.opengl.buffer.DrawMode;
 import xyz.upperlevel.ulge.opengl.buffer.Vbo;
 import xyz.upperlevel.ulge.opengl.buffer.VertexLinker;
@@ -18,6 +21,7 @@ import xyz.upperlevel.ulge.opengl.shader.Program;
 
 import java.nio.ByteBuffer;
 
+import static xyz.upperlevel.openverse.Openverse.logger;
 import static xyz.upperlevel.openverse.world.chunk.Chunk.*;
 import static xyz.upperlevel.ulge.opengl.buffer.VboDataUsage.STATIC_DRAW;
 
@@ -41,7 +45,6 @@ public class ChunkRenderer {
         this.location = chunk.getLocation();
         this.vbo = new Vbo();
         load(chunk);
-        Openverse.logger().info("Received chunk loaded!");
     }
 
     public void load(Chunk chunk) {
@@ -49,17 +52,11 @@ public class ChunkRenderer {
     }
 
     public void load(BlockSystem blockSystem) {
-        for (int x = 0; x < WIDTH; x++) {
-            for (int y = 0; y < HEIGHT; y++) {
-                for (int z = 0; z < LENGTH; z++) {
-                    if (blockSystem.getBlock(x, y, z).getType() != null)
-                        Openverse.logger().info("[Client] FOUND BLOCK NON-NULL! " + blockSystem.getBlock(x, y, z).getType().getId());
+        for (int x = 0; x < WIDTH; x++)
+            for (int y = 0; y < HEIGHT; y++)
+                for (int z = 0; z < LENGTH; z++)
                     setBlockType(blockSystem.getBlock(x, y, z), false);
-                }
-            }
-        }
         build();
-        Openverse.logger().info("Built up chunk!");
     }
 
     public BlockType getBlockType(int x, int y, int z) {
@@ -107,7 +104,6 @@ public class ChunkRenderer {
     }
 
     public void build() {
-        // initializes a byte-buffer with max dimensions it can assume
         ByteBuffer buffer = BufferUtils.createByteBuffer(allocateDataCount * Float.BYTES);
         drawVerticesCount = 0;
         for (int x = 0; x < WIDTH; x++) {
@@ -139,7 +135,6 @@ public class ChunkRenderer {
                 new Matrix4f().translate(location.x * WIDTH, location.y * HEIGHT, location.z * LENGTH).get(BufferUtils.createFloatBuffer(16)));
         vertexLinker.setup();
         // todo remove quads drawing
-        // System.out.println("[Client] Drawing chunk: drawVert:" + drawVerticesCount + " allocVert:" + allocateVerticesCount + " allocData:" + allocateDataCount);
         vbo.draw(DrawMode.QUADS, 0, drawVerticesCount);
     }
 

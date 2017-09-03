@@ -28,14 +28,18 @@ public class WorldViewer implements PacketListener {
     private final WorldSession worldSession;
 
     private double x, y, z, yaw, pitch;
-    private int distance;
 
     private Program program;
 
     public WorldViewer() {
         this.worldSession = new WorldSession();
-        this.distance = 1;
         this.program = ((ClientResources) Openverse.resources()).programs().entry("simple_shader");
+    }
+
+    /**
+     * Starts listening for server packets.
+     */
+    public void listen() {
         Openverse.channel().register(this);
     }
 
@@ -46,13 +50,10 @@ public class WorldViewer implements PacketListener {
         this.x = x;
         this.y = y;
         this.z = z;
-        worldSession.onSetPosition(x, y, z);
     }
 
     public void setPosition(PlayerChangePositionPacket pkt) {
-        x = pkt.getX();
-        y = pkt.getY();
-        z = pkt.getZ();
+        unsafeSetPosition(pkt.getX(), pkt.getY(), pkt.getZ());
     }
 
     public void setPosition(double x, double y, double z) {
@@ -137,16 +138,7 @@ public class WorldViewer implements PacketListener {
                 (float) z
         ).get(BufferUtils.createFloatBuffer(16)));
 
-        int side = distance * 2 + 1;
-        for (int ix = 0; ix < side; ix++) {
-            for (int iy = 0; iy < side; iy++) {
-                for (int iz = 0; iz < side; iz++) {
-                    ChunkRenderer chk = worldSession.getChunkView().getChunk(ix, iy, iz);
-                    if (chk != null)
-                        chk.render(program);
-                }
-            }
-        }
+        worldSession.getChunkView().getChunks().forEach(chk -> chk.render(program));
         // worldSession.getEntityView().render();
         // todo render player arms
     }

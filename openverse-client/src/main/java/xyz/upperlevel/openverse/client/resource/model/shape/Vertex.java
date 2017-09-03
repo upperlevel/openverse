@@ -13,10 +13,10 @@ import java.nio.ByteBuffer;
 @Setter
 public class Vertex {
     public static final int VERTICES_COUNT = 1;
-    public static final int DATA_COUNT = 9;
+    public static final int DATA_COUNT = 10;
 
     private float x, y, z;
-    private Color color;
+    private Color color = Color.WHITE;
     private float u, v;
 
     public Vertex() {

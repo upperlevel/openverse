@@ -1,11 +1,14 @@
 package xyz.upperlevel.openverse.world;
 
 import lombok.Getter;
+import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.world.block.Block;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 import xyz.upperlevel.openverse.world.chunk.ChunkSystem;
 import xyz.upperlevel.openverse.world.chunk.DefaultChunkSystem;
+import xyz.upperlevel.openverse.world.event.ChunkLoadEvent;
+import xyz.upperlevel.openverse.world.event.ChunkUnloadEvent;
 
 import static java.lang.Math.floor;
 
@@ -36,12 +39,13 @@ public class World {
         return getChunk(x >> 4, y >> 4, z >> 4);
     }
 
-    public void setChunk(int x, int y, int z, Chunk chunk) {
+    public void loadChunk(int x, int y, int z, Chunk chunk) {
         chunkSystem.setChunk(x, y, z, chunk);
     }
 
-    public void setChunk(ChunkLocation loc, Chunk chunk) {
+    public void loadChunk(ChunkLocation loc, Chunk chunk) {
         chunkSystem.setChunk(loc.x, loc.y, loc.z, chunk);
+        Openverse.getEventManager().call(new ChunkLoadEvent(chunk));
     }
 
     public void unloadChunk(int x, int y, int z) {
@@ -50,6 +54,7 @@ public class World {
 
     public void unloadChunk(ChunkLocation loc) {
         chunkSystem.destroyChunk(loc.x, loc.y, loc.z);
+        Openverse.getEventManager().call(new ChunkUnloadEvent(loc));
     }
 
     public Block getBlock(int x, int y, int z) {

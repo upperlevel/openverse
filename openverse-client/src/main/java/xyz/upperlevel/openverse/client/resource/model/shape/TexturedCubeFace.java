@@ -33,7 +33,7 @@ public class TexturedCubeFace implements ClientShape {
         this(cube, position);
         if (config.has("vertices")) {
             for (Config vrtCfg : config.getConfigList("vertices")) {
-                QuadVertexPosition pos = QuadVertexPosition.valueOf(vrtCfg.getStringRequired("position"));
+                QuadVertexPosition pos = vrtCfg.getEnum("position", QuadVertexPosition.class);
                 vertices.put(pos, new QuadVertex(pos, vrtCfg));
             }
         }
@@ -86,7 +86,7 @@ public class TexturedCubeFace implements ClientShape {
                 .translate(-.5f, -.5f, -.5f);
         int sz = 0;
         for (Vertex vrt : vertices.values())
-            sz += vrt.store(in, buffer, texture.getLayer());
+            sz += vrt.store(in, buffer, 1); // todo put texture layer here
         return sz;
     }
 }

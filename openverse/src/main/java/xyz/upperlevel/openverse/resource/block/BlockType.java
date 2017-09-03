@@ -13,7 +13,11 @@ public class BlockType {
 
     public BlockType(String id, Config config) {
         this.id = id;
-        this.model = Openverse.resources().models().entry(config.getString("model"));
+        if (config.has("model")) {
+            this.model = Openverse.resources().models().entry(config.getString("model"));
+            if (model != null)
+                Openverse.logger().info("Found model for block_type \"" + id + "\" named \"" + config.getString("model") + "\" of class " + model.getClass().getSimpleName());
+        }
         this.solid = config.getBool("solid", true);
     }
 }
