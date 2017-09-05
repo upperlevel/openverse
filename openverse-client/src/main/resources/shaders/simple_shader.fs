@@ -3,11 +3,9 @@
 in vec4 Color;
 in vec3 TexCoords;
 
-out vec4 result;
-
-uniform sampler2DArray texture;
+uniform sampler2DArray image;
 
 void main()
 {
-    result = vec4(1, 0, 0, 0);// Color * texture(texture, TexCoords);
+    gl_FragColor = Color + texture(image, TexCoords) * 0; // no textures atm
 }

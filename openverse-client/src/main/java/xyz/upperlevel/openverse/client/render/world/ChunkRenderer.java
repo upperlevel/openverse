@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
-import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.resource.model.ClientModel;
 import xyz.upperlevel.openverse.resource.block.BlockType;
@@ -12,8 +11,6 @@ import xyz.upperlevel.openverse.world.block.Block;
 import xyz.upperlevel.openverse.world.block.BlockSystem;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
-import xyz.upperlevel.openverse.world.event.ChunkLoadEvent;
-import xyz.upperlevel.openverse.world.event.ChunkUnloadEvent;
 import xyz.upperlevel.ulge.opengl.buffer.DrawMode;
 import xyz.upperlevel.ulge.opengl.buffer.Vbo;
 import xyz.upperlevel.ulge.opengl.buffer.VertexLinker;
@@ -21,7 +18,6 @@ import xyz.upperlevel.ulge.opengl.shader.Program;
 
 import java.nio.ByteBuffer;
 
-import static xyz.upperlevel.openverse.Openverse.logger;
 import static xyz.upperlevel.openverse.world.chunk.Chunk.*;
 import static xyz.upperlevel.ulge.opengl.buffer.VboDataUsage.STATIC_DRAW;
 
@@ -120,25 +116,26 @@ public class ChunkRenderer {
                 }
             }
         }
+        Openverse.logger().info("Vertices loaded for chunk at: " + location + " -> " + drawVerticesCount);
         vbo.loadData(buffer, STATIC_DRAW);
     }
 
-    private static final VertexLinker vertexLinker = new VertexLinker()
-            .attrib(0, 3)
-            .attrib(1, 4)
-            .attrib(2, 3);
-
     @SuppressWarnings("deprecation")
     public void render(Program program) {
-        program.uniformer.setUniformMatrix4(
-                "model",
-                new Matrix4f().translate(location.x * WIDTH, location.y * HEIGHT, location.z * LENGTH).get(BufferUtils.createFloatBuffer(16)));
-        vertexLinker.setup();
+        vbo.bind();
+        program.uniformer.setUniformMatrix4("model", new Matrix4f().get(BufferUtils.createFloatBuffer(16)));
+        new VertexLinker()
+                .attrib(program.uniformer.getAttribLocation("position"), 3)
+                .attrib(program.uniformer.getAttribLocation("color"), 4)
+                .attrib(program.uniformer.getAttribLocation("texCoords"), 3)
+                .setup();
         // todo remove quads drawing
         vbo.draw(DrawMode.QUADS, 0, drawVerticesCount);
+        Openverse.logger().fine("Drawn " + drawVerticesCount + " vertices!");
     }
 
     public void destroy() {
+        Openverse.logger().warning("Destroying VBO for chunk: " + location);
         vbo.destroy();
     }
 }

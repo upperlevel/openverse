@@ -52,6 +52,7 @@ public class ServerPlayer extends Player implements PacketListener {
             loc.setY(pkt.getY());
             loc.setZ(pkt.getZ());
             setLocation(loc, false);
+            Openverse.logger().info("Player position set without updating!");
         }
     }
 }

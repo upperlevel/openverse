@@ -22,14 +22,14 @@ import java.util.Map;
 public class TexturedCubeFace implements ClientShape {
     public static final int VERTICES_COUNT = 4;
 
-    private final TexturedCube cube;
+    private final ClientCube cube;
     private final CubeFacePosition position;
     private final Map<QuadVertexPosition, Vertex> vertices = new EnumMap<>(QuadVertexPosition.class);
 
     private Box box;
     private Texture texture;
 
-    public TexturedCubeFace(TexturedCube cube, CubeFacePosition position, Config config) {
+    public TexturedCubeFace(ClientCube cube, CubeFacePosition position, Config config) {
         this(cube, position);
         if (config.has("vertices")) {
             for (Config vrtCfg : config.getConfigList("vertices")) {
@@ -39,7 +39,7 @@ public class TexturedCubeFace implements ClientShape {
         }
     }
 
-    public TexturedCubeFace(TexturedCube cube, CubeFacePosition position) {
+    public TexturedCubeFace(ClientCube cube, CubeFacePosition position) {
         this.cube = cube;
         this.position = position;
         this.box = position.getBox(cube.getBox());

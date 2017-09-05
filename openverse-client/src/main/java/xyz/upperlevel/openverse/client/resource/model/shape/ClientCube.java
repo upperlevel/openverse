@@ -21,21 +21,19 @@ import java.util.Map;
 /**
  * A client-side cube has faces and each face has a color and a texture.
  */
-public class TexturedCube extends Cube implements ClientShape {
+public class ClientCube extends Cube implements ClientShape {
     public static final int VERTICES_COUNT = 6 * TexturedCubeFace.VERTICES_COUNT;
     private final Map<CubeFacePosition, TexturedCubeFace> faces = new EnumMap<>(CubeFacePosition.class);
 
-    public TexturedCube() {
+    public ClientCube() {
         super();
         setupFaces();
     }
 
-    public TexturedCube(Config config) {
+    public ClientCube(Config config) {
         super(config);
         setupFaces();
-        if (config.has("color")) {
-            setColor(Color.RED);
-        }
+        setColor(Color.RED);
         if (config.has("texture"))
             setTexture(((ClientResources) Openverse.resources()).textures().entry(config.getString("texture")));
         if (config.has("faces")) {

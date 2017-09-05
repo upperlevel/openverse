@@ -9,7 +9,7 @@ import xyz.upperlevel.openverse.resource.model.shape.ShapeTypeRegistry;
 public class ClientShapeTypeRegistry extends ShapeTypeRegistry<ClientShapeType> {
     public ClientShapeTypeRegistry() {
         // do not call super!
-        register(new Identifier<>("cube", TexturedCube::new));
+        register(new Identifier<>("cube", ClientCube::new));
         // todo sphere
     }
 }

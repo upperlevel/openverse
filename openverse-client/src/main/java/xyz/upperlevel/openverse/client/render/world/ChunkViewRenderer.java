@@ -48,7 +48,7 @@ public class ChunkViewRenderer implements Listener {
 
     public void setWorld(ClientWorld world) {
         this.world = world;
-        destroy();
+        //destroy();
     }
 
     /**

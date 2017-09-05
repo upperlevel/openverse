@@ -59,6 +59,7 @@ public class WorldViewer implements PacketListener {
     public void setPosition(double x, double y, double z) {
         unsafeSetPosition(x, y, z);
         ((Client) Openverse.endpoint()).getConnection().send(Openverse.channel(), new PlayerChangePositionPacket(x, y, z));
+        Openverse.logger().info("Player change position packet sent!");
     }
 
     public void movePosition(double offsetX, double offsetY, double offsetZ) {
@@ -130,7 +131,7 @@ public class WorldViewer implements PacketListener {
                 45f,
                 1f,
                 0.01f,
-                100000f,
+                10000f,
                 (float) Math.toRadians(yaw),
                 (float) Math.toRadians(pitch),
                 (float) x,
@@ -138,9 +139,11 @@ public class WorldViewer implements PacketListener {
                 (float) z
         ).get(BufferUtils.createFloatBuffer(16)));
 
-        worldSession.getChunkView().getChunks().forEach(chk -> chk.render(program));
-        // worldSession.getEntityView().render();
-        // todo render player arms
+        for (ChunkRenderer chk : worldSession.getChunkView().getChunks()) {
+            Openverse.logger().fine("Attempting to render chunk at: " + chk.getLocation());
+            chk.render(program);
+            Openverse.logger().fine("Chunk at: " + chk.getLocation() + " -> rendered!");
+        }
     }
 
     @PacketHandler

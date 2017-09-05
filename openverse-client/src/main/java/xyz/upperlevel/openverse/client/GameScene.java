@@ -2,6 +2,7 @@ package xyz.upperlevel.openverse.client;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import org.lwjgl.opengl.GL11;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.Openverse;
@@ -12,6 +13,8 @@ import xyz.upperlevel.ulge.game.Scene;
 import xyz.upperlevel.ulge.window.event.CursorMoveEvent;
 import xyz.upperlevel.ulge.window.event.KeyChangeEvent;
 import xyz.upperlevel.ulge.window.event.action.Action;
+
+import static org.lwjgl.opengl.GL11.*;
 
 // todo put in openverse launcher
 @Getter
@@ -35,7 +38,12 @@ public class GameScene implements Scene, Listener {
 
     @Override
     public void onRender() {
+        Openverse.logger().info("Cleared all what should be cleared.");
+        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+        glClearColor(0, 0, 0, 0);
+        Openverse.logger().info("Attempting to render...");
         viewer.render();
+        Openverse.logger().info("Rendered!");
     }
 
     @Override
@@ -70,7 +78,6 @@ public class GameScene implements Scene, Listener {
 
     @EventHandler
     public void onKeyChange(KeyChangeEvent e) {
-        // Openverse.logger().info("Detected a key input: " + e.getKey().name() + " " + e.getAction().name());
         if (e.getAction() == Action.PRESS) {
             switch (e.getKey()) {
                 case A:
@@ -95,6 +102,5 @@ public class GameScene implements Scene, Listener {
                     OpenverseLauncher.get().getGame().stop();
             }
         }
-        // Openverse.logger().info("Move to: " + viewer.getX() + " " + viewer.getY() + " " + viewer.getZ());
     }
 }
