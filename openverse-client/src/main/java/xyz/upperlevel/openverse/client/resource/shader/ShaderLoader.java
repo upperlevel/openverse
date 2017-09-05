@@ -22,7 +22,10 @@ public class ShaderLoader implements ResourceLoader<Shader> {
             throw new IllegalStateException("Cannot link source on file \"" + file + "\": " + e);
         }
         shader.compileSource();
-        Openverse.logger().info("Shader status: " + shader.getCompileStatus().getLog());
+        if(shader.getCompileStatus().isOk())
+            Openverse.logger().info("Shader status: " + shader.getCompileStatus().getLog());
+        else
+            throw new IllegalArgumentException("Error compiling shader \"" + file + "\": " + shader.getCompileStatus().getLog());
         return new Identifier<>(file.getName(), shader);
     }
 }
