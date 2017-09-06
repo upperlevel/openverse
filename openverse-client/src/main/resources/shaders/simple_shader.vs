@@ -12,7 +12,7 @@ out vec3 TexCoords;
 
 void main()
 {
-    gl_Position = vec4(position, 1.0f);
+    gl_Position = camera * model * vec4(position, 1.0f);
     Color = color;
     TexCoords = texCoords;
 }

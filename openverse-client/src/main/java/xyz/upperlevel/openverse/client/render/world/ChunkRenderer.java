@@ -11,9 +11,7 @@ import xyz.upperlevel.openverse.world.block.Block;
 import xyz.upperlevel.openverse.world.block.BlockSystem;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
-import xyz.upperlevel.ulge.opengl.buffer.DrawMode;
-import xyz.upperlevel.ulge.opengl.buffer.Vbo;
-import xyz.upperlevel.ulge.opengl.buffer.VertexLinker;
+import xyz.upperlevel.ulge.opengl.buffer.*;
 import xyz.upperlevel.ulge.opengl.shader.Program;
 
 import java.nio.ByteBuffer;
@@ -27,8 +25,8 @@ import static xyz.upperlevel.ulge.opengl.buffer.VboDataUsage.STATIC_DRAW;
 @Getter
 public class ChunkRenderer {
     private final ChunkLocation location;
+    private final Vbo vbo;
     private final BlockType[][][] blockTypes = new BlockType[WIDTH][HEIGHT][LENGTH];
-    private Vbo vbo;
 
     private int
             allocateVerticesCount = 0, // vertices to allocate on vbo init
@@ -100,6 +98,7 @@ public class ChunkRenderer {
     }
 
     public void build() {
+        vbo.bind();
         ByteBuffer buffer = BufferUtils.createByteBuffer(allocateDataCount * Float.BYTES);
         drawVerticesCount = 0;
         for (int x = 0; x < WIDTH; x++) {
@@ -117,19 +116,20 @@ public class ChunkRenderer {
             }
         }
         Openverse.logger().info("Vertices loaded for chunk at: " + location + " -> " + drawVerticesCount);
-        vbo.loadData(buffer, STATIC_DRAW);
+        buffer.flip();
+        vbo.loadData(buffer, VboDataUsage.STATIC_DRAW);
+        vbo.unbind();
     }
 
     @SuppressWarnings("deprecation")
     public void render(Program program) {
-        vbo.bind();
         program.uniformer.setUniformMatrix4("model", new Matrix4f().get(BufferUtils.createFloatBuffer(16)));
+        vbo.bind();
         new VertexLinker()
                 .attrib(program.uniformer.getAttribLocation("position"), 3)
                 .attrib(program.uniformer.getAttribLocation("color"), 4)
                 .attrib(program.uniformer.getAttribLocation("texCoords"), 3)
                 .setup();
-        // todo remove quads drawing
         vbo.draw(DrawMode.QUADS, 0, drawVerticesCount);
         Openverse.logger().fine("Drawn " + drawVerticesCount + " vertices!");
     }

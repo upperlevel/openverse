@@ -1,12 +1,14 @@
 package xyz.upperlevel.openverse.client.resource.texture;
 
 import lombok.Getter;
+import org.lwjgl.BufferUtils;
 import xyz.upperlevel.openverse.resource.ResourceLoader;
 import xyz.upperlevel.openverse.resource.ResourceRegistry;
 import xyz.upperlevel.ulge.opengl.texture.Texture2dArray;
 import xyz.upperlevel.ulge.opengl.texture.loader.ImageContent;
 
 import java.io.File;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -28,6 +30,15 @@ public class TextureRegistry extends ResourceRegistry<Texture> {
         super(new File(folder, "textures"), logger);
         this.atlas = new Texture2dArray();
         this.atlas.allocate(4, GL_RGBA8, 16, 16, size);
+
+        register("null", new Texture(new ImageContent(1, 1,   (ByteBuffer) BufferUtils.createByteBuffer(4)
+                .put(new byte[]{
+                        (byte) 255,
+                        (byte) 255,
+                        (byte) 255,
+                        (byte) 255
+                })
+                .flip())));
     }
 
     @Override

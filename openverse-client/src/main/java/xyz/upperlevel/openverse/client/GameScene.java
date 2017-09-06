@@ -40,7 +40,7 @@ public class GameScene implements Scene, Listener {
     public void onRender() {
         Openverse.logger().info("Cleared all what should be cleared.");
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-        glClearColor(0, 0, 0, 0);
+        glClearColor(1, 0, 0, 0);
         Openverse.logger().info("Attempting to render...");
         viewer.render();
         Openverse.logger().info("Rendered!");
