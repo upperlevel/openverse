@@ -119,7 +119,6 @@ public class WorldViewer implements PacketListener {
         else if (pitch > 90.0)
             pitch = 90.0;
         unsafeSetLook(yaw, pitch);
-        System.out.println("yaw: " + yaw + ", pitch: " + pitch);
         ((Client) Openverse.endpoint()).getConnection().send(Openverse.channel(), new PlayerChangeLookPacket(yaw, pitch));
     }
 
