@@ -10,24 +10,33 @@ import xyz.upperlevel.openverse.client.world.WorldViewer;
 import xyz.upperlevel.openverse.event.ShutdownEvent;
 import xyz.upperlevel.openverse.launcher.OpenverseLauncher;
 import xyz.upperlevel.ulge.game.Scene;
+import xyz.upperlevel.ulge.window.Window;
 import xyz.upperlevel.ulge.window.event.CursorMoveEvent;
 import xyz.upperlevel.ulge.window.event.KeyChangeEvent;
 import xyz.upperlevel.ulge.window.event.action.Action;
+import xyz.upperlevel.ulge.window.event.key.Key;
 
 import static org.lwjgl.opengl.GL11.*;
 
 // todo put in openverse launcher
 @Getter
 public class GameScene implements Scene, Listener {
+    private static final float SPEED = 0.5f;
+    private static final float SENSIBILITY = 0.5f;
     private final ClientScene parent;
 
     private WorldViewer viewer;
+    private Window window;
+
+    @Getter(AccessLevel.NONE)
+    private double lastCursorX, lastCursorY;
 
     public GameScene(ClientScene parent) {
         this.parent = parent;
         this.viewer = new WorldViewer();
-        OpenverseLauncher.get().getGame().getWindow().getEventManager().register(this);
-        OpenverseLauncher.get().getGame().getWindow().disableCursor();
+        window = OpenverseLauncher.get().getGame().getWindow();
+        window.getEventManager().register(this);
+        window.disableCursor();
     }
 
     @Override
@@ -38,12 +47,31 @@ public class GameScene implements Scene, Listener {
 
     @Override
     public void onRender() {
+        processInput();
         Openverse.logger().info("Cleared all what should be cleared.");
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-        glClearColor(1, 0, 0, 0);
+        glClearColor(0, 0, 0, 0);
         Openverse.logger().info("Attempting to render...");
         viewer.render();
         Openverse.logger().info("Rendered!");
+    }
+
+    private void processInput() {
+        if (window.getKey(Key.A)) {
+            viewer.right(-SPEED);
+        } else if (window.getKey(Key.D)) {
+            viewer.right(SPEED);
+        }
+        if (window.getKey(Key.W)) {
+            viewer.forward(SPEED);
+        } else if (window.getKey(Key.S)) {
+            viewer.forward(-SPEED);
+        }
+        if (window.getKey(Key.SPACE)) {
+            viewer.up(SPEED);
+        } else if (window.getKey(Key.LEFT_SHIFT)) {
+            viewer.up(-SPEED);
+        }
     }
 
     @Override
@@ -60,46 +88,24 @@ public class GameScene implements Scene, Listener {
         Openverse.logger().info("Fps: " + OpenverseLauncher.get().getGame().getFps());
     }
 
-    @Getter(AccessLevel.NONE)
-    private double lastCursorX, lastCursorY;
-
     @EventHandler
     public void onCursorMove(CursorMoveEvent e) {
         // Openverse.logger().info(" Detected a cursor movement: " + e.getX() + " " + e.getY());
-        float dx = (float) (e.getX() - lastCursorX);
-        float dy = (float) (e.getY() - lastCursorY);
+        float dx = (float) (e.getX() - lastCursorX) * SENSIBILITY;
+        float dy = (float) (e.getY() - lastCursorY) * SENSIBILITY;
         viewer.rotateLook(dx, dy);
         lastCursorX = e.getX();
         lastCursorY = e.getY();
         // Openverse.logger().info(" Player rotate look of: " + dx + " " + dy);
     }
 
-    private static final float SPEED = 1.5f;
-
     @EventHandler
     public void onKeyChange(KeyChangeEvent e) {
         if (e.getAction() == Action.PRESS) {
             switch (e.getKey()) {
-                case A:
-                    viewer.right(-SPEED);
-                    break;
-                case D:
-                    viewer.right(SPEED);
-                    break;
-                case W:
-                    viewer.forward(SPEED);
-                    break;
-                case S:
-                    viewer.forward(-SPEED);
-                    break;
-                case SPACE:
-                    viewer.up(SPEED);
-                    break;
-                case LEFT_SHIFT:
-                    viewer.up(-SPEED);
-                    break;
                 case ESCAPE:
                     OpenverseLauncher.get().getGame().stop();
+                    break;
             }
         }
     }
