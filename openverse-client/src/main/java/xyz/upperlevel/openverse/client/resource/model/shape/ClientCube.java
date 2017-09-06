@@ -88,7 +88,8 @@ public class ClientCube extends Cube implements ClientShape {
     public int store(Matrix4f in, ByteBuffer buffer) {
         Box box = getBox();
         // moves the model part to its position related to block space
-        in = new Matrix4f(in).translate(box.getSize().add(box.getPosition()));
+        in = new Matrix4f(in)
+                .translate(box.getSize().add(box.getPosition()));
         int sz = 0;
         for (TexturedCubeFace face : faces.values())
             sz += face.store(in, buffer);

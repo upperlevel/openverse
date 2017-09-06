@@ -13,13 +13,6 @@ public class FlatChunkGenerator implements ChunkGenerator {
 
     @Override
     public void generate(Chunk chunk) {
-        for (int x = 0; x < Chunk.WIDTH; x++) {
-            for (int y = 0; y < Chunk.HEIGHT; y++) {
-                for (int z = 0; z < Chunk.LENGTH; z++) {
-                    chunk.getBlock(x, y, z).setType(fullType);
-                }
-            }
-        }
-
+        chunk.getBlock(0,0,0).setType(fullType);
     }
 }
