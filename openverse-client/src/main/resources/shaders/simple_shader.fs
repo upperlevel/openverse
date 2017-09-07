@@ -7,5 +7,5 @@ uniform sampler2DArray image;
 
 void main()
 {
-    gl_FragColor = Color + texture(image, TexCoords);
+    gl_FragColor = Color * texture(image, TexCoords);
 }

@@ -6,8 +6,8 @@ import lombok.Getter;
 public enum QuadVertexPosition {
     TOP_LEFT(0, 1, 0, 0 ,0),
     TOP_RIGHT(1, 1, 0, 1, 0),
-    BOTTOM_LEFT(0, 0, 0, 0, 1),
-    BOTTOM_RIGHT(1, 0, 0, 1, 1);
+    BOTTOM_RIGHT(1, 0, 0, 1, 1),
+    BOTTOM_LEFT(0, 0, 0, 0, 1);
 
     private float x, y, z;
     private float u, v;
