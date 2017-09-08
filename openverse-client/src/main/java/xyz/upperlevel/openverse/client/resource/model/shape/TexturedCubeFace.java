@@ -103,7 +103,7 @@ public class TexturedCubeFace implements ClientShape {
                 .translate(-.5f, -.5f, -.5f);
         int sz = 0;
         for (Vertex vrt : vertices)
-            sz += vrt.store(in, buffer, 1); // todo put texture layer here
+            sz += vrt.store(in, buffer, texture.getLayer()); // todo put texture layer here
         return sz;
     }
 }

@@ -29,14 +29,14 @@ public class ClientCube extends Cube implements ClientShape {
     public ClientCube(Config config) {
         super(config);
         setupFaces();
-        setColor(Color.RED);
-        if (config.has("texture"))
-            setTexture(((ClientResources) Openverse.resources()).textures().entry(config.getString("texture")));
         if (config.has("faces")) {
             for (Config faceCfg : config.getConfigList("faces")) {
                 CubeFacePosition pos = faceCfg.getEnum("position", CubeFacePosition.class);
                 faces.put(pos, new TexturedCubeFace(this, pos, faceCfg));
             }
+        }
+        if (config.has("texture")) {
+            setTexture(((ClientResources) Openverse.resources()).textures().entry(config.getString("texture")));
         }
     }
 
