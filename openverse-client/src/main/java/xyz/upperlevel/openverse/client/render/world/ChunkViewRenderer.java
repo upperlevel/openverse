@@ -38,7 +38,9 @@ public class ChunkViewRenderer implements Listener {
     }
 
     public void unloadChunk(ChunkLocation location) {
-        chunks.remove(location);
+        ChunkRenderer chunk = chunks.remove(location);
+        if(chunk != null)
+            chunk.destroy();
     }
 
     public ChunkRenderer getChunk(ChunkLocation location) {

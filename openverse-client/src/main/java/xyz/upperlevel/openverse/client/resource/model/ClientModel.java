@@ -41,7 +41,7 @@ public class ClientModel extends Model<ClientShape> implements ClientShape {
     public int store(Matrix4f in, ByteBuffer buffer) {
         int cnt = 0;
         for (ClientShape shape : getShapes())
-            cnt += shape.store(in, buffer);
+            cnt += shape.store(new Matrix4f(in), buffer);
         return cnt;
     }
 

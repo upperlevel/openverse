@@ -12,7 +12,10 @@ import xyz.upperlevel.openverse.world.block.Block;
 import xyz.upperlevel.openverse.world.block.BlockSystem;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
-import xyz.upperlevel.ulge.opengl.buffer.*;
+import xyz.upperlevel.ulge.opengl.buffer.Vao;
+import xyz.upperlevel.ulge.opengl.buffer.Vbo;
+import xyz.upperlevel.ulge.opengl.buffer.VboDataUsage;
+import xyz.upperlevel.ulge.opengl.buffer.VertexLinker;
 import xyz.upperlevel.ulge.opengl.shader.Program;
 import xyz.upperlevel.ulge.opengl.shader.Uniform;
 
@@ -35,7 +38,7 @@ public class ChunkRenderer {
     private final BlockType[][][] blockTypes = new BlockType[WIDTH][HEIGHT][LENGTH];
 
     //Cache
-    private float[] model;
+    private FloatBuffer model;
 
     private int
             allocateVerticesCount = 0, // vertices to allocate on vbo init
@@ -144,7 +147,7 @@ public class ChunkRenderer {
         vbo.unbind();
         vao.unbind();
 
-        model = in.translation(location.x << 4, location.y << 4, location.z << 4).get(new float[16]);
+        model = in.translation(location.x << 4, location.y << 4, location.z << 4).get(BufferUtils.createFloatBuffer(16));
     }
 
     @SuppressWarnings("deprecation")

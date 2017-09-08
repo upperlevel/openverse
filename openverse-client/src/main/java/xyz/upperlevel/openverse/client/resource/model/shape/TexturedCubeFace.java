@@ -93,10 +93,10 @@ public class TexturedCubeFace implements ClientShape {
     @Override
     public int store(Matrix4f in, ByteBuffer buffer) {
         Box box = cube.getBox();
-        in = new Matrix4f(in)
+        in
                 // put the face in the right cube position
-                .translate(position.getDirection().mul(box.getSize()))
-                .scale(box.getSize())
+                .translate(position.getDirection().mul((float) box.getWidth(), (float) box.getHeight(), (float) box.getLength()))
+                .scale((float) box.getWidth(), (float) box.getHeight(), (float) box.getLength())
                 // rotates the face to its position
                 .translate(.5f, .5f, .5f)
                 .rotate(position.getRotation())
