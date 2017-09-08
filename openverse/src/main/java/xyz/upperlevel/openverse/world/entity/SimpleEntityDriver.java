@@ -5,31 +5,32 @@ import org.joml.Vector3f;
 import xyz.upperlevel.openverse.world.Location;
 
 public class SimpleEntityDriver implements EntityDriver<Player> {
+    private static final Vector3f UP = new Vector3f(0, 1, 0);
 
     private Matrix4f getOrientation(Entity entity) {
         Location location = entity.getLocation();
 
         Matrix4f matrix = new Matrix4f();
-        matrix.rotate((float) location.getPitch(), new Vector3f(1f, 0, 0));
-        matrix.rotate((float) location.getYaw(), new Vector3f(0, 1f, 0));
+        matrix.rotate((float) location.getPitch(), 1f, 0, 0);
+        matrix.rotate((float) location.getYaw(), 0, 1f, 0);
         return matrix;
     }
 
     public Vector3f getForward(Entity entity) {
         return getOrientation(entity)
-                .invert(new Matrix4f())
+                .invert()
                 .transformDirection(new Vector3f(0f, 0f, -1f));
     }
 
     public Vector3f getRight(Entity entity) {
         return getOrientation(entity)
-                .invert(new Matrix4f())
+                .invert()
                 .transformDirection(new Vector3f(1f, 0f, 0f));
     }
 
     public Vector3f getUp(Entity entity) {
         return getOrientation(entity)
-                .invert(new Matrix4f())
+                .invert()
                 .transformDirection(new Vector3f(0f, 1f, 0f));
     }
 
@@ -52,8 +53,6 @@ public class SimpleEntityDriver implements EntityDriver<Player> {
     public void right(Player entity, double sensitivity) {
         entity.getLocation().add(getRight(entity).mul((float) sensitivity));
     }
-
-    private static final Vector3f UP = new Vector3f(0, 1, 0);
 
     @Override
     public void up(Player entity, double sensitivity) {

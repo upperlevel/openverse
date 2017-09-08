@@ -5,18 +5,21 @@ import xyz.upperlevel.hermes.reflect.PacketListener;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.render.entity.EntityViewRenderer;
 import xyz.upperlevel.openverse.client.render.world.ChunkViewRenderer;
+import xyz.upperlevel.ulge.opengl.shader.Program;
 
 /**
  * Handles world renderers and changes.
  */
 @Getter
 public class WorldSession implements PacketListener {
+    private final Program program;
     private ClientWorld world;
     private final ChunkViewRenderer chunkView;
     private final EntityViewRenderer entityView;
 
-    public WorldSession() {
-        this.chunkView = new ChunkViewRenderer();
+    public WorldSession(Program program) {
+        this.program = program;
+        this.chunkView = new ChunkViewRenderer(program);
         this.entityView = new EntityViewRenderer();
     }
 

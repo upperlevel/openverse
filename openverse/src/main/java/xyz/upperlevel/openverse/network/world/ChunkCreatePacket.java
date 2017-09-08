@@ -26,7 +26,7 @@ public class ChunkCreatePacket implements Packet {
         for (int ix = 0; ix < 16; ix++) {
             for (int iy = 0; iy < 16; iy++) {
                 for (int iz = 0; iz < 16; iz++) {
-                    BlockType ty = chunk.getBlock(ix, iy, iz).getType();
+                    BlockType ty = chunk.getBlockType(ix, iy, iz);
                     if (ty != null)
                         this.blockTypes[ix][iy][iz] = ty.getId();
                 }
@@ -45,7 +45,7 @@ public class ChunkCreatePacket implements Packet {
                 for (int z = 0; z < Chunk.LENGTH; z++) {
                     if (blockTypes[x][y][z] != null) {
                         BlockType ty = Openverse.resources().blockTypes().entry(blockTypes[x][y][z]);
-                        chk.getBlock(x, y, z).setType(ty);
+                        chk.setBlockType(x, y, z, ty);
                     }
                 }
             }

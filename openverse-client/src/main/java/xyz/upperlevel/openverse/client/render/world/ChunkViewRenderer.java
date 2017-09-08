@@ -8,6 +8,7 @@ import xyz.upperlevel.openverse.client.world.ClientWorld;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 import xyz.upperlevel.openverse.world.event.ChunkLoadEvent;
 import xyz.upperlevel.openverse.world.event.ChunkUnloadEvent;
+import xyz.upperlevel.ulge.opengl.shader.Program;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,12 +21,14 @@ import java.util.Map;
 public class ChunkViewRenderer implements Listener {
     public static final int MAX_RENDER_DISTANCE = 3;
 
+    private final Program program;
     private ClientWorld world;
 
     private int distance;
     private Map<ChunkLocation, ChunkRenderer> chunks = new HashMap<>();
 
-    public ChunkViewRenderer() {
+    public ChunkViewRenderer(Program program) {
+        this.program = program;
         this.distance = 1;
         Openverse.getEventManager().register(this);
     }
@@ -62,7 +65,7 @@ public class ChunkViewRenderer implements Listener {
 
     @EventHandler
     public void onChunkLoad(ChunkLoadEvent e) {
-        loadChunk(new ChunkRenderer(e.getChunk()));
+        loadChunk(new ChunkRenderer(e.getChunk(), program));
     }
 
     @EventHandler

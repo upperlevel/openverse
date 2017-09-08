@@ -2,6 +2,7 @@ package xyz.upperlevel.openverse.world.chunk;
 
 import lombok.Getter;
 import lombok.NonNull;
+import xyz.upperlevel.openverse.resource.block.BlockType;
 import xyz.upperlevel.openverse.world.block.Block;
 import xyz.upperlevel.openverse.world.block.BlockSystem;
 import xyz.upperlevel.openverse.world.block.DefaultBlockSystem;
@@ -54,5 +55,13 @@ public class Chunk {
 
     public Block getBlock(int x, int y, int z) {
         return blockSystem.getBlock(x, y, z);
+    }
+
+    public BlockType getBlockType(int x, int y, int z) {
+        return blockSystem.getBlockType(x, y, z);
+    }
+
+    public void setBlockType(int x, int y, int z, BlockType type) {
+        blockSystem.setBlockType(x, y, z, type);
     }
 }

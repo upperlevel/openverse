@@ -17,7 +17,7 @@ public class ServerWorld extends World {
         BlockType my_squeeze = Openverse.resources().blockTypes().entry("my_squeeze");
         BlockType my_air = Openverse.resources().blockTypes().entry("my_air");
         this.generator = new FlatChunkGenerator(1, my_squeeze, my_air);
-        this.chunkMap = new PlayerChunkMap(this, 0);
+        this.chunkMap = new PlayerChunkMap(this, 4);
     }
 
     @Override

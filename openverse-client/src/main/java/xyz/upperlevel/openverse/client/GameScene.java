@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL11;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.client.render.world.ChunkRenderer;
 import xyz.upperlevel.openverse.client.world.WorldViewer;
 import xyz.upperlevel.openverse.event.ShutdownEvent;
 import xyz.upperlevel.openverse.launcher.OpenverseLauncher;
@@ -15,6 +16,8 @@ import xyz.upperlevel.ulge.window.event.CursorMoveEvent;
 import xyz.upperlevel.ulge.window.event.KeyChangeEvent;
 import xyz.upperlevel.ulge.window.event.action.Action;
 import xyz.upperlevel.ulge.window.event.key.Key;
+
+import java.util.stream.Collectors;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -48,12 +51,9 @@ public class GameScene implements Scene, Listener {
     @Override
     public void onRender() {
         processInput();
-        Openverse.logger().info("Cleared all what should be cleared.");
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
         glClearColor(0, 0, 0, 0);
-        Openverse.logger().info("Attempting to render...");
         viewer.render();
-        Openverse.logger().info("Rendered!");
     }
 
     private void processInput() {
@@ -85,7 +85,7 @@ public class GameScene implements Scene, Listener {
 
     @Override
     public void onFps() {
-        Openverse.logger().info("Fps: " + OpenverseLauncher.get().getGame().getFps());
+        Openverse.logger().info("Fps: " + OpenverseLauncher.get().getGame().getFps()); //+ " chunks: " + viewer.getWorldSession().getChunkView().getChunks().stream().map(ChunkRenderer::getLocation).map(Object::toString).collect(Collectors.joining("|")));
     }
 
     @EventHandler

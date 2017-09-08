@@ -3,11 +3,7 @@ package xyz.upperlevel.openverse.physic;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import org.joml.Vector3f;
-
-import static java.lang.Math.abs;
 
 @Getter
 @NoArgsConstructor

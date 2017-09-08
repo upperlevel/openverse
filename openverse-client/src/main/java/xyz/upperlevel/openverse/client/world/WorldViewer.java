@@ -32,8 +32,8 @@ public class WorldViewer implements PacketListener {
     private Program program;
 
     public WorldViewer() {
-        this.worldSession = new WorldSession();
         this.program = ((ClientResources) Openverse.resources()).programs().entry("simple_shader");
+        this.worldSession = new WorldSession(program);
     }
 
     /**
@@ -68,8 +68,8 @@ public class WorldViewer implements PacketListener {
 
     private Matrix4f getOrientation() {
         Matrix4f r = new Matrix4f();
-        r.rotate((float) Math.toRadians(pitch), new Vector3f(1f, 0, 0));
-        r.rotate((float) Math.toRadians(yaw), new Vector3f(0, 1f, 0));
+        r.rotate((float) Math.toRadians(pitch), 1f, 0, 0);
+        r.rotate((float) Math.toRadians(yaw), 0, 1f, 0);
         return r;
     }
 
@@ -144,27 +144,25 @@ public class WorldViewer implements PacketListener {
         ).get(BufferUtils.createFloatBuffer(16)));
 
         for (ChunkRenderer chk : worldSession.getChunkView().getChunks()) {
-            Openverse.logger().fine("Attempting to render chunk at: " + chk.getLocation());
             chk.render(program);
-            Openverse.logger().fine("Chunk at: " + chk.getLocation() + " -> rendered!");
         }
     }
 
     @PacketHandler
     public void onPlayerChangeWorld(Connection conn, PlayerChangeWorldPacket pkt) {
         worldSession.setWorld(new ClientWorld(pkt.getWorldName()));
-        Openverse.logger().info("Viewer changed world to: " + pkt.getWorldName());
+        //Openverse.logger().info("Viewer changed world to: " + pkt.getWorldName());
     }
 
     @PacketHandler
     public void onPlayerChangePosition(Connection conn, PlayerChangePositionPacket pkt) {
         setPosition(pkt);
-        Openverse.logger().info("Viewer changed position to: " + pkt.getX() + " " + pkt.getY() + " " + pkt.getZ());
+        //Openverse.logger().info("Viewer changed position to: " + pkt.getX() + " " + pkt.getY() + " " + pkt.getZ());
     }
 
     @PacketHandler
     public void onPlayerChangeLook(Connection conn, PlayerChangeLookPacket pkt) {
         setLook(pkt);
-        Openverse.logger().info("Viewer changed position to: " + pkt.getYaw() + " " + pkt.getPitch());
+        //Openverse.logger().info("Viewer changed position to: " + pkt.getYaw() + " " + pkt.getPitch());
     }
 }

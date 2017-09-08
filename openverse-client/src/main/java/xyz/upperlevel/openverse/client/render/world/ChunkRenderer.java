@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.resource.model.ClientModel;
 import xyz.upperlevel.openverse.resource.block.BlockType;
@@ -15,18 +16,24 @@ import xyz.upperlevel.ulge.opengl.buffer.*;
 import xyz.upperlevel.ulge.opengl.shader.Program;
 
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 
+import static org.lwjgl.opengl.GL11.glDrawArrays;
 import static xyz.upperlevel.openverse.world.chunk.Chunk.*;
-import static xyz.upperlevel.ulge.opengl.buffer.VboDataUsage.STATIC_DRAW;
 
 /**
  * This class renders a chunk in a specified location.
  */
 @Getter
 public class ChunkRenderer {
+    private final Program program;
     private final ChunkLocation location;
-    private final Vbo vbo;
+    private Vao vao;
+    private Vbo vbo;
     private final BlockType[][][] blockTypes = new BlockType[WIDTH][HEIGHT][LENGTH];
+
+    //Cache
+    private float[] model;
 
     private int
             allocateVerticesCount = 0, // vertices to allocate on vbo init
@@ -35,9 +42,9 @@ public class ChunkRenderer {
     private int
             drawVerticesCount = 0; // draw vertices count on drawing
 
-    public ChunkRenderer(Chunk chunk) {
+    public ChunkRenderer(Chunk chunk, Program program) {
+        this.program = program;
         this.location = chunk.getLocation();
-        this.vbo = new Vbo();
         load(chunk);
     }
 
@@ -98,44 +105,59 @@ public class ChunkRenderer {
     }
 
     public void build() {
-        vbo.bind();
         ByteBuffer buffer = BufferUtils.createByteBuffer(allocateDataCount * Float.BYTES);
         drawVerticesCount = 0;
+        Matrix4f in = new Matrix4f();
         for (int x = 0; x < WIDTH; x++) {
             for (int y = 0; y < HEIGHT; y++) {
                 for (int z = 0; z < LENGTH; z++) {
-                    Matrix4f in = new Matrix4f()
-                            .translate(x, y, z);
                     BlockType ty = blockTypes[x][y][z];
                     if (ty != null) {
                         ClientModel model = (ClientModel) ty.getModel();
                         if (model != null)
-                            drawVerticesCount += model.store(in, buffer);
+                            drawVerticesCount += model.store(in.translation(x, y, z), buffer);
                     }
                 }
             }
         }
-        Openverse.logger().info("Vertices loaded for chunk at: " + location + " -> " + drawVerticesCount);
         buffer.flip();
-        vbo.loadData(buffer, VboDataUsage.STATIC_DRAW);
-        vbo.unbind();
-    }
+        Openverse.logger().info("Vertices loaded for chunk at: " + location + " -> " + drawVerticesCount + "(" + buffer.remaining() + ")");
 
-    @SuppressWarnings("deprecation")
-    public void render(Program program) {
-        program.uniformer.setUniformMatrix4("model", new Matrix4f().get(BufferUtils.createFloatBuffer(16)));
+
+        program.bind();
+
+        vao = new Vao();
+        vao.bind();
+        vbo = new Vbo();
         vbo.bind();
+        vbo.loadData(buffer, VboDataUsage.STATIC_DRAW);
+
         new VertexLinker()
                 .attrib(program.uniformer.getAttribLocation("position"), 3)
                 .attrib(program.uniformer.getAttribLocation("color"), 4)
                 .attrib(program.uniformer.getAttribLocation("texCoords"), 3)
                 .setup();
-        vbo.draw(DrawMode.QUADS, 0, drawVerticesCount);
-        Openverse.logger().fine("Drawn " + drawVerticesCount + " vertices!");
+
+        vbo.unbind();
+        vao.unbind();
+
+        model = in.translation(location.x << 4, location.y << 4, location.z << 4).get(new float[16]);
+    }
+
+    @SuppressWarnings("deprecation")
+    public void render(Program program) {
+        if(drawVerticesCount != 0) {
+            //System.out.println("Rendering: " + location + " -> " + drawVerticesCount);
+            program.uniformer.setUniformMatrix4("model", model);
+            vao.bind();
+            glDrawArrays(GL11.GL_QUADS, 0, drawVerticesCount);
+            //vao.draw(DrawMode.QUADS, 0, drawVerticesCount);
+        }
     }
 
     public void destroy() {
         Openverse.logger().warning("Destroying VBO for chunk: " + location);
         vbo.destroy();
+        vao.destroy();
     }
 }
