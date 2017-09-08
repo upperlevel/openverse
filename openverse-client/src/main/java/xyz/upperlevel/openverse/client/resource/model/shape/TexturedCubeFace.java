@@ -1,7 +1,9 @@
 package xyz.upperlevel.openverse.client.resource.model.shape;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.joml.Matrix4f;
 import xyz.upperlevel.openverse.client.resource.texture.Texture;
 import xyz.upperlevel.openverse.physic.Box;
@@ -24,19 +26,25 @@ public class TexturedCubeFace implements ClientShape {
 
     private final ClientCube cube;
     private final CubeFacePosition position;
-    private final Map<QuadVertexPosition, Vertex> vertices = new EnumMap<>(QuadVertexPosition.class);
+    private final Map<QuadVertexPosition, Vertex> vertexMap = new EnumMap<>(QuadVertexPosition.class);
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    private Vertex[] vertices;
 
     private Box box;
     private Texture texture;
 
     public TexturedCubeFace(ClientCube cube, CubeFacePosition position, Config config) {
-        this(cube, position);
+        this.cube = cube;
+        this.position = position;
+        this.box = position.getBox(cube.getBox());
         if (config.has("vertices")) {
             for (Config vrtCfg : config.getConfigList("vertices")) {
                 QuadVertexPosition pos = vrtCfg.getEnum("position", QuadVertexPosition.class);
-                vertices.put(pos, new QuadVertex(pos, vrtCfg));
+                vertexMap.put(pos, new QuadVertex(pos, vrtCfg));
             }
         }
+        bakeVertexes();
     }
 
     public TexturedCubeFace(ClientCube cube, CubeFacePosition position) {
@@ -47,16 +55,24 @@ public class TexturedCubeFace implements ClientShape {
     }
 
     private void setupVertices() {
-        for (QuadVertexPosition pos : QuadVertexPosition.values())
-            vertices.put(pos, new QuadVertex(pos));
+        for (QuadVertexPosition pos : QuadVertexPosition.positions())
+            vertexMap.put(pos, new QuadVertex(pos));
+        bakeVertexes();
+    }
+
+    private void bakeVertexes() {
+        vertices = new Vertex[vertexMap.size()];
+        int i = 0;
+        for (Vertex vertex : vertexMap.values())
+            vertices[i++] = vertex;
     }
 
     public Vertex getVertex(QuadVertexPosition position) {
-        return vertices.get(position);
+        return vertexMap.get(position);
     }
 
     public Collection<Vertex> getVertices() {
-        return vertices.values();
+        return vertexMap.values();
     }
 
     @Override
@@ -70,7 +86,7 @@ public class TexturedCubeFace implements ClientShape {
      */
     @Override
     public void setColor(Color color) {
-        for (Vertex vertex : vertices.values())
+        for (Vertex vertex : vertices)
             vertex.setColor(color);
     }
 
@@ -86,7 +102,7 @@ public class TexturedCubeFace implements ClientShape {
                 .rotate(position.getRotation())
                 .translate(-.5f, -.5f, -.5f);
         int sz = 0;
-        for (Vertex vrt : vertices.values())
+        for (Vertex vrt : vertices)
             sz += vrt.store(in, buffer, 1); // todo put texture layer here
         return sz;
     }

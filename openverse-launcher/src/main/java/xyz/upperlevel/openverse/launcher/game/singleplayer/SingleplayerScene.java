@@ -17,6 +17,7 @@ import xyz.upperlevel.ulge.game.Stage;
 
 @Getter
 public class SingleplayerScene extends Stage {
+    public static final boolean COPY = true;
     private final OpenverseLauncher launcher;
 
     private final ClientWrapper clientWrp;
@@ -32,7 +33,7 @@ public class SingleplayerScene extends Stage {
         System.out.println("[Launcher] Creating client...");
         client = new DirectClient();
         clientConn = client.getConnection();
-        clientConn.setCopy(true);
+        clientConn.setCopy(COPY);
         ClientLoader clientLoader = new ClientLoader();
         clientLoader.load();
 
@@ -55,7 +56,7 @@ public class SingleplayerScene extends Stage {
 
         System.out.println("[Launcher] Setting up connection between those.");
         DirectServerConnection serverConnection = server.newConnection(clientConn);
-        serverConnection.setCopy(true);
+        serverConnection.setCopy(COPY);
         clientConn.setOther(serverConnection);
     }
 

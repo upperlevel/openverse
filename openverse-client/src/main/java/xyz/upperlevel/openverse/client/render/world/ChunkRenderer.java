@@ -14,6 +14,7 @@ import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 import xyz.upperlevel.ulge.opengl.buffer.*;
 import xyz.upperlevel.ulge.opengl.shader.Program;
+import xyz.upperlevel.ulge.opengl.shader.Uniform;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -30,6 +31,7 @@ public class ChunkRenderer {
     private final ChunkLocation location;
     private Vao vao;
     private Vbo vbo;
+    private Uniform modelLoc;
     private final BlockType[][][] blockTypes = new BlockType[WIDTH][HEIGHT][LENGTH];
 
     //Cache
@@ -45,6 +47,7 @@ public class ChunkRenderer {
     public ChunkRenderer(Chunk chunk, Program program) {
         this.program = program;
         this.location = chunk.getLocation();
+        modelLoc = program.uniformer.get("model");
         load(chunk);
     }
 
@@ -148,7 +151,7 @@ public class ChunkRenderer {
     public void render(Program program) {
         if(drawVerticesCount != 0) {
             //System.out.println("Rendering: " + location + " -> " + drawVerticesCount);
-            program.uniformer.setUniformMatrix4("model", model);
+            modelLoc.matrix4(model);
             vao.bind();
             glDrawArrays(GL11.GL_QUADS, 0, drawVerticesCount);
             //vao.draw(DrawMode.QUADS, 0, drawVerticesCount);

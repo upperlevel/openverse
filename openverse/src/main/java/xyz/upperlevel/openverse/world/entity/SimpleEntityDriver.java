@@ -10,27 +10,24 @@ public class SimpleEntityDriver implements EntityDriver<Player> {
     private Matrix4f getOrientation(Entity entity) {
         Location location = entity.getLocation();
 
-        Matrix4f matrix = new Matrix4f();
-        matrix.rotate((float) location.getPitch(), 1f, 0, 0);
-        matrix.rotate((float) location.getYaw(), 0, 1f, 0);
-        return matrix;
+        return new Matrix4f().rotationXYZ((float)location.getPitch(), (float)location.getYaw(), 0.0f);
     }
 
     public Vector3f getForward(Entity entity) {
         return getOrientation(entity)
-                .invert()
+                .invertAffine()
                 .transformDirection(new Vector3f(0f, 0f, -1f));
     }
 
     public Vector3f getRight(Entity entity) {
         return getOrientation(entity)
-                .invert()
+                .invertAffine()
                 .transformDirection(new Vector3f(1f, 0f, 0f));
     }
 
     public Vector3f getUp(Entity entity) {
         return getOrientation(entity)
-                .invert()
+                .invertAffine()
                 .transformDirection(new Vector3f(0f, 1f, 0f));
     }
 

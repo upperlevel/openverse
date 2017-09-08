@@ -16,6 +16,7 @@ import xyz.upperlevel.openverse.network.world.PlayerChangeLookPacket;
 import xyz.upperlevel.openverse.network.world.PlayerChangePositionPacket;
 import xyz.upperlevel.openverse.network.world.PlayerChangeWorldPacket;
 import xyz.upperlevel.ulge.opengl.shader.Program;
+import xyz.upperlevel.ulge.opengl.shader.Uniform;
 import xyz.upperlevel.ulge.util.math.CameraUtil;
 
 /**
@@ -30,10 +31,13 @@ public class WorldViewer implements PacketListener {
     private double x, y, z, yaw, pitch;
 
     private Program program;
+    private Uniform cameraLoc;
+    private Matrix4f camera;
 
     public WorldViewer() {
         this.program = ((ClientResources) Openverse.resources()).programs().entry("simple_shader");
         this.worldSession = new WorldSession(program);
+        this.cameraLoc = program.uniformer.get("camera");
     }
 
     /**
@@ -50,6 +54,7 @@ public class WorldViewer implements PacketListener {
         this.x = x;
         this.y = y;
         this.z = z;
+        camera = null;
     }
 
     public void setPosition(PlayerChangePositionPacket pkt) {
@@ -59,7 +64,6 @@ public class WorldViewer implements PacketListener {
     public void setPosition(double x, double y, double z) {
         unsafeSetPosition(x, y, z);
         ((Client) Openverse.endpoint()).getConnection().send(Openverse.channel(), new PlayerChangePositionPacket(x, y, z));
-        Openverse.logger().info("Player change position packet sent!");
     }
 
     public void movePosition(double offsetX, double offsetY, double offsetZ) {
@@ -67,14 +71,11 @@ public class WorldViewer implements PacketListener {
     }
 
     private Matrix4f getOrientation() {
-        Matrix4f r = new Matrix4f();
-        r.rotate((float) Math.toRadians(pitch), 1f, 0, 0);
-        r.rotate((float) Math.toRadians(yaw), 0, 1f, 0);
-        return r;
+        return new Matrix4f().rotationXYZ((float)Math.toRadians(pitch), (float)Math.toRadians(yaw), 0.0f);
     }
 
     private Vector3f getForward() {
-        return getOrientation().invert(new Matrix4f()).transformDirection(new Vector3f(0, 0, -1f));
+        return getOrientation().invertAffine().transformDirection(new Vector3f(0, 0, -1f));
     }
 
     public void forward(float speed) {
@@ -83,7 +84,7 @@ public class WorldViewer implements PacketListener {
     }
 
     private Vector3f getRight() {
-        return getOrientation().invert(new Matrix4f()).transformDirection(new Vector3f(1f, 0, 0));
+        return getOrientation().invertAffine().transformDirection(new Vector3f(1f, 0, 0));
     }
 
     public void right(float speed) {
