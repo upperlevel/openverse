@@ -4,15 +4,17 @@ import lombok.Getter;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.client.render.world.util.VertexBufferPool;
 import xyz.upperlevel.openverse.client.world.ClientWorld;
+import xyz.upperlevel.openverse.event.ShutdownEvent;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 import xyz.upperlevel.openverse.world.event.ChunkLoadEvent;
 import xyz.upperlevel.openverse.world.event.ChunkUnloadEvent;
 import xyz.upperlevel.ulge.opengl.shader.Program;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * This class contains a list of all chunks that have to be rendered.
@@ -23,6 +25,9 @@ public class ChunkViewRenderer implements Listener {
 
     private final Program program;
     private ClientWorld world;
+    private VertexBufferPool vertexProvider = new VertexBufferPool(5);
+    private ExecutorService chunkCompiler = Executors.newSingleThreadExecutor();
+    private Queue<ChunkUploader> chunkUploaders = new ArrayDeque<>(10);
 
     private int distance;
     private Map<ChunkLocation, ChunkRenderer> chunks = new HashMap<>();
@@ -35,6 +40,8 @@ public class ChunkViewRenderer implements Listener {
 
     public void loadChunk(ChunkRenderer chunk) {
         chunks.put(chunk.getLocation(), chunk);
+        recompileChunk(chunk);
+        chunk.setUpdater(this::recompileChunk);
     }
 
     public void unloadChunk(ChunkLocation location) {
@@ -56,10 +63,31 @@ public class ChunkViewRenderer implements Listener {
         //destroy();
     }
 
+    public void recompileChunk(ChunkRenderer chunk) {
+        chunkCompiler.execute(new ChunkCompileTask(vertexProvider, chunk, chunkUploaders));
+    }
+
+    public void render(Program program) {
+        uploadPendingChunks();
+        for(ChunkRenderer chunk : chunks.values()) {
+            chunk.render(program);
+        }
+    }
+
+    public void uploadPendingChunks() {
+        ChunkUploader uploader;
+        while ((uploader = chunkUploaders.poll()) != null) {
+            uploader.upload();
+        }
+    }
+
     /**
      * Destroys all chunks and remove them from memory.
      */
     public void destroy() {
+        Openverse.logger().fine("Shutting down compiler");
+        chunkCompiler.shutdownNow();
+        Openverse.logger().fine("Done");
         chunks.values().forEach(ChunkRenderer::destroy);
         chunks.clear();
     }
@@ -73,5 +101,10 @@ public class ChunkViewRenderer implements Listener {
     @EventHandler
     public void onChunkUnload(ChunkUnloadEvent e) {
         unloadChunk(e.getLocation());
+    }
+
+    @EventHandler
+    public void onShutdown(ShutdownEvent e) {
+        destroy();
     }
 }

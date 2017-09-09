@@ -85,7 +85,7 @@ public class GameScene implements Scene, Listener {
 
     @Override
     public void onFps() {
-        Openverse.logger().info("Fps: " + OpenverseLauncher.get().getGame().getFps()); //+ " chunks: " + viewer.getWorldSession().getChunkView().getChunks().stream().map(ChunkRenderer::getLocation).map(Object::toString).collect(Collectors.joining("|")));
+        Openverse.logger().info("Fps: " + OpenverseLauncher.get().getGame().getFps() + " chunks: " + viewer.getWorldSession().getChunkView().getChunks().size());
     }
 
     @EventHandler

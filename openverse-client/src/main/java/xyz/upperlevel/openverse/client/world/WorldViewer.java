@@ -144,9 +144,7 @@ public class WorldViewer implements PacketListener {
                 (float) z
         ).get(BufferUtils.createFloatBuffer(16)));
 
-        for (ChunkRenderer chk : worldSession.getChunkView().getChunks()) {
-            chk.render(program);
-        }
+        worldSession.getChunkView().render(program);
     }
 
     @PacketHandler

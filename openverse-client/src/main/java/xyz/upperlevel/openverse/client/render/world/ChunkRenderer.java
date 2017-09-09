@@ -2,9 +2,9 @@ package xyz.upperlevel.openverse.client.render.world;
 
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.resource.model.ClientModel;
 import xyz.upperlevel.openverse.resource.block.BlockType;
@@ -12,17 +12,15 @@ import xyz.upperlevel.openverse.world.block.Block;
 import xyz.upperlevel.openverse.world.block.BlockSystem;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
-import xyz.upperlevel.ulge.opengl.buffer.Vao;
-import xyz.upperlevel.ulge.opengl.buffer.Vbo;
-import xyz.upperlevel.ulge.opengl.buffer.VboDataUsage;
-import xyz.upperlevel.ulge.opengl.buffer.VertexLinker;
+import xyz.upperlevel.ulge.opengl.buffer.*;
 import xyz.upperlevel.ulge.opengl.shader.Program;
 import xyz.upperlevel.ulge.opengl.shader.Uniform;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
-import static org.lwjgl.opengl.GL11.glDrawArrays;
 import static xyz.upperlevel.openverse.world.chunk.Chunk.*;
 
 /**
@@ -36,6 +34,8 @@ public class ChunkRenderer {
     private Vbo vbo;
     private Uniform modelLoc;
     private final BlockType[][][] blockTypes = new BlockType[WIDTH][HEIGHT][LENGTH];
+    @Setter
+    private Consumer<ChunkRenderer> updater;
 
     //Cache
     private FloatBuffer model;
@@ -51,6 +51,7 @@ public class ChunkRenderer {
         this.program = program;
         this.location = chunk.getLocation();
         modelLoc = program.uniformer.get("model");
+        setup();
         load(chunk);
     }
 
@@ -63,7 +64,8 @@ public class ChunkRenderer {
             for (int y = 0; y < HEIGHT; y++)
                 for (int z = 0; z < LENGTH; z++)
                     setBlockType(blockSystem.getBlock(x, y, z), false);
-        build();
+        if(updater != null)
+            updater.accept(this);
     }
 
     public BlockType getBlockType(int x, int y, int z) {
@@ -88,8 +90,8 @@ public class ChunkRenderer {
         allocateDataCount += newData - oldData;
 
         // rebuilds chunk if requested
-        if (update)
-            build();
+        if (update && updater != null)
+            updater.accept(this);
     }
 
     public void setBlockType(int x, int y, int z, BlockType type) {
@@ -110,34 +112,12 @@ public class ChunkRenderer {
         setBlockType(block, true);
     }
 
-    public void build() {
-        ByteBuffer buffer = BufferUtils.createByteBuffer(allocateDataCount * Float.BYTES);
-        drawVerticesCount = 0;
-        Matrix4f in = new Matrix4f();
-        for (int x = 0; x < WIDTH; x++) {
-            for (int y = 0; y < HEIGHT; y++) {
-                for (int z = 0; z < LENGTH; z++) {
-                    BlockType ty = blockTypes[x][y][z];
-                    if (ty != null) {
-                        ClientModel model = (ClientModel) ty.getModel();
-                        if (model != null)
-                            drawVerticesCount += model.store(in.translation(x, y, z), buffer);
-                    }
-                }
-            }
-        }
-        buffer.flip();
-        Openverse.logger().info("Vertices loaded for chunk at: " + location + " -> " + drawVerticesCount + "(" + buffer.remaining() + ")");
-
-
-        program.bind();
-
+    public void setup() {
         vao = new Vao();
         vao.bind();
+
         vbo = new Vbo();
         vbo.bind();
-        vbo.loadData(buffer, VboDataUsage.STATIC_DRAW);
-
         new VertexLinker()
                 .attrib(program.uniformer.getAttribLocation("position"), 3)
                 .attrib(program.uniformer.getAttribLocation("color"), 4)
@@ -147,7 +127,32 @@ public class ChunkRenderer {
         vbo.unbind();
         vao.unbind();
 
-        model = in.translation(location.x << 4, location.y << 4, location.z << 4).get(BufferUtils.createFloatBuffer(16));
+        model = new Matrix4f().translation(location.x << 4, location.y << 4, location.z << 4).get(BufferUtils.createFloatBuffer(16));
+    }
+
+    public int compile(ByteBuffer buffer) {
+        int vertexCount = 0;
+        Matrix4f in = new Matrix4f();
+        for (int x = 0; x < WIDTH; x++) {
+            for (int y = 0; y < HEIGHT; y++) {
+                for (int z = 0; z < LENGTH; z++) {
+                    BlockType ty = blockTypes[x][y][z];
+                    if (ty != null) {
+                        ClientModel model = (ClientModel) ty.getModel();
+                        if (model != null)
+                            vertexCount += model.store(in.translation(x, y, z), buffer);
+                    }
+                }
+            }
+        }
+        buffer.flip();
+        //Openverse.logger().info("Vertices computed for chunk at: " + location + " -> " + vertexCount);
+        return vertexCount;
+    }
+
+    public void setVertices(ByteBuffer vertices, int vertexCount) {
+        vbo.loadData(vertices, VboDataUsage.STATIC_DRAW);
+        this.drawVerticesCount = vertexCount;
     }
 
     @SuppressWarnings("deprecation")
@@ -156,14 +161,18 @@ public class ChunkRenderer {
             //System.out.println("Rendering: " + location + " -> " + drawVerticesCount);
             modelLoc.matrix4(model);
             vao.bind();
-            glDrawArrays(GL11.GL_QUADS, 0, drawVerticesCount);
-            //vao.draw(DrawMode.QUADS, 0, drawVerticesCount);
+            vao.draw(DrawMode.QUADS, 0, drawVerticesCount);
         }
     }
 
+    public boolean isAlive() {
+        return vao != null;
+    }
+
     public void destroy() {
-        Openverse.logger().warning("Destroying VBO for chunk: " + location);
+        //Openverse.logger().warning("Destroying VBO for chunk: " + location);
         vbo.destroy();
         vao.destroy();
+        vao = null;
     }
 }
