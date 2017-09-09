@@ -34,6 +34,7 @@ public class PlayerChunkMap implements Listener {
     }
 
     public void addPlayer(ServerPlayer player, Chunk current) {
+        Openverse.logger().fine("Add player: " + player);
         ChunkLocation loc = current.getLocation();
         int minX = loc.x - radius;
         int maxX = loc.x + radius;
@@ -42,9 +43,9 @@ public class PlayerChunkMap implements Listener {
         int minZ = loc.z - radius;
         int maxZ = loc.z + radius;
 
-        for (int x = minX; x < maxX; x++)
-            for (int y = minY; y < maxY; y++)
-                for (int z = minZ; z < maxZ; z++)
+        for (int x = minX; x <= maxX; x++)
+            for (int y = minY; y <= maxY; y++)
+                for (int z = minZ; z <= maxZ; z++)
                     addPlayer(new ChunkLocation(x, y, z), player);
         players.add(player);
     }
@@ -58,9 +59,9 @@ public class PlayerChunkMap implements Listener {
         int minZ = loc.z - radius;
         int maxZ = loc.z + radius;
 
-        for (int x = minX; x < maxX; x++)
-            for (int y = minY; y < maxY; y++)
-                for (int z = minZ; z < maxZ; z++)
+        for (int x = minX; x <= maxX; x++)
+            for (int y = minY; y <= maxY; y++)
+                for (int z = minZ; z <= maxZ; z++)
                     removePlayer(new ChunkLocation(x, y, z), player);
         players.remove(player);
     }

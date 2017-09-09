@@ -9,7 +9,9 @@ import xyz.upperlevel.hermes.event.ConnectionCloseEvent;
 import xyz.upperlevel.hermes.event.ConnectionOpenEvent;
 import xyz.upperlevel.hermes.server.Server;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.network.world.PlayerChangeWorldPacket;
 import xyz.upperlevel.openverse.server.world.ServerPlayer;
+import xyz.upperlevel.openverse.world.Location;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -59,6 +61,8 @@ public class PlayerManager implements Listener {
     public void onConnect(ConnectionOpenEvent event) {
         ServerPlayer sp = new ServerPlayer("Hobbit", event.getConnection());
         register(sp);
+        Location spawn = OpenverseServer.get().getUniverse().getSpawn();
+        sp.getConnection().send(Openverse.channel(), new PlayerChangeWorldPacket(spawn.getWorld()));
         sp.setLocation(OpenverseServer.get().getUniverse().getSpawn());
     }
 

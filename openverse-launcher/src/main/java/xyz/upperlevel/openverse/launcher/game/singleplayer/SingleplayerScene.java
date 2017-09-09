@@ -54,10 +54,8 @@ public class SingleplayerScene extends Stage {
         System.out.println("[Launcher] Joining client!");
         clientWrp.join(this);
 
-        System.out.println("[Launcher] Setting up connection between those.");
-        DirectServerConnection serverConnection = server.newConnection(clientConn);
-        serverConnection.setCopy(COPY);
-        clientConn.setOther(serverConnection);
+        System.out.println("[Launcher] Setting up connection");
+        server.newConnection(clientConn, COPY);
     }
 
     @Override

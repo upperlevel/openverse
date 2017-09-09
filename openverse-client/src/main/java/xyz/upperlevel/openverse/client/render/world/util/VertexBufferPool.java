@@ -64,7 +64,7 @@ public class VertexBufferPool {
     public static class ByteBufCapacityComparator implements Comparator<VertexBuffer> {
         @Override
         public int compare(VertexBuffer a, VertexBuffer b) {
-            //The capcity is inverted so that the buffer with the biggest capacity goes first while the one with the
+            //The capacity is inverted so that the buffer with the biggest capacity goes first while the one with the
             //Lowest goes last
             return Integer.compare(b.capacity(), a.capacity());
         }
