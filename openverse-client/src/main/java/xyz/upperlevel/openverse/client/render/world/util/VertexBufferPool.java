@@ -22,9 +22,9 @@ public class VertexBufferPool {
         VertexBuffer buf = buffers.poll();
         if (buf == null) {
             if (tryIncrementSize()) {
-                return new VertexBuffer(this);
-            } else {
                 return null;
+            } else {
+                return new VertexBuffer(this);
             }
         } else {
             return buf;
@@ -54,7 +54,7 @@ public class VertexBufferPool {
     }
 
     protected boolean tryIncrementSize() {
-        return size.updateAndGet(x -> x >= limit ? limit : x + 1) >= limit;
+        return size.updateAndGet(x -> x > limit ? x : (x + 1)) > limit;
     }
 
     public int size() {

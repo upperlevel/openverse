@@ -16,6 +16,9 @@ public class ChunkCompileTask implements Runnable {
 
     @Override
     public void run() {
+        if (!chunk.isAlive()) {
+            return;
+        }
         VertexBuffer buffer;
         try {
             buffer = bufferPool.waitForBuffer();

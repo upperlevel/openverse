@@ -34,6 +34,7 @@ public class ChunkRenderer {
     private Vbo vbo;
     private Uniform modelLoc;
     private final BlockType[][][] blockTypes = new BlockType[WIDTH][HEIGHT][LENGTH];
+    private AtomicBoolean alive = new AtomicBoolean(true);
     @Setter
     private Consumer<ChunkRenderer> updater;
 
@@ -166,11 +167,12 @@ public class ChunkRenderer {
     }
 
     public boolean isAlive() {
-        return vao != null;
+        return alive.get();
     }
 
     public void destroy() {
         //Openverse.logger().warning("Destroying VBO for chunk: " + location);
+        alive.set(false);
         vbo.destroy();
         vao.destroy();
         vao = null;
