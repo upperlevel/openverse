@@ -101,9 +101,9 @@ public class ChunkRenderer {
 
     public void setBlockType(@NonNull Block block, boolean update) {
         setBlockType(
-                Math.floorMod(block.getX(), 16),
-                Math.floorMod(block.getY(), 16),
-                Math.floorMod(block.getZ(), 16),
+                block.getX() & 15,
+                block.getY() & 15,
+                block.getZ() & 15,
                 block.getType(),
                 update
         );

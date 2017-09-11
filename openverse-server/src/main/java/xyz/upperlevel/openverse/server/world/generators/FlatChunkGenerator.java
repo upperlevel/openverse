@@ -1,4 +1,4 @@
-package xyz.upperlevel.openverse.server.world;
+package xyz.upperlevel.openverse.server.world.generators;
 
 import lombok.Getter;
 import xyz.upperlevel.openverse.resource.block.BlockType;
@@ -23,7 +23,7 @@ public class FlatChunkGenerator implements ChunkGenerator {
         for (int x = 0; x < Chunk.WIDTH; x++) {
             for (int y = 0; y < Chunk.HEIGHT; y++) {
                 for (int z = 0; z < Chunk.LENGTH; z++) {
-                    chunk.getBlock(x, y, z).setType(y < limitY ? fullType : emptyType);
+                    chunk.setBlockType(x, y, z, y < limitY ? fullType : emptyType);
                 }
             }
         }

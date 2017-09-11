@@ -28,8 +28,9 @@ public class VertexBuffer {
         }
     }
 
-    private int roundUp(float x, int interval) {
-        return Math.round(x/interval) * interval;
+    private static int roundUp(int x, int interval) {
+        int i = x % interval;
+        return i == 0 ? interval : x + interval - i;
     }
 
     public ByteBuffer byteBuffer() {
