@@ -12,6 +12,8 @@ import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.console.log.OpenverseLogger;
 import xyz.upperlevel.openverse.event.ShutdownEvent;
 import xyz.upperlevel.openverse.resource.Resources;
+import xyz.upperlevel.openverse.server.resource.ServerResources;
+import xyz.upperlevel.openverse.server.world.ServerPlayer;
 import xyz.upperlevel.openverse.server.world.Universe;
 
 import java.io.File;
@@ -27,7 +29,7 @@ public class OpenverseServer implements OpenverseProxy, Listener {
     private Channel channel;
     private Universe universe;
     private final EventManager eventManager = new EventManager();
-    private final Resources resources;
+    private final ServerResources resources;
     private final PlayerManager playerManager;
 
     public OpenverseServer(@NonNull Server server) {
@@ -38,7 +40,7 @@ public class OpenverseServer implements OpenverseProxy, Listener {
         endpoint.setDefaultChannel(channel);
         this.universe = new Universe();
         this.playerManager = new PlayerManager();
-        this.resources = new Resources(new File("server/resources"), logger);
+        this.resources = new ServerResources(new File("server/resources"), logger);
     }
 
     /**

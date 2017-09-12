@@ -12,14 +12,6 @@ public final class SerialUtil {
     public static final Charset CHARSET = StandardCharsets.UTF_8;
     public static final char TERMINATOR = (char)0;
 
-    // gets world names total byte size
-    public static int getSize(List<String> wn) {
-        int i = 0;
-        for (String n : wn)
-            i += n.length();
-        return i;
-    }
-
     public static String readString(ByteBuf in) {
         StringBuilder out = new StringBuilder();
         char c;
@@ -35,7 +27,7 @@ public final class SerialUtil {
 
 
     public static ChunkLocation readChunkLocation(ByteBuf in) {
-        return new ChunkLocation(//And finally get the location
+        return new ChunkLocation(
                 in.readInt(),
                 in.readInt(),
                 in.readInt()

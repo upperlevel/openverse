@@ -29,6 +29,7 @@ public final class Openverse {
             .packet(PacketSide.SERVER, PlayerChangeWorldPacket.class)
             .packet(PacketSide.CLIENT, LoginRequestPacket.class)
             .packet(PacketSide.SERVER, LoginResponsePacket.class)
+            .packet(PacketSide.SERVER, BlockRegistryPacket.class)
             .build();
 
     private static OpenverseProxy proxy;
@@ -58,6 +59,6 @@ public final class Openverse {
     }
 
     public static Channel channel() {
-        return proxy.getChannel(); //TODO: create common channel
+        return proxy.getChannel();
     }
 }

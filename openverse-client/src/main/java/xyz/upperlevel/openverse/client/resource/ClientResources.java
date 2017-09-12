@@ -1,6 +1,6 @@
 package xyz.upperlevel.openverse.client.resource;
 
-import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.client.resource.block_type.ClientBlockTypeRegistry;
 import xyz.upperlevel.openverse.client.resource.model.ClientModelRegistry;
 import xyz.upperlevel.openverse.client.resource.model.shape.ClientShapeTypeRegistry;
 import xyz.upperlevel.openverse.client.resource.program.ProgramRegistry;
@@ -20,9 +20,6 @@ public class ClientResources extends Resources {
     private final TextureRegistry textureRegistry;
     private final ShaderRegistry shaderRegistry;
     private final ProgramRegistry programRegistry;
-    // overrides
-    private final ClientShapeTypeRegistry shapeFactoryRegistry;
-    private final ClientModelRegistry modelRegistry;
 
     /**
      * The constructor of {@link ClientResources} initializes all sub resource managers.
@@ -32,9 +29,21 @@ public class ClientResources extends Resources {
         this.textureRegistry = new TextureRegistry(folder, logger, 100 /*todo find texture size in some way*/);
         this.shaderRegistry = new ShaderRegistry(folder, logger);
         this.programRegistry = new ProgramRegistry(folder, logger);
-        // overrides
-        this.shapeFactoryRegistry = new ClientShapeTypeRegistry();
-        this.modelRegistry = new ClientModelRegistry(folder, logger);
+    }
+
+    @Override
+    protected ClientShapeTypeRegistry createShapeTypeRegistry(File folder, Logger logger) {
+        return new ClientShapeTypeRegistry();
+    }
+
+    @Override
+    protected ClientModelRegistry createModelRegistry(File folder, Logger logger) {
+        return new ClientModelRegistry(folder, logger);
+    }
+
+    @Override
+    protected ClientBlockTypeRegistry createBlockTypeRegistry(File folder, Logger logger) {
+        return new ClientBlockTypeRegistry(folder, logger);
     }
 
     /**
@@ -60,12 +69,17 @@ public class ClientResources extends Resources {
 
     @Override
     public ClientShapeTypeRegistry shapes() {
-        return shapeFactoryRegistry;
+        return (ClientShapeTypeRegistry) super.shapes();
     }
 
     @Override
     public ClientModelRegistry models() {
-        return modelRegistry;
+        return (ClientModelRegistry) super.models();
+    }
+
+    @Override
+    public ClientBlockTypeRegistry blockTypes() {
+        return (ClientBlockTypeRegistry) super.blockTypes();
     }
 
     @Override

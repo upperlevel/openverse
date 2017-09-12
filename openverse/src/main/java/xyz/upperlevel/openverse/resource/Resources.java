@@ -15,26 +15,38 @@ import java.util.logging.Logger;
  * The {@link Resources} is a manager for all resource types (managers).
  * It's implemented both in client-side and server-side.
  */
-@RequiredArgsConstructor
 public class Resources {
     protected final File folder;
     protected final Logger logger;
 
     private final BlockTypeRegistry blockTypeRegistry;
     private final EntityTypeRegistry entityTypeRegistry;
-    // overridden by client
-    private final ShapeTypeRegistry<ShapeType> shapeTypeRegistry;
-    private final ModelRegistry<Model> modelRegistry;
+    private final ShapeTypeRegistry<? extends ShapeType<?>> shapeTypeRegistry;
+    private final ModelRegistry<? extends Model<?>> modelRegistry;
 
     public Resources(File folder, Logger logger) {
         this.folder = folder;
         this.logger = logger;
-        // -- these have different implementation
-        this.shapeTypeRegistry = new ShapeTypeRegistry<>();
-        this.modelRegistry = new ModelRegistry<>(folder, logger);
-        // --
-        this.blockTypeRegistry = new BlockTypeRegistry(folder, logger);
-        this.entityTypeRegistry = new EntityTypeRegistry(folder, logger);
+        this.blockTypeRegistry = createBlockTypeRegistry(folder, logger);
+        this.entityTypeRegistry = createEntityTypeRegistry(folder, logger);
+        this.shapeTypeRegistry = createShapeTypeRegistry(folder, logger);
+        this.modelRegistry = createModelRegistry(folder, logger);
+    }
+
+    protected BlockTypeRegistry createBlockTypeRegistry(File folder, Logger logger) {
+        return new BlockTypeRegistry(folder, logger);
+    }
+
+    protected EntityTypeRegistry createEntityTypeRegistry(File folder, Logger logger) {
+        return new EntityTypeRegistry(folder, logger);
+    }
+
+    protected ShapeTypeRegistry<? extends ShapeType<?>> createShapeTypeRegistry(File fodler, Logger logger) {
+        return new ShapeTypeRegistry<>();
+    }
+
+    protected ModelRegistry<? extends Model<?>> createModelRegistry(File folder, Logger logger) {
+        return new ModelRegistry<>(folder, logger);
     }
 
     /**

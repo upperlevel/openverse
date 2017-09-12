@@ -12,29 +12,32 @@ import xyz.upperlevel.openverse.world.block.BlockSystem;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 
+import javax.naming.OperationNotSupportedException;
+
 import static xyz.upperlevel.openverse.network.SerialUtil.*;
 
 @Getter
 @NoArgsConstructor
 public class ChunkCreatePacket implements Packet {
     private ChunkLocation location;
-    private String[][][] blockTypes;
+    private int[][][] blockTypes;
 
     public ChunkCreatePacket(Chunk chunk) {
         this.location = chunk.getLocation();
-        this.blockTypes = new String[16][16][16];
+        this.blockTypes = new int[16][16][16];
         for (int ix = 0; ix < 16; ix++) {
             for (int iy = 0; iy < 16; iy++) {
                 for (int iz = 0; iz < 16; iz++) {
                     BlockType ty = chunk.getBlockType(ix, iy, iz);
-                    if (ty != null)
-                        this.blockTypes[ix][iy][iz] = ty.getId();
+                    if (ty != null) {
+                        this.blockTypes[ix][iy][iz] = ty.getRawId();
+                    }
                 }
             }
         }
     }
 
-    public String getBlockType(int x, int y, int z) {
+    public int getBlockType(int x, int y, int z) {
         return blockTypes[x][y][z];
     }
 
@@ -43,8 +46,11 @@ public class ChunkCreatePacket implements Packet {
         for (int x = 0; x < Chunk.WIDTH; x++) {
             for (int y = 0; y < Chunk.HEIGHT; y++) {
                 for (int z = 0; z < Chunk.LENGTH; z++) {
-                    if (blockTypes[x][y][z] != null) {
+                    if (blockTypes[x][y][z] != 0) {
                         BlockType ty = Openverse.resources().blockTypes().entry(blockTypes[x][y][z]);
+                        if (ty == null) {
+                            Openverse.logger().warning("Unsolved id in ChunkCreatePacket: " + blockTypes[x][y][z]);
+                        }
                         chk.setBlockType(x, y, z, ty);
                     }
                 }
@@ -55,7 +61,6 @@ public class ChunkCreatePacket implements Packet {
 
     @Override
     public void toData(ByteBuf out) {
-
         //Location
         writeChunkLocation(location, out);
 
@@ -63,8 +68,7 @@ public class ChunkCreatePacket implements Packet {
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
                 for (int z = 0; z < 16; z++) {
-                    String id = getBlockType(x, y, z);
-                    writeString(id != null ? id : "", out);
+                    out.writeInt(getBlockType(x, y, z));
                 }
             }
         }
@@ -73,15 +77,12 @@ public class ChunkCreatePacket implements Packet {
     @Override
     public void fromData(ByteBuf in) {
         location = readChunkLocation(in);
-        blockTypes = new String[16][16][16];
+        blockTypes = new int[16][16][16];
 
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
                 for (int z = 0; z < 16; z++) {
-                    String id = readString(in);
-                    if (!id.isEmpty()) {
-                        blockTypes[x][y][z] = id;
-                    }
+                    blockTypes[x][y][z] = in.readInt();
                 }
             }
         }
