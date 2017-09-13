@@ -7,7 +7,7 @@ import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 
 public class ClientLoader {
-    private static final String PATH_TO_CLIENT = "client/openverse_client.jar";
+    private static final String PATH_TO_CLIENT = "client/openverse-client.jar";
     private static final String OPENVERSE_CLIENT_PATH = "xyz.upperlevel.openverse.client.OpenverseClient";
     private ProxyClassLoader loader;
 

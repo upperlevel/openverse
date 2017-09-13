@@ -1,0 +1,46 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        jcenter()
+    }
+    dependencies {
+        classpath "io.franzbecker:gradle-lombok:1.10"
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
+    }
+}
+
+allprojects  {
+    apply plugin: 'maven'
+
+    group = 'xyz.upperlevel.openverse'
+    version = '0.1'
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: 'io.franzbecker.gradle-lombok'
+    apply plugin: 'com.github.johnrengelman.shadow'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    shadowJar {
+        baseName = project.name
+        classifier = null
+        version = null
+    }
+    project.tasks.assemble.dependsOn project.tasks.shadowJar
+
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+  
+    dependencies {
+        compile group: 'org.yaml', name: 'snakeyaml', version:'1.17'
+        compile group: 'org.jline', name: 'jline', version:'3.4.0'
+    }
+}
