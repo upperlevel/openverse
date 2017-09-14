@@ -1,3 +1,5 @@
+import java.nio.file.Paths
+
 buildscript {
     repositories {
         maven {
@@ -44,3 +46,42 @@ subprojects {
         compile group: 'org.jline', name: 'jline', version:'3.4.0'
     }
 }
+
+apply plugin: 'distribution'
+
+distributions {
+    game {
+        baseName = 'game'
+        contents {
+            from { project(':openverse-launcher').tasks.shadowJar }
+            rename 'openverse-launcher.jar', 'launcher.jar'
+            from { project(':openverse-launcher').uri('src/main/dist') }
+            into('client') {
+                from { project('openverse-client').tasks.shadowJar }
+                into('resources') {
+                    from { project('openverse-client').uri('src/main/resources') }
+                }
+            }
+
+            into('server') {
+                from { project('openverse-server').tasks.shadowJar }
+                into('resources') {
+                    from { project('openverse-client').uri('src/main/resources') }
+                }
+            }
+        }
+    }
+}
+def targetFile
+if(!project.hasProperty('target')) {
+    targetFile = file(project.buildDir.toPath().resolve('game'))
+} else {
+    targetFile = file(target)
+}
+
+installGameDist.setDestinationDir(targetFile)
+
+// Setup task order (setup must be runned after installGameDist)
+tasks.getByPath(':openverse-launcher:setup').dependsOn(':installGameDist')
+// Set runGame's workingDir
+tasks.getByPath(':openverse-launcher:runGame').workingDir = installGameDist.destinationDir

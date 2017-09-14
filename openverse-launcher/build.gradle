@@ -9,3 +9,16 @@ dependencies {
 }
 
 mainClassName = 'xyz.upperlevel.openverse.launcher.OpenverseLauncher'
+
+// The application plugin sets up some tasks not relevant to us (we don't want to run the jar directly)
+tasks.remove(tasks.run)
+tasks.remove(tasks.runShadow)
+
+task setup {}
+
+task runGame(type: Exec, overwrite: true) {
+    dependsOn 'setup'
+
+    commandLine 'cmd start.bat'
+    commandLine './start.sh'
+}
