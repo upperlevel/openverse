@@ -72,6 +72,7 @@ distributions {
         }
     }
 }
+
 def targetFile
 if(!project.hasProperty('target')) {
     targetFile = file(project.buildDir.toPath().resolve('game'))
