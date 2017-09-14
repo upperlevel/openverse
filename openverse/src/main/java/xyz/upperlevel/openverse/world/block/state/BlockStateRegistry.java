@@ -23,9 +23,10 @@ public class BlockStateRegistry {
         ImmutableList.Builder<SimpleBlockState> states = ImmutableList.builder();
         Map<Map<BlockProperty<?>, Comparable<?>>, SimpleBlockState> propertyMappedStates = new HashMap<>();
 
+        int index = 0;
         for (List<Comparable<?>> values : producs) {
             ImmutableMap<BlockProperty<?>, Comparable<?>> stateProperties = mapOf(properties, values);
-            SimpleBlockState state = new SimpleBlockState(type, stateProperties);
+            SimpleBlockState state = new SimpleBlockState(index++, type, stateProperties);
             states.add(state);
             propertyMappedStates.put(stateProperties, state);
         }
@@ -64,16 +65,22 @@ public class BlockStateRegistry {
         return states;
     }
 
+    public SimpleBlockState getState(int id) {
+        return states.get(id);
+    }
+
     public BlockProperty<?> getProperty(String name) {
         return nameBakedProperties.get(name);
     }
 
     public static class SimpleBlockState implements BlockState {
-        private BlockType blockType;
-        private ImmutableMap<BlockProperty<?>, Comparable<?>> properties;
+        private final int index;
+        private final BlockType blockType;
+        private final ImmutableMap<BlockProperty<?>, Comparable<?>> properties;
         private ImmutableTable<BlockProperty<?>, Comparable<?>, SimpleBlockState> changeTable;
 
-        public SimpleBlockState(BlockType blockType, ImmutableMap<BlockProperty<?>, Comparable<?>> properties) {
+        public SimpleBlockState(int index, BlockType blockType, ImmutableMap<BlockProperty<?>, Comparable<?>> properties) {
+            this.index = index;
             this.blockType = blockType;
             this.properties = properties;
         }
@@ -105,6 +112,16 @@ public class BlockStateRegistry {
         @Override
         public ImmutableMap<BlockProperty<?>, Comparable<?>> getProperties() {
             return properties;
+        }
+
+        @Override
+        public BlockType getBlockType() {
+            return blockType;
+        }
+
+        @Override
+        public int getId() {
+            return index;
         }
 
         public void buildChangeTable(Map<Map<BlockProperty<?>, Comparable<?>>, SimpleBlockState> states) {
