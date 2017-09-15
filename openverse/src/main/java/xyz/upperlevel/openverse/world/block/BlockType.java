@@ -11,13 +11,13 @@ public class BlockType {
     private final String id;
     private int rawId; // todo
 
-    protected final BlockStateRegistry blockState;
+    protected final BlockStateRegistry stateRegistry;
     private BlockState defaultBlockState;
 
     public BlockType(String id) {
         this.id = id;
-        this.blockState = createBlockState();
-        setDefaultState(blockState.getDefaultState());
+        this.stateRegistry = createBlockState();
+        setDefaultState(stateRegistry.getDefaultState());
     }
 
 
@@ -34,7 +34,7 @@ public class BlockType {
     }
 
     public BlockState getBlockState(int meta) {
-        return blockState.getState(meta);
+        return stateRegistry.getState(meta);
     }
 
     public int getStateMeta(BlockState state) {
