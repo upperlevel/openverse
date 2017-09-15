@@ -4,6 +4,7 @@ import lombok.Getter;
 import xyz.upperlevel.hermes.util.DynamicArray;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.resource.ResourceRegistry;
+import xyz.upperlevel.openverse.world.block.state.BlockState;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -50,6 +51,15 @@ public class BlockTypeRegistry extends ResourceRegistry<BlockType> {
     public BlockType entry(int id) {
         return idRegistry.get(id);
     }
+
+    public BlockState getState(int id) {
+        return entry(id & 0x0FFFFFFF).getBlockState(id >> (Integer.BYTES * 8 - 4));
+    }
+
+    public int getId(BlockState state) {
+        return  state.getBlockType().getFullId(state);
+    }
+
 
     public void registerId(BlockType type) {
         setId(type, nextId++);
