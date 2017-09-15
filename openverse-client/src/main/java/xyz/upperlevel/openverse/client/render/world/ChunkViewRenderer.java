@@ -4,6 +4,7 @@ import lombok.Getter;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.client.render.world.util.VertexBuffer;
 import xyz.upperlevel.openverse.client.render.world.util.VertexBufferPool;
 import xyz.upperlevel.openverse.client.world.ClientWorld;
 import xyz.upperlevel.openverse.event.ShutdownEvent;
@@ -26,8 +27,9 @@ public class ChunkViewRenderer implements Listener {
     private final Program program;
     private ClientWorld world;
     private VertexBufferPool vertexProvider = new VertexBufferPool(5);
-    private ExecutorService chunkCompiler = Executors.newSingleThreadExecutor(t -> new Thread(t, "Chunk Compiler thread"));
-    private Queue<ChunkUploader> chunkUploaders = new ArrayDeque<>(10);
+    private VertexBuffer syncBuffer = new VertexBuffer(null);
+    private ExecutorService detachedChunkCompiler = Executors.newSingleThreadExecutor(t -> new Thread(t, "Chunk Compiler thread"));
+    private Queue<ChunkCompileTask> pendingTasks = new ArrayDeque<>(10);
 
     private int distance;
     private Map<ChunkLocation, ChunkRenderer> chunks = new HashMap<>();
@@ -40,8 +42,6 @@ public class ChunkViewRenderer implements Listener {
 
     public void loadChunk(ChunkRenderer chunk) {
         chunks.put(chunk.getLocation(), chunk);
-        recompileChunk(chunk);
-        chunk.setUpdater(this::recompileChunk);
     }
 
     public void unloadChunk(ChunkLocation location) {
@@ -63,8 +63,16 @@ public class ChunkViewRenderer implements Listener {
         //destroy();
     }
 
-    public void recompileChunk(ChunkRenderer chunk) {
-        chunkCompiler.execute(new ChunkCompileTask(vertexProvider, chunk, chunkUploaders));
+    public void recompileChunk(ChunkRenderer chunk, ChunkCompileMode mode) {
+        if (mode == ChunkCompileMode.INSTANT) {
+            pendingTasks.add(new ChunkCompileTask(null, chunk));
+        } else {
+            ChunkCompileTask task = chunk.createCompileTask(vertexProvider);
+            detachedChunkCompiler.execute(() -> {
+                task.compile();
+                pendingTasks.add(task);
+            });
+        }
     }
 
     public void render(Program program) {
@@ -75,9 +83,10 @@ public class ChunkViewRenderer implements Listener {
     }
 
     public void uploadPendingChunks() {
-        ChunkUploader uploader;
-        while ((uploader = chunkUploaders.poll()) != null) {
-            uploader.upload();
+        ChunkCompileTask task;
+        while ((task = pendingTasks.poll()) != null) {
+            task.useBuffer(syncBuffer);
+            task.completeNow();
         }
     }
 
@@ -86,7 +95,7 @@ public class ChunkViewRenderer implements Listener {
      */
     public void destroy() {
         Openverse.logger().fine("Shutting down compiler");
-        chunkCompiler.shutdownNow();
+        detachedChunkCompiler.shutdownNow();
         Openverse.logger().fine("Done");
         chunks.values().forEach(ChunkRenderer::destroy);
         chunks.clear();
@@ -95,7 +104,7 @@ public class ChunkViewRenderer implements Listener {
 
     @EventHandler
     public void onChunkLoad(ChunkLoadEvent e) {
-        loadChunk(new ChunkRenderer(e.getChunk(), program));
+        loadChunk(new ChunkRenderer(this, e.getChunk(), program));
     }
 
     @EventHandler

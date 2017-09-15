@@ -7,11 +7,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class VertexBufferPool {
     private final int limit;
-    private BlockingQueue<VertexBuffer> buffers = new PriorityBlockingQueue<>(32, new ByteBufCapacityComparator());
+    private BlockingQueue<VertexBuffer> buffers;
     private AtomicInteger size = new AtomicInteger(0);
 
     public VertexBufferPool(int limit) {
         this.limit = limit;
+        this.buffers = new PriorityBlockingQueue<>(limit, new ByteBufCapacityComparator());
     }
 
     /**

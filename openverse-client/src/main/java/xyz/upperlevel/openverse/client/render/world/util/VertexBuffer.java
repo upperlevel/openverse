@@ -41,6 +41,8 @@ public class VertexBuffer {
     }
 
     public void release() {
-        pool.release(this);
+        if (pool != null) {
+            pool.release(this);
+        }
     }
 }
