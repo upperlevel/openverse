@@ -1,7 +1,7 @@
 package xyz.upperlevel.openverse.world.block.state;
 
 import com.google.common.collect.*;
-import xyz.upperlevel.openverse.resource.block.BlockType;
+import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.block.property.BlockProperty;
 
 import java.util.*;
@@ -18,13 +18,13 @@ public class BlockStateRegistry {
 
         nameBakedProperties = properties.stream().collect(ImmutableMap.toImmutableMap(BlockProperty::getName, Function.identity()));
 
-        Set<List<Comparable<?>>> producs = Sets.cartesianProduct(properties.stream().map(BlockProperty::getPossibleValues).collect(Collectors.toList()));
+        Set<List<Comparable<?>>> products = Sets.cartesianProduct(properties.stream().map(BlockProperty::getPossibleValues).collect(Collectors.toList()));
 
         ImmutableList.Builder<SimpleBlockState> states = ImmutableList.builder();
         Map<Map<BlockProperty<?>, Comparable<?>>, SimpleBlockState> propertyMappedStates = new HashMap<>();
 
         int index = 0;
-        for (List<Comparable<?>> values : producs) {
+        for (List<Comparable<?>> values : products) {
             ImmutableMap<BlockProperty<?>, Comparable<?>> stateProperties = mapOf(properties, values);
             SimpleBlockState state = new SimpleBlockState(index++, type, stateProperties);
             states.add(state);

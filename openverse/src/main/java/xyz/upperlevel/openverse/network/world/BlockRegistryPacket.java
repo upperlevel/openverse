@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import xyz.upperlevel.hermes.Packet;
 import xyz.upperlevel.openverse.network.SerialUtil;
-import xyz.upperlevel.openverse.resource.block.BlockType;
+import xyz.upperlevel.openverse.world.block.BlockType;
 
 import java.util.Arrays;
 import java.util.Collection;

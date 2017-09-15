@@ -1,11 +1,11 @@
 package xyz.upperlevel.openverse.world.chunk.storage;
 
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.resource.block.BlockTypeRegistry;
+import xyz.upperlevel.openverse.world.block.BlockTypeRegistry;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 
 public class RegistryStatePalette implements BlockStatePalette {
-    public static RegistryStatePalette INSTANCE = new RegistryStatePalette();
+    public static final RegistryStatePalette INSTANCE = new RegistryStatePalette();
 
     private final BlockTypeRegistry registry = Openverse.resources().blockTypes();
 

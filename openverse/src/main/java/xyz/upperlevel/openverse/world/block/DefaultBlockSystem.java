@@ -1,7 +1,6 @@
 package xyz.upperlevel.openverse.world.block;
 
 import lombok.Getter;
-import xyz.upperlevel.openverse.resource.block.BlockType;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 
 import static xyz.upperlevel.openverse.world.chunk.Chunk.HEIGHT;

@@ -5,8 +5,8 @@ import xyz.upperlevel.hermes.reflect.PacketHandler;
 import xyz.upperlevel.hermes.reflect.PacketListener;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.network.world.BlockRegistryPacket;
-import xyz.upperlevel.openverse.resource.block.BlockType;
-import xyz.upperlevel.openverse.resource.block.BlockTypeRegistry;
+import xyz.upperlevel.openverse.world.block.BlockType;
+import xyz.upperlevel.openverse.world.block.BlockTypeRegistry;
 
 import java.io.File;
 import java.util.logging.Logger;

@@ -1,7 +1,6 @@
 package xyz.upperlevel.openverse.resource;
 
-import lombok.RequiredArgsConstructor;
-import xyz.upperlevel.openverse.resource.block.BlockTypeRegistry;
+import xyz.upperlevel.openverse.world.block.BlockTypeRegistry;
 import xyz.upperlevel.openverse.resource.entity.EntityTypeRegistry;
 import xyz.upperlevel.openverse.resource.model.Model;
 import xyz.upperlevel.openverse.resource.model.ModelRegistry;
@@ -27,14 +26,14 @@ public class Resources {
     public Resources(File folder, Logger logger) {
         this.folder = folder;
         this.logger = logger;
-        this.blockTypeRegistry = createBlockTypeRegistry(folder, logger);
+        this.blockTypeRegistry = createBlockTypeRegistry();
         this.entityTypeRegistry = createEntityTypeRegistry(folder, logger);
         this.shapeTypeRegistry = createShapeTypeRegistry(folder, logger);
         this.modelRegistry = createModelRegistry(folder, logger);
     }
 
-    protected BlockTypeRegistry createBlockTypeRegistry(File folder, Logger logger) {
-        return new BlockTypeRegistry(folder, logger);
+    protected BlockTypeRegistry createBlockTypeRegistry() {
+        return new BlockTypeRegistry();
     }
 
     protected EntityTypeRegistry createEntityTypeRegistry(File folder, Logger logger) {
@@ -75,7 +74,6 @@ public class Resources {
 
     public void setup() {
         onSetup();
-        blockTypeRegistry.setup();
         entityTypeRegistry.setup();
     }
 
@@ -91,7 +89,6 @@ public class Resources {
         int cnt = 0;
         cnt += onLoad();
         cnt += models().loadFolder();
-        cnt += blockTypeRegistry.loadFolder();
         cnt += entityTypeRegistry.loadFolder();
         return cnt;
     }
@@ -101,7 +98,6 @@ public class Resources {
 
     public void unload() {
         models().unload();
-        blockTypeRegistry.unload();
         entityTypeRegistry.unload();
         onUnload();
         //entityTypeRegistry.unload();

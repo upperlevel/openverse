@@ -1,35 +1,27 @@
 package xyz.upperlevel.openverse.world.chunk;
 
 import lombok.Getter;
-import lombok.NonNull;
-import xyz.upperlevel.openverse.resource.block.BlockType;
+import xyz.upperlevel.openverse.world.block.BlockType;
+import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.block.Block;
 import xyz.upperlevel.openverse.world.block.BlockSystem;
 import xyz.upperlevel.openverse.world.block.DefaultBlockSystem;
-import xyz.upperlevel.openverse.world.World;
 
-//TODO: use one-dimensional array for better performance
+@Getter
 public class Chunk {
-
     public static final int WIDTH = 16, HEIGHT = 16, LENGTH = 16;
 
-    @Getter
     private final World world;
-
-    //The chunk-coordinates (to translate to blocks you must do x * 16 or x << 4)
-    @Getter
     private final ChunkLocation location;
-
-    @Getter
     private final BlockSystem blockSystem;
 
-    public Chunk(@NonNull World world, @NonNull ChunkLocation location) {
+    public Chunk(World world, ChunkLocation location) {
         this.world = world;
         this.location = location;
-        blockSystem = new DefaultBlockSystem(this);
+        this.blockSystem = new DefaultBlockSystem(this);
     }
 
-    public Chunk(@NonNull World world, int x, int y, int z) {
+    public Chunk(World world, int x, int y, int z) {
         this(world, new ChunkLocation(x, y, z));
     }
 

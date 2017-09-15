@@ -3,16 +3,12 @@ package xyz.upperlevel.openverse.network.world;
 import io.netty.buffer.ByteBuf;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import xyz.upperlevel.hermes.Packet;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.resource.block.BlockType;
+import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.World;
-import xyz.upperlevel.openverse.world.block.BlockSystem;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
-
-import javax.naming.OperationNotSupportedException;
 
 import static xyz.upperlevel.openverse.network.SerialUtil.*;
 
