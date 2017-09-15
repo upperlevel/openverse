@@ -65,7 +65,7 @@ public class ChunkRenderer {
             for (int y = 0; y < HEIGHT; y++)
                 for (int z = 0; z < LENGTH; z++)
                     setBlockType(blockStorage.getBlock(x, y, z), false);
-        if(updater != null)
+        if (updater != null)
             updater.accept(this);
     }
 
@@ -158,7 +158,7 @@ public class ChunkRenderer {
 
     @SuppressWarnings("deprecation")
     public void render(Program program) {
-        if(drawVerticesCount != 0) {
+        if (drawVerticesCount != 0) {
             //System.out.println("Rendering: " + location + " -> " + drawVerticesCount);
             modelLoc.matrix4(model);
             vao.bind();

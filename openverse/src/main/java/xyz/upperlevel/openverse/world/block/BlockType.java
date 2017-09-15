@@ -7,7 +7,7 @@ import xyz.upperlevel.openverse.world.block.blockentity.BlockEntity;
 
 @Getter
 public class BlockType {
-    public static final BlockType AIR = new BlockType(null);
+    public static final BlockType AIR = new BlockType("air");
     private final String id;
     private int rawId; // todo
 
@@ -49,7 +49,7 @@ public class BlockType {
     /**
      * Creates {@link BlockEntity} for this block. If none, returns {@code null}.
      */
-    public BlockEntity createTileEntity(Block block) {
+    public BlockEntity createBlockEntity(BlockState state) {
         return null;
     }
 }

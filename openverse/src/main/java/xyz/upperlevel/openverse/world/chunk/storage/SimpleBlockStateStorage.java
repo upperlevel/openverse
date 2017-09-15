@@ -7,7 +7,7 @@ import xyz.upperlevel.openverse.world.chunk.storage.palette.BlockStatePalette;
 import xyz.upperlevel.openverse.world.chunk.storage.palette.HashStatePalette;
 import xyz.upperlevel.openverse.world.chunk.storage.palette.RegistryStatePalette;
 
-public class DefaultBlockStateStorage implements BlockStateStorage {
+public class SimpleBlockStateStorage implements BlockStateStorage {
     public static final BlockState AIR_STATE = BlockType.AIR.getDefaultState();
 
     private BlockStatePalette palette;

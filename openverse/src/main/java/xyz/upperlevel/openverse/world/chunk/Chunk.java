@@ -5,7 +5,7 @@ import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.block.Block;
 import xyz.upperlevel.openverse.world.chunk.storage.BlockStorage;
-import xyz.upperlevel.openverse.world.chunk.storage.DefaultBlockStorage;
+import xyz.upperlevel.openverse.world.chunk.storage.SimpleBlockStorage;
 
 @Getter
 public class Chunk {
@@ -18,7 +18,7 @@ public class Chunk {
     public Chunk(World world, ChunkLocation location) {
         this.world = world;
         this.location = location;
-        this.blockStorage = new DefaultBlockStorage(this);
+        this.blockStorage = new SimpleBlockStorage(this);
     }
 
     public Chunk(World world, int x, int y, int z) {

@@ -1,36 +1,42 @@
 package xyz.upperlevel.openverse.world.chunk.storage;
 
-import lombok.Getter;
-import lombok.NonNull;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.block.Block;
 import xyz.upperlevel.openverse.world.block.BlockType;
+import xyz.upperlevel.openverse.world.block.blockentity.BlockEntity;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 
-public abstract class BlockStorage {
-    @Getter
-    private final World world;
+import java.util.Collection;
 
-    @Getter
-    private final Chunk chunk;
+public interface BlockStorage {
+    Chunk getChunk();
 
-    public BlockStorage(@NonNull Chunk chunk) {
-        this.chunk = chunk;
-        this.world = chunk.getWorld();
+    default World getWorld() {
+        return getChunk().getWorld();
     }
 
-    public abstract Block getBlock(int x, int y, int z);
 
-    public BlockType getBlockType(int x, int y, int z) {
+    Block getBlock(int x, int y, int z);
+
+
+    default BlockType getBlockType(int x, int y, int z) {
         return getBlockState(x, y, z).getBlockType();
     }
 
-    public void setBlockType(int x, int y, int z, BlockType type) {
+    default void setBlockType(int x, int y, int z, BlockType type) {
         setBlockState(x, y, z, type.getDefaultBlockState());
     }
 
-    public abstract BlockState getBlockState(int x, int y, int z);
+    
+     BlockState getBlockState(int x, int y, int z);
 
-    public abstract void setBlockState(int x, int y, int z, BlockState state);
+     void setBlockState(int x, int y, int z, BlockState state);
+    
+    
+     BlockEntity getBlockEntity(int x, int y, int z);
+    
+     void setBlockEntity(int x, int y, int z, BlockEntity entity);
+    
+     Collection<BlockEntity> getBlockEntities();
 }
