@@ -3,7 +3,7 @@ package xyz.upperlevel.openverse.world.block;
 import lombok.Getter;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.block.state.BlockStateRegistry;
-import xyz.upperlevel.openverse.world.block.tileentity.TileEntity;
+import xyz.upperlevel.openverse.world.block.blockentity.BlockEntity;
 
 @Getter
 public class BlockType {
@@ -24,13 +24,6 @@ public class BlockType {
         return BlockStateRegistry.of(this); //Creates a BlockStateRegistry with no propriety
     }
 
-    /**
-     * Creates {@link TileEntity} for this block. If none, returns {@code null}.
-     */
-    public TileEntity createTileEntity() {
-        return null;
-    }
-
     public BlockState getDefaultState() {
         return defaultBlockState;
     }
@@ -49,5 +42,13 @@ public class BlockType {
 
     public int getFullId(BlockState state) {
         return rawId | (state.getId() & 0xF);
+    }
+
+
+    /**
+     * Creates {@link BlockEntity} for this block. If none, returns {@code null}.
+     */
+    public BlockEntity createTileEntity(Block block) {
+        return null;
     }
 }
