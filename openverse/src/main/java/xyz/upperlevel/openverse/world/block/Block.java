@@ -2,7 +2,9 @@ package xyz.upperlevel.openverse.world.block;
 
 import lombok.Getter;
 import xyz.upperlevel.openverse.world.World;
+import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
+import xyz.upperlevel.openverse.world.chunk.storage.BlockStorage;
 
 @Getter
 public class Block {
@@ -10,9 +12,9 @@ public class Block {
     private final int rx, ry, rz;
     private final int x, y, z;
     private final Chunk chunk;
-    private final BlockSystem parent;
+    private final BlockStorage parent;
 
-    public Block(Chunk chunk, int x, int y, int z, BlockSystem parent) {
+    public Block(Chunk chunk, int x, int y, int z, BlockStorage parent) {
         this.world = chunk.getWorld();
         this.chunk = chunk;
         this.rx = x;
@@ -38,5 +40,13 @@ public class Block {
 
     public void setType(BlockType type) {
         parent.setBlockType(rx, ry, rz, type);
+    }
+
+    public BlockState getState() {
+        return parent.getBlockState(x, y, z);
+    }
+
+    public void setState(BlockState state) {
+        parent.setBlockState(x, y, z, state);
     }
 }

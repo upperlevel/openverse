@@ -7,6 +7,7 @@ import xyz.upperlevel.openverse.world.block.blockentity.BlockEntity;
 
 @Getter
 public class BlockType {
+    public static final BlockType AIR = new BlockType(null);
     private final String id;
     private int rawId; // todo
 

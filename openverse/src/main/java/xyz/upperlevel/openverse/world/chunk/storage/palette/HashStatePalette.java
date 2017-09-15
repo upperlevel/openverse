@@ -1,4 +1,4 @@
-package xyz.upperlevel.openverse.world.chunk.storage;
+package xyz.upperlevel.openverse.world.chunk.storage.palette;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;

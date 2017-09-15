@@ -8,7 +8,7 @@ import org.lwjgl.BufferUtils;
 import xyz.upperlevel.openverse.client.resource.model.ClientModel;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.block.Block;
-import xyz.upperlevel.openverse.world.block.BlockSystem;
+import xyz.upperlevel.openverse.world.chunk.storage.BlockStorage;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 import xyz.upperlevel.ulge.opengl.buffer.*;
@@ -32,6 +32,7 @@ public class ChunkRenderer {
     private Vao vao;
     private Vbo vbo;
     private Uniform modelLoc;
+    //TODO: use ChunkStorage or Chunk directly
     private final BlockType[][][] blockTypes = new BlockType[WIDTH][HEIGHT][LENGTH];
     private AtomicBoolean alive = new AtomicBoolean(true);
     @Setter
@@ -56,14 +57,14 @@ public class ChunkRenderer {
     }
 
     public void load(Chunk chunk) {
-        load(chunk.getBlockSystem());
+        load(chunk.getBlockStorage());
     }
 
-    public void load(BlockSystem blockSystem) {
+    public void load(BlockStorage blockStorage) {
         for (int x = 0; x < WIDTH; x++)
             for (int y = 0; y < HEIGHT; y++)
                 for (int z = 0; z < LENGTH; z++)
-                    setBlockType(blockSystem.getBlock(x, y, z), false);
+                    setBlockType(blockStorage.getBlock(x, y, z), false);
         if(updater != null)
             updater.accept(this);
     }

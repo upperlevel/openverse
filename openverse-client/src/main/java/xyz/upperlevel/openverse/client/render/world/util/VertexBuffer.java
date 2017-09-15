@@ -5,6 +5,8 @@ import xyz.upperlevel.openverse.Openverse;
 
 import java.nio.ByteBuffer;
 
+import static xyz.upperlevel.openverse.util.MathUtil.roundUp;
+
 public class VertexBuffer {
     public static final int CAPACITY_STEP = 2 * 1024 * 1024;
     private final VertexBufferPool pool;
@@ -26,11 +28,6 @@ public class VertexBuffer {
         } else {
             handle.clear();
         }
-    }
-
-    private static int roundUp(int x, int interval) {
-        int i = x % interval;
-        return i == 0 ? interval : x + interval - i;
     }
 
     public ByteBuffer byteBuffer() {

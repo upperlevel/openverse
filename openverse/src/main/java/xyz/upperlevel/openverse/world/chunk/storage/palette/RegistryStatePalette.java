@@ -1,4 +1,4 @@
-package xyz.upperlevel.openverse.world.chunk.storage;
+package xyz.upperlevel.openverse.world.chunk.storage.palette;
 
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.world.block.BlockTypeRegistry;

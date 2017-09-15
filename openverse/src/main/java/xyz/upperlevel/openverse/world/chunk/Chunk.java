@@ -4,8 +4,8 @@ import lombok.Getter;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.block.Block;
-import xyz.upperlevel.openverse.world.block.BlockSystem;
-import xyz.upperlevel.openverse.world.block.DefaultBlockSystem;
+import xyz.upperlevel.openverse.world.chunk.storage.BlockStorage;
+import xyz.upperlevel.openverse.world.chunk.storage.DefaultBlockStorage;
 
 @Getter
 public class Chunk {
@@ -13,12 +13,12 @@ public class Chunk {
 
     private final World world;
     private final ChunkLocation location;
-    private final BlockSystem blockSystem;
+    private final BlockStorage blockStorage;
 
     public Chunk(World world, ChunkLocation location) {
         this.world = world;
         this.location = location;
-        this.blockSystem = new DefaultBlockSystem(this);
+        this.blockStorage = new DefaultBlockStorage(this);
     }
 
     public Chunk(World world, int x, int y, int z) {
@@ -46,14 +46,14 @@ public class Chunk {
     }
 
     public Block getBlock(int x, int y, int z) {
-        return blockSystem.getBlock(x, y, z);
+        return blockStorage.getBlock(x, y, z);
     }
 
     public BlockType getBlockType(int x, int y, int z) {
-        return blockSystem.getBlockType(x, y, z);
+        return blockStorage.getBlockType(x, y, z);
     }
 
     public void setBlockType(int x, int y, int z, BlockType type) {
-        blockSystem.setBlockType(x, y, z, type);
+        blockStorage.setBlockType(x, y, z, type);
     }
 }
