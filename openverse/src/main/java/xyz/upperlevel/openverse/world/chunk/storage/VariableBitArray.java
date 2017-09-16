@@ -25,29 +25,37 @@ public class VariableBitArray {
     }
 
     public void set(int index, int value) {
+        checkIndex(index);
         int bitIndex = index * bitsPerEntry;
         int realIndex = bitIndex / ENTRY_LEN;
-        int bitOffest = index % ENTRY_LEN;
+        int bitOffest = bitIndex % ENTRY_LEN;
 
-        array[realIndex] = array[realIndex] & ~(maxValueMask << bitOffest) | ((value & maxValueMask) << bitOffest);
+        array[realIndex] = array[realIndex] & ~(maxValueMask << bitOffest) | (value & maxValueMask) << bitOffest;
 
-        int remaining = (ENTRY_LEN - bitOffest) - bitsPerEntry;
-        if (realIndex > 0) {
+        int written = ENTRY_LEN - bitOffest;
+        if (written < bitsPerEntry) {
             int i = realIndex + 1;
-            array[i] = array[i] & ~(maxValueMask >>> remaining) | ((value & maxValueMask) >>> remaining);
+            array[i] = array[i] & ~(maxValueMask >>> written) | (value & maxValueMask) >>> written;
         }
     }
 
     public int get(int index) {
+        checkIndex(index);
         int bitIndex = index * bitsPerEntry;
         int realIndex = bitIndex / ENTRY_LEN;
-        int bitOffest = index % ENTRY_LEN;
+        int bitOffest = bitIndex % ENTRY_LEN;
 
-        int remaining = (ENTRY_LEN - bitOffest) - bitsPerEntry;
-        if (remaining > 0) {
+        int written = ENTRY_LEN - bitOffest;
+        if (written >= bitsPerEntry) {
             return (int) ((array[realIndex] >>> bitOffest) & maxValueMask);
         } else {
-            return (int) (((array[realIndex] >>> bitOffest) | (array[realIndex] << remaining)) & maxValueMask);
+            return (int) (((array[realIndex] >>> bitOffest) | (array[realIndex + 1] << written)) & maxValueMask);
+        }
+    }
+
+    protected void checkIndex(int i) {
+        if (i > capacity) {
+            throw new IndexOutOfBoundsException("Index: " + i + ", Capacity: " + capacity);
         }
     }
 
@@ -57,6 +65,10 @@ public class VariableBitArray {
 
     public int bitsPerEntry() {
         return bitsPerEntry;
+    }
+
+    public long getMaxValue() {
+        return maxValueMask;
     }
 
     public long[] getBackingArray() {

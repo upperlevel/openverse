@@ -1,5 +1,7 @@
 package xyz.upperlevel.openverse.server.resource;
 
+import lombok.Getter;
+import lombok.Setter;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.Openverse;
@@ -18,6 +20,8 @@ public class ServerBlockTypeRegistry extends BlockTypeRegistry implements Listen
      * If true auto-send the BlockRegistryPacket signaling what blocks were registered<br>
      * DO NOT CHANGE THIS (Unless you know what you're doing)
      */
+    @Getter
+    @Setter
     private boolean autoSend = true;
 
     public ServerBlockTypeRegistry(File folder, Logger logger) {
