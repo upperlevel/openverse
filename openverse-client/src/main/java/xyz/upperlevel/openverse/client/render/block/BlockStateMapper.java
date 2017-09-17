@@ -16,6 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * A {@link BlockStateMapper} associates each {@link BlockState} to a {@link BlockModel}.
+ */
 @Getter
 @RequiredArgsConstructor
 public class BlockStateMapper {
@@ -60,7 +63,7 @@ public class BlockStateMapper {
                 // if the value is valid then we can go on
                 if (val.isPresent()) {
                     current = current.with(p, val.get());
-                    res.models.put(current, model);
+                    res.models.put(current, m);
                 }
             }
             return res;
