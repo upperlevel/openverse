@@ -1,37 +1,31 @@
 package xyz.upperlevel.openverse.client.render.block;
 
-import com.google.gson.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.joml.Matrix4f;
 import org.joml.Vector2f;
+import xyz.upperlevel.openverse.util.config.Config;
 
-import java.lang.reflect.Type;
+import java.nio.ByteBuffer;
 
 @Getter
 @RequiredArgsConstructor
 public class BlockPartFace {
-    private static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(BlockPartFace.class, new Deserializer())
-            .create();
-
+    private final Facing facing;
     private final String texturePath;
     private final Vector2f fromUv, toUv;
 
-    public static BlockPartFace deserialize(JsonElement element) {
-        return GSON.fromJson(element, BlockPartFace.class);
+    public BlockPartFace(Facing facing, Config config) {
+        this.facing = facing;
+        this.texturePath = config.getString("texture");
+        fromUv = null;
+        toUv = null;
     }
 
-    private static class Deserializer implements JsonDeserializer<BlockPartFace> {
-        private Vector2f parseUv(JsonObject json) {
-            return new Vector2f(
-                    json.get("u").getAsFloat(),
-                    json.get("v").getAsFloat()
-            );
-        }
+    public void store(Matrix4f in, ByteBuffer buffer) {
+    }
 
-        @Override
-        public BlockPartFace deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
-            return null;
-        }
+    public static BlockPartFace deserialize(Facing facing, Config config) {
+        return new BlockPartFace(facing, config);
     }
 }

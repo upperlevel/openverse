@@ -1,0 +1,33 @@
+{
+  "from": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "to": {
+    "__comment": "Max block coordinates are [1, 1, 1]",
+    "x": 1,
+    "y": 1,
+    "z": 1
+  },
+  "faces": {
+    "up": {
+      "texture": "blocks/textures/dirt.png"
+    },
+    "down": {
+      "texture": "blocks/textures/dirt.png"
+    },
+    "left": {
+      "texture": "blocks/textures/dirt.png"
+    },
+    "right": {
+      "texture": "blocks/textures/dirt.png"
+    },
+    "front": {
+      "texture": "blocks/textures/dirt.png"
+    },
+    "back": {
+      "texture": "blocks/textures/dirt.png"
+    }
+  }
+}

@@ -64,6 +64,8 @@ public class BlockStateMapper {
                 if (val.isPresent()) {
                     current = current.with(p, val.get());
                     res.models.put(current, m);
+
+                    model.with();
                 }
             }
             return res;

@@ -1,0 +1,32 @@
+{
+  "from": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "to": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+  },
+  "faces": {
+    "up": {
+      "texture": "blocks/textures/grass_top.png"
+    },
+    "down": {
+      "texture": "blocks/textures/dirt.png"
+    },
+    "left": {
+      "texture": "blocks/textures/grass_side.png"
+    },
+    "right": {
+      "texture": "blocks/textures/grass_side.png"
+    },
+    "front": {
+      "texture": "blocks/textures/grass_side.png"
+    },
+    "back": {
+      "texture": "blocks/textures/grass_side.png"
+    }
+  }
+}
