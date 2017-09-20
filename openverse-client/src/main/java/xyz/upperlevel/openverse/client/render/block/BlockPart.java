@@ -1,13 +1,12 @@
 package xyz.upperlevel.openverse.client.render.block;
 
-import com.google.gson.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import xyz.upperlevel.openverse.world.block.property.EnumProperty;
+import xyz.upperlevel.openverse.util.config.Config;
 
-import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Locale;
@@ -15,50 +14,49 @@ import java.util.Map;
 
 @Getter
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class BlockPart {
-    private static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(BlockPart.class, new Deserializer())
-            .create();
-
-    private final Vector3f fromPosition, toPosition;
+    private final Vector3f from, to, size, position;
     private Map<Facing, BlockPartFace> faces = new HashMap<>();
 
+    private Vector3f parsePos(Config config) {
+        return new Vector3f(
+                config.getFloat("x"),
+                config.getFloat("y"),
+                config.getFloat("z")
+        );
+    }
+
+    private Facing parseFacing(String string) {
+        return Facing.valueOf(string.toUpperCase(Locale.ENGLISH).replace("_", " "));
+    }
+
+    @SuppressWarnings("unchecked")
+    public BlockPart(Config config) {
+        from = parsePos(config.getConfigRequired("from"));
+        to = parsePos(config.getConfigRequired("to"));
+        size = from.sub(to, new Vector3f()).absolute();
+        position = new Vector3f(from).min(to);
+
+        for (Map.Entry<String, Object> faceMap : config.getSectionRequired("faces").entrySet()) {
+            Facing fac = parseFacing(faceMap.getKey());
+            if (fac != null) {
+                faces.put(fac, BlockPartFace.deserialize(fac, Config.wrap((Map<String, Object>) faceMap.getValue())));
+            }
+        }
+    }
 
     public int getVerticesCount() {
         return faces.values().size() * 4;
     }
 
-    public void store(Matrix4f in, ByteBuffer buffer) {
-        faces.values().forEach(face -> face.store(in, buffer));
+    public void store(Matrix4f transform, ByteBuffer buffer) {
+        transform.translate(size.add(position));
+        for (BlockPartFace face : faces.values())
+            face.store(new Matrix4f(transform), buffer);
     }
 
-
-    public static BlockPart deserialize(JsonElement element) {
-        return GSON.fromJson(element, BlockPart.class);
-    }
-
-    private static class Deserializer implements JsonDeserializer<BlockPart> {
-        private Vector3f parsePos(JsonObject json) {
-            return new Vector3f(
-                    json.get("x").getAsFloat(),
-                    json.get("y").getAsFloat(),
-                    json.get("z").getAsFloat()
-            );
-        }
-
-        @Override
-        public BlockPart deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {
-            JsonObject json = element.getAsJsonObject();
-            BlockPart res = new BlockPart(
-                    parsePos(json.get("from").getAsJsonObject()),
-                    parsePos(json.get("to").getAsJsonObject())
-            );
-            JsonObject facesJson = json.getAsJsonObject("faces");
-            for (Map.Entry<String, JsonElement> faceJson : facesJson.entrySet()) {
-                Facing facing = Facing.valueOf(faceJson.getKey().toUpperCase(Locale.ENGLISH).replace("_", " "));
-                res.faces.put(facing, BlockPartFace.deserialize(faceJson.getValue().getAsJsonObject()));
-            }
-            return res;
-        }
+    public static BlockPart deserialize(Config config) {
+        return new BlockPart(config);
     }
 }

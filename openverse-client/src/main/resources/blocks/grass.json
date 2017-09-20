@@ -1,15 +1,13 @@
 {
-  "default": {
-    "model": "models/grass.json",
+  "defaults": {
+    "model": "models/grass.json"
   },
-  "variants": {
-    "dry": {
-      "true": {
-        "model": "models/dry_grass.json"
+  "variants": [
+    {
+      "state": {
+        "dry": "true"
       },
-      "false": {
-        "model": "models/grass.json"
-      }
+      "model": "models/dry_grass.json"
     }
-  }
+  ]
 }

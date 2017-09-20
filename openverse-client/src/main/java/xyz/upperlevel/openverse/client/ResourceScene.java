@@ -4,7 +4,12 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.lwjgl.opengl.GL11;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.client.render.block.BlockTypeModelMapper;
+import xyz.upperlevel.openverse.client.render.block.BlockModelRegistry;
+import xyz.upperlevel.openverse.client.render.block.TextureBakery;
 import xyz.upperlevel.ulge.game.Scene;
+
+import java.io.File;
 
 @Getter
 @RequiredArgsConstructor
@@ -14,9 +19,13 @@ public class ResourceScene implements Scene {
     @Override
     public void onEnable(Scene previous) {
         long init = System.currentTimeMillis();
+
         Openverse.logger().info("Loading resources...");
-        Openverse.resources().setup();
-        Openverse.resources().load();
+
+        BlockModelRegistry.load(new File("client/blocks/models"));
+        BlockTypeModelMapper.map();
+        TextureBakery.bake();
+
         Openverse.logger().info("Resources loaded in " + (System.currentTimeMillis() - init) + " ms.");
 
         parent.setScene(new GameScene(parent));

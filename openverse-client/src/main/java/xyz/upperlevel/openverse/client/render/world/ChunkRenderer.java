@@ -1,14 +1,12 @@
 package xyz.upperlevel.openverse.client.render.world;
 
 import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
+import xyz.upperlevel.openverse.client.render.block.BlockModel;
+import xyz.upperlevel.openverse.client.render.block.BlockTypeModelMapper;
 import xyz.upperlevel.openverse.client.render.world.util.VertexBufferPool;
 import xyz.upperlevel.openverse.client.resource.model.ClientModel;
-import xyz.upperlevel.openverse.world.block.BlockType;
-import xyz.upperlevel.openverse.world.block.Block;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.chunk.storage.BlockStorage;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
@@ -19,8 +17,6 @@ import xyz.upperlevel.ulge.opengl.shader.Uniform;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
 
 import static xyz.upperlevel.openverse.world.chunk.Chunk.*;
 
@@ -59,16 +55,16 @@ public class ChunkRenderer {
         parent.recompileChunk(this, ChunkCompileMode.ASYNC);
     }
 
-    public void onBlockChange(int x, int y, int z, BlockState oldState, BlockState newState) {//TODO: call whenever a block changes
-        ClientModel oldModel = oldState != null ? (ClientModel) oldState.getClientModel() : null;
-        ClientModel newModel = newState != null ? (ClientModel) newState.getClientModel() : null;
+    public void onBlockChange(BlockState oldState, BlockState newState) {//TODO: call whenever a block changes
+        BlockModel om = BlockTypeModelMapper.model(oldState);
+        BlockModel nm = BlockTypeModelMapper.model(newState);
 
         // gets vertices/data count for old and new model
-        int oldVrt = oldModel == null ? 0 : oldModel.getVerticesCount();
-        int newVrt = newModel == null ? 0 : newModel.getVerticesCount();
+        int oldVrt = om == null ? 0 : om.getVerticesCount();
+        int newVrt = nm == null ? 0 : nm.getVerticesCount();
 
-        int oldData = oldModel == null ? 0 : oldModel.getDataCount();
-        int newData = newModel == null ? 0 : newModel.getDataCount();
+        int oldData = om == null ? 0 : om.getDataCount();
+        int newData = nm == null ? 0 : nm.getDataCount();
 
         // updates vertices/data count
         allocateVerticesCount += newVrt - oldVrt;
@@ -84,7 +80,7 @@ public class ChunkRenderer {
         for (int x = 0; x < WIDTH; x++) {
             for (int y = 0; y < HEIGHT; y++) {
                 for (int z = 0; z < LENGTH; z++) {
-                    ClientModel model = storage.getBlockState(x, y, z).getCLientModel();
+                    ClientModel model = storage.getBlockState(x, y, z).getClientModel();
                     if (model != null) {
                         vertexCount += model.getVerticesCount();
                         dataCount += model.getDataCount();

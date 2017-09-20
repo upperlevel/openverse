@@ -3,7 +3,6 @@ package xyz.upperlevel.openverse.client.resource.model.shape;
 import org.joml.Matrix4f;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.resource.ClientResources;
-import xyz.upperlevel.openverse.client.resource.texture.Texture;
 import xyz.upperlevel.openverse.physic.Box;
 import xyz.upperlevel.openverse.resource.model.shape.Cube;
 import xyz.upperlevel.openverse.util.config.Config;

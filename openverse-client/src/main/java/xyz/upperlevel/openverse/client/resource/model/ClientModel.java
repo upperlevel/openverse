@@ -5,7 +5,6 @@ import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.resource.ClientResources;
 import xyz.upperlevel.openverse.client.resource.model.shape.ClientShape;
 import xyz.upperlevel.openverse.client.resource.model.shape.ClientShapeType;
-import xyz.upperlevel.openverse.client.resource.texture.Texture;
 import xyz.upperlevel.openverse.resource.model.Model;
 import xyz.upperlevel.openverse.util.config.Config;
 import xyz.upperlevel.ulge.util.Color;

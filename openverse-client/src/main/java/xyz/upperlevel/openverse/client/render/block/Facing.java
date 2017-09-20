@@ -17,7 +17,7 @@ public enum Facing {
 
     public final int dirX, dirY, dirZ;
 
-    public Vector3i getDir() {
-        return new Vector3i(dirX, dirY, dirZ);
+    public Vector3f getDir() {
+        return new Vector3f(dirX, dirY, dirZ);
     }
 }

@@ -1,9 +1,7 @@
 package xyz.upperlevel.openverse.client.resource.model.shape;
 
 import org.joml.Matrix4f;
-import xyz.upperlevel.openverse.client.resource.texture.Texture;
 import xyz.upperlevel.openverse.resource.model.shape.Shape;
-import xyz.upperlevel.ulge.opengl.texture.loader.ImageContent;
 import xyz.upperlevel.ulge.util.Color;
 
 import java.nio.ByteBuffer;
