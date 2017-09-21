@@ -39,7 +39,7 @@ public class BlockModelMapper {
                 if (stateMap != null) {
                     BlockState state = reg.getDefaultState();
                     for (Map.Entry<String, Object> prop : stateMap.entrySet()) {
-                        state.with(reg.getProperty(prop.getKey()), prop.getValue());
+                        state.with(reg.getProperty(prop.getKey()), (Comparable) prop.getValue());
                     }
                     Path path = Paths.get(varCfg.getStringRequired("model"));
                     model.with(BlockModelRegistry.load(path.toFile()));
