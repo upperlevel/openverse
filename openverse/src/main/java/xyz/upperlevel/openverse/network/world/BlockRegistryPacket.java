@@ -10,6 +10,7 @@ import xyz.upperlevel.openverse.world.block.BlockType;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.stream.Stream;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,8 +18,13 @@ public class BlockRegistryPacket implements Packet {
     @Getter
     private String[] blocks;
 
+
+    public BlockRegistryPacket(Stream<BlockType> blockTypes) {
+        blocks = blockTypes.map(BlockType::getId).toArray(String[]::new);
+    }
+
     public BlockRegistryPacket(Collection<BlockType> blockTypes) {
-        blocks = blockTypes.stream().map(BlockType::getId).toArray(String[]::new);
+       this(blockTypes.stream());
     }
 
     @Override

@@ -5,6 +5,9 @@ import xyz.upperlevel.hermes.util.DynamicArray;
 import xyz.upperlevel.openverse.resource.Registry;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 
+import java.util.Arrays;
+import java.util.stream.Stream;
+
 import static xyz.upperlevel.openverse.world.block.BlockType.AIR;
 
 @Getter
@@ -19,7 +22,7 @@ public class BlockTypeRegistry extends Registry<BlockType> {
     }
 
     public void register(BlockType type) {
-        super.register(type.getId(), type);
+        register(type.getId(), type);
     }
 
     public BlockType entry(int id) {
@@ -36,5 +39,10 @@ public class BlockTypeRegistry extends Registry<BlockType> {
 
     public void registerId(BlockType type) {
         idRegistry.set(nextId++, type);
+    }
+
+    @SuppressWarnings("unchecked")
+    public Stream<BlockType> getOrderedEntries() {
+        return (Stream)Arrays.stream(idRegistry.getArray(), 0, nextId);
     }
 }

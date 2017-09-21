@@ -1,15 +1,14 @@
 package xyz.upperlevel.openverse.world.chunk.storage;
 
-import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.chunk.storage.palette.ArrayStatePalette;
 import xyz.upperlevel.openverse.world.chunk.storage.palette.BlockStatePalette;
 import xyz.upperlevel.openverse.world.chunk.storage.palette.HashStatePalette;
 import xyz.upperlevel.openverse.world.chunk.storage.palette.RegistryStatePalette;
 
-public class SimpleBlockStateStorage implements BlockStateStorage {
-    public static final BlockState AIR_STATE = BlockType.AIR.getDefaultState();
+import static xyz.upperlevel.openverse.world.chunk.storage.BlockStorage.AIR_STATE;
 
+public class SimpleBlockStateStorage implements BlockStateStorage {
     private BlockStatePalette palette;
     private VariableBitArray storage;
     private int bitsPerPalette;

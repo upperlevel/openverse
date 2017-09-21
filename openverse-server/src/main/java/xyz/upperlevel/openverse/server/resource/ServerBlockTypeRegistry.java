@@ -13,7 +13,10 @@ import xyz.upperlevel.openverse.server.OpenverseServer;
 import xyz.upperlevel.openverse.server.event.PlayerJoinEvent;
 
 import java.io.File;
+import java.util.Objects;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public class ServerBlockTypeRegistry extends BlockTypeRegistry implements Listener {
     /**
@@ -28,6 +31,7 @@ public class ServerBlockTypeRegistry extends BlockTypeRegistry implements Listen
         Openverse.getEventManager().register(this);
     }
 
+    @Override
     public void register(String id, BlockType entry) {
         super.register(id, entry);
         registerId(entry);
@@ -35,6 +39,6 @@ public class ServerBlockTypeRegistry extends BlockTypeRegistry implements Listen
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        event.getPlayer().getConnection().send(Openverse.channel(), new BlockRegistryPacket(entries()));
+        event.getPlayer().getConnection().send(Openverse.channel(), new BlockRegistryPacket(getOrderedEntries()));
     }
 }
