@@ -30,11 +30,7 @@ public class ServerBlockTypeRegistry extends BlockTypeRegistry implements Listen
 
     public void register(String id, BlockType entry) {
         super.register(id, entry);
-        if (autoSend) {//If autoSend enabled
-            //Send the blockRegistry packet that registers this block
-            BlockRegistryPacket packet = new BlockRegistryPacket(new String[]{entry.getId()});
-            OpenverseServer.get().getEndpoint().getConnections().forEach(s -> s.send(Openverse.channel(), packet));
-        }
+        registerId(entry);
     }
 
     @EventHandler

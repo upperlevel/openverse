@@ -9,7 +9,7 @@ import static xyz.upperlevel.openverse.world.block.BlockType.AIR;
 
 @Getter
 public class BlockTypeRegistry extends Registry<BlockType> {
-    private int nextId = 1;
+    private int nextId = 0;
     private DynamicArray<BlockType> idRegistry = new DynamicArray<>(256);
 
     public BlockTypeRegistry() {
@@ -32,5 +32,9 @@ public class BlockTypeRegistry extends Registry<BlockType> {
 
     public int getId(BlockState state) {
         return  state.getBlockType().getFullId(state);
+    }
+
+    public void registerId(BlockType type) {
+        idRegistry.set(nextId++, type);
     }
 }

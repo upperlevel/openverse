@@ -11,6 +11,11 @@ public class ServerResources extends Resources {
     }
 
     @Override
+    public ServerBlockTypeRegistry createBlockTypeRegistry() {
+        return new ServerBlockTypeRegistry();
+    }
+
+    @Override
     public ServerBlockTypeRegistry blockTypes() {
         return (ServerBlockTypeRegistry) super.blockTypes();
     }

@@ -40,6 +40,18 @@ public class ClientResources extends Resources {
         return programRegistry;
     }
 
+
+    @Override
+    protected ClientBlockTypeRegistry createBlockTypeRegistry() {
+        return new ClientBlockTypeRegistry();
+    }
+
+    //TODO: come on it's the only freaking class that needs to do this hack, and it's not even necessary!
+    @Override
+    public ClientBlockTypeRegistry blockTypes() {
+        return (ClientBlockTypeRegistry) super.blockTypes();
+    }
+
     @Override
     protected void onSetup() {
         shaderRegistry.setup();
