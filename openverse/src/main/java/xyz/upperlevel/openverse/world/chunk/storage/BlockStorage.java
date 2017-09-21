@@ -25,7 +25,7 @@ public interface BlockStorage {
     }
 
     default void setBlockType(int x, int y, int z, BlockType type) {
-        setBlockState(x, y, z, type.getDefaultBlockState());
+        setBlockState(x, y, z, type == null ? null : type.getDefaultBlockState());
     }
 
     

@@ -14,6 +14,10 @@ public class SimpleBlockStateStorage implements BlockStateStorage {
     private VariableBitArray storage;
     private int bitsPerPalette;
 
+    public SimpleBlockStateStorage() {
+        setBitsPerPalette(4);
+    }
+
 
     @Override
     public BlockState get(int x, int y, int z) {
@@ -30,7 +34,7 @@ public class SimpleBlockStateStorage implements BlockStateStorage {
     }
 
     protected void set(int index, BlockState state) {
-        storage.set(index, palette.toId(state));
+        storage.set(index, palette.toId(state != null ? state : AIR_STATE));
     }
 
     public void setBitsPerPalette(int bits) {
