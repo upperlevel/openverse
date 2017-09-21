@@ -38,9 +38,9 @@ public class SimpleBlockStateStorage implements BlockStateStorage {
 
     public void setBitsPerPalette(int bits) {
         if (bits <= 4) {
-            palette = new ArrayStatePalette(bitsPerPalette, this::onOverflow);
+            palette = new ArrayStatePalette(bits, this::onOverflow);
         } else if (bits <= 8) {
-            palette = new HashStatePalette(bitsPerPalette, this::onOverflow);
+            palette = new HashStatePalette(bits, this::onOverflow);
         } else {
             palette = RegistryStatePalette.INSTANCE;
         }
