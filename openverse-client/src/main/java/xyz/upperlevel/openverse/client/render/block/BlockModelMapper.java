@@ -20,7 +20,6 @@ public class BlockModelMapper {
     private final BlockType type;
     private final Map<BlockState, BlockModel> models = new HashMap<>();
 
-
     @SuppressWarnings("unchecked")
     public BlockModelMapper(BlockType type, Config config) {
         this.type = type;

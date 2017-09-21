@@ -13,7 +13,13 @@ public class BlockTypeRegistry extends Registry<BlockType> {
     private DynamicArray<BlockType> idRegistry = new DynamicArray<>(256);
 
     public BlockTypeRegistry() {
-        register(AIR.getId(), AIR);
+        register(AIR);
+        register(new GrassType());
+        register(new BlockType("dirt"));
+    }
+
+    public void register(BlockType type) {
+        super.register(type.getId(), type);
     }
 
     public BlockType entry(int id) {

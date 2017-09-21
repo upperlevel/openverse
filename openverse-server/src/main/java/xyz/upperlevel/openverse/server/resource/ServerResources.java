@@ -11,11 +11,6 @@ public class ServerResources extends Resources {
     }
 
     @Override
-    protected ServerBlockTypeRegistry createBlockTypeRegistry(File folder, Logger logger) {
-        return new ServerBlockTypeRegistry(folder, logger);
-    }
-
-    @Override
     public ServerBlockTypeRegistry blockTypes() {
         return (ServerBlockTypeRegistry) super.blockTypes();
     }

@@ -50,10 +50,12 @@ public class BlockPart {
         return faces.values().size() * 4;
     }
 
-    public void store(Matrix4f transform, ByteBuffer buffer) {
+    public int store(Matrix4f transform, ByteBuffer buffer) {
         transform.translate(size.add(position));
+        int vt = 0;
         for (BlockPartFace face : faces.values())
-            face.store(new Matrix4f(transform), buffer);
+            vt += face.store(new Matrix4f(transform), buffer);
+        return vt;
     }
 
     public static BlockPart deserialize(Config config) {

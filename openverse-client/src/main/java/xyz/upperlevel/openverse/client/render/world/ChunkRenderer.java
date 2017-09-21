@@ -6,11 +6,10 @@ import org.lwjgl.BufferUtils;
 import xyz.upperlevel.openverse.client.render.block.BlockModel;
 import xyz.upperlevel.openverse.client.render.block.BlockTypeModelMapper;
 import xyz.upperlevel.openverse.client.render.world.util.VertexBufferPool;
-import xyz.upperlevel.openverse.client.resource.model.ClientModel;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
-import xyz.upperlevel.openverse.world.chunk.storage.BlockStorage;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
+import xyz.upperlevel.openverse.world.chunk.storage.BlockStorage;
 import xyz.upperlevel.ulge.opengl.buffer.*;
 import xyz.upperlevel.ulge.opengl.shader.Program;
 import xyz.upperlevel.ulge.opengl.shader.Uniform;
@@ -80,7 +79,7 @@ public class ChunkRenderer {
         for (int x = 0; x < WIDTH; x++) {
             for (int y = 0; y < HEIGHT; y++) {
                 for (int z = 0; z < LENGTH; z++) {
-                    ClientModel model = storage.getBlockState(x, y, z).getClientModel();
+                    BlockModel model = BlockTypeModelMapper.model(storage.getBlockState(x, y, z));
                     if (model != null) {
                         vertexCount += model.getVerticesCount();
                         dataCount += model.getDataCount();
@@ -127,7 +126,7 @@ public class ChunkRenderer {
                 for (int z = 0; z < LENGTH; z++) {
                     BlockState state = storage.getBlockState(x, y, z);
                     if (state != null) {
-                        ClientModel model = state.getClientModel();
+                        BlockModel model = BlockTypeModelMapper.model(state);
                         if (model != null)
                             vertexCount += model.store(in.translation(x, y, z), buffer);
                     }

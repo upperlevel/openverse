@@ -69,7 +69,7 @@ public class BlockStateRegistry {
         return states.get(id);
     }
 
-    public BlockProperty<?> getProperty(String name) {
+    public BlockProperty getProperty(String name) {
         return nameBakedProperties.get(name);
     }
 
@@ -125,17 +125,17 @@ public class BlockStateRegistry {
         }
 
         public void buildChangeTable(Map<Map<BlockProperty<?>, Comparable<?>>, SimpleBlockState> states) {
-            if (changeTable == null) {
+            if (changeTable != null) {
                 throw new IllegalStateException("Already initialized!");
             }
             Table<BlockProperty<?>, Comparable<?>, SimpleBlockState> table = HashBasedTable.create();
 
-            this.properties.forEach((currentProprierty, currentValue) -> {
-                for (Comparable<?> value : currentProprierty.getPossibleValues()) {
-                    if (value != currentValue) {
+            this.properties.forEach((currProp, currVal) -> {
+                for (Comparable<?> value : currProp.getPossibleValues()) {
+                    if (value != currVal) {
                         Map<BlockProperty<?>, Comparable<?>> map = new HashMap<>(this.properties);
-                        map.put(currentProprierty, value);
-                        table.put(currentProprierty, value, states.get(map));
+                        map.put(currProp, value);
+                        table.put(currProp, value, states.get(map));
                     }
                 }
             });

@@ -11,22 +11,22 @@
   },
   "faces": {
     "up": {
-      "texture": "blocks/textures/dirt.png"
+      "texture": "client/resources/blocks/textures/dirt.png"
     },
     "down": {
-      "texture": "blocks/textures/dirt.png"
+      "texture": "client/resources/blocks/textures/dirt.png"
     },
     "left": {
-      "texture": "blocks/textures/dirt.png"
+      "texture": "client/resources/blocks/textures/dirt.png"
     },
     "right": {
-      "texture": "blocks/textures/dirt.png"
+      "texture": "client/resources/blocks/textures/dirt.png"
     },
     "front": {
-      "texture": "blocks/textures/dirt.png"
+      "texture": "client/resources/blocks/textures/dirt.png"
     },
     "back": {
-      "texture": "blocks/textures/dirt.png"
+      "texture": "client/resources/blocks/textures/dirt.png"
     }
   }
 }

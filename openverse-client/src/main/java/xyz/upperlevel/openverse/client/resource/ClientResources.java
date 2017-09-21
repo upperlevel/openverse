@@ -1,10 +1,8 @@
 package xyz.upperlevel.openverse.client.resource;
 
-import xyz.upperlevel.openverse.client.resource.model.ClientModelRegistry;
-import xyz.upperlevel.openverse.client.resource.model.shape.ClientShapeTypeRegistry;
+import xyz.upperlevel.openverse.client.render.block.TextureBakery;
 import xyz.upperlevel.openverse.client.resource.program.ProgramRegistry;
 import xyz.upperlevel.openverse.client.resource.shader.ShaderRegistry;
-import xyz.upperlevel.openverse.client.render.block.TextureBakery;
 import xyz.upperlevel.openverse.resource.Resources;
 
 import java.io.File;
@@ -28,16 +26,6 @@ public class ClientResources extends Resources {
         this.programRegistry = new ProgramRegistry(folder, logger);
     }
 
-    @Override
-    protected ClientShapeTypeRegistry createShapeTypeRegistry(File folder, Logger logger) {
-        return new ClientShapeTypeRegistry();
-    }
-
-    @Override
-    protected ClientModelRegistry createModelRegistry(File folder, Logger logger) {
-        return new ClientModelRegistry(folder, logger);
-    }
-
     /**
      * Returns the {@link ShaderRegistry} object.
      */
@@ -50,16 +38,6 @@ public class ClientResources extends Resources {
      */
     public ProgramRegistry programs() {
         return programRegistry;
-    }
-
-    @Override
-    public ClientShapeTypeRegistry shapes() {
-        return (ClientShapeTypeRegistry) super.shapes();
-    }
-
-    @Override
-    public ClientModelRegistry models() {
-        return (ClientModelRegistry) super.models();
     }
 
     @Override

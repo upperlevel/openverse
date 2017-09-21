@@ -24,42 +24,16 @@ public class ServerBlockTypeRegistry extends BlockTypeRegistry implements Listen
     @Setter
     private boolean autoSend = true;
 
-    public ServerBlockTypeRegistry(File folder, Logger logger) {
-        super(folder, logger);
+    public ServerBlockTypeRegistry() {
         Openverse.getEventManager().register(this);
     }
 
     public void register(String id, BlockType entry) {
         super.register(id, entry);
-        super.registerId(entry);//register rawId
         if (autoSend) {//If autoSend enabled
             //Send the blockRegistry packet that registers this block
             BlockRegistryPacket packet = new BlockRegistryPacket(new String[]{entry.getId()});
             OpenverseServer.get().getEndpoint().getConnections().forEach(s -> s.send(Openverse.channel(), packet));
-        }
-    }
-
-    @Override
-    public int loadFolder(ResourceLoader<BlockType> loader, File folder) {
-        boolean send = autoSend;
-        autoSend = false;
-        try {
-            int res = super.loadFolder(loader, folder);
-
-            //If autoSend was enabled
-            if (send && res > 0) {
-                //Send to the clients every block registered in this folder
-                int offset = getNextId() - res;
-                String[] blocks = new String[res];
-                for (int i = 0; i < res; i++) {
-                    blocks[i] = entry(offset + i).getId();
-                }
-                BlockRegistryPacket packet = new BlockRegistryPacket(blocks);
-                OpenverseServer.get().getEndpoint().getConnections().forEach(s -> s.send(Openverse.channel(), packet));
-            }
-            return res;
-        } finally {
-            autoSend = send;
         }
     }
 

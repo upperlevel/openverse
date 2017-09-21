@@ -13,7 +13,7 @@ import java.util.Set;
 import static java.lang.Math.max;
 
 public class PhysicEngine {
-
+    /* TODO
     protected Set<Force> globalForces = new HashSet<>();
 
 
@@ -79,4 +79,5 @@ public class PhysicEngine {
             loc.set(vx, vy, vz);
         }
     }
+    */
 }
