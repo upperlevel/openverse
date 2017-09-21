@@ -2,6 +2,7 @@ package xyz.upperlevel.openverse.client.render.block;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.util.config.Config;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.block.property.BlockProperty;
@@ -13,6 +14,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Getter
 @RequiredArgsConstructor
@@ -38,7 +40,12 @@ public class BlockModelMapper {
                 if (stateMap != null) {
                     BlockState state = reg.getDefaultState();
                     for (Map.Entry<String, Object> prop : stateMap.entrySet()) {
-                        state.with(reg.getProperty(prop.getKey()), (Comparable) prop.getValue());
+                        BlockProperty<?> p = reg.getProperty(prop.getKey());
+                        Optional<?> val = p.parse((String) prop.getValue());
+                        if (val.isPresent()) {
+                            state = state.with((BlockProperty) p, (Comparable) val.get());
+                        } else
+                            Openverse.logger().warning("Cannot parse value \"" + prop.getValue() + "\" of property: " + p.getName() + " ");
                     }
                     Path path = Paths.get(varCfg.getStringRequired("model"));
                     model.with(BlockModelRegistry.load(path.toFile()));

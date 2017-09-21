@@ -4,3 +4,4 @@ java -Dcom.sun.management.jmxremote.port=9005 ^
      -Xverify:none ^
      -XX:+DoEscapeAnalysis ^
      -jar launcher.jar
+pause
