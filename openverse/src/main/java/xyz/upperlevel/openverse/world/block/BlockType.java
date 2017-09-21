@@ -1,6 +1,7 @@
 package xyz.upperlevel.openverse.world.block;
 
 import lombok.Getter;
+import lombok.Setter;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.block.state.BlockStateRegistry;
 import xyz.upperlevel.openverse.world.block.blockentity.BlockEntity;
@@ -9,6 +10,7 @@ import xyz.upperlevel.openverse.world.block.blockentity.BlockEntity;
 public class BlockType {
     public static final BlockType AIR = new BlockType("air");
     private final String id;
+    @Setter
     private int rawId; // todo
 
     protected final BlockStateRegistry stateRegistry;

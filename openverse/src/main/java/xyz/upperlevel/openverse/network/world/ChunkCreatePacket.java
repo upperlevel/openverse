@@ -10,6 +10,8 @@ import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 
+import java.util.Arrays;
+
 import static xyz.upperlevel.openverse.network.SerialUtil.*;
 
 @Getter
@@ -25,7 +27,7 @@ public class ChunkCreatePacket implements Packet {
             for (int iy = 0; iy < 16; iy++) {
                 for (int iz = 0; iz < 16; iz++) {
                     BlockType ty = chunk.getBlockType(ix, iy, iz);
-                    if (ty != null) {
+                    if (ty != null && ty != BlockType.AIR) {
                         this.blockTypes[ix][iy][iz] = ty.getRawId();
                     }
                 }

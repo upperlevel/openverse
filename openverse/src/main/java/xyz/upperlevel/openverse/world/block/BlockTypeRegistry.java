@@ -38,7 +38,9 @@ public class BlockTypeRegistry extends Registry<BlockType> {
     }
 
     public void registerId(BlockType type) {
-        idRegistry.set(nextId++, type);
+        idRegistry.set(nextId, type);
+        type.setRawId(nextId);
+        nextId++;
     }
 
     @SuppressWarnings("unchecked")
