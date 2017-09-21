@@ -130,9 +130,7 @@ public class BlockStateRegistry {
             }
             Table<BlockProperty<?>, Comparable<?>, SimpleBlockState> table = HashBasedTable.create();
 
-            this.properties.entrySet().forEach(e -> {
-                BlockProperty<?> currentProprierty = e.getKey();
-                Comparable<?> currentValue = e.getValue();
+            this.properties.forEach((currentProprierty, currentValue) -> {
                 for (Comparable<?> value : currentProprierty.getPossibleValues()) {
                     if (value != currentValue) {
                         Map<BlockProperty<?>, Comparable<?>> map = new HashMap<>(this.properties);
