@@ -54,4 +54,9 @@ public class BlockType {
     public BlockEntity createBlockEntity(BlockState state) {
         return null;
     }
+
+    @Override
+    public int hashCode() {
+        return rawId;
+    }
 }

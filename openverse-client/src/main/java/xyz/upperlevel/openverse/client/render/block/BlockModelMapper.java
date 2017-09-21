@@ -30,7 +30,10 @@ public class BlockModelMapper {
         BlockModel model = new BlockModel();
 
         Config def = config.getConfigRequired("defaults");
-        model.with(BlockModelRegistry.getModel(Paths.get(def.getStringRequired("model"))));
+        Path path = Paths.get(def.getStringRequired("model"));
+        model.with(BlockModelRegistry.getModel(path));
+        System.out.println("Added " + path + " to def state of " + type.getId());
+        models.put(reg.getDefaultState(), model);
 
         List<Config> vars = config.getConfigList("variants");
         if (vars != null) {
@@ -47,8 +50,9 @@ public class BlockModelMapper {
                         } else
                             Openverse.logger().warning("Cannot parse value \"" + prop.getValue() + "\" of property: " + p.getName() + " ");
                     }
-                    Path path = Paths.get(varCfg.getStringRequired("model"));
+                    path = Paths.get(varCfg.getStringRequired("model"));
                     model.with(BlockModelRegistry.load(path.toFile()));
+                    System.out.println("Added " + path + " to state " + state.getId() + " of " + state.getBlockType().getId());
                     models.put(state, model);
                 }
             }

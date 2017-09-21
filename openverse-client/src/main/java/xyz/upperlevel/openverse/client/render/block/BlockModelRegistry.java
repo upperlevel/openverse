@@ -1,6 +1,7 @@
 package xyz.upperlevel.openverse.client.render.block;
 
 import com.google.gson.Gson;
+import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.util.config.Config;
 
 import java.io.File;
@@ -32,6 +33,7 @@ public final class BlockModelRegistry {
             register(path, model);
             return model;
         }
+        Openverse.logger().warning("Given file \"" + file + "\" is a directory!");
         return null;
     }
 
@@ -47,6 +49,7 @@ public final class BlockModelRegistry {
                 }
             }
         }
+        Openverse.logger().warning("Given folder \"" + folder + "\" is a file!");
         return parts;
     }
 
