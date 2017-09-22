@@ -27,8 +27,7 @@ public class World {
     }
 
     public Chunk getChunk(ChunkLocation loc) {
-        // todo review chunk system chunk locs
-        return chunkSystem.getChunk(loc.x, loc.y, loc.z);
+        return chunkSystem.getChunk(loc);
     }
 
     public Chunk getChunk(double x, double y, double z) {
@@ -49,11 +48,11 @@ public class World {
     }
 
     public void unloadChunk(int x, int y, int z) {
-        chunkSystem.destroyChunk(x, y, z);
+        unloadChunk(new ChunkLocation(x, y, z));
     }
 
     public void unloadChunk(ChunkLocation loc) {
-        chunkSystem.destroyChunk(loc.x, loc.y, loc.z);
+        chunkSystem.destroyChunk(loc);
         Openverse.getEventManager().call(new ChunkUnloadEvent(loc));
     }
 

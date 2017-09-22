@@ -36,7 +36,11 @@ public class DefaultChunkSystem extends ChunkSystem {
 
     @Override
     public Chunk getChunk(int x, int y, int z) {
-        ChunkLocation loc = new ChunkLocation(x, y, z);
+        return getChunk(new ChunkLocation(x, y, z));
+    }
+
+    @Override
+    public Chunk getChunk(ChunkLocation loc) {
         if (isLoaded(loc))
             return chunks.get(loc);
         return addChunk(loc);
@@ -48,7 +52,17 @@ public class DefaultChunkSystem extends ChunkSystem {
     }
 
     @Override
+    public void setChunk(ChunkLocation loc, Chunk chunk) {
+        chunks.put(loc, chunk);
+    }
+
+    @Override
     public void destroyChunk(int x, int y, int z) {
         chunks.remove(new ChunkLocation(x, y, z));
+    }
+
+    @Override
+    public void destroyChunk(ChunkLocation loc) {
+        chunks.remove(loc);
     }
 }
