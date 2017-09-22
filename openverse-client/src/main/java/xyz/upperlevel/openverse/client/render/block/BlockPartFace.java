@@ -5,11 +5,14 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.util.config.Config;
 
 import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 @Getter
 @RequiredArgsConstructor
@@ -30,9 +33,16 @@ public class BlockPartFace {
     }
 
     public int store(Matrix4f transform, ByteBuffer buffer) {
+        transform
+                // put the face in the right cube position
+                .translate(facing.getDir())
+                // rotates the face to its position
+                .translate(.5f, .5f, .5f)
+                .rotate(facing.getRot())
+                .translate(-.5f, -.5f, -.5f);
         int vrt = 0;
         for (Vertex v : vertices)
-            vrt += v.store(new Matrix4f(transform), buffer, TextureBakery.getLayer(textureLocation));
+            vrt += v.store(transform, buffer, TextureBakery.getLayer(textureLocation));
         return vrt;
     }
 
@@ -43,10 +53,10 @@ public class BlockPartFace {
     @Getter
     @RequiredArgsConstructor
     public enum VertexPosition {
-        TOP_LEFT(0, 1, 0, 0, 0),
-        TOP_RIGHT(1, 1, 0, 1, 0),
-        BOTTOM_LEFT(0, 0, 0, 0, 1),
-        BOTTOM_RIGHT(1, 0, 0, 1, 1);
+        TOP_LEFT     (0, 1, 0,  0, 0),
+        TOP_RIGHT    (1, 1, 0,  1, 0),
+        BOTTOM_RIGHT (1, 0, 0,  1, 1),
+        BOTTOM_LEFT  (0, 0, 0,  0, 1);
 
         public final int x, y, z, u, v;
     }

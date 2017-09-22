@@ -1,5 +1,6 @@
 package xyz.upperlevel.openverse.client.render.block;
 
+import com.google.common.base.Preconditions;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,13 +28,14 @@ public class BlockModel {
     }
 
     public void with(BlockPart part) {
+        Preconditions.checkNotNull(part);
         parts.add(part);
     }
 
     public int store(Matrix4f in, ByteBuffer buffer) {
         int vt = 0;
         for (BlockPart p : parts) {
-            vt += p.store(in, buffer);
+            vt += p.store(new Matrix4f(in), buffer);
         }
         return vt;
     }

@@ -38,19 +38,22 @@ public final class BlockModelRegistry {
     }
 
     public static List<BlockPart> loadFolder(File folder) {
-        List<BlockPart> parts = new ArrayList<>();
-         if (folder.isFile()) {
+        if (folder.isDirectory()) {
+            List<BlockPart> parts = new ArrayList<>();
             File[] files = folder.listFiles();
             if (files != null) {
                 for (File sub : files) {
-                    if (sub.isFile())
-                        parts.add(load(folder));
+                    if (sub.isFile()) {
+                        parts.add(load(sub));
+                    }
                     // ignores sub-dirs
                 }
             }
+            return parts;
+        } else {
+            Openverse.logger().warning("Given folder \"" + folder + "\" is a file!");
+            return Collections.emptyList();
         }
-        Openverse.logger().warning("Given folder \"" + folder + "\" is a file!");
-        return parts;
     }
 
     /**

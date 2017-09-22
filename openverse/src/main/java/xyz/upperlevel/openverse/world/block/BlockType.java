@@ -11,7 +11,7 @@ public class BlockType {
     public static final BlockType AIR = new BlockType("air");
     private final String id;
     @Setter
-    private int rawId;
+    private int rawId = -1;
 
     protected final BlockStateRegistry stateRegistry;
     private BlockState defaultBlockState;
@@ -57,6 +57,7 @@ public class BlockType {
 
     @Override
     public int hashCode() {
-        return rawId;
+        //Cannot use rawId because it could (and does) change overtime
+        return id.hashCode();
     }
 }

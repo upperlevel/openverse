@@ -100,7 +100,6 @@ public class ChunkRenderer {
         vbo.bind();
         new VertexLinker()
                 .attrib(program.uniformer.getAttribLocation("position"), 3)
-                .attrib(program.uniformer.getAttribLocation("color"), 4)
                 .attrib(program.uniformer.getAttribLocation("texCoords"), 3)
                 .setup();
 

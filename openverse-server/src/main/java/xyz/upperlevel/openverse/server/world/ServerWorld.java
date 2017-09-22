@@ -2,6 +2,7 @@ package xyz.upperlevel.openverse.server.world;
 
 import lombok.Getter;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.server.world.generators.SingleBlockGenerator;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.server.world.generators.ChunkGenerator;
 import xyz.upperlevel.openverse.server.world.generators.FlatChunkGenerator;

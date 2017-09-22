@@ -31,7 +31,11 @@ public class BlockModelMapper {
 
         Config def = config.getConfigRequired("defaults");
         Path path = Paths.get(def.getStringRequired("model"));
-        model.with(BlockModelRegistry.getModel(path));
+        BlockPart part = BlockModelRegistry.getModel(path);
+        if (part == null) {
+            throw new IllegalStateException("Cannot find " + path + " from " + type.getId());
+        }
+        model.with(part);
         System.out.println("Added " + path + " to def state of " + type.getId());
         models.put(reg.getDefaultState(), model);
 

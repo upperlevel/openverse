@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.util.config.Config;
 
 import java.nio.ByteBuffer;
@@ -51,7 +52,7 @@ public class BlockPart {
     }
 
     public int store(Matrix4f transform, ByteBuffer buffer) {
-        transform.translate(size.add(position));
+        transform.translate(size.add(position, new Vector3f()));
         int vt = 0;
         for (BlockPartFace face : faces.values())
             vt += face.store(new Matrix4f(transform), buffer);

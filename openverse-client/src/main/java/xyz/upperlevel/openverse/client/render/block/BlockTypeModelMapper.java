@@ -42,8 +42,9 @@ public final class BlockTypeModelMapper {
 
     public static BlockModel model(BlockState state) {
         BlockModelMapper bsm = modelMapper(state.getBlockType());
-        if (bsm != null)
+        if (bsm != null) {
             return bsm.getModel(state);
+        }
         return null;
     }
 }

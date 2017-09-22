@@ -27,7 +27,7 @@ public class ResourceScene implements Scene {
         Openverse.resources().setup();
         Openverse.resources().load();
 
-        BlockModelRegistry.load(new File("client/resources/blocks/models"));
+        BlockModelRegistry.loadFolder(new File("client/resources/blocks/models"));
         BlockTypeModelMapper.load(Openverse.resources().blockTypes().entry("grass"), Paths.get("client/resources/blocks/grass.json"));
         BlockTypeModelMapper.load(Openverse.resources().blockTypes().entry("dirt"), Paths.get("client/resources/blocks/dirt.json"));
 
