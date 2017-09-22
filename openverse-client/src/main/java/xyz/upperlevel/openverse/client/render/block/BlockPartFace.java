@@ -55,8 +55,9 @@ public class BlockPartFace {
                     .rotate(facing.getRot())
                     .translate(-.5f, -.5f, -.5f);
             int vrt = 0;
+            int layer = getTextureLayer();
             for (Vertex v : vertices)
-                vrt += v.store(transform, buffer, textureLayer);
+                vrt += v.store(transform, buffer, layer);
             return vrt;
         }
     }
