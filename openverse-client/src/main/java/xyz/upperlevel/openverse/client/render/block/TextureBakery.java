@@ -3,6 +3,11 @@ package xyz.upperlevel.openverse.client.render.block;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL30;
 import xyz.upperlevel.ulge.opengl.texture.Texture2dArray;
+import xyz.upperlevel.ulge.opengl.texture.TextureParameter;
+import xyz.upperlevel.ulge.opengl.texture.TextureParameter.Type;
+import xyz.upperlevel.ulge.opengl.texture.TextureParameter.Type.Wrapping;
+import xyz.upperlevel.ulge.opengl.texture.TextureParameter.Value;
+import xyz.upperlevel.ulge.opengl.texture.TextureParameters;
 import xyz.upperlevel.ulge.opengl.texture.loader.ImageContent;
 
 import javax.imageio.ImageIO;
@@ -20,6 +25,12 @@ import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
 public final class TextureBakery {
     public static final int NULL_LAYER = 0;
+    public static final TextureParameters PARAMS = new TextureParameters()
+            .addParameter(Type.Wrapping.S, Value.Wrapping.CLAMP_TO_EDGE)
+            .addParameter(Type.Wrapping.T, Value.Wrapping.CLAMP_TO_EDGE)
+            .addParameter(Type.Filter.MIN, Value.Filter.NEAREST)
+            .addParameter(Type.Filter.MAG, Value.Filter.NEAREST);
+
     public static final ImageContent NULL = new ImageContent(1, 1, (ByteBuffer) BufferUtils.createByteBuffer(4)
             .put(new byte[]{(byte) 255, (byte) 255, (byte) 255, (byte) 255})
             .flip()
@@ -51,7 +62,7 @@ public final class TextureBakery {
                 layer++;
                 textureArray.load(layer, entry.getValue());
                 glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
-                // todo texture  parameters
+                textureArray.setup(PARAMS);
             }
         }
     }

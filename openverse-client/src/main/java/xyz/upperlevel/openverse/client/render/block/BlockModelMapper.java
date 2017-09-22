@@ -56,7 +56,6 @@ public class BlockModelMapper {
                     }
                     path = Paths.get(varCfg.getStringRequired("model"));
                     model.with(BlockModelRegistry.load(path.toFile()));
-                    System.out.println("Added " + path + " to state " + state.getId() + " of " + state.getBlockType().getId());
                     models.put(state, model);
                 }
             }
