@@ -11,7 +11,7 @@ public class BlockType {
     public static final BlockType AIR = new BlockType("air");
     private final String id;
     @Setter
-    private int rawId; // todo
+    private int rawId;
 
     protected final BlockStateRegistry stateRegistry;
     private BlockState defaultBlockState;
