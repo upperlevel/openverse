@@ -54,12 +54,13 @@ public class ChunkCompileTask {
             vertexCount = chunk.compile(buffer.byteBuffer());
         } catch (Exception e) {
             Openverse.logger().log(Level.SEVERE, "Error while compiling chunk (data:" + (chunk.getAllocateDataCount() * Float.BYTES) + ", cap:" + buffer.byteBuffer().capacity() + ")", e);
-            bufferPool.release(buffer);
+            buffer.release();
             return;
         }
         stateLock.lock();
         try {
             if (state == State.ABORTED) {
+                buffer.release();
                 return;
             }
             state = State.UPLOADING;
@@ -110,6 +111,11 @@ public class ChunkCompileTask {
                 //Note the missing "break;" is not a mistake, it compiles and then uploads
             case UPLOADING:
                 upload();
+                break;
+            case ABORTED:
+                if (buffer != null) {
+                    buffer.release();
+                }
             default:
                 break;
         }

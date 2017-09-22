@@ -25,10 +25,10 @@ public class VertexBufferPool {
             if (tryIncrementSize()) {
                 return null;
             } else {
-                return new VertexBuffer(this);
+                return new VertexBuffer(this).claim();
             }
         } else {
-            return buf;
+            return buf.claim();
         }
     }
 
@@ -41,12 +41,12 @@ public class VertexBufferPool {
         VertexBuffer buf = buffers.poll();
         if (buf == null) {
             if (tryIncrementSize()) {
-                return buffers.take();
+                return buffers.take().claim();
             } else {
-                return new VertexBuffer(this);
+                return new VertexBuffer(this).claim();
             }
         } else {
-            return buf;
+            return buf.claim();
         }
     }
 

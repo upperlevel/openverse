@@ -20,6 +20,7 @@ public class BlockPartFace {
     private final Facing facing;
     private final Path textureLocation;
     private final Vertex[] vertices = new Vertex[4];
+    private int textureLayer = -1;
 
     private void setupVertices() {
         for (VertexPosition pos : VertexPosition.values())
@@ -40,10 +41,18 @@ public class BlockPartFace {
                 .translate(.5f, .5f, .5f)
                 .rotate(facing.getRot())
                 .translate(-.5f, -.5f, -.5f);
+        final int layer = getTextureLayer();
         int vrt = 0;
         for (Vertex v : vertices)
-            vrt += v.store(transform, buffer, TextureBakery.getLayer(textureLocation));
+            vrt += v.store(transform, buffer, layer);
         return vrt;
+    }
+
+    public int getTextureLayer() {
+        if (textureLayer == -1) {
+            textureLayer = TextureBakery.getLayer(textureLocation);
+        }
+        return textureLayer;
     }
 
     public static BlockPartFace deserialize(Facing facing, Config config) {

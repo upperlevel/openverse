@@ -1,5 +1,6 @@
 package xyz.upperlevel.openverse.client.render.world.util;
 
+import lombok.Getter;
 import org.lwjgl.BufferUtils;
 import xyz.upperlevel.openverse.Openverse;
 
@@ -11,6 +12,8 @@ public class VertexBuffer {
     public static final int CAPACITY_STEP = 2 * 1024 * 1024;
     private final VertexBufferPool pool;
     private ByteBuffer handle;
+    @Getter
+    private boolean claimed = false;
 
     public VertexBuffer(VertexBufferPool pool) {
         this.pool = pool;
@@ -40,9 +43,18 @@ public class VertexBuffer {
         return handle.capacity();
     }
 
-    public void release() {
-        if (pool != null) {
+    public VertexBuffer claim() {
+        if(!claimed) {
+            claimed = true;
+        }
+        return this;
+    }
+
+    public VertexBuffer release() {
+        if (pool != null && claimed) {
+            claimed = false;
             pool.release(this);
         }
+        return this;
     }
 }
