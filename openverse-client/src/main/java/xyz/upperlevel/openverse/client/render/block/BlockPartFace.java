@@ -3,21 +3,27 @@ package xyz.upperlevel.openverse.client.render.block;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.joml.AABBf;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.client.render.world.ChunkRenderer;
 import xyz.upperlevel.openverse.util.config.Config;
+import xyz.upperlevel.openverse.world.block.Block;
+import xyz.upperlevel.openverse.world.block.state.BlockState;
 
+import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 @Getter
 @RequiredArgsConstructor
 public class BlockPartFace {
+    private final BlockPart part;
     private final Facing facing;
+    private final AABBf aabb;
+    private final AABBf mirroredAabb;
+
     private final Path textureLocation;
     private final Vertex[] vertices = new Vertex[4];
     private int textureLayer = -1;
@@ -27,25 +33,32 @@ public class BlockPartFace {
             vertices[pos.ordinal()] = new Vertex(pos);
     }
 
-    public BlockPartFace(Facing facing, Config config) {
+    public BlockPartFace(BlockPart part, Facing facing, Config config) {
+        this.part = part;
         this.facing = facing;
+        this.aabb = facing.resolveAabb(part.getAabb());
+        this.mirroredAabb = facing.mirrorAabb(aabb);
+
         this.textureLocation = Paths.get(config.getString("texture"));
         setupVertices();
     }
 
-    public int store(Matrix4f transform, ByteBuffer buffer) {
-        transform
-                // put the face in the right cube position
-                .translate(facing.getDir())
-                // rotates the face to its position
-                .translate(.5f, .5f, .5f)
-                .rotate(facing.getRot())
-                .translate(-.5f, -.5f, -.5f);
-        final int layer = getTextureLayer();
-        int vrt = 0;
-        for (Vertex v : vertices)
-            vrt += v.store(transform, buffer, layer);
-        return vrt;
+    public int store(Block block, Matrix4f transform, ByteBuffer buffer) {
+        BlockModel neighbor = BlockTypeModelMapper.model(block.getRelative(facing.dirX, facing.dirY, facing.dirZ).getState());
+        // checks if the face is hidden
+        if (neighbor != null && neighbor.getAabb().testAABB(mirroredAabb) && neighbor.testAabbCarefully(mirroredAabb)) {
+            return 0;
+        } else {
+            transform
+                    .translate(facing.getDir())
+                    .translate(.5f, .5f, .5f)
+                    .rotate(facing.getRot())
+                    .translate(-.5f, -.5f, -.5f);
+            int vrt = 0;
+            for (Vertex v : vertices)
+                vrt += v.store(transform, buffer, textureLayer);
+            return vrt;
+        }
     }
 
     public int getTextureLayer() {
@@ -55,17 +68,17 @@ public class BlockPartFace {
         return textureLayer;
     }
 
-    public static BlockPartFace deserialize(Facing facing, Config config) {
-        return new BlockPartFace(facing, config);
+    public static BlockPartFace deserialize(BlockPart part, Facing facing, Config config) {
+        return new BlockPartFace(part, facing, config);
     }
 
     @Getter
     @RequiredArgsConstructor
     public enum VertexPosition {
-        TOP_LEFT     (0, 1, 0,  0, 0),
-        TOP_RIGHT    (1, 1, 0,  1, 0),
-        BOTTOM_RIGHT (1, 0, 0,  1, 1),
-        BOTTOM_LEFT  (0, 0, 0,  0, 1);
+        TOP_LEFT(0, 1, 0, 0, 0),
+        TOP_RIGHT(1, 1, 0, 1, 0),
+        BOTTOM_RIGHT(1, 0, 0, 1, 1),
+        BOTTOM_LEFT(0, 0, 0, 0, 1);
 
         public final int x, y, z, u, v;
     }

@@ -4,17 +4,41 @@ import com.google.common.base.Preconditions;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.joml.AABBf;
 import org.joml.Matrix4f;
+import xyz.upperlevel.openverse.world.block.Block;
 
 import java.nio.ByteBuffer;
 import java.util.HashSet;
 import java.util.Set;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public class BlockModel {
+    private final AABBf aabb;
     private Set<BlockPart> parts = new HashSet<>();
+
+    public BlockModel() {
+        this.aabb = new AABBf();
+    }
+
+    public BlockModel(Set<BlockPart> parts) {
+        this();
+        this.parts = parts;
+    }
+
+
+    public boolean testAabbCarefully(AABBf aabb) {
+        for (BlockPart part : parts)
+            if (part.getAabb().testAABB(aabb))
+                return true;
+        return false;
+    }
+
+    public void with(BlockPart part) {
+        Preconditions.checkNotNull(part);
+        parts.add(part);
+        aabb.union(part.getAabb());
+    }
 
     public int getVerticesCount() {
         int cnt = 0;
@@ -27,15 +51,10 @@ public class BlockModel {
         return getVerticesCount() * (3 + 3);
     }
 
-    public void with(BlockPart part) {
-        Preconditions.checkNotNull(part);
-        parts.add(part);
-    }
-
-    public int store(Matrix4f in, ByteBuffer buffer) {
+    public int store(Block block, Matrix4f in, ByteBuffer buffer) {
         int vt = 0;
         for (BlockPart p : parts) {
-            vt += p.store(new Matrix4f(in), buffer);
+            vt += p.store(block, new Matrix4f(in), buffer);
         }
         return vt;
     }

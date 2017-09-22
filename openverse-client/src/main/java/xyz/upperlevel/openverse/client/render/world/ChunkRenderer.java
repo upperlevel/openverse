@@ -6,7 +6,7 @@ import org.lwjgl.BufferUtils;
 import xyz.upperlevel.openverse.client.render.block.BlockModel;
 import xyz.upperlevel.openverse.client.render.block.BlockTypeModelMapper;
 import xyz.upperlevel.openverse.client.render.world.util.VertexBufferPool;
-import xyz.upperlevel.openverse.world.block.BlockType;
+import xyz.upperlevel.openverse.world.block.Block;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
@@ -28,7 +28,7 @@ public class ChunkRenderer {
     private final Program program;
     private final ChunkLocation location;
     private final ChunkViewRenderer parent;
-    private Chunk handle;
+    private Chunk chunk;
     private Vao vao;
     private Vbo vbo;
     private Uniform modelLoc;
@@ -48,7 +48,7 @@ public class ChunkRenderer {
         this.parent = parent;
         this.program = program;
         this.location = chunk.getLocation();
-        this.handle = chunk;
+        this.chunk = chunk;
         modelLoc = program.uniformer.get("model");
         setup();
         reloadVertexSize();
@@ -74,7 +74,7 @@ public class ChunkRenderer {
     }
 
     public void reloadVertexSize() {
-        BlockStorage storage = handle.getBlockStorage();
+        BlockStorage storage = chunk.getBlockStorage();
         int vertexCount = 0;
         int dataCount = 0;
         for (int x = 0; x < WIDTH; x++) {
@@ -118,17 +118,18 @@ public class ChunkRenderer {
     }
 
     public int compile(ByteBuffer buffer) {
-        BlockStorage storage = handle.getBlockStorage();
+        BlockStorage storage = chunk.getBlockStorage();
         int vertexCount = 0;
         Matrix4f in = new Matrix4f();
         for (int x = 0; x < WIDTH; x++) {
             for (int y = 0; y < HEIGHT; y++) {
                 for (int z = 0; z < LENGTH; z++) {
-                    BlockState state = storage.getBlockState(x, y, z);
+                    Block block = storage.getBlock(x, y, z);
+                    BlockState state = block.getState();
                     if (state != null) {
                         BlockModel model = BlockTypeModelMapper.model(state);
                         if (model != null)
-                            vertexCount += model.store(in.translation(x, y, z), buffer);
+                            vertexCount += model.store(block, in.translation(x, y, z), buffer);
                     }
                 }
             }

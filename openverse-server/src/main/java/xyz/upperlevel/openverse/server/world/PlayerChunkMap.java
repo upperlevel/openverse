@@ -1,19 +1,18 @@
 package xyz.upperlevel.openverse.server.world;
 
 import lombok.Getter;
+import org.joml.AABBf;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.network.world.ChunkCreatePacket;
 import xyz.upperlevel.openverse.network.world.ChunkDestroyPacket;
-import xyz.upperlevel.openverse.physic.Box;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 import xyz.upperlevel.openverse.world.entity.event.PlayerMoveEvent;
 
-import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -70,7 +69,7 @@ public class PlayerChunkMap implements Listener {
         Openverse.logger().info("Player move: " + old + "->" + loc);
         int added = 0, removed = 0;
 
-        Box oldBox = new Box(
+        AABBf oldAabb = new AABBf(
                 old.x - radius,
                 old.y - radius,
                 old.z - radius,
@@ -78,7 +77,7 @@ public class PlayerChunkMap implements Listener {
                 old.y + radius,
                 old.z + radius
         );
-        Box newBox = new Box(
+        AABBf newAabb = new AABBf(
                 loc.x - radius,
                 loc.y - radius,
                 loc.z - radius,
@@ -87,7 +86,7 @@ public class PlayerChunkMap implements Listener {
                 loc.z + radius
         );
 
-        boolean apart = !oldBox.intersect(newBox);
+        boolean apart = !(oldAabb.testPoint(newAabb.minX, newAabb.minY, newAabb.minZ) || oldAabb.testPoint(newAabb.maxX, newAabb.maxY, newAabb.maxZ));
 
         for (int x = -radius; x <= radius; x++) {
             for (int y = -radius; y <= radius; y++) {
@@ -97,7 +96,7 @@ public class PlayerChunkMap implements Listener {
                     int cy = loc.y + y;
                     int cz = loc.z + z;
 
-                    if (apart || !oldBox.isIn(cx, cy, cz)) {
+                    if (apart || !oldAabb.testPoint(cx, cy, cz)) {
                         addPlayer(new ChunkLocation(cx, cy, cz), player);
                         added++;
                     }
@@ -106,7 +105,7 @@ public class PlayerChunkMap implements Listener {
                     cx = old.x + x;
                     cy = old.y + y;
                     cz = old.z + z;
-                    if (apart || !newBox.isIn(cx, cy, cz)) {
+                    if (apart || !newAabb.testPoint(cx, cy, cz)) {
                         removePlayer(new ChunkLocation(cx, cy, cz), player);
                         removed++;
                     }

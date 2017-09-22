@@ -1,11 +1,7 @@
 package xyz.upperlevel.openverse.resource;
 
-import xyz.upperlevel.openverse.world.block.BlockTypeRegistry;
 import xyz.upperlevel.openverse.resource.entity.EntityTypeRegistry;
-import xyz.upperlevel.openverse.resource.model.Model;
-import xyz.upperlevel.openverse.resource.model.ModelRegistry;
-import xyz.upperlevel.openverse.resource.model.shape.ShapeType;
-import xyz.upperlevel.openverse.resource.model.shape.ShapeTypeRegistry;
+import xyz.upperlevel.openverse.world.block.BlockTypeRegistry;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -20,16 +16,12 @@ public class Resources {
 
     private final BlockTypeRegistry blockTypeRegistry;
     private final EntityTypeRegistry entityTypeRegistry;
-    private final ShapeTypeRegistry<? extends ShapeType<?>> shapeTypeRegistry;
-    private final ModelRegistry<? extends Model<?>> modelRegistry;
 
     public Resources(File folder, Logger logger) {
         this.folder = folder;
         this.logger = logger;
         this.blockTypeRegistry = createBlockTypeRegistry();
         this.entityTypeRegistry = createEntityTypeRegistry(folder, logger);
-        this.shapeTypeRegistry = createShapeTypeRegistry(folder, logger);
-        this.modelRegistry = createModelRegistry(folder, logger);
     }
 
     protected BlockTypeRegistry createBlockTypeRegistry() {
@@ -40,33 +32,11 @@ public class Resources {
         return new EntityTypeRegistry(folder, logger);
     }
 
-    protected ShapeTypeRegistry<? extends ShapeType<?>> createShapeTypeRegistry(File fodler, Logger logger) {
-        return new ShapeTypeRegistry<>();
-    }
-
-    protected ModelRegistry<? extends Model<?>> createModelRegistry(File folder, Logger logger) {
-        return new ModelRegistry<>(folder, logger);
-    }
-
     /**
      * Returns the {@link BlockTypeRegistry} object.
      */
     public BlockTypeRegistry blockTypes() {
         return blockTypeRegistry;
-    }
-
-    /**
-     * Returns the {@link ShapeTypeRegistry} object.
-     */
-    public ShapeTypeRegistry<? extends ShapeType> shapes() {
-        return shapeTypeRegistry;
-    }
-
-    /**
-     * Returns the {@link ModelRegistry} object.
-     */
-    public ModelRegistry<? extends Model> models() {
-        return modelRegistry;
     }
 
     protected void onSetup() {
@@ -88,7 +58,6 @@ public class Resources {
     public int load() {
         int cnt = 0;
         cnt += onLoad();
-        cnt += models().loadFolder();
         cnt += entityTypeRegistry.loadFolder();
         return cnt;
     }
@@ -97,7 +66,6 @@ public class Resources {
     }
 
     public void unload() {
-        models().unload();
         entityTypeRegistry.unload();
         onUnload();
         //entityTypeRegistry.unload();
