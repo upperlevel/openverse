@@ -1,6 +1,8 @@
 package xyz.upperlevel.openverse.client.render.block;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import xyz.upperlevel.ulge.opengl.texture.Texture2dArray;
 import xyz.upperlevel.ulge.opengl.texture.TextureParameter;
@@ -19,17 +21,13 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.lwjgl.opengl.GL11.GL_RGBA8;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
 import static org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
 public final class TextureBakery {
     public static final int NULL_LAYER = 0;
-    public static final TextureParameters PARAMS = new TextureParameters()
-            .addParameter(Type.Wrapping.S, Value.Wrapping.CLAMP_TO_EDGE)
-            .addParameter(Type.Wrapping.T, Value.Wrapping.CLAMP_TO_EDGE)
-            .addParameter(Type.Filter.MIN, Value.Filter.NEAREST)
-            .addParameter(Type.Filter.MAG, Value.Filter.NEAREST);
 
     public static final ImageContent NULL = new ImageContent(1, 1, (ByteBuffer) BufferUtils.createByteBuffer(4)
             .put(new byte[]{(byte) 255, (byte) 255, (byte) 255, (byte) 255})
@@ -62,7 +60,10 @@ public final class TextureBakery {
                 layer++;
                 textureArray.load(layer, entry.getValue());
                 glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
-                textureArray.setup(PARAMS);
+                glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT);
+                glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT);
+                glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+                glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             }
         }
     }

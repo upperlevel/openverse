@@ -45,7 +45,9 @@ public class GameScene implements Scene, Listener {
     @Override
     public void onEnable(Scene previous) {
         Openverse.logger().info("Listening for world packets...");
+        glEnable(GL_TEXTURE_2D);
         glEnable(GL_CULL_FACE);
+
         glFrontFace(GL_CW);
         glCullFace(GL_BACK);
 
