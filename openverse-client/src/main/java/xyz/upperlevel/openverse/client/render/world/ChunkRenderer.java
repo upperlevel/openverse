@@ -5,6 +5,7 @@ import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import xyz.upperlevel.openverse.client.render.block.BlockModel;
 import xyz.upperlevel.openverse.client.render.block.BlockTypeModelMapper;
+import xyz.upperlevel.openverse.client.render.block.Facing;
 import xyz.upperlevel.openverse.client.render.world.util.VertexBufferPool;
 import xyz.upperlevel.openverse.world.block.Block;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
@@ -17,6 +18,8 @@ import xyz.upperlevel.ulge.opengl.shader.Uniform;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import static xyz.upperlevel.openverse.world.chunk.Chunk.*;
 
@@ -27,7 +30,7 @@ import static xyz.upperlevel.openverse.world.chunk.Chunk.*;
 public class ChunkRenderer {
     private final Program program;
     private final ChunkLocation location;
-    private final ChunkViewRenderer parent;
+    private final ChunkViewRenderer view;
     private Chunk chunk;
     private Vao vao;
     private Vbo vbo;
@@ -44,15 +47,15 @@ public class ChunkRenderer {
     private int
             drawVerticesCount = 0; // draw vertices count on drawing
 
-    public ChunkRenderer(ChunkViewRenderer parent, Chunk chunk, Program program) {
-        this.parent = parent;
+    public ChunkRenderer(ChunkViewRenderer view, Chunk chunk, Program program) {
+        this.view = view;
         this.program = program;
         this.location = chunk.getLocation();
         this.chunk = chunk;
-        modelLoc = program.uniformer.get("model");
+        this.modelLoc = program.uniformer.get("model");
         setup();
         reloadVertexSize();
-        parent.recompileChunk(this, ChunkCompileMode.ASYNC);
+        view.recompileChunk(this, ChunkCompileMode.ASYNC);
     }
 
     public void onBlockChange(BlockState oldState, BlockState newState) {//TODO: call whenever a block changes

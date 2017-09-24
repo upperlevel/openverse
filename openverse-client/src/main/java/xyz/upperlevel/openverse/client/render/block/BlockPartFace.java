@@ -87,7 +87,7 @@ public class BlockPartFace {
 
     @Getter
     @AllArgsConstructor
-    public static class Vertex {
+    public class Vertex {
         private final VertexPosition position;
 
         public int store(Matrix4f transform, ByteBuffer buffer, int layer) {

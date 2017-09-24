@@ -4,6 +4,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
+import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.ulge.opengl.texture.Texture2dArray;
 import xyz.upperlevel.ulge.opengl.texture.TextureParameter;
 import xyz.upperlevel.ulge.opengl.texture.TextureParameter.Type;
@@ -50,22 +51,24 @@ public final class TextureBakery {
     }
 
     public static void bake() {
+        Openverse.logger().info("Baking " + registered.size() + " textures...");
         layers = new HashMap<>();
         textureArray = new Texture2dArray();
         textureArray.allocate(4, GL_RGBA8, 16, 16, 1 + registered.size());
         textureArray.load(0, NULL);
         int layer = 1;
         for (Map.Entry<Path, ImageContent> entry : registered.entrySet()) {
-            if (layers.put(entry.getKey(), layer + 1) == null) {
-                layer++;
+            if (layers.put(entry.getKey(), layer) == null) { // if it wasn't already present
                 textureArray.load(layer, entry.getValue());
                 glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
                 glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT);
                 glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT);
                 glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
                 glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+                layer++;
             }
         }
+        Openverse.logger().info("Textures baked!");
     }
 
     public static void bind() {

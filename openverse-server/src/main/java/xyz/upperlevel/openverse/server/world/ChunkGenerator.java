@@ -1,4 +1,4 @@
-package xyz.upperlevel.openverse.server.world.generators;
+package xyz.upperlevel.openverse.server.world;
 
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 

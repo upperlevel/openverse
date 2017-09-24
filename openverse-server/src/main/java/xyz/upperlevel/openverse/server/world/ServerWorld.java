@@ -2,9 +2,8 @@ package xyz.upperlevel.openverse.server.world;
 
 import lombok.Getter;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.server.world.generators.SingleBlockGenerator;
+import xyz.upperlevel.openverse.server.world.generators.SimpleWorldGenerator;
 import xyz.upperlevel.openverse.world.block.BlockType;
-import xyz.upperlevel.openverse.server.world.generators.ChunkGenerator;
 import xyz.upperlevel.openverse.server.world.generators.FlatChunkGenerator;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
@@ -17,7 +16,7 @@ public class ServerWorld extends World {
 
     public ServerWorld(String name) {
         super(name);
-        this.generator = new FlatChunkGenerator(1, Openverse.resources().blockTypes().entry("grass"), BlockType.AIR);
+        this.generator = new SimpleWorldGenerator();
         this.chunkMap = new PlayerChunkMap(this, 4);
     }
 

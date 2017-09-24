@@ -45,7 +45,7 @@ public class ChunkViewRenderer implements Listener {
 
     public void unloadChunk(ChunkLocation location) {
         ChunkRenderer chunk = chunks.remove(location);
-        if(chunk != null)
+        if (chunk != null)
             chunk.destroy();
     }
 
@@ -76,7 +76,7 @@ public class ChunkViewRenderer implements Listener {
 
     public void render(Program program) {
         uploadPendingChunks();
-        for(ChunkRenderer chunk : chunks.values()) {
+        for (ChunkRenderer chunk : chunks.values()) {
             chunk.render(program);
         }
     }
