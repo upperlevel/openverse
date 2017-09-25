@@ -9,19 +9,22 @@ import org.joml.Matrix4f;
 import xyz.upperlevel.openverse.world.block.Block;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
 public class BlockModel {
     private final AABBf aabb;
-    private Set<BlockPart> parts = new HashSet<>();
+    private List<BlockPart> parts;
 
     public BlockModel() {
         this.aabb = new AABBf();
+        this.parts = new ArrayList<>();
     }
 
-    public BlockModel(Set<BlockPart> parts) {
+    public BlockModel(List<BlockPart> parts) {
         this();
         this.parts = parts;
     }
@@ -60,6 +63,6 @@ public class BlockModel {
     }
 
     public BlockModel copy() {
-        return new BlockModel(new HashSet<>(parts));
+        return new BlockModel(new ArrayList<>(parts));
     }
 }

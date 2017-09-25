@@ -3,10 +3,8 @@ package xyz.upperlevel.openverse.network;
 import io.netty.buffer.ByteBuf;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 public final class SerialUtil {
     public static final Charset CHARSET = StandardCharsets.UTF_8;

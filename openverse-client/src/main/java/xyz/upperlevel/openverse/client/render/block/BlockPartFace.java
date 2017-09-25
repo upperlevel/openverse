@@ -44,7 +44,8 @@ public class BlockPartFace {
     }
 
     public int store(Block block, Matrix4f transform, ByteBuffer buffer) {
-        BlockModel neighbor = BlockTypeModelMapper.model(block.getRelative(facing.dirX, facing.dirY, facing.dirZ).getState());
+        Block rel = block.getRelative(facing.dirX, facing.dirY, facing.dirZ);
+        BlockModel neighbor = rel == null ? null : BlockTypeModelMapper.model(rel.getState());
         // checks if the face is hidden
         if (neighbor != null && neighbor.getAabb().testAABB(mirroredAabb) && neighbor.testAabbCarefully(mirroredAabb)) {
             return 0;

@@ -8,5 +8,5 @@ public enum ChunkCompileMode {
     /**
      * Done async (
      */
-    ASYNC;
+    ASYNC
 }

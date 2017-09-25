@@ -1,6 +1,5 @@
 package xyz.upperlevel.openverse.server.world;
 
-import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.World;
 

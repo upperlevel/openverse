@@ -69,18 +69,6 @@ public class ChunkCompileTask {
         }
     }
 
-    public void useBuffer(VertexBuffer buffer) {
-        stateLock.lock();
-        try {
-            if (state != State.PENDING) {
-                return;
-            }
-            this.buffer = buffer;
-        } finally {
-            stateLock.unlock();
-        }
-    }
-
     public void upload() {
         try {
             if (isValid()) {
@@ -112,13 +100,10 @@ public class ChunkCompileTask {
             case UPLOADING:
                 upload();
                 break;
-            case ABORTED:
-                if (buffer != null) {
-                    buffer.release();
-                }
             default:
                 break;
         }
+        destroy();
     }
 
     public boolean isValid() {
@@ -137,7 +122,24 @@ public class ChunkCompileTask {
                 state = State.ABORTED;
                 return true;
             }
+            if (buffer != null) {
+                buffer.release();
+            }
             return false;
+        } finally {
+            stateLock.unlock();
+        }
+    }
+
+    public void destroy() {
+        stateLock.lock();
+        try {
+            if (state != State.DONE) {
+                state = State.ABORTED;
+            }
+            if (buffer != null) {
+                buffer.release();
+            }
         } finally {
             stateLock.unlock();
         }

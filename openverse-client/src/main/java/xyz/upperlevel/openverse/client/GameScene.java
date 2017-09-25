@@ -11,6 +11,7 @@ import xyz.upperlevel.openverse.client.world.WorldViewer;
 import xyz.upperlevel.openverse.event.ShutdownEvent;
 import xyz.upperlevel.openverse.launcher.OpenverseLauncher;
 import xyz.upperlevel.ulge.game.Scene;
+import xyz.upperlevel.ulge.opengl.buffer.Vao;
 import xyz.upperlevel.ulge.window.Window;
 import xyz.upperlevel.ulge.window.event.CursorMoveEvent;
 import xyz.upperlevel.ulge.window.event.KeyChangeEvent;
@@ -91,7 +92,7 @@ public class GameScene implements Scene, Listener {
 
     @Override
     public void onFps() {
-        Openverse.logger().info("Fps: " + OpenverseLauncher.get().getGame().getFps() + " chunks: " + viewer.getWorldSession().getChunkView().getChunks().size());
+        Openverse.logger().info("Fps: " + OpenverseLauncher.get().getGame().getFps() + " chunks: " + viewer.getWorldSession().getChunkView().getChunks().size() + ", vaos:" + Vao.instances);
     }
 
     @EventHandler

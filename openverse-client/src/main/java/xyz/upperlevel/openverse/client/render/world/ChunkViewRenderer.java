@@ -26,8 +26,7 @@ public class ChunkViewRenderer implements Listener {
 
     private final Program program;
     private ClientWorld world;
-    private VertexBufferPool vertexProvider = new VertexBufferPool(5);
-    private VertexBuffer syncBuffer = new VertexBuffer(null);
+    private VertexBufferPool vertexProvider = new VertexBufferPool(10);
     private ExecutorService detachedChunkCompiler = Executors.newSingleThreadExecutor(t -> new Thread(t, "Chunk Compiler thread"));
     private Queue<ChunkCompileTask> pendingTasks = new ArrayDeque<>(10);
 
@@ -85,7 +84,6 @@ public class ChunkViewRenderer implements Listener {
     public void uploadPendingChunks() {
         ChunkCompileTask task;
         while ((task = pendingTasks.poll()) != null) {
-            task.useBuffer(syncBuffer);
             task.completeNow();
         }
     }

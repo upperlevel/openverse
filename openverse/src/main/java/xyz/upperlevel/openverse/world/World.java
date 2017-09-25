@@ -57,8 +57,8 @@ public class World {
     }
 
     public Block getBlock(int x, int y, int z) {
-        return   getChunk(x >> 4 , y >> 4 , z >> 4 )
-                .getBlock(x & 0xF, y & 0xF, z & 0xF);
+        Chunk chunk = getChunk(x >> 4 , y >> 4 , z >> 4);
+        return chunk == null ? null : chunk.getBlock(x & 0xF, y & 0xF, z & 0xF);
     }
 
     public Block getBlock(double x, double y, double z) {

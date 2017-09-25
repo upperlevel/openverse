@@ -86,7 +86,7 @@ public class PlayerChunkMap implements Listener {
                 loc.z + radius
         );
 
-        boolean apart = !(oldAabb.testPoint(newAabb.minX, newAabb.minY, newAabb.minZ) || oldAabb.testPoint(newAabb.maxX, newAabb.maxY, newAabb.maxZ));
+        boolean apart = !oldAabb.testAABB(newAabb);
 
         for (int x = -radius; x <= radius; x++) {
             for (int y = -radius; y <= radius; y++) {
