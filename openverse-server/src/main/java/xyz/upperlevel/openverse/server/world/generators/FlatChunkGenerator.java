@@ -4,6 +4,7 @@ import lombok.Getter;
 import xyz.upperlevel.openverse.server.world.ChunkGenerator;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
+import xyz.upperlevel.openverse.world.chunk.ChunkPillar;
 
 @Getter
 public class FlatChunkGenerator implements ChunkGenerator {
@@ -19,11 +20,21 @@ public class FlatChunkGenerator implements ChunkGenerator {
     }
 
     @Override
+    public void buildHeightMap(ChunkPillar chunkPillar) {
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                chunkPillar.setHeight(x, z, maxHeight);
+            }
+        }
+        chunkPillar.setHeightMapGenerated(true);
+    }
+
+    @Override
     public void generate(Chunk chunk) {
-        int limitY = heightChunk == chunk.getY() ? maxHeight & 4 : heightChunk > chunk.getY() ? Chunk.HEIGHT : 0;
-        for (int x = 0; x < Chunk.WIDTH; x++) {
-            for (int y = 0; y < Chunk.HEIGHT; y++) {
-                for (int z = 0; z < Chunk.LENGTH; z++) {
+        int limitY = heightChunk == chunk.getY() ? maxHeight & 4 : (heightChunk > chunk.getY() ? 16 : 0);
+        for (int x = 0; x < 16; x++) {
+            for (int y = 0; y < 16; y++) {
+                for (int z = 0; z < 16; z++) {
                     chunk.setBlockType(x, y, z, y < limitY ? fullType : emptyType);
                 }
             }

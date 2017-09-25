@@ -22,18 +22,4 @@ public final class SerialUtil {
         out     .writeBytes(str.getBytes(CHARSET))
                 .writeByte(TERMINATOR);
     }
-
-
-    public static ChunkLocation readChunkLocation(ByteBuf in) {
-        return new ChunkLocation(
-                in.readInt(),
-                in.readInt(),
-                in.readInt()
-        );
-    }
-    public static void writeChunkLocation(ChunkLocation loc, ByteBuf out) {
-        out.writeInt(loc.x);
-        out.writeInt(loc.y);
-        out.writeInt(loc.z);
-    }
 }

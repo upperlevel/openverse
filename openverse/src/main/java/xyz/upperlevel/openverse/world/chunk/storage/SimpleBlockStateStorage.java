@@ -5,6 +5,7 @@ import xyz.upperlevel.openverse.world.chunk.storage.palette.ArrayStatePalette;
 import xyz.upperlevel.openverse.world.chunk.storage.palette.BlockStatePalette;
 import xyz.upperlevel.openverse.world.chunk.storage.palette.HashStatePalette;
 import xyz.upperlevel.openverse.world.chunk.storage.palette.RegistryStatePalette;
+import xyz.upperlevel.openverse.world.chunk.storage.utils.VariableBitArray;
 
 import static xyz.upperlevel.openverse.world.chunk.storage.BlockStorage.AIR_STATE;
 
@@ -19,7 +20,7 @@ public class SimpleBlockStateStorage implements BlockStateStorage {
 
 
     @Override
-    public BlockState get(int x, int y, int z) {
+    public BlockState getBlockState(int x, int y, int z) {
         return get(index(x, y, z));
     }
 
@@ -28,7 +29,7 @@ public class SimpleBlockStateStorage implements BlockStateStorage {
     }
 
     @Override
-    public void set(int x, int y, int z, BlockState state) {
+    public void setBlockState(int x, int y, int z, BlockState state) {
         set(index(x, y, z), state);
     }
 

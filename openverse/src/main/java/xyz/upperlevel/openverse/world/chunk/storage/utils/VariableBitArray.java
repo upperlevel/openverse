@@ -1,4 +1,4 @@
-package xyz.upperlevel.openverse.world.chunk.storage;
+package xyz.upperlevel.openverse.world.chunk.storage.utils;
 
 
 import xyz.upperlevel.openverse.util.MathUtil;

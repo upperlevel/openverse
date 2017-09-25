@@ -1,7 +1,7 @@
 package xyz.upperlevel.openverse.world.chunk.storage;
 
 import xyz.upperlevel.openverse.world.World;
-import xyz.upperlevel.openverse.world.block.Block;
+import xyz.upperlevel.openverse.world.chunk.Block;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.block.blockentity.BlockEntity;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
@@ -12,34 +12,37 @@ import java.util.Collection;
 public interface BlockStorage {
     BlockState AIR_STATE = BlockType.AIR.getDefaultState();
 
+    World getWorld();
 
     Chunk getChunk();
-
-    default World getWorld() {
-        return getChunk().getWorld();
-    }
 
 
     Block getBlock(int x, int y, int z);
 
 
-    default BlockType getBlockType(int x, int y, int z) {
-        return getBlockState(x, y, z).getBlockType();
-    }
+    BlockType getBlockType(int x, int y, int z);
 
-    default void setBlockType(int x, int y, int z, BlockType type) {
-        setBlockState(x, y, z, type == null ? AIR_STATE : type.getDefaultBlockState());
-    }
+    void setBlockType(int x, int y, int z, BlockType blockType);
 
-    
-     BlockState getBlockState(int x, int y, int z);
 
-     void setBlockState(int x, int y, int z, BlockState state);
-    
-    
-     BlockEntity getBlockEntity(int x, int y, int z);
-    
-     void setBlockEntity(int x, int y, int z, BlockEntity entity);
-    
-     Collection<BlockEntity> getBlockEntities();
+    BlockState getBlockState(int x, int y, int z);
+
+    void setBlockState(int x, int y, int z, BlockState blockState);
+
+
+    BlockEntity getBlockEntity(int x, int y, int z);
+
+    void setBlockEntity(int x, int y, int z, BlockEntity blockEntity);
+
+    Collection<BlockEntity> getBlockEntities();
+
+
+    int getBlockLight(int x, int y, int z);
+
+    void setBlockLight(int x, int y, int z, int blockLight);
+
+
+    int getBlockSkyLight(int x, int y, int z);
+
+    void setBlockSkyLight(int x, int y, int z, int blockSkyLight);
 }

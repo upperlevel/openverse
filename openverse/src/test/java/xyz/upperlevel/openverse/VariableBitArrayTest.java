@@ -1,7 +1,7 @@
 package xyz.upperlevel.openverse;
 
 import org.junit.Test;
-import xyz.upperlevel.openverse.world.chunk.storage.VariableBitArray;
+import xyz.upperlevel.openverse.world.chunk.storage.utils.VariableBitArray;
 
 import static org.junit.Assert.assertEquals;
 

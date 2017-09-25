@@ -40,7 +40,7 @@ public class ChunkViewRenderer implements Listener {
     }
 
     public void loadChunk(ChunkRenderer chunk) {
-        chunks.put(chunk.getLocation(), chunk);
+        chunks.put(chunk.getChunk().getLocation(), chunk);
     }
 
     public void unloadChunk(ChunkLocation location) {
@@ -107,7 +107,7 @@ public class ChunkViewRenderer implements Listener {
 
     @EventHandler
     public void onChunkUnload(ChunkUnloadEvent e) {
-        unloadChunk(e.getLocation());
+        unloadChunk(e.getChunk().getLocation());
     }
 
     @EventHandler

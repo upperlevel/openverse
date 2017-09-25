@@ -119,10 +119,10 @@ public class PlayerChunkMap implements Listener {
     public void setRadius(int radius) {
         boolean adding = radius > this.radius;
         for (ServerPlayer player : players) {
-            ChunkLocation loc = player.getLocation().getChunk().getLocation();
-            for (int x = loc.x - radius; x > loc.x + radius; x++) {
-                for (int y = loc.y - radius; y > loc.y + radius; y++) {
-                    for (int z = loc.z - radius; z > loc.z + radius; z++) {
+            Chunk chunk = player.getLocation().getChunk();
+            for (int x = chunk.getX() - radius; x > chunk.getX() + radius; x++) {
+                for (int y = chunk.getY() - radius; y > chunk.getY() + radius; y++) {
+                    for (int z = chunk.getZ() - radius; z > chunk.getZ() + radius; z++) {
                         if (x + y + z > (adding ? this.radius : radius)) {
                             ChunkLocation l = new ChunkLocation(x, y, z);
                             if (adding)
@@ -140,13 +140,13 @@ public class PlayerChunkMap implements Listener {
 
     private void addPlayer(ChunkLocation location, ServerPlayer player) {
         getOrCreateChunk(location).addPlayer(player);
-        player.getConnection().send(Openverse.channel(), new ChunkCreatePacket(world.getChunk(location)));
+        player.getConnection().send(Openverse.channel(), new ChunkCreatePacket(world.getChunk(location.x, location.y, location.z)));
     }
 
     private void removePlayer(ChunkLocation location, ServerPlayer player) {
-        chunks.computeIfPresent(location, (location1, playerChunk) -> {
+        chunks.computeIfPresent(location, (key, playerChunk) -> {
             playerChunk.removePlayer(player);
-            player.getConnection().send(Openverse.channel(), new ChunkDestroyPacket(location));
+            player.getConnection().send(Openverse.channel(), new ChunkDestroyPacket(location.x, location.y, location.z));
             return playerChunk.isEmpty() ? null : playerChunk;
         });
     }

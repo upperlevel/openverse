@@ -1,12 +1,10 @@
 package xyz.upperlevel.openverse.client.render.block;
 
 import com.google.common.base.Preconditions;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.joml.AABBf;
 import org.joml.Matrix4f;
-import xyz.upperlevel.openverse.world.block.Block;
+import xyz.upperlevel.openverse.world.chunk.Block;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;

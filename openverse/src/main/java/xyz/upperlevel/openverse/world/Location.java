@@ -5,7 +5,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
-import xyz.upperlevel.openverse.world.block.Block;
+import xyz.upperlevel.openverse.world.chunk.Block;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 
 import static java.lang.Math.floor;

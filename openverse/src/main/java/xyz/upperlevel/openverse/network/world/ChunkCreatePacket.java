@@ -9,6 +9,7 @@ import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
+import xyz.upperlevel.openverse.world.chunk.ChunkPillar;
 
 import java.util.Arrays;
 
@@ -17,72 +18,56 @@ import static xyz.upperlevel.openverse.network.SerialUtil.*;
 @Getter
 @NoArgsConstructor
 public class ChunkCreatePacket implements Packet {
-    private ChunkLocation location;
-    private int[][][] blockTypes;
+    private int x, y, z;
+    private int blockTypes[];
 
     public ChunkCreatePacket(Chunk chunk) {
-        this.location = chunk.getLocation();
-        this.blockTypes = new int[16][16][16];
-        for (int ix = 0; ix < 16; ix++) {
-            for (int iy = 0; iy < 16; iy++) {
-                for (int iz = 0; iz < 16; iz++) {
-                    BlockType ty = chunk.getBlockType(ix, iy, iz);
-                    if (ty != null && ty != BlockType.AIR) {
-                        this.blockTypes[ix][iy][iz] = ty.getRawId();
+        this.x = chunk.getX();
+        this.y = chunk.getY();
+        this.z = chunk.getZ();
+        this.blockTypes = new int[16 * 16 * 16];
+        for (int x = 0; x < 16; x++) {
+            for (int y = 0; y < 16; y++) {
+                for (int z = 0; z < 16; z++) {
+                    BlockType bType = chunk.getBlockType(x, y, z);
+                    if (bType != null && bType != BlockType.AIR) {
+                        blockTypes[x << 8 | y << 4 | z] = bType.getRawId();
                     }
                 }
             }
         }
     }
 
-    public int getBlockType(int x, int y, int z) {
-        return blockTypes[x][y][z];
-    }
-
-    public Chunk getChunk(World world) {
-        Chunk chk = new Chunk(world, location);
-        for (int x = 0; x < Chunk.WIDTH; x++) {
-            for (int y = 0; y < Chunk.HEIGHT; y++) {
-                for (int z = 0; z < Chunk.LENGTH; z++) {
-                    if (blockTypes[x][y][z] != 0) {
-                        BlockType ty = Openverse.resources().blockTypes().entry(blockTypes[x][y][z]);
-                        if (ty == null) {
-                            Openverse.logger().warning("Unsolved id in ChunkCreatePacket: " + blockTypes[x][y][z]);
-                        }
-                        chk.setBlockType(x, y, z, ty);
-                    }
+    public Chunk resolveChunk(World world) {
+        Chunk chunk = world.getChunkPillar(x, z).getChunk(y);
+        for (int i = 0; i < 16 * 16 * 16; i++) {
+            if (blockTypes[i] != 0) {
+                BlockType bType = Openverse.resources().blockTypes().entry(blockTypes[i]);
+                if (bType == null) {
+                    Openverse.logger().warning("Unresolved id in ChunkCreatePacket: " + blockTypes[i]);
                 }
+                chunk.setBlockType(i >> 8, i >> 4 & 0xF, i & 0xF, bType);
             }
         }
-        return chk;
+        return chunk;
     }
 
     @Override
     public void toData(ByteBuf out) {
-        //Location
-        writeChunkLocation(location, out);
-
-        //Blocks
-        for (int x = 0; x < 16; x++) {
-            for (int y = 0; y < 16; y++) {
-                for (int z = 0; z < 16; z++) {
-                    out.writeInt(getBlockType(x, y, z));
-                }
-            }
-        }
+        out.writeInt(x);
+        out.writeInt(y);
+        out.writeInt(z);
+        for (int i = 0; i < 16 * 16 * 16; i++)
+            out.writeInt(blockTypes[i]);
     }
 
     @Override
     public void fromData(ByteBuf in) {
-        location = readChunkLocation(in);
-        blockTypes = new int[16][16][16];
-
-        for (int x = 0; x < 16; x++) {
-            for (int y = 0; y < 16; y++) {
-                for (int z = 0; z < 16; z++) {
-                    blockTypes[x][y][z] = in.readInt();
-                }
-            }
-        }
+        x = in.readInt();
+        y = in.readInt();
+        z = in.readInt();
+        blockTypes = new int[16 * 16 * 16];
+        for (int i = 0; i < blockTypes.length; i++)
+            blockTypes[i] = in.readInt();
     }
 }

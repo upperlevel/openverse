@@ -1,6 +1,6 @@
 package xyz.upperlevel.openverse.world.block.blockentity;
 
-import xyz.upperlevel.openverse.world.block.Block;
+import xyz.upperlevel.openverse.world.chunk.Block;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 

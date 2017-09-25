@@ -5,9 +5,8 @@ import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import xyz.upperlevel.openverse.client.render.block.BlockModel;
 import xyz.upperlevel.openverse.client.render.block.BlockTypeModelMapper;
-import xyz.upperlevel.openverse.client.render.block.Facing;
 import xyz.upperlevel.openverse.client.render.world.util.VertexBufferPool;
-import xyz.upperlevel.openverse.world.block.Block;
+import xyz.upperlevel.openverse.world.chunk.Block;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
@@ -18,10 +17,6 @@ import xyz.upperlevel.ulge.opengl.shader.Uniform;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
-import java.util.List;
-
-import static xyz.upperlevel.openverse.world.chunk.Chunk.*;
 
 /**
  * This class renders a chunk in a specified location.
@@ -29,7 +24,6 @@ import static xyz.upperlevel.openverse.world.chunk.Chunk.*;
 @Getter
 public class ChunkRenderer {
     private final Program program;
-    private final ChunkLocation location;
     private final ChunkViewRenderer view;
     private Chunk chunk;
     private Vao vao;
@@ -50,7 +44,6 @@ public class ChunkRenderer {
     public ChunkRenderer(ChunkViewRenderer view, Chunk chunk, Program program) {
         this.view = view;
         this.program = program;
-        this.location = chunk.getLocation();
         this.chunk = chunk;
         this.modelLoc = program.uniformer.get("model");
         setup();
@@ -80,9 +73,9 @@ public class ChunkRenderer {
         BlockStorage storage = chunk.getBlockStorage();
         int vertexCount = 0;
         int dataCount = 0;
-        for (int x = 0; x < WIDTH; x++) {
-            for (int y = 0; y < HEIGHT; y++) {
-                for (int z = 0; z < LENGTH; z++) {
+        for (int x = 0; x < 16; x++) {
+            for (int y = 0; y < 16; y++) {
+                for (int z = 0; z < 16; z++) {
                     BlockModel model = BlockTypeModelMapper.model(storage.getBlockState(x, y, z));
                     if (model != null) {
                         vertexCount += model.getVerticesCount();
@@ -109,7 +102,7 @@ public class ChunkRenderer {
         vbo.unbind();
         vao.unbind();
 
-        model = new Matrix4f().translation(location.x << 4, location.y << 4, location.z << 4).get(BufferUtils.createFloatBuffer(16));
+        model = new Matrix4f().translation(chunk.getX() << 4, chunk.getY() << 4, chunk.getZ() << 4).get(BufferUtils.createFloatBuffer(16));
     }
 
     public ChunkCompileTask createCompileTask(VertexBufferPool pool) {
@@ -124,9 +117,9 @@ public class ChunkRenderer {
         BlockStorage storage = chunk.getBlockStorage();
         int vertexCount = 0;
         Matrix4f in = new Matrix4f();
-        for (int x = 0; x < WIDTH; x++) {
-            for (int y = 0; y < HEIGHT; y++) {
-                for (int z = 0; z < LENGTH; z++) {
+        for (int x = 0; x < 16; x++) {
+            for (int y = 0; y < 16; y++) {
+                for (int z = 0; z < 16; z++) {
                     Block block = storage.getBlock(x, y, z);
                     BlockState state = block.getState();
                     if (state != null) {

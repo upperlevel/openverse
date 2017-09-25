@@ -10,17 +10,17 @@ import xyz.upperlevel.openverse.world.World;
 
 public class ClientWorld extends World implements PacketListener {
     public ClientWorld(String name) {
-        super(name); // may the client know world name?
+        super(name);
         Openverse.channel().register(this);
     }
 
     @PacketHandler
     public void onChunkCreate(Connection conn, ChunkCreatePacket pkt) {
-        loadChunk(pkt.getLocation(), pkt.getChunk(this));
+        setChunk(pkt.getX(), pkt.getY(), pkt.getZ(), pkt.resolveChunk(this));
     }
 
     @PacketHandler
     public void onChunkDestroy(Connection conn, ChunkDestroyPacket pkt) {
-        unloadChunk(pkt.getLocation());
+        unloadChunk(pkt.getX(), pkt.getY(), pkt.getZ());
     }
 }

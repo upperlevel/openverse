@@ -5,7 +5,7 @@ import org.joml.AABBf;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import xyz.upperlevel.openverse.util.config.Config;
-import xyz.upperlevel.openverse.world.block.Block;
+import xyz.upperlevel.openverse.world.chunk.Block;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;

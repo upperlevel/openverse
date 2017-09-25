@@ -1,0 +1,13 @@
+{
+  "defaults": {
+    "model": "client/resources/blocks/models/grass.json"
+  },
+  "variants": [
+    {
+      "state": {
+        "dry": "true"
+      },
+      "model": "client/resources/blocks/models/dry_grass.json"
+    }
+  ]
+}

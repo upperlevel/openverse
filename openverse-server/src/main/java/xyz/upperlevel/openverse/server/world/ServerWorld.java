@@ -2,12 +2,11 @@ package xyz.upperlevel.openverse.server.world;
 
 import lombok.Getter;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.server.world.generators.SimpleWorldGenerator;
-import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.server.world.generators.FlatChunkGenerator;
+import xyz.upperlevel.openverse.server.world.generators.SimpleWorldGenerator;
 import xyz.upperlevel.openverse.world.World;
+import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
-import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 
 @Getter
 public class ServerWorld extends World {
@@ -17,12 +16,12 @@ public class ServerWorld extends World {
     public ServerWorld(String name) {
         super(name);
         this.generator = new SimpleWorldGenerator();
-        this.chunkMap = new PlayerChunkMap(this, 4);
+        this.chunkMap = new PlayerChunkMap(this, 8);
     }
 
     @Override
-    public Chunk getChunk(ChunkLocation loc) {
-        Chunk chk = super.getChunk(loc);
+    public Chunk getChunk(int x, int y, int z) {
+        Chunk chk = super.getChunk(x, y, z);
         generator.generate(chk);
         return chk;
     }
