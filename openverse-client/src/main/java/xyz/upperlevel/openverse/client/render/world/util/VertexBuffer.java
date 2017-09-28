@@ -6,7 +6,7 @@ import xyz.upperlevel.openverse.Openverse;
 
 import java.nio.ByteBuffer;
 
-import static xyz.upperlevel.openverse.util.MathUtil.roundUp;
+import static xyz.upperlevel.openverse.util.math.MathUtil.roundUp;
 
 public class VertexBuffer {
     public static final int CAPACITY_STEP = 2 * 1024 * 1024;

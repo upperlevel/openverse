@@ -1,7 +1,7 @@
 package xyz.upperlevel.openverse.world.chunk.storage.utils;
 
 
-import xyz.upperlevel.openverse.util.MathUtil;
+import xyz.upperlevel.openverse.util.math.MathUtil;
 
 /**
  * An array with entries of variable length
