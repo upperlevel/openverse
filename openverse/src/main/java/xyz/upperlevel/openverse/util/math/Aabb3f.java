@@ -1,26 +1,19 @@
 package xyz.upperlevel.openverse.util.math;
 
 import lombok.EqualsAndHashCode;
-import org.joml.Intersectiond;
-import org.joml.Vector3d;
-import org.joml.Vector3dc;
+import org.joml.*;
 
 @EqualsAndHashCode
-public class Aabb {
-    public static final Aabb ZERO = new Aabb(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-    public static final Aabb INFINITY = new Aabb(
-            Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY,
-            Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY
+public class Aabb3f {
+    public static final Aabb3f ZERO = new Aabb3f(0, 0, 0, 0, 0, 0);
+    public static final Aabb3f INFINITY = new Aabb3f(
+            Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY,
+            Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY
     );
 
-    public final double minX;
-    public final double minY;
-    public final double minZ;
-    public final double maxX;
-    public final double maxY;
-    public final double maxZ;
+    public final float minX, minY, minZ, maxX, maxY, maxZ;
 
-    public Aabb(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+    public Aabb3f(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
         this.minX = minX;
         this.minY = minY;
         this.minZ = minZ;
@@ -29,31 +22,27 @@ public class Aabb {
         this.maxZ = maxZ;
     }
 
-    public Aabb(Vector3d min, Vector3d max) {
-        this(
-                min.x,
-                min.y,
-                min.z,
-
-                max.x,
-                max.y,
-                max.z
-        );
+    public Aabb3f(Vector3f min, Vector3f max) {
+        this(min.x, min.y, min.z, max.x, max.y, max.z);
     }
 
-    public boolean inside(double x, double y, double z) {
+    public boolean inside(float x, float y, float z) {
         return x >= minX && y >= minY && z >= minZ && x <= maxX && y <= maxY && z <= maxZ;
     }
 
-    public boolean inside(Vector3dc point) {
+    public boolean inside(Vector3fc point) {
         return inside(point.x(), point.y(), point.z());
     }
 
-    public boolean intersectSphere(double centerX, double centerY, double centerZ, double radiusSquared) {
+    public boolean inside(Aabb3f aabb) {
+        return aabb.minX >= minX && aabb.minY >= minY && aabb.minZ >= minZ && aabb.maxX <= maxX && aabb.maxY <= maxY && aabb.maxZ <= maxZ;
+    }
+
+    public boolean intersectSphere(float centerX, float centerY, float centerZ, float radiusSquared) {
         return Intersectiond.testAabSphere(minX, minY, minZ, maxX, maxY, maxZ, centerX, centerY, centerZ, radiusSquared);
     }
 
-    public boolean intersect(Aabb other) {
+    public boolean intersect(Aabb3f other) {
         return  this.maxX >= other.minX &&
                 this.maxY >= other.minY &&
                 this.maxZ >= other.minZ &&
@@ -62,8 +51,8 @@ public class Aabb {
                 this.minZ <= other.maxZ;
     }
 
-    public Aabb grow(double x, double y, double z) {
-        return new Aabb(
+    public Aabb3f grow(float x, float y, float z) {
+        return new Aabb3f(
                 x < 0 ? minX - x : minX,
                 y < 0 ? minY - y : minY,
                 z < 0 ? minZ - z : minZ,
@@ -73,8 +62,8 @@ public class Aabb {
         );
     }
 
-    public Aabb shrink(double x, double y, double z) {
-        return new Aabb(
+    public Aabb3f shrink(float x, float y, float z) {
+        return new Aabb3f(
                 x > 0 ? minX + x : minX,
                 y > 0 ? minY + y : minY,
                 z > 0 ? minZ + z : minZ,
@@ -84,8 +73,8 @@ public class Aabb {
         );
     }
 
-    public Aabb union(Aabb other) {
-        return new Aabb(
+    public Aabb3f union(Aabb3f other) {
+        return new Aabb3f(
                 this.minX > other.minX ? this.minX : other.minX,
                 this.minY > other.minY ? this.minY : other.minY,
                 this.minZ > other.minZ ? this.minZ : other.minZ,
@@ -95,8 +84,8 @@ public class Aabb {
         );
     }
 
-    public Aabb translate(double x, double y, double z) {
-        return new Aabb(
+    public Aabb3f translate(float x, float y, float z) {
+        return new Aabb3f(
                 this.minX + x,
                 this.minY + y,
                 this.minZ + z,
@@ -106,7 +95,7 @@ public class Aabb {
         );
     }
 
-    public Aabb translate(Vector3d vec) {
+    public Aabb3f translate(Vector3f vec) {
         return translate(vec.x, vec.y, vec.z);
     }
 }
