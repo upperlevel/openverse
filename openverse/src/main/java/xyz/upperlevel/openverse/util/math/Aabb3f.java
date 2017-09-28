@@ -11,7 +11,8 @@ public class Aabb3f {
             Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY
     );
 
-    public final float minX, minY, minZ, maxX, maxY, maxZ;
+    public final float minX, minY, minZ;
+    public final float maxX, maxY, maxZ;
 
     public Aabb3f(float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
         this.minX = minX;
