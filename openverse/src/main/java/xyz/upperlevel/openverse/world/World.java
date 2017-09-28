@@ -3,12 +3,15 @@ package xyz.upperlevel.openverse.world;
 import lombok.Getter;
 import lombok.Setter;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.world.block.state.BlockState;
+import xyz.upperlevel.openverse.world.block.state.BlockStateRegistry;
 import xyz.upperlevel.openverse.world.chunk.Block;
 import xyz.upperlevel.openverse.world.chunk.*;
 import xyz.upperlevel.openverse.world.event.ChunkLoadEvent;
 import xyz.upperlevel.openverse.world.event.ChunkUnloadEvent;
 
 import static java.lang.Math.floor;
+import static xyz.upperlevel.openverse.world.chunk.storage.BlockStorage.AIR_STATE;
 
 @Getter
 @Setter
@@ -72,13 +75,32 @@ public class World {
 
     /**
      * Gets the {@link Block} at the given world coordinates.
+     * It will create a new instance of the {@link Block} object.
      */
     public Block getBlock(int x, int y, int z) {
-        Chunk chunk = getChunk(x >> 4 , y >> 4 , z >> 4);
+        Chunk chunk = getChunkFromBlock(x, y, z);
         return chunk == null ? null : chunk.getBlock(x & 0xF, y & 0xF, z & 0xF);
     }
 
     public Block getBlock(double x, double y, double z) {
         return getBlock((int) floor(x), (int) floor(y), (int) floor(z));
+    }
+
+
+    /**
+     * Gets the {@link BlockState} at the given coordinates.
+     */
+    public BlockState getBlockState(int x, int y, int z) {
+        Chunk chunk = getChunkFromBlock(x, y, z);
+        return chunk == null ? AIR_STATE : chunk.getBlockState(x & 0xF, y & 0xF, z & 0xF);
+    }
+
+    /**
+     * Sets the {@link BlockState} at the given coordinates to the given one.
+     */
+    public void setBlockState(int x, int y, int z, BlockState blockState) {
+        Chunk chunk = getChunkFromBlock(x, y, z);
+        if (chunk != null)
+            chunk.setBlockState(x & 0xF, y & 0xF, z & 0xF, blockState);
     }
 }

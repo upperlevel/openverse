@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.World;
+import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.chunk.storage.BlockStorage;
 import xyz.upperlevel.openverse.world.chunk.storage.SimpleBlockStorage;
 
@@ -37,5 +38,13 @@ public class Chunk {
 
     public void setBlockType(int x, int y, int z, BlockType type) {
         blockStorage.setBlockType(x, y, z, type);
+    }
+
+    public BlockState getBlockState(int x, int y, int z) {
+        return blockStorage.getBlockState(x, y, z);
+    }
+
+    public void setBlockState(int x, int y, int z, BlockState blockState) {
+        blockStorage.setBlockState(x, y, z, blockState);
     }
 }
