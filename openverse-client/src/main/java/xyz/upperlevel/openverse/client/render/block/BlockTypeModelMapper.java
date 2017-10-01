@@ -40,6 +40,10 @@ public final class BlockTypeModelMapper {
         return modelMappers.get(type);
     }
 
+    public static void bake() {
+        modelMappers.values().forEach(BlockModelMapper::bake);
+    }
+
     public static BlockModel model(BlockState state) {
         BlockModelMapper bsm = modelMapper(state.getBlockType());
         if (bsm != null) {

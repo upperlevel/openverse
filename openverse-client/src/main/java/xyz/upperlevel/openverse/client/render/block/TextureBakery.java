@@ -30,10 +30,15 @@ import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 public final class TextureBakery {
     public static final int NULL_LAYER = 0;
 
-    public static final ImageContent NULL = new ImageContent(1, 1, (ByteBuffer) BufferUtils.createByteBuffer(4)
-            .put(new byte[]{(byte) 255, (byte) 255, (byte) 255, (byte) 255})
-            .flip()
-    );
+    public static final ImageContent NULL;
+
+    static {
+        ByteBuffer data = (ByteBuffer) BufferUtils.createByteBuffer(4 * 16 * 16);
+        for (int i = 0; i < 16 * 16; i++)
+            data.put(new byte[]{(byte) 255, (byte) 255, (byte) 255, (byte) 255});
+        data.flip();
+        NULL = new ImageContent(16, 16, data);
+    }
 
     private static Texture2dArray textureArray;
     private static Map<Path, ImageContent> registered = new HashMap<>();

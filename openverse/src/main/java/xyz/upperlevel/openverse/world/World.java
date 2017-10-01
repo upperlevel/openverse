@@ -2,13 +2,9 @@ package xyz.upperlevel.openverse.world;
 
 import lombok.Getter;
 import lombok.Setter;
-import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
-import xyz.upperlevel.openverse.world.block.state.BlockStateRegistry;
 import xyz.upperlevel.openverse.world.chunk.Block;
 import xyz.upperlevel.openverse.world.chunk.*;
-import xyz.upperlevel.openverse.world.event.ChunkLoadEvent;
-import xyz.upperlevel.openverse.world.event.ChunkUnloadEvent;
 
 import static java.lang.Math.floor;
 import static xyz.upperlevel.openverse.world.chunk.storage.BlockStorage.AIR_STATE;
@@ -35,8 +31,8 @@ public class World {
     /**
      * Sets the {@link ChunkPillar} at the given chunk coordinates to the given one.
      */
-    public void setChunkPillar(int x, int z, ChunkPillar chunkPillar) {
-        chunkPillarProvider.setChunkPillar(x, z, chunkPillar);
+    public void setChunkPillar(ChunkPillar chunkPillar) {
+        chunkPillarProvider.setChunkPillar(chunkPillar);
     }
 
     /**

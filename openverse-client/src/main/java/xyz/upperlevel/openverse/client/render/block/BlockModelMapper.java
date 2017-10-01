@@ -35,7 +35,7 @@ public class BlockModelMapper {
         if (part == null) {
             throw new IllegalStateException("Cannot find " + path + " from " + type.getId());
         }
-        model.with(part);
+        model.addBlockPart(part);
         System.out.println("Added " + path + " to def state of " + type.getId());
         models.put(reg.getDefaultState(), model);
 
@@ -55,7 +55,7 @@ public class BlockModelMapper {
                             Openverse.logger().warning("Cannot parse value \"" + prop.getValue() + "\" of property: " + p.getName() + " ");
                     }
                     path = Paths.get(varCfg.getStringRequired("model"));
-                    model.with(BlockModelRegistry.load(path.toFile()));
+                    model.addBlockPart(BlockModelRegistry.load(path.toFile()));
                     models.put(state, model);
                 }
             }
@@ -70,5 +70,9 @@ public class BlockModelMapper {
      */
     public BlockModel getModel(BlockState state) {
         return models.get(state);
+    }
+
+    public void bake() {
+        models.values().forEach(BlockModel::bake);
     }
 }

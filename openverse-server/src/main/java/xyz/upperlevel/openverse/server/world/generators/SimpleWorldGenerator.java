@@ -8,8 +8,8 @@ import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkPillar;
 
 public class SimpleWorldGenerator implements ChunkGenerator {
-    private static final int MAX_HEIGHT = 10;
-    private static final double FREQUENCY = 60.0;
+    private static final int MAX_HEIGHT = 50;
+    private static final double FREQUENCY = 100;
 
     private final BlockType dirtType, grassType;
 
@@ -33,7 +33,7 @@ public class SimpleWorldGenerator implements ChunkGenerator {
     @Override
     public void generate(Chunk chunk) {
         ChunkPillar chkPil = chunk.getChunkPillar();
-        buildHeightMap(chkPil); // TODO WRONG DOING IT HERE!
+        buildHeightMap(chkPil);
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 int h = chkPil.getHeight(x, z);

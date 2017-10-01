@@ -1,0 +1,32 @@
+{
+  "from": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "to": {
+    "x": 1,
+    "y": 1,
+    "z": 1
+  },
+  "faces": {
+    "up": {
+      "texture": "client/resources/blocks/textures/test/test_top.png"
+    },
+    "down": {
+      "texture": "client/resources/blocks/textures/test/test_bottom.png"
+    },
+    "left": {
+      "texture": "client/resources/blocks/textures/test/test_left.png"
+    },
+    "right": {
+      "texture": "client/resources/blocks/textures/test/test_right.png"
+    },
+    "front": {
+      "texture": "client/resources/blocks/textures/test/test_front.png"
+    },
+    "back": {
+      "texture": "client/resources/blocks/textures/test/test_back.png"
+    }
+  }
+}

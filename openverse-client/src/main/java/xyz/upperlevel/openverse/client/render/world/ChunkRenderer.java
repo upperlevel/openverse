@@ -1,22 +1,17 @@
 package xyz.upperlevel.openverse.client.render.world;
 
 import lombok.Getter;
-import org.joml.Matrix4f;
-import org.lwjgl.BufferUtils;
+import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.render.block.BlockModel;
 import xyz.upperlevel.openverse.client.render.block.BlockTypeModelMapper;
 import xyz.upperlevel.openverse.client.render.world.util.VertexBufferPool;
-import xyz.upperlevel.openverse.world.chunk.Block;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
-import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 import xyz.upperlevel.openverse.world.chunk.storage.BlockStorage;
 import xyz.upperlevel.ulge.opengl.buffer.*;
 import xyz.upperlevel.ulge.opengl.shader.Program;
-import xyz.upperlevel.ulge.opengl.shader.Uniform;
 
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 
 /**
  * This class renders a chunk in a specified location.
@@ -28,11 +23,7 @@ public class ChunkRenderer {
     private Chunk chunk;
     private Vao vao;
     private Vbo vbo;
-    private Uniform modelLoc;
     private ChunkCompileTask compileTask;
-
-    //Cache
-    private FloatBuffer model;
 
     private int
             allocateVerticesCount = 0, // vertices to allocate on vbo init
@@ -45,7 +36,6 @@ public class ChunkRenderer {
         this.view = view;
         this.program = program;
         this.chunk = chunk;
-        this.modelLoc = program.uniformer.get("model");
         setup();
         reloadVertexSize();
         view.recompileChunk(this, ChunkCompileMode.ASYNC);
@@ -101,8 +91,6 @@ public class ChunkRenderer {
 
         vbo.unbind();
         vao.unbind();
-
-        model = new Matrix4f().translation(chunk.getX() << 4, chunk.getY() << 4, chunk.getZ() << 4).get(BufferUtils.createFloatBuffer(16));
     }
 
     public ChunkCompileTask createCompileTask(VertexBufferPool pool) {
@@ -116,22 +104,25 @@ public class ChunkRenderer {
     public int compile(ByteBuffer buffer) {
         BlockStorage storage = chunk.getBlockStorage();
         int vertexCount = 0;
-        Matrix4f in = new Matrix4f();
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
                 for (int z = 0; z < 16; z++) {
-                    Block block = storage.getBlock(x, y, z);
-                    BlockState state = block.getState();
+                    BlockState state = storage.getBlockState(x, y, z);
                     if (state != null) {
                         BlockModel model = BlockTypeModelMapper.model(state);
-                        if (model != null)
-                            vertexCount += model.store(block, in.translation(x, y, z), buffer);
+                        if (model != null) {
+                            vertexCount += model.renderOnBuffer(
+                                    chunk.getWorld(),
+                                    chunk.getX() * 16 + x,
+                                    chunk.getY() * 16 + y,
+                                    chunk.getZ() * 16 + z, buffer);
+                        }
                     }
                 }
             }
         }
         buffer.flip();
-        //Openverse.logger().info("Vertices computed for chunk at: " + location + " -> " + vertexCount);
+        //Openverse.logger().info("Vertices computed for chunk at: " + vertexCount);
         return vertexCount;
     }
 
@@ -144,8 +135,6 @@ public class ChunkRenderer {
     public void render(Program program) {
         //TODO: draw TileEntities
         if (drawVerticesCount != 0) {
-            //System.out.println("Rendering: " + location + " -> " + drawVerticesCount);
-            modelLoc.matrix4(model);
             vao.bind();
             vao.draw(DrawMode.QUADS, 0, drawVerticesCount);
         }

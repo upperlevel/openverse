@@ -4,9 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.lwjgl.opengl.GL11;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.client.render.block.BlockTypeModelMapper;
-import xyz.upperlevel.openverse.client.render.block.BlockModelRegistry;
-import xyz.upperlevel.openverse.client.render.block.TextureBakery;
+import xyz.upperlevel.openverse.client.render.block.*;
 import xyz.upperlevel.openverse.client.resource.ClientResources;
 import xyz.upperlevel.ulge.game.Scene;
 
@@ -30,8 +28,10 @@ public class ResourceScene implements Scene {
         BlockModelRegistry.loadFolder(new File("client/resources/blocks/models"));
         BlockTypeModelMapper.load(Openverse.resources().blockTypes().entry("grass"), Paths.get("client/resources/blocks/grass.json"));
         BlockTypeModelMapper.load(Openverse.resources().blockTypes().entry("dirt"), Paths.get("client/resources/blocks/dirt.json"));
+        BlockTypeModelMapper.load(Openverse.resources().blockTypes().entry("test"), Paths.get("client/resources/blocks/test.json"));
 
         TextureBakery.bake();
+        BlockTypeModelMapper.bake(); // bakes models
 
         Openverse.logger().info("Resources loaded in " + (System.currentTimeMillis() - init) + " ms.");
 

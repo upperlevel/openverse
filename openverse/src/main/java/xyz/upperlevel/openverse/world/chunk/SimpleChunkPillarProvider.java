@@ -11,24 +11,31 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class SimpleChunkPillarProvider implements ChunkPillarProvider {
     private final World world;
-    private final Map<ChunkPillarLocation, ChunkPillar> chunkPillarsMap = new HashMap<>();
+    private final Map<Long, ChunkPillar> chunkPillarsMap = new HashMap<>();
 
-    public ChunkPillar getChunkPillar(ChunkPillarLocation location) {
-        return chunkPillarsMap.computeIfAbsent(location, (key) -> new ChunkPillar(world, location.x, location.z));
+    private static long provideIndex(int x, int z) {
+        return ((long) x) << 32 | z;
     }
 
     @Override
     public ChunkPillar getChunkPillar(int x, int z) {
-        return getChunkPillar(new ChunkPillarLocation(x, z));
+        long i = provideIndex(x, z);
+        if (chunkPillarsMap.containsKey(i)) {
+            return chunkPillarsMap.get(i);
+        } else {
+            ChunkPillar res = new ChunkPillar(world, x, z);
+            chunkPillarsMap.put(i, res);
+            return res;
+        }
     }
 
     @Override
-    public void setChunkPillar(int x, int z, ChunkPillar chunkPillar) {
-        chunkPillarsMap.put(new ChunkPillarLocation(x, z), chunkPillar);
+    public void setChunkPillar(ChunkPillar chunkPillar) {
+        chunkPillarsMap.put(provideIndex(chunkPillar.getX(), chunkPillar.getZ()), chunkPillar);
     }
 
     @Override
     public boolean unloadChunkPillar(int x, int z) {
-        return chunkPillarsMap.remove(new ChunkPillarLocation(x, z)) != null;
+        return chunkPillarsMap.remove(provideIndex(x, z)) != null;
     }
 }

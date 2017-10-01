@@ -13,7 +13,7 @@ import xyz.upperlevel.openverse.world.chunk.storage.SimpleBlockStorage;
 public class Chunk {
     private final World world;
     private final ChunkPillar chunkPillar;
-    private final int x, y, z;
+    private final int y;
     private final ChunkLocation location;
 
     private BlockStorage blockStorage;
@@ -21,11 +21,23 @@ public class Chunk {
     public Chunk(ChunkPillar chunkPillar, int y) {
         this.world = chunkPillar.getWorld();
         this.chunkPillar = chunkPillar;
-        this.x = chunkPillar.getX();
         this.y = y;
-        this.z = chunkPillar.getZ();
-        this.location = new ChunkLocation(x, y, z);
+        this.location = new ChunkLocation(getX(), y, getZ());
         this.blockStorage = new SimpleBlockStorage(this);
+    }
+
+    /**
+     * The {@link Chunk} X is equal to the {@link ChunkPillar} X.
+     */
+    public int getX() {
+        return chunkPillar.getX();
+    }
+
+    /**
+     * The {@link Chunk} Z is equal to the {@link ChunkPillar} Z.
+     */
+    public int getZ() {
+        return chunkPillar.getZ();
     }
 
     public Block getBlock(int x, int y, int z) {

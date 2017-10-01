@@ -8,10 +8,12 @@ import xyz.upperlevel.openverse.world.block.blockentity.BlockEntity;
 
 @Getter
 public class BlockType {
-    public static final BlockType AIR = new BlockType("air");
+    public static final BlockType AIR = new BlockType("air", false);
     private final String id;
     @Setter
     private int rawId = -1;
+
+    protected boolean opaque;
 
     protected final BlockStateRegistry stateRegistry;
     private BlockState defaultBlockState;
@@ -20,6 +22,11 @@ public class BlockType {
         this.id = id;
         this.stateRegistry = createBlockState();
         setDefaultState(stateRegistry.getDefaultState());
+    }
+
+    public BlockType(String id, boolean opaque) {
+        this(id);
+        this.opaque = opaque;
     }
 
 

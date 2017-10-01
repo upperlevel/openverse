@@ -2,48 +2,83 @@ package xyz.upperlevel.openverse.client.render.block;
 
 import com.google.common.base.Preconditions;
 import lombok.Getter;
-import org.joml.AABBf;
-import org.joml.Matrix4f;
-import xyz.upperlevel.openverse.world.chunk.Block;
+import lombok.NoArgsConstructor;
+import xyz.upperlevel.openverse.util.math.Aabb3d;
+import xyz.upperlevel.openverse.util.math.Aabb3f;
+import xyz.upperlevel.openverse.world.World;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 @Getter
+@NoArgsConstructor
 public class BlockModel {
-    private final AABBf aabb;
-    private List<BlockPart> parts;
+    private Aabb3f aabb = Aabb3f.ZERO;
+    private List<BlockPart> blockParts = new ArrayList<>();
 
-    public BlockModel() {
-        this.aabb = new AABBf();
-        this.parts = new ArrayList<>();
+    private Map<Facing, List<BlockPartFace>> externalFaces = new HashMap<>();
+
+    public BlockModel(List<BlockPart> blockParts) {
+        for (BlockPart bp : blockParts)
+            addBlockPart(bp);
     }
 
-    public BlockModel(List<BlockPart> parts) {
-        this();
-        this.parts = parts;
-    }
-
-
-    public boolean testAabbCarefully(AABBf aabb) {
-        for (BlockPart part : parts)
-            if (part.getAabb().testAABB(aabb))
+    public boolean testAabbCarefully(Aabb3f aabb) {
+        for (BlockPart part : blockParts)
+            if (part.getAabb().inside(aabb))
                 return true;
         return false;
     }
 
-    public void with(BlockPart part) {
-        Preconditions.checkNotNull(part);
-        parts.add(part);
-        aabb.union(part.getAabb());
+    /**
+     * Loads external {@link BlockPartFace} from given {@link BlockPart}.
+     * External means faces on the border of the model.
+     */
+    private void loadExternalFaces(BlockPart blockPart) {
+        for (Map.Entry<Facing, BlockPartFace> face : blockPart.getFaces().entrySet()) {
+            switch (face.getKey()) {
+                case UP:
+                    if (blockPart.getAabb().maxY < 1f)
+                        break;
+                case DOWN:
+                    if (blockPart.getAabb().minY > 0f)
+                        break;
+                case RIGHT:
+                    if (blockPart.getAabb().maxX < 1f)
+                        break;
+                case LEFT:
+                    if (blockPart.getAabb().minX > 0f)
+                        break;
+                case FRONT:
+                    if (blockPart.getAabb().minZ > 0f)
+                        break;
+                case BACK:
+                    if (blockPart.getAabb().maxZ < 1f)
+                        break;
+                default:
+                    externalFaces.computeIfAbsent(face.getKey(), (key) -> new ArrayList<>()).add(face.getValue());
+            }
+        }
+    }
+
+    public void addBlockPart(BlockPart blockPart) {
+        Preconditions.checkNotNull(blockPart);
+        blockParts.add(blockPart);
+        aabb = aabb.union(blockPart.getAabb());
+        loadExternalFaces(blockPart);
+    }
+
+    public void bake() {
+        for (BlockPart p : blockParts)
+            p.bake();
     }
 
     public int getVerticesCount() {
         int cnt = 0;
-        for (BlockPart part : getParts())
+        for (BlockPart part : getBlockParts())
             cnt += part.getVerticesCount();
         return cnt;
     }
@@ -52,15 +87,15 @@ public class BlockModel {
         return getVerticesCount() * (3 + 3);
     }
 
-    public int store(Block block, Matrix4f in, ByteBuffer buffer) {
-        int vt = 0;
-        for (BlockPart p : parts) {
-            vt += p.store(block, new Matrix4f(in), buffer);
+    public int renderOnBuffer(World world, int x, int y, int z, ByteBuffer buffer) {
+        int v = 0;
+        for (BlockPart blockPart : blockParts) {
+            v += blockPart.renderOnBuffer(world, x, y, z, buffer);
         }
-        return vt;
+        return v;
     }
 
     public BlockModel copy() {
-        return new BlockModel(new ArrayList<>(parts));
+        return new BlockModel(new ArrayList<>(blockParts));
     }
 }

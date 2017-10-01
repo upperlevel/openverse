@@ -4,6 +4,7 @@ import lombok.Getter;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.server.world.generators.FlatChunkGenerator;
 import xyz.upperlevel.openverse.server.world.generators.SimpleWorldGenerator;
+import xyz.upperlevel.openverse.server.world.generators.SingleBlockGenerator;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
@@ -16,7 +17,7 @@ public class ServerWorld extends World {
     public ServerWorld(String name) {
         super(name);
         this.generator = new SimpleWorldGenerator();
-        this.chunkMap = new PlayerChunkMap(this, 8);
+        this.chunkMap = new PlayerChunkMap(this, 4);
     }
 
     @Override

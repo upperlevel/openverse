@@ -18,7 +18,8 @@ public class BlockTypeRegistry extends Registry<BlockType> {
     public BlockTypeRegistry() {
         register(AIR);
         register(new GrassType());
-        register(new BlockType("dirt"));
+        register(new BlockType("dirt", true));
+        register(new BlockType("test", true));
     }
 
     public void register(BlockType type) {

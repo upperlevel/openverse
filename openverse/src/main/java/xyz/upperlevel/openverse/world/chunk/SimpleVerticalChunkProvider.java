@@ -21,7 +21,13 @@ public class SimpleVerticalChunkProvider implements VerticalChunkProvider {
     }
 
     public Chunk getChunk(int y) {
-        return chunksMap.computeIfAbsent(y, (key) -> new Chunk(chunkPillar, y));
+        if (chunksMap.containsKey(y)) {
+            return chunksMap.get(y);
+        } else {
+            Chunk res = new Chunk(chunkPillar, y);
+            chunksMap.put(y, res);
+            return res;
+        }
     }
 
     @Override

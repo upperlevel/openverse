@@ -2,54 +2,65 @@ package xyz.upperlevel.openverse.client.render.block;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.joml.AABBf;
 import org.joml.AxisAngle4f;
 import org.joml.Vector3f;
+import xyz.upperlevel.openverse.util.math.Aabb2f;
+import xyz.upperlevel.openverse.util.math.Aabb3d;
+import xyz.upperlevel.openverse.util.math.Aabb3f;
 
 @Getter
 @RequiredArgsConstructor
 public enum Facing {
-    UP(0, 1, 0, new AxisAngle4f((float) (Math.PI / 2f), -1, 0, 0)),
-    DOWN(0, -1, 0, new AxisAngle4f((float) (Math.PI / 2f), 1, 0, 0)),
-    FRONT(0, 0, 1, new AxisAngle4f()),
-    BACK(0, 0, -1, new AxisAngle4f((float) Math.PI, 0, 1, 0)),
-    LEFT(-1, 0, 0, new AxisAngle4f((float) (Math.PI / 2f), 0, -1, 0)),
-    RIGHT(1, 0, 0, new AxisAngle4f((float) (Math.PI / 2f), 0, 1, 0));
+    UP(0, 1, 0),
+    DOWN(0, -1, 0),
+    FRONT(0, 0, -1),
+    BACK(0, 0, 1),
+    RIGHT(1, 0, 0),
+    LEFT(-1, 0, 0);
 
-    public final int dirX, dirY, dirZ;
-    public final AxisAngle4f angle;
+    public final int offsetX, offsetY, offsetZ;
 
-    public Vector3f getDir() {
-        return new Vector3f(dirX, dirY, dirZ);
+    /**
+     * Resolves the {@link Aabb2f} from the given {@link Aabb3f}.
+     * @param aabb the {@link Aabb3f} on which retrieve the {@link Aabb2f}
+     * @return the {@link Aabb2f}
+     */
+    public Aabb2f resolveAabb(Aabb3f aabb) {
+        switch (this) {
+            case UP:
+            case DOWN:
+                return new Aabb2f(aabb.minX, aabb.minZ, aabb.maxX, aabb.maxZ);
+            case FRONT:
+            case BACK:
+                return new Aabb2f(aabb.minX, aabb.minY, aabb.maxX, aabb.maxY);
+            case RIGHT:
+            case LEFT:
+                return new Aabb2f(aabb.minY, aabb.minZ, aabb.maxY, aabb.maxZ);
+            default:
+                return null;
+        }
     }
 
-    public AxisAngle4f getRot() {
-        return new AxisAngle4f(angle);
-    }
-
-    public AABBf resolveAabb(AABBf aabb) {
-        Vector3f v = new Vector3f(
-                dirX < 0 ? aabb.minX : aabb.maxX,
-                dirY < 0 ? aabb.minY : aabb.maxY,
-                dirZ < 0 ? aabb.minZ : aabb.maxZ
-        );
-        return new AABBf(v, v);
-    }
-
-    public AABBf mirrorAabb(AABBf aabb) {
-        AABBf mirrored = new AABBf(aabb);
-        if (dirX != 0) {
-            mirrored.minX = 1f - aabb.minX;
-            mirrored.maxX = 1f - aabb.maxX;
+    /**
+     * Gets the opposite {@link Facing} to this face.
+     * @return the opposite {@link Facing} to this face
+     */
+    public Facing getOpposite() {
+        switch (this) {
+            case UP:
+                return DOWN;
+            case DOWN:
+                return UP;
+            case FRONT:
+                return BACK;
+            case BACK:
+                return FRONT;
+            case RIGHT:
+                return LEFT;
+            case LEFT:
+                return RIGHT;
+            default:
+                return null;
         }
-        if (dirY != 0) {
-            mirrored.minY = 1f - aabb.minY;
-            mirrored.maxY = 1f - aabb.maxY;
-        }
-        if (dirZ != 0) {
-            mirrored.minZ = 1f - aabb.minZ;
-            mirrored.maxZ = 1f - aabb.maxZ;
-        }
-        return mirrored;
     }
 }

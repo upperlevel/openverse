@@ -26,15 +26,7 @@ public class Aabb3d {
     }
 
     public Aabb3d(Vector3d min, Vector3d max) {
-        this(
-                min.x,
-                min.y,
-                min.z,
-
-                max.x,
-                max.y,
-                max.z
-        );
+        this(min.x, min.y, min.z, max.x, max.y, max.z);
     }
 
     public boolean inside(double x, double y, double z) {
@@ -54,7 +46,7 @@ public class Aabb3d {
     }
 
     public boolean intersect(Aabb3d other) {
-        return  this.maxX >= other.minX &&
+        return this.maxX >= other.minX &&
                 this.maxY >= other.minY &&
                 this.maxZ >= other.minZ &&
                 this.minX <= other.maxX &&
