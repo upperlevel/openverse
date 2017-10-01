@@ -36,6 +36,11 @@ public class SimpleVerticalChunkProvider implements VerticalChunkProvider {
     }
 
     @Override
+    public boolean hasChunk(int y) {
+        return chunksMap.containsKey(y);
+    }
+
+    @Override
     public boolean unloadChunk(int y) {
         Chunk removed = chunksMap.remove(y);
         if (removed != null) {

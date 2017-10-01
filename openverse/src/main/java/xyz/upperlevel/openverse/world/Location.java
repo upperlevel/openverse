@@ -9,6 +9,7 @@ import xyz.upperlevel.openverse.world.chunk.Block;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 
 import static java.lang.Math.floor;
+import static java.lang.Math.toIntExact;
 
 public class Location {
 
@@ -58,142 +59,168 @@ public class Location {
         return world.getBlock(x, y, z);
     }
 
-    public void set(double x, double y, double z, double yaw, double pitch) {
+    public Location set(double x, double y, double z, double yaw, double pitch) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.yaw = yaw;
         this.pitch = pitch;
+        return this;
     }
 
-    public void set(double x, double y, double z) {
+    public Location set(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
+        return this;
     }
 
-    public void set(Location other) {
+    public Location set(Location other) {
         x = other.getX();
         y = other.getY();
         z = other.getZ();
         yaw = other.getYaw();
         pitch = other.getPitch();
+        return this;
     }
 
-    public void add(double x, double y, double z) {
+    public Location setRotation(double yaw, double pitch) {
+        this.yaw = yaw;
+        this.pitch = pitch;
+        return this;
+    }
+
+    public Location add(double x, double y, double z) {
         this.x += x;
         this.y += y;
         this.z += z;
+        return this;
     }
 
-    public void add(Vector3f vector) {
+    public Location add(Vector3f vector) {
         x += vector.x;
         y += vector.y;
         z += vector.z;
+        return this;
     }
 
-    public void add(Location location) {
+    public Location add(Location location) {
         x += location.x;
         y += location.y;
         z += location.z;
+        return this;
     }
 
-    public void add(Location location, Location dest) {
+    public Location add(Location location, Location dest) {
         dest.set(
                 x + location.getX(),
                 y + location.getY(),
                 z + location.getZ()
         );
+        return dest;
     }
 
-    public void sub(double x, double y, double z) {
+    public Location sub(double x, double y, double z) {
         this.x -= x;
         this.y -= y;
         this.z -= z;
+        return this;
     }
 
-    public void sub(Location location) {
+    public Location sub(Location location) {
         x -= location.getX();
         y -= location.getY();
         z -= location.getZ();
+        return this;
     }
 
-    public void sub(Location location, Location dest) {
+    public Location sub(Location location, Location dest) {
         dest.set(
                 x - location.getX(),
                 y - location.getY(),
                 z - location.getZ()
         );
+        return dest;
     }
 
 
-    public void mul(double m) {
+    public Location mul(double m) {
         this.x *= m;
         this.y *= m;
         this.z *= m;
+        return this;
     }
 
-    public void mul(double x, double y, double z) {
+    public Location mul(double x, double y, double z) {
         this.x *= x;
         this.y *= y;
         this.z *= z;
+        return this;
     }
 
-    public void mul(Location location) {
+    public Location mul(Location location) {
         this.x *= location.getX();
         this.y *= location.getY();
         this.z *= location.getZ();
+        return this;
     }
 
-    public void mul(Location location, Location dest) {
+    public Location mul(Location location, Location dest) {
         dest.set(
                 x * location.getX(),
                 y * location.getY(),
                 z * location.getZ()
         );
+        return dest;
     }
 
-    public void mul(double m, Location dest) {
+    public Location mul(double m, Location dest) {
         dest.set(
                 x * m,
                 y * m,
                 z * m
         );
+        return dest;
     }
 
 
-    public void div(double m) {
+    public Location div(double m) {
         this.x /= m;
         this.y /= m;
         this.z /= m;
+        return this;
     }
 
-    public void div(double x, double y, double z) {
+    public Location div(double x, double y, double z) {
         this.x /= x;
         this.y /= y;
         this.z /= z;
+        return this;
     }
 
-    public void div(Location location) {
+    public Location div(Location location) {
         this.x /= location.getX();
         this.y /= location.getY();
         this.z /= location.getZ();
+        return this;
     }
 
-    public void div(double m, Location dest) {
+    public Location div(double m, Location dest) {
         dest.set(
                 x / m,
                 y / m,
                 z / m
         );
+        return dest;
     }
 
-    public void div(Location location, Location dest) {
+    public Location div(Location location, Location dest) {
         dest.set(
                 x / location.getX(),
                 y / location.getY(),
                 z / location.getZ()
         );
+        return dest;
     }
 
 
@@ -221,20 +248,22 @@ public class Location {
     }
 
 
-    public void normalize() {
-        double m = (double) length();
+    public Location normalize() {
+        double m = length();
         this.x /= m;
         this.y /= m;
         this.z /= m;
+        return this;
     }
 
-    public void normalize(Location dest) {
-        double m = (double) length();
+    public Location normalize(Location dest) {
+        double m = length();
         dest.set(
                 x / m,
                 y / m,
                 z / m
         );
+        return dest;
     }
 
     public Location copy() {

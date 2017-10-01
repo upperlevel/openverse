@@ -5,10 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import xyz.upperlevel.hermes.Packet;
-import xyz.upperlevel.openverse.resource.entity.EntityType;
-
-import static xyz.upperlevel.openverse.network.SerialUtil.readString;
-import static xyz.upperlevel.openverse.network.SerialUtil.writeString;
+import xyz.upperlevel.openverse.world.entity.EntityType;
 
 /**
  * This packet is sent from the server to the client to spawn an entity.

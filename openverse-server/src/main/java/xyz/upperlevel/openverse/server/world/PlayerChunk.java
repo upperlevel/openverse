@@ -3,7 +3,7 @@ package xyz.upperlevel.openverse.server.world;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
-import xyz.upperlevel.openverse.world.entity.Player;
+import xyz.upperlevel.openverse.world.entity.player.Player;
 
 import java.util.Collections;
 import java.util.HashSet;

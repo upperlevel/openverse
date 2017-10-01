@@ -13,6 +13,7 @@ import xyz.upperlevel.openverse.network.entity.EntitySpawnPacket;
 import xyz.upperlevel.openverse.network.entity.EntityTeleportPacket;
 import xyz.upperlevel.openverse.network.world.*;
 import xyz.upperlevel.openverse.resource.Resources;
+import xyz.upperlevel.openverse.world.entity.EntityManager;
 
 import java.util.logging.Logger;
 
@@ -44,6 +45,10 @@ public final class Openverse {
 
     public static EventManager getEventManager() {
         return proxy.getEventManager();
+    }
+
+    public static EntityManager entities() {
+        return proxy.getEntityManager();
     }
 
     public static Logger logger() {

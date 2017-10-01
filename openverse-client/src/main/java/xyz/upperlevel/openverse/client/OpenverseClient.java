@@ -11,6 +11,7 @@ import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.client.resource.ClientResources;
 import xyz.upperlevel.openverse.console.log.OpenverseLogger;
+import xyz.upperlevel.openverse.world.entity.EntityManager;
 import xyz.upperlevel.ulge.game.Stage;
 
 import java.util.logging.Logger;
@@ -27,6 +28,7 @@ public class OpenverseClient implements OpenverseProxy {
     private final Channel channel;
     private final ClientResources resources; // resources are loaded per universe
     private final EventManager eventManager = new EventManager();
+    private final EntityManager entityManager;
 
     public OpenverseClient(@NonNull Client client) {
         instance = this;
@@ -40,6 +42,11 @@ public class OpenverseClient implements OpenverseProxy {
         channel = new Channel("main").setProtocol(PROTOCOL.compile(PacketSide.CLIENT));
         connection.setDefaultChannel(channel);
         resources = new ClientResources(logger);
+        entityManager = new EntityManager();
+    }
+
+    public void onTick() {
+        entityManager.onTick();
     }
 
     public static OpenverseClient get() {
@@ -59,5 +66,10 @@ public class OpenverseClient implements OpenverseProxy {
     @Override
     public ClientResources getResources() {
         return resources;
+    }
+
+    @Override
+    public EntityManager getEntityManager() {
+        return entityManager;
     }
 }

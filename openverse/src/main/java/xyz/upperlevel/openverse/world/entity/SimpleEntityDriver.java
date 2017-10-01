@@ -3,6 +3,7 @@ package xyz.upperlevel.openverse.world.entity;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import xyz.upperlevel.openverse.world.Location;
+import xyz.upperlevel.openverse.world.entity.player.Player;
 
 public class SimpleEntityDriver implements EntityDriver<Player> {
     private static final Vector3f UP = new Vector3f(0, 1, 0);

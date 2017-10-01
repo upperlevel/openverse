@@ -1,7 +1,7 @@
 package xyz.upperlevel.openverse.resource;
 
-import xyz.upperlevel.openverse.resource.entity.EntityTypeRegistry;
 import xyz.upperlevel.openverse.world.block.BlockTypeRegistry;
+import xyz.upperlevel.openverse.world.entity.EntityTypeRegistry;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -29,7 +29,7 @@ public class Resources {
     }
 
     protected EntityTypeRegistry createEntityTypeRegistry(File folder, Logger logger) {
-        return new EntityTypeRegistry(folder, logger);
+        return new EntityTypeRegistry();
     }
 
     /**
@@ -44,7 +44,6 @@ public class Resources {
 
     public void setup() {
         onSetup();
-        entityTypeRegistry.setup();
     }
 
     protected int onLoad() {
@@ -58,7 +57,6 @@ public class Resources {
     public int load() {
         int cnt = 0;
         cnt += onLoad();
-        cnt += entityTypeRegistry.loadFolder();
         return cnt;
     }
 
@@ -66,7 +64,6 @@ public class Resources {
     }
 
     public void unload() {
-        entityTypeRegistry.unload();
         onUnload();
         //entityTypeRegistry.unload();
         logger.info("All resources have been unloaded!");

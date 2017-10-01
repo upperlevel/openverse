@@ -9,7 +9,7 @@ import xyz.upperlevel.openverse.network.world.PlayerChangeLookPacket;
 import xyz.upperlevel.openverse.network.world.PlayerChangePositionPacket;
 import xyz.upperlevel.openverse.network.world.PlayerChangeWorldPacket;
 import xyz.upperlevel.openverse.world.Location;
-import xyz.upperlevel.openverse.world.entity.Player;
+import xyz.upperlevel.openverse.world.entity.player.Player;
 import xyz.upperlevel.openverse.world.entity.event.PlayerMoveEvent;
 
 @Getter

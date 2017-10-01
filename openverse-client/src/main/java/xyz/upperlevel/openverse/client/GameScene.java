@@ -1,39 +1,33 @@
 package xyz.upperlevel.openverse.client;
 
-import lombok.AccessLevel;
 import lombok.Getter;
-import org.lwjgl.opengl.GL11;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.client.render.world.ChunkRenderer;
+import xyz.upperlevel.openverse.client.world.ClientWorld;
 import xyz.upperlevel.openverse.client.world.WorldViewer;
+import xyz.upperlevel.openverse.client.world.entity.input.PlayerEntityInput;
 import xyz.upperlevel.openverse.event.ShutdownEvent;
 import xyz.upperlevel.openverse.launcher.OpenverseLauncher;
+import xyz.upperlevel.openverse.world.Location;
+import xyz.upperlevel.openverse.world.entity.LivingEntity;
+import xyz.upperlevel.openverse.world.entity.player.Player;
 import xyz.upperlevel.ulge.game.Scene;
 import xyz.upperlevel.ulge.opengl.buffer.Vao;
 import xyz.upperlevel.ulge.window.Window;
-import xyz.upperlevel.ulge.window.event.CursorMoveEvent;
 import xyz.upperlevel.ulge.window.event.KeyChangeEvent;
 import xyz.upperlevel.ulge.window.event.action.Action;
-import xyz.upperlevel.ulge.window.event.key.Key;
-
-import java.util.stream.Collectors;
 
 import static org.lwjgl.opengl.GL11.*;
 
 // todo put in openverse launcher
 @Getter
 public class GameScene implements Scene, Listener {
-    private static final float SPEED = 0.5f;
-    private static final float SENSIBILITY = 0.5f;
     private final ClientScene parent;
 
     private WorldViewer viewer;
     private Window window;
-
-    @Getter(AccessLevel.NONE)
-    private double lastCursorX, lastCursorY;
+    private PlayerEntityInput input;
 
     public GameScene(ClientScene parent) {
         this.parent = parent;
@@ -41,6 +35,7 @@ public class GameScene implements Scene, Listener {
         window = OpenverseLauncher.get().getGame().getWindow();
         window.getEventManager().register(this);
         window.disableCursor();
+        input = new PlayerEntityInput(window);
     }
 
     @Override
@@ -51,8 +46,15 @@ public class GameScene implements Scene, Listener {
         glEnable(GL_CULL_FACE);
         glFrontFace(GL_CCW);
         glCullFace(GL_BACK);
+        //window.setVSync(false);
+
+
+        LivingEntity viewerEntity = new Player(new Location(null, 0, 0, 0), "Maurizio");//TODO add real player
+        viewerEntity.setInput(input);
+        viewer.setEntity(viewerEntity);
 
         viewer.listen();
+        Openverse.entities().register(viewerEntity);
     }
 
     @Override
@@ -64,21 +66,6 @@ public class GameScene implements Scene, Listener {
     }
 
     private void processInput() {
-        if (window.getKey(Key.A)) {
-            viewer.right(-SPEED);
-        } else if (window.getKey(Key.D)) {
-            viewer.right(SPEED);
-        }
-        if (window.getKey(Key.W)) {
-            viewer.forward(SPEED);
-        } else if (window.getKey(Key.S)) {
-            viewer.forward(-SPEED);
-        }
-        if (window.getKey(Key.SPACE)) {
-            viewer.up(SPEED);
-        } else if (window.getKey(Key.LEFT_SHIFT)) {
-            viewer.up(-SPEED);
-        }
     }
 
     @Override
@@ -88,22 +75,12 @@ public class GameScene implements Scene, Listener {
 
     @Override
     public void onTick() {
+        OpenverseClient.get().onTick();
     }
 
     @Override
     public void onFps() {
         Openverse.logger().info("Fps: " + OpenverseLauncher.get().getGame().getFps() + " chunks: " + viewer.getWorldSession().getChunkView().getChunks().size() + ", vaos:" + Vao.instances);
-    }
-
-    @EventHandler
-    public void onCursorMove(CursorMoveEvent e) {
-        // Openverse.logger().info(" Detected a cursor movement: " + e.getX() + " " + e.getY());
-        float dx = (float) (e.getX() - lastCursorX) * SENSIBILITY;
-        float dy = (float) (e.getY() - lastCursorY) * SENSIBILITY;
-        viewer.rotateLook(dx, dy);
-        lastCursorX = e.getX();
-        lastCursorY = e.getY();
-        // Openverse.logger().info(" Player rotate look of: " + dx + " " + dy);
     }
 
     @EventHandler

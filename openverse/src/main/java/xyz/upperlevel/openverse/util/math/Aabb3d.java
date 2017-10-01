@@ -101,4 +101,70 @@ public class Aabb3d {
     public Aabb3d translate(Vector3d vec) {
         return translate(vec.x, vec.y, vec.z);
     }
+
+    /**
+     * Returns how much are the two boxes overlapping in the x axis
+     * @param other the other box
+     * @param vel the velocity with which the block was intersected (used to calculate the face)
+     * @return the intersected distance (or vel if they don't intersect)
+     */
+    public double getOverlapX(Aabb3d other, double vel) {
+        //If intersects in the y and the z axis
+        if (    this.maxY >= other.minY &&
+                this.maxZ >= other.minZ &&
+                this.minY <= other.maxY &&
+                this.minZ <= other.maxZ) {
+            //See in which face it entered
+            if (vel > 0 && this.minX >= other.maxX) {
+                return this.minX - other.maxX;
+            } else if (vel < 0 && this.maxX <= other.minX) {
+                return this.maxX - other.minX;
+            }
+        }
+        return vel;
+    }
+
+    /**
+     * Returns how much are the two boxes overlapping in the y axis
+     * @param other the other box
+     * @param vel the velocity with which the block was intersected (used to calculate the face)
+     * @return the intersected distance (or vel if they don't intersect)
+     */
+    public double getOverlapY(Aabb3d other, double vel) {
+        //If intersects in the x and the z axis
+        if (    this.maxX >= other.minX &&
+                this.maxZ >= other.minZ &&
+                this.minX <= other.maxX &&
+                this.minZ <= other.maxZ){
+            //See in which face it entered
+            if (vel > 0 && this.minY >= other.maxY) {
+                return this.minY - other.maxY;
+            } else if (vel < 0 && this.maxY <= other.minY) {
+                return this.maxY - other.minY;
+            }
+        }
+        return vel;
+    }
+
+    /**
+     * Returns how much are the two boxes overlapping in the y axis
+     * @param other the other box
+     * @param vel the velocity with which the block was intersected (used to calculate the face)
+     * @return the intersected distance (or vel if they don't intersect)
+     */
+    public double getOverlapZ(Aabb3d other, double vel) {
+        //If intersects in the x and the y axis
+        if (    this.maxX >= other.minX &&
+                this.maxY >= other.minY &&
+                this.minX <= other.maxX &&
+                this.minY <= other.maxY) {
+            //See in which face it entered
+            if (vel > 0 && this.minZ >= other.maxZ) {
+                return this.minZ - other.maxZ;
+            } else if (vel < 0 && this.maxZ <= other.minZ) {
+                return this.maxZ - other.minZ;
+            }
+        }
+        return vel;
+    }
 }

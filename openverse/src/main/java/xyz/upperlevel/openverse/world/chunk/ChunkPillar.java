@@ -35,6 +35,10 @@ public class ChunkPillar {
         verticalChunkProvider.setChunk(y, chunk);
     }
 
+    public boolean hasChunk(int y) {
+        return verticalChunkProvider.hasChunk(y);
+    }
+
     public boolean unloadChunk(int y) {
         return verticalChunkProvider.unloadChunk(y);
     }

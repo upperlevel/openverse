@@ -18,6 +18,11 @@ public class SimpleChunkPillarProvider implements ChunkPillarProvider {
     }
 
     @Override
+    public ChunkPillar getChunkPillar(int x, int z, boolean load) {
+        return getChunkPillar(x, z);
+    }
+
+    @Override
     public ChunkPillar getChunkPillar(int x, int z) {
         return chunkPillarsMap.computeIfAbsent(provideIndex(x, z), this::createPillar);
     }
@@ -29,6 +34,11 @@ public class SimpleChunkPillarProvider implements ChunkPillarProvider {
     @Override
     public void setChunkPillar(ChunkPillar chunkPillar) {
         chunkPillarsMap.put(provideIndex(chunkPillar.getX(), chunkPillar.getZ()), chunkPillar);
+    }
+
+    @Override
+    public boolean hasPillar(int x, int z) {
+        return chunkPillarsMap.containsKey(new ChunkPillarLocation(x, z));
     }
 
     @Override

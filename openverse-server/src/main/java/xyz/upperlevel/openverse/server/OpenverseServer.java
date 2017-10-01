@@ -15,6 +15,7 @@ import xyz.upperlevel.openverse.resource.Resources;
 import xyz.upperlevel.openverse.server.resource.ServerResources;
 import xyz.upperlevel.openverse.server.world.ServerPlayer;
 import xyz.upperlevel.openverse.server.world.Universe;
+import xyz.upperlevel.openverse.world.entity.EntityManager;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -31,6 +32,7 @@ public class OpenverseServer implements OpenverseProxy, Listener {
     private final EventManager eventManager = new EventManager();
     private final ServerResources resources;
     private final PlayerManager playerManager;
+    private final EntityManager entityManager;
 
     public OpenverseServer(@NonNull Server server) {
         Openverse.setProxy(this);
@@ -39,6 +41,7 @@ public class OpenverseServer implements OpenverseProxy, Listener {
         this.channel = new Channel("main").setProtocol(Openverse.PROTOCOL.compile(PacketSide.SERVER));
         endpoint.setDefaultChannel(channel);
         this.universe = new Universe();
+        this.entityManager = new EntityManager();
         this.playerManager = new PlayerManager();
         this.resources = new ServerResources(new File("server/resources"), logger);
     }
@@ -56,6 +59,10 @@ public class OpenverseServer implements OpenverseProxy, Listener {
 
         logger().info("Listening for incoming connections...");
         playerManager.start();
+    }
+
+    public void onTick() {//TODO: call
+        entityManager.onTick();
     }
 
     public void stop() {
