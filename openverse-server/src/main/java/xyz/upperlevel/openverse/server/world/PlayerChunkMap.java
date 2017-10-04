@@ -7,6 +7,8 @@ import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.network.world.ChunkCreatePacket;
 import xyz.upperlevel.openverse.network.world.ChunkDestroyPacket;
+import xyz.upperlevel.openverse.server.event.PlayerJoinEvent;
+import xyz.upperlevel.openverse.server.event.PlayerQuitEvent;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
@@ -160,11 +162,29 @@ public class PlayerChunkMap implements Listener {
     }
 
     @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent e) {
+        Location loc = e.getPlayer().getLocation();
+        if (loc.getWorld() == world) {
+            Openverse.logger().info("Player joined (" + world.getName() + ")");
+            addPlayer(e.getPlayer(), loc.getChunk());
+        }
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent e) {
+        Location loc = e.getPlayer().getLocation();
+        if (loc.getWorld() == world) {
+            Openverse.logger().info("Player quit (" + world.getName() + ")");
+            removePlayer(e.getPlayer());
+        }
+    }
+
+    @EventHandler
     public void onPlayerMove(PlayerMoveEvent e) {
         Location nl = e.getLocation();
         Location ol = e.getOldLocation();
         World nw = nl.getWorld();
-        World ow = ol != null ? ol.getWorld() : null;
+        World ow = ol.getWorld();
         if (ow != nw) {
             if (nw == world) {
                 Openverse.logger().info("Player joined world: " + nw.getName());
@@ -175,7 +195,7 @@ public class PlayerChunkMap implements Listener {
             }
         } else {
             ChunkLocation ncl = nl.getChunk().getLocation();
-            ChunkLocation ocl = ol != null ? ol.getChunk().getLocation() : null;
+            ChunkLocation ocl = ol.getChunk().getLocation();
             if (nw == world && (ocl == null || !ncl.equals(ocl))) {
                 Openverse.logger().info("Player changed chunk to: " + ncl.toString());
                 onPlayerMove((ServerPlayer) e.getPlayer(), ocl, ncl);

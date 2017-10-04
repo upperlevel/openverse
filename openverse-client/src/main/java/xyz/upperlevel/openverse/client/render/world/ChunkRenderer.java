@@ -1,7 +1,6 @@
 package xyz.upperlevel.openverse.client.render.world;
 
 import lombok.Getter;
-import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.render.block.BlockModel;
 import xyz.upperlevel.openverse.client.render.block.BlockTypeModelMapper;
 import xyz.upperlevel.openverse.client.render.world.util.VertexBufferPool;
@@ -79,6 +78,9 @@ public class ChunkRenderer {
     }
 
     public void setup() {
+        if (vao != null) {
+            throw new IllegalStateException("Chunk already initialized!");
+        }
         vao = new Vao();
         vao.bind();
 

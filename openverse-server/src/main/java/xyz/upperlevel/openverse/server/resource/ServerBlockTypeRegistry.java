@@ -1,6 +1,7 @@
 package xyz.upperlevel.openverse.server.resource;
 
 import xyz.upperlevel.event.EventHandler;
+import xyz.upperlevel.event.EventPriority;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.network.world.BlockRegistryPacket;
@@ -20,7 +21,7 @@ public class ServerBlockTypeRegistry extends BlockTypeRegistry implements Listen
         registerId(entry);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
         event.getPlayer().getConnection().send(Openverse.channel(), new BlockRegistryPacket(getOrderedEntries()));
     }

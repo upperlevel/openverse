@@ -40,13 +40,20 @@ public class ChunkViewRenderer implements Listener {
     }
 
     public void loadChunk(ChunkRenderer chunk) {
-        chunks.put(chunk.getChunk().getLocation(), chunk);
+        ChunkRenderer previous = chunks.put(chunk.getChunk().getLocation(), chunk);
+        if (previous != null) {
+            previous.destroy();
+            throw new IllegalStateException("Chunk Renderer already loaded: " + chunk.getChunk().getLocation());
+        } else {
+            System.out.println("Registered " + chunk.getChunk().getLocation());
+        }
     }
 
     public void unloadChunk(ChunkLocation location) {
         ChunkRenderer chunk = chunks.remove(location);
-        if (chunk != null)
+        if (chunk != null) {
             chunk.destroy();
+        }
     }
 
     public ChunkRenderer getChunk(ChunkLocation location) {
