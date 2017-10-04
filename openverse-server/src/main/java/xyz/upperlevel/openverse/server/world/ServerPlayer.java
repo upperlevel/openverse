@@ -16,8 +16,8 @@ import xyz.upperlevel.openverse.world.entity.event.PlayerMoveEvent;
 public class ServerPlayer extends Player implements PacketListener {
     private final Connection connection;
 
-    public ServerPlayer(String name, Connection connection) {
-        super(name);
+    public ServerPlayer(Location loc, String name, Connection connection) {
+        super(loc, name);
         this.connection = connection;
         Openverse.channel().register(this);
     }

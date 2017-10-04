@@ -10,8 +10,8 @@ public class Player extends Entity {
     public static final EntityType TYPE = null;
     private final String name;
 
-    public Player(String name) {
-        super(TYPE);
+    public Player(Location loc, String name) {
+        super(TYPE, loc);
         this.name = name;
     }
 
