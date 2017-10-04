@@ -4,9 +4,11 @@ import lombok.Getter;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.render.block.BlockModel;
 import xyz.upperlevel.openverse.client.render.block.BlockTypeModelMapper;
+import xyz.upperlevel.openverse.client.render.block.Facing;
 import xyz.upperlevel.openverse.client.render.world.util.VertexBufferPool;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
+import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 import xyz.upperlevel.openverse.world.chunk.storage.BlockStorage;
 import xyz.upperlevel.ulge.opengl.buffer.*;
 import xyz.upperlevel.ulge.opengl.shader.Program;
@@ -38,7 +40,17 @@ public class ChunkRenderer {
         this.chunk = chunk;
         setup();
         reloadVertexSize();
-        view.recompileChunk(this, ChunkCompileMode.ASYNC);
+    }
+
+    /**
+     * Gets relative chunk from given {@link Facing}.
+     */
+    public ChunkRenderer getChunkRelative(Facing facing) {
+        return view.getChunk(new ChunkLocation(
+                chunk.getX() + facing.offsetX,
+                chunk.getY() + facing.offsetY,
+                chunk.getZ() + facing.offsetZ)
+        );
     }
 
     public void onBlockChange(BlockState oldState, BlockState newState) {//TODO: call whenever a block changes

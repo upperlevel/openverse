@@ -4,10 +4,11 @@ import lombok.Getter;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.client.render.world.util.VertexBuffer;
+import xyz.upperlevel.openverse.client.render.block.Facing;
 import xyz.upperlevel.openverse.client.render.world.util.VertexBufferPool;
 import xyz.upperlevel.openverse.client.world.ClientWorld;
 import xyz.upperlevel.openverse.event.ShutdownEvent;
+import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 import xyz.upperlevel.openverse.world.event.ChunkLoadEvent;
 import xyz.upperlevel.openverse.world.event.ChunkUnloadEvent;
@@ -39,8 +40,19 @@ public class ChunkViewRenderer implements Listener {
         Openverse.getEventManager().register(this);
     }
 
-    public void loadChunk(ChunkRenderer chunk) {
+    /**
+     * Memorizes {@link ChunkRenderer} and put it in a compile queue.
+     * @param chunk the {@link ChunkRenderer} to memorize and compile
+     */
+    public void loadChunkAndCompile(ChunkRenderer chunk) {
         chunks.put(chunk.getChunk().getLocation(), chunk);
+        recompileChunk(chunk, ChunkCompileMode.ASYNC);
+        // compiles again all chunk relatives not null
+        for (Facing facing : Facing.values()) {
+            ChunkRenderer chunkRel = chunk.getChunkRelative(facing);
+            if (chunkRel != null)
+                recompileChunk(chunkRel, ChunkCompileMode.ASYNC);
+        }
     }
 
     public void unloadChunk(ChunkLocation location) {
@@ -102,7 +114,7 @@ public class ChunkViewRenderer implements Listener {
 
     @EventHandler
     public void onChunkLoad(ChunkLoadEvent e) {
-        loadChunk(new ChunkRenderer(this, e.getChunk(), program));
+        loadChunkAndCompile(new ChunkRenderer(this, e.getChunk(), program));
     }
 
     @EventHandler
