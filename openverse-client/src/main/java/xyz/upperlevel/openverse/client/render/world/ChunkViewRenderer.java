@@ -44,8 +44,6 @@ public class ChunkViewRenderer implements Listener {
         if (previous != null) {
             previous.destroy();
             throw new IllegalStateException("Chunk Renderer already loaded: " + chunk.getChunk().getLocation());
-        } else {
-            System.out.println("Registered " + chunk.getChunk().getLocation());
         }
     }
 

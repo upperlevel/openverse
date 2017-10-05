@@ -53,7 +53,6 @@ public class ChunkLocation {
     }
 
     public static ChunkLocation fromBlock(int x, int y, int z) {
-        return new ChunkLocation(x >> 4, y >> 4, z >> 4
-        );
+        return new ChunkLocation(x >> 4, y >> 4, z >> 4);
     }
 }

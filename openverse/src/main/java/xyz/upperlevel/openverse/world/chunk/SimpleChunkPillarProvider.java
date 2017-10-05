@@ -13,8 +13,8 @@ public class SimpleChunkPillarProvider implements ChunkPillarProvider {
     private final World world;
     private final Map<Long, ChunkPillar> chunkPillarsMap = new HashMap<>();
 
-    private static long provideIndex(int x, int z) {
-        return ((long) x) << 32 | z;
+    public static long provideIndex(int x, int z) {
+        return ((long) x << 32) | ((long) z) & 0xFFFF_FFFFL;
     }
 
     @Override
