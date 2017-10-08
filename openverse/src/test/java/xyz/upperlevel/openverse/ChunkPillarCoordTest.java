@@ -16,10 +16,9 @@ public class ChunkPillarCoordTest {
         for (int x = -testRadius; x < testRadius; x++) {
             for (int z = -testRadius; z < testRadius; z++) {
                 long i = SimpleChunkPillarProvider.provideIndex(x, z);
-                if (!locations.add(i))
+                if (!locations.add(i)) {
                     Assert.fail("Multiple adding: x=" + x + " z=" + z + " id=" + i + " id_bin=" + Long.toHexString(i));
-                else
-                    System.out.println("Writing x=" + x + " z=" + z + " id=" + i + " id_bin=" +  Long.toHexString(i));
+                }
             }
         }
     }

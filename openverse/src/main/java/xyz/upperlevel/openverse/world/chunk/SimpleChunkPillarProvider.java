@@ -19,14 +19,11 @@ public class SimpleChunkPillarProvider implements ChunkPillarProvider {
 
     @Override
     public ChunkPillar getChunkPillar(int x, int z) {
-        long i = provideIndex(x, z);
-        if (chunkPillarsMap.containsKey(i)) {
-            return chunkPillarsMap.get(i);
-        } else {
-            ChunkPillar res = new ChunkPillar(world, x, z);
-            chunkPillarsMap.put(i, res);
-            return res;
-        }
+        return chunkPillarsMap.computeIfAbsent(provideIndex(x, z), this::createPillar);
+    }
+
+    private ChunkPillar createPillar(long index) {
+        return new ChunkPillar(world, (int)(index >>> 32), (int)index);
     }
 
     @Override

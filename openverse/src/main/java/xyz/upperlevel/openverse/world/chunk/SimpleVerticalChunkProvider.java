@@ -21,13 +21,12 @@ public class SimpleVerticalChunkProvider implements VerticalChunkProvider {
     }
 
     public Chunk getChunk(int y) {
-        if (chunksMap.containsKey(y)) {
-            return chunksMap.get(y);
-        } else {
-            Chunk res = new Chunk(chunkPillar, y);
-            chunksMap.put(y, res);
-            return res;
-        }
+        //Using method reference so there's no need to create a lambda instance every time
+        return chunksMap.computeIfAbsent(y, this::createChunk);
+    }
+
+    private Chunk createChunk(int y) {
+        return new Chunk(chunkPillar, y);
     }
 
     @Override
