@@ -9,7 +9,7 @@ import xyz.upperlevel.hermes.event.ConnectionCloseEvent;
 import xyz.upperlevel.hermes.event.ConnectionOpenEvent;
 import xyz.upperlevel.hermes.server.Server;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.network.world.PlayerChangeWorldPacket;
+import xyz.upperlevel.openverse.network.world.entity.PlayerChangeWorldPacket;
 import xyz.upperlevel.openverse.server.event.PlayerJoinEvent;
 import xyz.upperlevel.openverse.server.event.PlayerQuitEvent;
 import xyz.upperlevel.openverse.server.world.ServerPlayer;

@@ -3,24 +3,20 @@ package xyz.upperlevel.openverse.client.world;
 import lombok.Getter;
 import lombok.Setter;
 import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import xyz.upperlevel.hermes.Connection;
-import xyz.upperlevel.hermes.client.Client;
 import xyz.upperlevel.hermes.reflect.PacketHandler;
 import xyz.upperlevel.hermes.reflect.PacketListener;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.resource.ClientResources;
-import xyz.upperlevel.openverse.network.world.PlayerChangeLookPacket;
-import xyz.upperlevel.openverse.network.world.PlayerChangePositionPacket;
-import xyz.upperlevel.openverse.network.world.PlayerChangeWorldPacket;
+import xyz.upperlevel.openverse.network.world.entity.PlayerChangeLookPacket;
+import xyz.upperlevel.openverse.network.world.entity.PlayerChangePositionPacket;
+import xyz.upperlevel.openverse.network.world.entity.PlayerChangeWorldPacket;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.entity.LivingEntity;
 import xyz.upperlevel.ulge.opengl.shader.Program;
 import xyz.upperlevel.ulge.opengl.shader.Uniform;
 import xyz.upperlevel.ulge.util.math.CameraUtil;
-
-import java.util.Locale;
 
 /**
  * This class represents the player.
@@ -39,7 +35,8 @@ public class WorldViewer implements PacketListener {
     private Uniform cameraLoc;
     private Matrix4f camera;
 
-    public WorldViewer() {
+    public WorldViewer(LivingEntity entity) {
+        this.entity = entity;
         this.program = ((ClientResources) Openverse.resources()).programs().entry("simple_shader");
         this.worldSession = new WorldSession(program);
         this.cameraLoc = program.uniformer.get("camera");

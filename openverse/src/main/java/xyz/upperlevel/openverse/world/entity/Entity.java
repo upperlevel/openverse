@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.joml.Vector3d;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.network.entity.EntityTeleportPacket;
+import xyz.upperlevel.openverse.network.world.entity.EntityTeleportPacket;
 import xyz.upperlevel.openverse.util.math.Aabb3d;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.World;
@@ -46,33 +46,23 @@ public class Entity {
         return location.getWorld();
     }
 
-    public void setLocation(Location location, boolean update) {
+    public void setLocation(Location location) {
         checkNotNull(location);
         EntityMoveEvent event = new EntityMoveEvent(this, location);
         Openverse.getEventManager().call(event);
-        if(event.isCancelled()) return;
-
+        if (event.isCancelled()) return;
         this.location = location;
-        if (update) {
-            endpoint().getConnections().forEach(connection ->
-                    connection.send(channel(), new EntityTeleportPacket(id, location.getWorld().getName(), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch()))
-            );
-        }
     }
 
     protected void updateBoundingBox() {
         if (location == null) {
             return;
         }
-        double w = width/2.0;
+        double w = width / 2.0;
         setBoundingBox(new Aabb3d(
                 location.getX() - w, location.getY(), location.getZ() - w,
                 location.getX() + w, location.getY() + height, location.getZ() + w
         ));
-    }
-
-    public void setLocation(Location location) {
-        setLocation(location, true);
     }
 
     public Location getLocation() {

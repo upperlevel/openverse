@@ -3,7 +3,7 @@ package xyz.upperlevel.openverse.client.render.entity;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.network.entity.EntityRemovePacket;
+import xyz.upperlevel.openverse.network.world.entity.EntityRemovePacket;
 import xyz.upperlevel.openverse.world.entity.Entity;
 import xyz.upperlevel.openverse.world.entity.EntityType;
 import xyz.upperlevel.openverse.world.entity.event.EntityMoveEvent;

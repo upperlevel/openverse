@@ -1,4 +1,4 @@
-package xyz.upperlevel.openverse.network.world;
+package xyz.upperlevel.openverse.network.world.entity;
 
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;

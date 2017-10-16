@@ -9,6 +9,7 @@ import xyz.upperlevel.hermes.channel.Channel;
 import xyz.upperlevel.hermes.client.Client;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.OpenverseProxy;
+import xyz.upperlevel.openverse.client.game.ClientScene;
 import xyz.upperlevel.openverse.client.resource.ClientResources;
 import xyz.upperlevel.openverse.console.log.OpenverseLogger;
 import xyz.upperlevel.openverse.world.entity.EntityManager;

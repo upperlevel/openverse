@@ -5,7 +5,7 @@ import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.hermes.client.Client;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.network.world.PlayerChangePositionPacket;
+import xyz.upperlevel.openverse.network.world.entity.PlayerChangePositionPacket;
 import xyz.upperlevel.openverse.world.entity.input.LivingEntityInput;
 import xyz.upperlevel.ulge.window.Window;
 import xyz.upperlevel.ulge.window.event.CursorMoveEvent;
@@ -14,19 +14,12 @@ import xyz.upperlevel.ulge.window.event.key.Key;
 public class PlayerEntityInput implements LivingEntityInput, Listener{
     private static final float SPEED = 0.5f;
     private static final float SENSIBILITY = 0.5f;
+
     @Getter
     private final Window window;
 
     @Getter
-    private float strafe;
-    @Getter
-    private float up;
-    @Getter
-    private float forward;
-    @Getter
-    private float yaw;
-    @Getter
-    private float pitch;
+    private float strafe, up, forward, yaw, pitch;
 
     private double lastCursorX;
     private double lastCursorY;

@@ -1,11 +1,10 @@
-package xyz.upperlevel.openverse.client;
+package xyz.upperlevel.openverse.client.game;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.lwjgl.opengl.GL11;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.render.block.*;
-import xyz.upperlevel.openverse.client.resource.ClientResources;
 import xyz.upperlevel.ulge.game.Scene;
 
 import java.io.File;

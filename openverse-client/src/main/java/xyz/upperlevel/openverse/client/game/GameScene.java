@@ -1,10 +1,10 @@
-package xyz.upperlevel.openverse.client;
+package xyz.upperlevel.openverse.client.game;
 
 import lombok.Getter;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.client.world.ClientWorld;
+import xyz.upperlevel.openverse.client.OpenverseClient;
 import xyz.upperlevel.openverse.client.world.WorldViewer;
 import xyz.upperlevel.openverse.client.world.entity.input.PlayerEntityInput;
 import xyz.upperlevel.openverse.event.ShutdownEvent;
@@ -13,6 +13,7 @@ import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.entity.LivingEntity;
 import xyz.upperlevel.openverse.world.entity.player.Player;
 import xyz.upperlevel.ulge.game.Scene;
+import xyz.upperlevel.ulge.game.Stage;
 import xyz.upperlevel.ulge.opengl.buffer.Vao;
 import xyz.upperlevel.ulge.window.Window;
 import xyz.upperlevel.ulge.window.event.KeyChangeEvent;
@@ -22,20 +23,15 @@ import static org.lwjgl.opengl.GL11.*;
 
 // todo put in openverse launcher
 @Getter
-public class GameScene implements Scene, Listener {
+public class GameScene extends Stage implements Listener {
     private final ClientScene parent;
-
-    private WorldViewer viewer;
     private Window window;
-    private PlayerEntityInput input;
 
     public GameScene(ClientScene parent) {
         this.parent = parent;
-        this.viewer = new WorldViewer();
         window = OpenverseLauncher.get().getGame().getWindow();
         window.getEventManager().register(this);
         window.disableCursor();
-        input = new PlayerEntityInput(window);
     }
 
     @Override
@@ -48,21 +44,13 @@ public class GameScene implements Scene, Listener {
         glCullFace(GL_BACK);
         //window.setVSync(false);
 
-
-        LivingEntity viewerEntity = new Player(new Location(null, 0, 0, 0), "Maurizio");//TODO add real player
-        viewerEntity.setInput(input);
-        viewer.setEntity(viewerEntity);
-
-        viewer.listen();
-        Openverse.entities().register(viewerEntity);
+        setScene(new ReceivingWorldScene(this));
     }
 
     @Override
     public void onRender() {
         processInput();
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-        glClearColor(0.392f, 0.922f, 1f, 0);
-        viewer.render();
     }
 
     private void processInput() {
@@ -80,7 +68,6 @@ public class GameScene implements Scene, Listener {
 
     @Override
     public void onFps() {
-        Openverse.logger().info("Fps: " + OpenverseLauncher.get().getGame().getFps() + " chunks: " + viewer.getWorldSession().getChunkView().getChunks().size() + ", vaos:" + Vao.instances);
     }
 
     @EventHandler
