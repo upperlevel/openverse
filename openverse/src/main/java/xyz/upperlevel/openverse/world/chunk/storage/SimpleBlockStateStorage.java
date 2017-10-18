@@ -21,6 +21,9 @@ public class SimpleBlockStateStorage implements BlockStateStorage {
 
     @Override
     public BlockState getBlockState(int x, int y, int z) {
+        if ((y & 15) != y || (x & 15) != x || (z & 15) != z) {
+            throw new IllegalStateException("Invalid numbers: " + x + ", " + y + ", " + z);
+        }
         return get(index(x, y, z));
     }
 
@@ -30,6 +33,9 @@ public class SimpleBlockStateStorage implements BlockStateStorage {
 
     @Override
     public void setBlockState(int x, int y, int z, BlockState state) {
+        if ((y & 15) != y || (x & 15) != x || (z & 15) != z) {
+            throw new IllegalStateException("Invalid numbers: " + x + ", " + y + ", " + z);
+        }
         set(index(x, y, z), state);
     }
 

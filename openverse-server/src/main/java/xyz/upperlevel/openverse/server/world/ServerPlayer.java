@@ -23,18 +23,11 @@ public class ServerPlayer extends Player implements PacketListener {
     }
 
     @Override
-    public void setLocation(Location loc, boolean update) {
+    public void setLocation(Location loc) {
         if (loc == null)
             throw new IllegalArgumentException("Invalid player location");
         PlayerMoveEvent e = new PlayerMoveEvent(this, loc);
         Openverse.getEventManager().call(e);
-        if (update) {
-            if (this.location != null && loc.getWorld() != this.location.getWorld()) {
-                connection.send(Openverse.channel(), new PlayerChangeWorldPacket(loc.getWorld()));
-            }
-            connection.send(Openverse.channel(), new PlayerChangePositionPacket(loc.getX(), loc.getY(), loc.getZ()));
-            connection.send(Openverse.channel(), new PlayerChangeLookPacket(loc.getYaw(), loc.getPitch()));
-        }
         this.location = loc;
     }
 
@@ -44,7 +37,7 @@ public class ServerPlayer extends Player implements PacketListener {
             Location loc = getLocation();
             loc.setYaw(pkt.getYaw());
             loc.setPitch(pkt.getPitch());
-            setLocation(loc, false);
+            setLocation(loc);
         }
     }
 
@@ -53,7 +46,7 @@ public class ServerPlayer extends Player implements PacketListener {
         if (connection.equals(conn)) {
             Location loc = getLocation();
             loc.set(pkt.getX(), pkt.getY(), pkt.getZ());
-            setLocation(loc, false);
+            setLocation(loc);
         }
     }
 }

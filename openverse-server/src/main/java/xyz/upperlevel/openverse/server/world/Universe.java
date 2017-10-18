@@ -42,4 +42,10 @@ public class Universe {
     public Collection<World> getWorlds() {
         return Collections.unmodifiableCollection(worlds.values());
     }
+
+    public void onTick() {
+        for (ServerWorld  world : worlds.values()) {
+            world.onTick();
+        }
+    }
 }

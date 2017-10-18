@@ -19,14 +19,12 @@ import static xyz.upperlevel.openverse.network.SerialUtil.writeString;
 @NoArgsConstructor
 public class EntityTeleportPacket implements Packet {
     private int entityId;
-    private String worldName;
     private double x, y, z;
     private double yaw, pitch;
 
     @Override
     public void toData(ByteBuf out) {
         out.writeInt(entityId);
-        writeString(worldName, out);
         out.writeDouble(x);
         out.writeDouble(y);
         out.writeDouble(z);
@@ -37,7 +35,6 @@ public class EntityTeleportPacket implements Packet {
     @Override
     public void fromData(ByteBuf in) {
         entityId = in.readInt();
-        worldName = readString(in);
         x = in.readDouble();
         y = in.readDouble();
         z = in.readDouble();

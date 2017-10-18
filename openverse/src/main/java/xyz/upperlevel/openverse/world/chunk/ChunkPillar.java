@@ -64,4 +64,8 @@ public class ChunkPillar {
             setHeight(x, z, y);
         // todo sets block in chunk
     }
+
+    public static long hash(int x, int z) {
+        return ((long) x << 32) | ((long) z) & 0xFFFF_FFFFL;
+    }
 }

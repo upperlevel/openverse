@@ -49,8 +49,7 @@ public class GameScene extends Stage implements Listener {
 
     @Override
     public void onRender() {
-        processInput();
-        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+        getScene().onRender();
     }
 
     private void processInput() {
@@ -58,16 +57,19 @@ public class GameScene extends Stage implements Listener {
 
     @Override
     public void onDisable(Scene next) {
+        getScene().onDisable(next);
         Openverse.getEventManager().call(new ShutdownEvent());
     }
 
     @Override
     public void onTick() {
         OpenverseClient.get().onTick();
+        getScene().onTick();
     }
 
     @Override
     public void onFps() {
+        getScene().onFps();
     }
 
     @EventHandler

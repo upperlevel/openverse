@@ -51,7 +51,7 @@ public class ReceivingWorldScene implements Scene, PacketListener {
         Player pl = new Player(new Location(w, 0, 0, 0), "Maurizio"); // TODO add real player
         pl.setInput(new PlayerEntityInput(gameScene.getWindow()));
         Openverse.entities().register(pl);
-        gameScene.setScene(new PlayingWorldScene(new WorldViewer(pl)));
+        gameScene.setScene(new PlayingWorldScene(pl));
         Openverse.logger().info("Received world, now you can play!");
     }
 }

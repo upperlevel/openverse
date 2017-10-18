@@ -13,6 +13,7 @@ import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
+import xyz.upperlevel.openverse.world.chunk.ChunkMap;
 import xyz.upperlevel.openverse.world.entity.event.PlayerMoveEvent;
 
 import java.util.HashMap;
@@ -25,7 +26,7 @@ public class PlayerChunkMap implements Listener {
     private final World world;
     private int radius;
 
-    private Map<ChunkLocation, PlayerChunk> chunks = new HashMap<>();
+    private ChunkMap<PlayerChunk> chunks = new ChunkMap<>();
     private Set<ServerPlayer> players = new HashSet<>();
 
     public PlayerChunkMap(World world, int radius) {
@@ -47,7 +48,7 @@ public class PlayerChunkMap implements Listener {
         for (int x = minX; x <= maxX; x++)
             for (int y = minY; y <= maxY; y++)
                 for (int z = minZ; z <= maxZ; z++)
-                    addPlayer(new ChunkLocation(x, y, z), player);
+                    addPlayer(x, y, z, player);
         players.add(player);
     }
 
@@ -63,7 +64,7 @@ public class PlayerChunkMap implements Listener {
         for (int x = minX; x <= maxX; x++)
             for (int y = minY; y <= maxY; y++)
                 for (int z = minZ; z <= maxZ; z++)
-                    removePlayer(new ChunkLocation(x, y, z), player);
+                    removePlayer(x, y, z, player);
         players.remove(player);
     }
 
@@ -99,7 +100,7 @@ public class PlayerChunkMap implements Listener {
                     int cz = loc.z + z;
 
                     if (apart || !oldAabb.testPoint(cx, cy, cz)) {
-                        addPlayer(new ChunkLocation(cx, cy, cz), player);
+                        addPlayer(cx, cy, cz, player);
                         added++;
                     }
 
@@ -108,7 +109,7 @@ public class PlayerChunkMap implements Listener {
                     cy = old.y + y;
                     cz = old.z + z;
                     if (apart || !newAabb.testPoint(cx, cy, cz)) {
-                        removePlayer(new ChunkLocation(cx, cy, cz), player);
+                        removePlayer(cx, cy, cz, player);
                         removed++;
                     }
                 }
@@ -126,11 +127,10 @@ public class PlayerChunkMap implements Listener {
                 for (int y = chunk.getY() - radius; y > chunk.getY() + radius; y++) {
                     for (int z = chunk.getZ() - radius; z > chunk.getZ() + radius; z++) {
                         if (x + y + z > (adding ? this.radius : radius)) {
-                            ChunkLocation l = new ChunkLocation(x, y, z);
                             if (adding)
-                                addPlayer(l, player);
+                                addPlayer(x, y, z, player);
                             else
-                                removePlayer(l, player);
+                                removePlayer(x, y, z, player);
                         }
                     }
                 }
@@ -140,25 +140,35 @@ public class PlayerChunkMap implements Listener {
     }
 
 
-    private void addPlayer(ChunkLocation location, ServerPlayer player) {
-        getOrCreateChunk(location).addPlayer(player);
-        player.getConnection().send(Openverse.channel(), new ChunkCreatePacket(world.getChunk(location.x, location.y, location.z)));
+    private void addPlayer(int x, int y, int z, ServerPlayer player) {
+        PlayerChunk chunk = getOrCreateChunk(x, y, z);
+        chunk.addPlayer(player);
+        player.getConnection().send(Openverse.channel(), new ChunkCreatePacket(chunk.getChunk()));
     }
 
-    private void removePlayer(ChunkLocation location, ServerPlayer player) {
-        chunks.computeIfPresent(location, (key, playerChunk) -> {
-            playerChunk.removePlayer(player);
-            player.getConnection().send(Openverse.channel(), new ChunkDestroyPacket(location.x, location.y, location.z));
-            return playerChunk.isEmpty() ? null : playerChunk;
-        });
+    private void removePlayer(int x, int y, int z, ServerPlayer player) {
+        PlayerChunk chunk = chunks.get(x, y, z);
+        if (chunk == null) {
+            return;
+        }
+        chunk.removePlayer(player);
+        player.getConnection().send(Openverse.channel(), new ChunkDestroyPacket(x, y, z));
+        if (chunk.isEmpty()) {
+            chunks.remove(x, y, z);
+        }
     }
 
     public PlayerChunk getChunk(ChunkLocation loc) {
         return chunks.get(loc);
     }
 
-    public PlayerChunk getOrCreateChunk(ChunkLocation loc) {
-        return chunks.computeIfAbsent(loc, PlayerChunk::new);
+    public PlayerChunk getOrCreateChunk(int x, int y, int z) {
+        PlayerChunk chunk = chunks.get(x, y, z);
+        if (chunk == null) {
+            chunk = new PlayerChunk(world.getChunk(x, y, z));
+            chunks.put(x, y, z, chunk);
+        }
+        return chunk;
     }
 
     @EventHandler

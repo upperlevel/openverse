@@ -63,6 +63,7 @@ public class OpenverseServer implements OpenverseProxy, Listener {
 
     public void onTick() {//TODO: call
         entityManager.onTick();
+        universe.onTick();
     }
 
     public void stop() {

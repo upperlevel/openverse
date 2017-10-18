@@ -27,6 +27,10 @@ public class ChunkLocation {
                         (y & 0x03FF);
     }
 
+    public long getPillarId() {
+        return ChunkPillar.hash(x, z);
+    }
+
     @Override
     public int hashCode() {
         return hashCode;

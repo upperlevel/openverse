@@ -3,15 +3,12 @@ package xyz.upperlevel.openverse.client.world.entity.input;
 import lombok.Getter;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
-import xyz.upperlevel.hermes.client.Client;
-import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.network.world.entity.PlayerChangePositionPacket;
 import xyz.upperlevel.openverse.world.entity.input.LivingEntityInput;
 import xyz.upperlevel.ulge.window.Window;
 import xyz.upperlevel.ulge.window.event.CursorMoveEvent;
 import xyz.upperlevel.ulge.window.event.key.Key;
 
-public class PlayerEntityInput implements LivingEntityInput, Listener{
+public class PlayerEntityInput implements LivingEntityInput, Listener {
     private static final float SPEED = 0.5f;
     private static final float SENSIBILITY = 0.5f;
 
@@ -42,10 +39,6 @@ public class PlayerEntityInput implements LivingEntityInput, Listener{
 
         cumulativeYaw = 0f;
         cumulativePitch = 0f;
-
-        //TODO: send changes to client(?)
-
-        ((Client) Openverse.endpoint()).getConnection().send(Openverse.channel(), new PlayerChangePositionPacket(strafe, up, forward));
     }
 
     protected float getMovement(Key pos, Key neg, float speed) {

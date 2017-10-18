@@ -5,6 +5,7 @@ import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.hermes.reflect.PacketHandler;
 import xyz.upperlevel.hermes.reflect.PacketListener;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.network.world.entity.EntityChangeVelocityPacket;
 import xyz.upperlevel.openverse.network.world.entity.EntityTeleportPacket;
 import xyz.upperlevel.openverse.world.Location;
 
@@ -51,6 +52,13 @@ public class EntityManager implements PacketListener {
         Entity entity = entitiesById.get(event.getEntityId());
 
         Location location = new Location(entity.getWorld(), event.getX(), event.getY(), event.getZ(), event.getYaw(), event.getPitch());
-        entity.setLocation(location, false);
+        entity.setLocation(location);
+    }
+
+    @PacketHandler
+    public void onVelocityChange(Connection sender, EntityChangeVelocityPacket event) {
+        Entity entity = entitiesById.get(event.getEntityId());
+
+        entity.setVelocity(entity.getVelocity());
     }
 }
