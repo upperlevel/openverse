@@ -19,6 +19,9 @@ import static xyz.upperlevel.openverse.Openverse.channel;
 import static xyz.upperlevel.openverse.Openverse.endpoint;
 
 public class Entity {
+    public static final double GRAVITY = 9.8/50.0;
+    public static final double JUMP_MULTIPLER = 3;
+
     @Getter
     @Setter
     private int id = -1;
@@ -87,6 +90,10 @@ public class Entity {
         }
     }
 
+    public void addGravity() {
+        this.velocity.y -= GRAVITY;
+    }
+
     public void updateFalling(double yVel) {
         //TODO: add fall on block event or fall distance
     }
@@ -131,11 +138,15 @@ public class Entity {
         location.add(movX, movY, movZ);
         //TODO: add step (like ladders)
 
-        onGround = movY < 0.0 && (oldMovY != movY);
+        onGround = movY == 0 ? onGround : movY < 0.0 && (oldMovY != movY);
         updateFalling(movY);
 
         if (oldMovX != movX) {//collided in the x axis
             velocity.x = 0.0;
+        }
+
+        if (movY != oldMovY) {//collided in the y axis
+            velocity.y = 0.0;
         }
 
         if (oldMovZ != movZ) {//collided in the z axis
@@ -158,16 +169,24 @@ public class Entity {
         double radYaw = Math.toRadians(location.getYaw());
         double sinYaw = Math.sin(radYaw);
         double cosYaw = Math.cos(radYaw);
-        velocity.set(
-                cosYaw *  strafe + sinYaw * forward,
-                up,
-                -cosYaw * forward + sinYaw * strafe
-        );
+
+        velocity.x = cosYaw *  strafe + sinYaw * forward;
+        velocity.z = -cosYaw * forward + sinYaw * strafe;
+
+        if (onGround) {
+            velocity.y += up * JUMP_MULTIPLER;
+        }
+    }
+
+    public void updateMovement() {
+        addGravity();
+        move();
     }
 
     /**
      * Called every game tick.
      */
     public void onTick() {
+        updateMovement();
     }
 }

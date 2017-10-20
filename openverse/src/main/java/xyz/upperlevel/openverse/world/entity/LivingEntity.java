@@ -17,12 +17,12 @@ public class LivingEntity extends Entity {
 
     public void travel(float strafe, float up, float forward) {
         setRelativeVelocity(strafe, up, forward);
+        addGravity();
         move();
     }
 
     @Override
-    public void onTick() {
-        super.onTick();
+    public void updateMovement() {
         driver.onTick();
         rotate(driver.getYaw(), driver.getPitch());
         travel(driver.getStrafe(), driver.getUp(), driver.getForward());
