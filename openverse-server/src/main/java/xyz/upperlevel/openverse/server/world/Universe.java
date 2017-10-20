@@ -17,7 +17,7 @@ public class Universe {
         if (spawn == null) {
             ServerWorld w = new ServerWorld("world");
             addWorld(w);
-            spawn = new Location(w, 0, 0, 0);
+            spawn = new Location(w, 0, 50, 0);
         }
         return spawn;
     }

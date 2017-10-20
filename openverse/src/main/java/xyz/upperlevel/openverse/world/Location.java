@@ -274,4 +274,9 @@ public class Location {
     public Vector3d toVector() {
         return new Vector3d(x, y, z);
     }
+
+    @Override
+    public String toString() {
+        return x + ", " + y + ", " +  z;
+    }
 }

@@ -116,7 +116,7 @@ public class World {
                     continue;
                 }
                 for (int y = minY; y < maxY; y++) {
-                    BlockState state = pillar.getChunk(y << 4).getBlockState(x & 15, y & 15, z & 15);
+                    BlockState state = pillar.getChunk(y >> 4).getBlockState(x & 15, y & 15, z & 15);
                     if (state == AIR_STATE) {
                         //Block is air
                         continue;

@@ -6,8 +6,10 @@ import org.joml.Vector3d;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.network.world.entity.EntityTeleportPacket;
 import xyz.upperlevel.openverse.util.math.Aabb3d;
+import xyz.upperlevel.openverse.util.math.MathUtil;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.World;
+import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.entity.event.EntityMoveEvent;
 
 import java.util.List;
@@ -52,6 +54,7 @@ public class Entity {
         Openverse.getEventManager().call(event);
         if (event.isCancelled()) return;
         this.location = location;
+        updateBoundingBox();
     }
 
     protected void updateBoundingBox() {
@@ -147,7 +150,7 @@ public class Entity {
     public void rotate(float yaw, float pitch) {
         Location loc = getLocation();
         loc.setYaw(loc.getYaw() + yaw);
-        loc.setPitch(loc.getPitch() + pitch);
+        loc.setPitch(MathUtil.clamp(loc.getPitch() + pitch, -90.0, 90.0));
         setLocation(loc);
     }
 

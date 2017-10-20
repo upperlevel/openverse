@@ -56,9 +56,10 @@ public class Aabb3d {
 
     public Aabb3d grow(double x, double y, double z) {
         return new Aabb3d(
-                x < 0 ? minX - x : minX,
-                y < 0 ? minY - y : minY,
-                z < 0 ? minZ - z : minZ,
+                x < 0 ? minX + x : minX,
+                y < 0 ? minY + y : minY,
+                z < 0 ? minZ + z : minZ,
+
                 x > 0 ? maxX + x : maxX,
                 y > 0 ? maxY + y : maxY,
                 z > 0 ? maxZ + z : maxZ
@@ -166,5 +167,10 @@ public class Aabb3d {
             }
         }
         return vel;
+    }
+
+    @Override
+    public String toString() {
+        return minX + ", " + minY + ", " + minZ + " -> " + maxX + ", " + maxY + ", " + maxZ;
     }
 }
