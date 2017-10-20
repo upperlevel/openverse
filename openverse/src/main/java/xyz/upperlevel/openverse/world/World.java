@@ -99,4 +99,16 @@ public class World {
         if (chunk != null)
             chunk.setBlockState(x & 0xF, y & 0xF, z & 0xF, blockState);
     }
+
+
+    public int getBlockLight(int x, int y, int z) {
+        Chunk c = getChunkFromBlock(x, y, z);
+        return c == null ? 0 : c.getBlockLight(x & 0xF, y & 0xF, z & 0xF);
+    }
+
+    public void setBlockLight(int x, int y, int z, int blockLight) {
+        Chunk c = getChunkFromBlock(x ,y, z);
+        if (c != null)
+            c.setBlockLight(x, y ,z, blockLight);
+    }
 }

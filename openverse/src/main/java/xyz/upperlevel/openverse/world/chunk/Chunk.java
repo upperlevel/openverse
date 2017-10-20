@@ -44,13 +44,15 @@ public class Chunk {
         return blockStorage.getBlock(x, y, z);
     }
 
+
     public BlockType getBlockType(int x, int y, int z) {
         return blockStorage.getBlockType(x, y, z);
     }
 
-    public void setBlockType(int x, int y, int z, BlockType type) {
-        blockStorage.setBlockType(x, y, z, type);
+    public void setBlockType(int x, int y, int z, BlockType blockType) {
+        blockStorage.setBlockType(x, y, z, blockType);
     }
+
 
     public BlockState getBlockState(int x, int y, int z) {
         return blockStorage.getBlockState(x, y, z);
@@ -58,5 +60,14 @@ public class Chunk {
 
     public void setBlockState(int x, int y, int z, BlockState blockState) {
         blockStorage.setBlockState(x, y, z, blockState);
+    }
+
+
+    public int getBlockLight(int x, int y, int z) {
+        return blockStorage.getBlockLight(x, y, z);
+    }
+
+    public void setBlockLight(int x, int y, int z, int blockLight) {
+        blockStorage.setBlockLight(x, y, z, blockLight);
     }
 }
