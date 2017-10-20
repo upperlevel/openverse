@@ -1,6 +1,5 @@
 package xyz.upperlevel.openverse.client.game;
 
-import xyz.upperlevel.openverse.client.world.entity.input.PlayerEntityInput;
 import xyz.upperlevel.ulge.game.Scene;
 import xyz.upperlevel.ulge.game.Stage;
 

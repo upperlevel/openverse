@@ -43,6 +43,9 @@ public class EntityManager implements PacketListener {
         nextId = 0;
     }
 
+    /**
+     * Called to update entity position each tick.
+     */
     public void onTick() {
         entitiesById.values().forEach(Entity::onTick);
     }

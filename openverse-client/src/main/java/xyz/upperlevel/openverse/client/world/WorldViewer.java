@@ -49,9 +49,6 @@ public class WorldViewer implements PacketListener {
         Openverse.channel().register(this);
     }
 
-    /**
-     * Firstly binds the program and then renders all chunks.
-     */
     public void render() {
         program.bind();
         Location loc = entity.getLocation();

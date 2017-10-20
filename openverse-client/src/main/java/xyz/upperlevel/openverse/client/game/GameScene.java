@@ -5,16 +5,11 @@ import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.OpenverseClient;
-import xyz.upperlevel.openverse.client.world.WorldViewer;
-import xyz.upperlevel.openverse.client.world.entity.input.PlayerEntityInput;
 import xyz.upperlevel.openverse.event.ShutdownEvent;
 import xyz.upperlevel.openverse.launcher.OpenverseLauncher;
-import xyz.upperlevel.openverse.world.Location;
-import xyz.upperlevel.openverse.world.entity.LivingEntity;
-import xyz.upperlevel.openverse.world.entity.player.Player;
+import xyz.upperlevel.ulge.game.Game;
 import xyz.upperlevel.ulge.game.Scene;
 import xyz.upperlevel.ulge.game.Stage;
-import xyz.upperlevel.ulge.opengl.buffer.Vao;
 import xyz.upperlevel.ulge.window.Window;
 import xyz.upperlevel.ulge.window.event.KeyChangeEvent;
 import xyz.upperlevel.ulge.window.event.action.Action;
@@ -25,11 +20,13 @@ import static org.lwjgl.opengl.GL11.*;
 @Getter
 public class GameScene extends Stage implements Listener {
     private final ClientScene parent;
+    private Game game;
     private Window window;
 
     public GameScene(ClientScene parent) {
         this.parent = parent;
-        window = OpenverseLauncher.get().getGame().getWindow();
+        game = OpenverseLauncher.get().getGame();
+        window = game.getWindow();
         window.getEventManager().register(this);
         window.disableCursor();
     }
@@ -42,7 +39,7 @@ public class GameScene extends Stage implements Listener {
         glEnable(GL_CULL_FACE);
         glFrontFace(GL_CCW);
         glCullFace(GL_BACK);
-        //window.setVSync(false);
+        window.setVSync(false);
 
         setScene(new ReceivingWorldScene(this));
     }

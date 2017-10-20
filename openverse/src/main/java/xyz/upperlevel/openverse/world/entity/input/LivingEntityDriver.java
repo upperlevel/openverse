@@ -1,7 +1,10 @@
 package xyz.upperlevel.openverse.world.entity.input;
 
-public interface LivingEntityInput {
-    LivingEntityInput FREEZE = new LivingEntityInput() {
+/**
+ * This class is used to determine how, each tick, an entity should move.
+ */
+public interface LivingEntityDriver {
+    LivingEntityDriver FREEZE = new LivingEntityDriver() {
         @Override
         public void onTick() {
 
@@ -33,13 +36,16 @@ public interface LivingEntityInput {
         }
     };
 
+
     void onTick();
+
 
     float getStrafe();
 
     float getUp();
 
     float getForward();
+
 
     float getYaw();
 

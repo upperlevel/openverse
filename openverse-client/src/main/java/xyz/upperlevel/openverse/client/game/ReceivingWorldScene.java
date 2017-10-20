@@ -7,8 +7,7 @@ import xyz.upperlevel.hermes.reflect.PacketHandler;
 import xyz.upperlevel.hermes.reflect.PacketListener;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.world.ClientWorld;
-import xyz.upperlevel.openverse.client.world.WorldViewer;
-import xyz.upperlevel.openverse.client.world.entity.input.PlayerEntityInput;
+import xyz.upperlevel.openverse.client.world.KeyboardInputEntityDriver;
 import xyz.upperlevel.openverse.network.world.entity.PlayerChangeWorldPacket;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.entity.player.Player;
@@ -49,7 +48,7 @@ public class ReceivingWorldScene implements Scene, PacketListener {
     public void onPlayerChangeWorld(Connection conn, PlayerChangeWorldPacket pkt) {
         ClientWorld w = new ClientWorld(pkt.getWorldName());
         Player pl = new Player(new Location(w, 0, 0, 0), "Maurizio"); // TODO add real player
-        pl.setInput(new PlayerEntityInput(gameScene.getWindow()));
+        pl.setDriver(new KeyboardInputEntityDriver(gameScene.getWindow()));
         Openverse.entities().register(pl);
         gameScene.setScene(new PlayingWorldScene(pl));
         Openverse.logger().info("Received world, now you can play!");

@@ -144,8 +144,8 @@ public class Entity {
         move(velocity.x, velocity.y, velocity.z);
     }
 
-    public void rotate(float pitch, float yaw) {
-        final Location loc = getLocation();
+    public void rotate(float yaw, float pitch) {
+        Location loc = getLocation();
         loc.setYaw(loc.getYaw() + yaw);
         loc.setPitch(loc.getPitch() + pitch);
         setLocation(loc);
@@ -156,14 +156,14 @@ public class Entity {
         double sinYaw = Math.sin(radYaw);
         double cosYaw = Math.cos(radYaw);
         velocity.set(
-                strafe * sinYaw - forward * cosYaw,
+                cosYaw *  strafe + sinYaw * forward,
                 up,
-                forward * sinYaw + strafe * cosYaw
+                -cosYaw * forward + sinYaw * strafe
         );
     }
 
     /**
-     * Called every game tick
+     * Called every game tick.
      */
     public void onTick() {
     }
