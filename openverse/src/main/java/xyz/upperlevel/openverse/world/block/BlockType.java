@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 public class BlockType {
     public static final BlockType AIR = new BlockType("air", false);
-    public static final Aabb3d FULL_BLOCK_AABB = new Aabb3d(0.0, 0.0, 0.0, 1.1, 1.1, 1.1);
+    public static final Aabb3d FULL_BLOCK_AABB = new Aabb3d(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
     private final String id;
     @Setter
     private int rawId = -1;

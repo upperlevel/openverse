@@ -46,12 +46,12 @@ public class Aabb3d {
     }
 
     public boolean intersect(Aabb3d other) {
-        return this.maxX >= other.minX &&
-                this.maxY >= other.minY &&
-                this.maxZ >= other.minZ &&
-                this.minX <= other.maxX &&
-                this.minY <= other.maxY &&
-                this.minZ <= other.maxZ;
+        return  this.maxX > other.minX &&
+                this.maxY > other.minY &&
+                this.maxZ > other.minZ &&
+                this.minX < other.maxX &&
+                this.minY < other.maxY &&
+                this.minZ < other.maxZ;
     }
 
     public Aabb3d grow(double x, double y, double z) {
@@ -71,9 +71,9 @@ public class Aabb3d {
                 x > 0 ? minX + x : minX,
                 y > 0 ? minY + y : minY,
                 z > 0 ? minZ + z : minZ,
-                x < 0 ? maxX - x : maxX,
-                y < 0 ? maxY - y : maxY,
-                z < 0 ? maxZ - z : maxZ
+                x < 0 ? maxX + x : maxX,
+                y < 0 ? maxY + y : maxY,
+                z < 0 ? maxZ + z : maxZ
         );
     }
 
@@ -111,10 +111,10 @@ public class Aabb3d {
      */
     public double getOverlapX(Aabb3d other, double vel) {
         //If intersects in the y and the z axis
-        if (    this.maxY >= other.minY &&
-                this.maxZ >= other.minZ &&
-                this.minY <= other.maxY &&
-                this.minZ <= other.maxZ) {
+        if (    this.maxY > other.minY &&
+                this.maxZ > other.minZ &&
+                this.minY < other.maxY &&
+                this.minZ < other.maxZ) {
             //See in which face it entered
             if (vel > 0 && this.minX >= other.maxX) {
                 return this.minX - other.maxX;
@@ -133,10 +133,10 @@ public class Aabb3d {
      */
     public double getOverlapY(Aabb3d other, double vel) {
         //If intersects in the x and the z axis
-        if (    this.maxX >= other.minX &&
-                this.maxZ >= other.minZ &&
-                this.minX <= other.maxX &&
-                this.minZ <= other.maxZ){
+        if (    this.maxX > other.minX &&
+                this.maxZ > other.minZ &&
+                this.minX < other.maxX &&
+                this.minZ < other.maxZ){
             //See in which face it entered
             if (vel > 0 && this.minY >= other.maxY) {
                 return this.minY - other.maxY;
@@ -155,10 +155,10 @@ public class Aabb3d {
      */
     public double getOverlapZ(Aabb3d other, double vel) {
         //If intersects in the x and the y axis
-        if (    this.maxX >= other.minX &&
-                this.maxY >= other.minY &&
-                this.minX <= other.maxX &&
-                this.minY <= other.maxY) {
+        if (    this.maxX > other.minX &&
+                this.maxY > other.minY &&
+                this.minX < other.maxX &&
+                this.minY < other.maxY) {
             //See in which face it entered
             if (vel > 0 && this.minZ >= other.maxZ) {
                 return this.minZ - other.maxZ;

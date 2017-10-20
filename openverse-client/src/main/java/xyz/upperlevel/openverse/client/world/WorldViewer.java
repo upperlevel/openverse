@@ -25,6 +25,7 @@ import xyz.upperlevel.ulge.util.math.CameraUtil;
 @Getter
 @Setter
 public class WorldViewer implements PacketListener {
+    public static final float CAMERA_HEIGHT = 1.75f;
     private final WorldSession worldSession;
 
     @Getter
@@ -60,7 +61,7 @@ public class WorldViewer implements PacketListener {
                 (float) Math.toRadians(loc.getYaw()),
                 (float) Math.toRadians(loc.getPitch()),
                 (float) loc.getX(),
-                (float) loc.getY(),
+                (float) loc.getY() + CAMERA_HEIGHT,
                 (float) loc.getZ()
         ).get(BufferUtils.createFloatBuffer(16)));
 
