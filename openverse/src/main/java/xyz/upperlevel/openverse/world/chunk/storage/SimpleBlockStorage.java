@@ -40,17 +40,6 @@ public class SimpleBlockStorage implements BlockStorage {
 
 
     @Override
-    public BlockType getBlockType(int x, int y, int z) {
-        return blockStateStorage.getBlockState(x, y, z).getBlockType();
-    }
-
-    @Override
-    public void setBlockType(int x, int y, int z, BlockType blockType) {
-        blockStateStorage.setBlockState(x, y, z, blockType != null ? blockType.getDefaultState() : AIR_STATE);
-    }
-
-
-    @Override
     public BlockState getBlockState(int x, int y, int z) {
         return blockStateStorage.getBlockState(x, y, z);
     }
@@ -59,6 +48,7 @@ public class SimpleBlockStorage implements BlockStorage {
     public void setBlockState(int x, int y, int z, BlockState blockState) {
         blockStateStorage.setBlockState(x, y, z, blockState != null ? blockState : AIR_STATE);
     }
+
 
     protected BlockStateStorage createBlockStateStorage() {
         return new SimpleBlockStateStorage();

@@ -29,6 +29,7 @@ public class ResourceScene implements Scene {
         BlockTypeModelMapper.load(Openverse.resources().blockTypes().entry("grass"), Paths.get("client/resources/blocks/grass.json"));
         BlockTypeModelMapper.load(Openverse.resources().blockTypes().entry("dirt"), Paths.get("client/resources/blocks/dirt.json"));
         BlockTypeModelMapper.load(Openverse.resources().blockTypes().entry("test"), Paths.get("client/resources/blocks/test.json"));
+        BlockTypeModelMapper.load(Openverse.resources().blockTypes().entry("photon"), Paths.get("client/resources/blocks/photon.json"));
 
         TextureBakery.bake();
         BlockTypeModelMapper.bake(); // bakes models

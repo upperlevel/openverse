@@ -89,6 +89,7 @@ public class ChunkRenderer {
         new VertexLinker()
                 .attrib(program.uniformer.getAttribLocation("position"), 3)
                 .attrib(program.uniformer.getAttribLocation("texCoords"), 3)
+                .attrib(program.uniformer.getAttribLocation("blockLight"), 1)
                 .setup();
 
         vbo.unbind();

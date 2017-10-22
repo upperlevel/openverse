@@ -5,8 +5,12 @@ import lombok.Setter;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
+import xyz.upperlevel.openverse.world.block.state.BlockStateRegistry;
+import xyz.upperlevel.openverse.world.chunk.storage.BlockStateStorage;
 import xyz.upperlevel.openverse.world.chunk.storage.BlockStorage;
 import xyz.upperlevel.openverse.world.chunk.storage.SimpleBlockStorage;
+
+import static xyz.upperlevel.openverse.world.chunk.storage.BlockStorage.AIR_STATE;
 
 @Getter
 @Setter
@@ -40,17 +44,18 @@ public class Chunk {
         return chunkPillar.getZ();
     }
 
+
     public Block getBlock(int x, int y, int z) {
         return blockStorage.getBlock(x, y, z);
     }
 
 
     public BlockType getBlockType(int x, int y, int z) {
-        return blockStorage.getBlockType(x, y, z);
+        return blockStorage.getBlockState(x, y, z).getBlockType();
     }
 
     public void setBlockType(int x, int y, int z, BlockType blockType) {
-        blockStorage.setBlockType(x, y, z, blockType);
+        blockStorage.setBlockState(x, y, z, blockType == null ? AIR_STATE : blockType.getDefaultBlockState());
     }
 
 
@@ -60,6 +65,11 @@ public class Chunk {
 
     public void setBlockState(int x, int y, int z, BlockState blockState) {
         blockStorage.setBlockState(x, y, z, blockState);
+        int light = blockState.getBlockType().getEmittedBlockLight(blockState);
+        if (light > 0) {
+            setBlockLight(x, y, z, light);
+            world.diffuseBlockLight(x, y, z);
+        }
     }
 
 

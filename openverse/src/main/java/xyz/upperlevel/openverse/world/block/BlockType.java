@@ -34,10 +34,6 @@ public class BlockType {
         return BlockStateRegistry.of(this); //Creates a BlockStateRegistry with no propriety
     }
 
-    public BlockState getDefaultState() {
-        return defaultBlockState;
-    }
-
     public void setDefaultState(BlockState state) {
         this.defaultBlockState = state;
     }
@@ -52,6 +48,10 @@ public class BlockType {
 
     public int getFullId(BlockState state) {
         return rawId | (state.getId() & 0xF);
+    }
+
+    public int getEmittedBlockLight(BlockState state) {
+        return 0;
     }
 
 

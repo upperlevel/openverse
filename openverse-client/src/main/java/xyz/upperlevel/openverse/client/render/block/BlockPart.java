@@ -2,11 +2,9 @@ package xyz.upperlevel.openverse.client.render.block;
 
 import lombok.Getter;
 import xyz.upperlevel.openverse.util.config.Config;
-import xyz.upperlevel.openverse.util.math.Aabb3d;
 import xyz.upperlevel.openverse.util.math.Aabb3f;
+import xyz.upperlevel.openverse.world.BlockFace;
 import xyz.upperlevel.openverse.world.World;
-import xyz.upperlevel.openverse.world.block.BlockType;
-import xyz.upperlevel.openverse.world.block.state.BlockState;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -16,10 +14,10 @@ import java.util.Map;
 @Getter
 public class BlockPart {
     private final Aabb3f aabb;
-    private Map<Facing, BlockPartFace> faces = new HashMap<>();
+    private Map<BlockFace, BlockPartFace> faces = new HashMap<>();
 
-    private Facing parseFacing(String string) {
-        return Facing.valueOf(string.toUpperCase(Locale.ENGLISH).replace("_", " "));
+    private BlockFace parseFacing(String string) {
+        return BlockFace.valueOf(string.toUpperCase(Locale.ENGLISH).replace("_", " "));
     }
 
     @SuppressWarnings("unchecked")
@@ -35,7 +33,7 @@ public class BlockPart {
                 toCfg.getFloatRequired("z")
         );
         for (Map.Entry<String, Object> faceMap : config.getSectionRequired("faces").entrySet()) {
-            Facing fac = parseFacing(faceMap.getKey());
+            BlockFace fac = parseFacing(faceMap.getKey());
             if (fac != null)
                 faces.put(fac, BlockPartFace.deserialize(this, fac, Config.wrap((Map<String, Object>) faceMap.getValue())));
         }
@@ -53,7 +51,7 @@ public class BlockPart {
 
     public int renderOnBuffer(World world, int x, int y, int z, ByteBuffer buffer) {
         int v = 0;
-        for (Facing f : Facing.values()) {
+        for (BlockFace f : BlockFace.values()) {
             v += faces.get(f).renderOnBuffer(world, x, y, z, buffer);
         }
         return v;

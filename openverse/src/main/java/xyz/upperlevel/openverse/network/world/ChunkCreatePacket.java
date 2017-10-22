@@ -14,6 +14,7 @@ import xyz.upperlevel.openverse.world.chunk.ChunkPillar;
 import java.util.Arrays;
 
 import static xyz.upperlevel.openverse.network.SerialUtil.*;
+import static xyz.upperlevel.openverse.world.chunk.storage.BlockStorage.AIR_STATE;
 
 @Getter
 @NoArgsConstructor
@@ -46,7 +47,7 @@ public class ChunkCreatePacket implements Packet {
                 if (bType == null) {
                     Openverse.logger().warning("Unresolved id in ChunkCreatePacket: " + blockTypes[i]);
                 }
-                chunk.setBlockType(i >> 8, i >> 4 & 0xF, i & 0xF, bType);
+                world.setBlockState(x * 16 + (i >> 8), y * 16 + (i >> 4 & 0xF), z * 16 + (i & 0xF), bType == null ? AIR_STATE : bType.getDefaultBlockState());
             }
         }
         return chunk;

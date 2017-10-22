@@ -10,7 +10,7 @@ import xyz.upperlevel.openverse.world.chunk.Chunk;
 import java.util.Collection;
 
 public interface BlockStorage {
-    BlockState AIR_STATE = BlockType.AIR.getDefaultState();
+    BlockState AIR_STATE = BlockType.AIR.getDefaultBlockState();
 
     World getWorld();
 
@@ -18,11 +18,6 @@ public interface BlockStorage {
 
 
     Block getBlock(int x, int y, int z);
-
-
-    BlockType getBlockType(int x, int y, int z);
-
-    void setBlockType(int x, int y, int z, BlockType blockType);
 
 
     BlockState getBlockState(int x, int y, int z);

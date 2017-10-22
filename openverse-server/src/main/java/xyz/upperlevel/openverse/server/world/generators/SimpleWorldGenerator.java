@@ -11,11 +11,12 @@ public class SimpleWorldGenerator implements ChunkGenerator {
     private static final int MAX_HEIGHT = 50;
     private static final double FREQUENCY = 100;
 
-    private final BlockType dirtType, grassType;
+    private final BlockType dirtType, grassType, photonType;
 
     public SimpleWorldGenerator() {
         dirtType = Openverse.resources().blockTypes().entry("dirt");
         grassType = Openverse.resources().blockTypes().entry("grass");
+        photonType = Openverse.resources().blockTypes().entry("photon");
     }
 
     @Override
@@ -36,12 +37,20 @@ public class SimpleWorldGenerator implements ChunkGenerator {
         buildHeightMap(chkPil);
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
+                int wx = x + chunk.getX() * 16;
+                int wz = z + chunk.getZ() * 16;
+
                 int h = chkPil.getHeight(x, z);
                 for (int y = 0, by = y + chunk.getY() * 16; y < 16 && by <= h; y++, by++) {
-                    if (by == h)
-                        chunk.setBlockType(x, y, z, grassType);
-                    else
-                        chunk.setBlockType(x, y, z, dirtType);
+                    int wy = y + chunk.getY() * 16;
+                    if (by == h) {
+                        if (x == 0 && z == 0) {
+                            chunk.getWorld().setBlockState(wx, wy, wz, photonType.getDefaultBlockState());
+                        } else {
+                            chunk.getWorld().setBlockState(wx, wy, wz, grassType.getDefaultBlockState());
+                        }
+                    } else
+                        chunk.getWorld().setBlockState(wx, wy, wz, dirtType.getDefaultBlockState());
                 }
             }
         }

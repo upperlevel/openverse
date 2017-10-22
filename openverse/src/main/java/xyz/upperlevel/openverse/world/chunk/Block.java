@@ -36,19 +36,19 @@ public class Block {
 
 
     public BlockType getType() {
-        return storage.getBlockType(chunkRelativeX, chunkRelativeY, chunkRelativeZ);
+        return chunk.getBlockType(chunkRelativeX, chunkRelativeY, chunkRelativeZ);
     }
 
     public void setType(BlockType type) {
-        storage.setBlockType(chunkRelativeX, chunkRelativeY, chunkRelativeZ, type);
+        chunk.setBlockType(chunkRelativeX, chunkRelativeY, chunkRelativeZ, type);
     }
 
 
     public BlockState getState() {
-        return storage.getBlockState(chunkRelativeX, chunkRelativeY, chunkRelativeZ);
+        return chunk.getBlockState(chunkRelativeX, chunkRelativeY, chunkRelativeZ);
     }
 
     public void setState(BlockState state) {
-        storage.setBlockState(chunkRelativeX, chunkRelativeY, chunkRelativeZ, state);
+        chunk.setBlockState(chunkRelativeX, chunkRelativeY, chunkRelativeZ, state);
     }
 }
