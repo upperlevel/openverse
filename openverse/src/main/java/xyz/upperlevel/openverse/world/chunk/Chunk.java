@@ -68,7 +68,7 @@ public class Chunk {
         int light = blockState.getBlockType().getEmittedBlockLight(blockState);
         if (light > 0) {
             setBlockLight(x, y, z, light);
-            world.diffuseBlockLight(x, y, z);
+            world.diffuseBlockLight(x + getX() * 16, y + this.y * 16, z + getZ() * 16);
         }
     }
 
