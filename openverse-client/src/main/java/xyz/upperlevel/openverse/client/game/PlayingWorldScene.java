@@ -1,9 +1,13 @@
 package xyz.upperlevel.openverse.client.game;
 
 import lombok.Getter;
+import org.lwjgl.system.CallbackI;
 import xyz.upperlevel.openverse.client.world.WorldViewer;
 import xyz.upperlevel.openverse.client.world.updater.PlayerLocationWatcher;
+import xyz.upperlevel.openverse.console.log.OpenverseLogger;
+import xyz.upperlevel.openverse.launcher.OpenverseLauncher;
 import xyz.upperlevel.openverse.world.entity.LivingEntity;
+import xyz.upperlevel.ulge.game.Game;
 import xyz.upperlevel.ulge.game.Scene;
 
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
@@ -17,6 +21,8 @@ import static org.lwjgl.opengl.GL11.glClear;
 public class PlayingWorldScene implements Scene {
     private final WorldViewer worldViewer;
     private final PlayerLocationWatcher playerWatcher;
+    private long ticksEach;
+    private long lastTick;
 
     public PlayingWorldScene(LivingEntity player) {
         this.worldViewer = new WorldViewer(player);
@@ -26,6 +32,8 @@ public class PlayingWorldScene implements Scene {
     @Override
     public void onEnable(Scene scene) {
         worldViewer.listen();
+        ticksEach = OpenverseLauncher.get().getGame().getTickEach();
+        lastTick = System.currentTimeMillis();
     }
 
     @Override
@@ -34,6 +42,7 @@ public class PlayingWorldScene implements Scene {
 
     @Override
     public void onTick() {
+        lastTick = System.currentTimeMillis();
         playerWatcher.update();
     }
 
@@ -44,6 +53,7 @@ public class PlayingWorldScene implements Scene {
     @Override
     public void onRender() {
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-        worldViewer.render();
+        float partialTicks = (System.currentTimeMillis() - lastTick) / (float)ticksEach;
+        worldViewer.render(partialTicks);
     }
 }

@@ -34,6 +34,7 @@ public class Entity {
     @Getter
     private boolean onGround;
 
+    protected Location lastLocation;
     protected Location location;
     @Getter
     @Setter
@@ -41,6 +42,9 @@ public class Entity {
     @Getter
     @Setter
     private Aabb3d boundingBox = Aabb3d.ZERO;
+
+    @Getter
+    private int ticksLived = 0;
 
     public Entity(EntityType type, Location spawn) {
         this.type = type;
@@ -61,9 +65,6 @@ public class Entity {
     }
 
     protected void updateBoundingBox() {
-        if (location == null) {
-            return;
-        }
         double w = width / 2.0;
         setBoundingBox(new Aabb3d(
                 location.getX() - w, location.getY(), location.getZ() - w,
@@ -71,8 +72,12 @@ public class Entity {
         ));
     }
 
+    public Location getLastLocation() {
+        return new Location(lastLocation == null ? location : lastLocation);
+    }
+
     public Location getLocation() {
-        return location == null ? null : new Location(location);
+        return new Location(location);
     }
 
     public void setRotation(double yaw, double pitch) {
@@ -187,6 +192,8 @@ public class Entity {
      * Called every game tick.
      */
     public void onTick() {
+        ticksLived++;
+        this.lastLocation = location.copy();
         updateMovement();
     }
 }
