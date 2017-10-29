@@ -4,19 +4,15 @@ import lombok.Getter;
 import lombok.Setter;
 import org.joml.Vector3d;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.network.world.entity.EntityTeleportPacket;
 import xyz.upperlevel.openverse.util.math.Aabb3d;
 import xyz.upperlevel.openverse.util.math.MathUtil;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.World;
-import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.entity.event.EntityMoveEvent;
 
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static xyz.upperlevel.openverse.Openverse.channel;
-import static xyz.upperlevel.openverse.Openverse.endpoint;
 
 public class Entity {
     public static final double GRAVITY = 9.8/50.0;

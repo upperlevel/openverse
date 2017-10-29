@@ -24,7 +24,7 @@ public class Aabb2f {
     }
 
     public boolean inside(float x, float y) {
-        return x > minX && y > minY && x < maxX && y < maxY;
+        return x >= minX && y >= minY && x <= maxX && y <= maxY;
     }
 
     public boolean inside(Vector2fc point) {
@@ -32,7 +32,7 @@ public class Aabb2f {
     }
 
     public boolean inside(Aabb2f aabb) {
-        return aabb.minX > minX && aabb.minY > minY&& aabb.maxX < maxX && aabb.maxY < maxY;
+        return aabb.minX >= minX && aabb.minY >= minY&& aabb.maxX <= maxX && aabb.maxY <= maxY;
     }
 
     public boolean intersect(Aabb2f other) {

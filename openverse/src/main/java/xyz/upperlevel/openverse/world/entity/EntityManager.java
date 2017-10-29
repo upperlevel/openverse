@@ -7,12 +7,14 @@ import xyz.upperlevel.hermes.reflect.PacketListener;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.network.world.entity.EntityChangeVelocityPacket;
 import xyz.upperlevel.openverse.network.world.entity.EntityTeleportPacket;
+import xyz.upperlevel.openverse.profiler.ProfileSession;
 import xyz.upperlevel.openverse.world.Location;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class EntityManager implements PacketListener {
+    public static final ProfileSession ENTITY_TICK_PROFILER = new ProfileSession("Entity tick");
     private int nextId = 0;
     //TODO: use a more specific class
     private final Map<Integer, Entity> entitiesById = new HashMap<>();
@@ -47,7 +49,11 @@ public class EntityManager implements PacketListener {
      * Called to update entity position each tick.
      */
     public void onTick() {
-        entitiesById.values().forEach(Entity::onTick);
+        entitiesById.values().forEach(entity -> {
+            ENTITY_TICK_PROFILER.start();
+            entity.onTick();
+            ENTITY_TICK_PROFILER.stop();
+        });
     }
 
     @PacketHandler

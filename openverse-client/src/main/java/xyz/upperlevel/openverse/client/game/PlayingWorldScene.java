@@ -2,13 +2,17 @@ package xyz.upperlevel.openverse.client.game;
 
 import lombok.Getter;
 import org.lwjgl.system.CallbackI;
+import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.world.WorldViewer;
 import xyz.upperlevel.openverse.client.world.updater.PlayerLocationWatcher;
 import xyz.upperlevel.openverse.console.log.OpenverseLogger;
 import xyz.upperlevel.openverse.launcher.OpenverseLauncher;
+import xyz.upperlevel.openverse.world.entity.Entity;
+import xyz.upperlevel.openverse.world.entity.EntityManager;
 import xyz.upperlevel.openverse.world.entity.LivingEntity;
 import xyz.upperlevel.ulge.game.Game;
 import xyz.upperlevel.ulge.game.Scene;
+import xyz.upperlevel.ulge.opengl.buffer.Vao;
 
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
@@ -48,6 +52,12 @@ public class PlayingWorldScene implements Scene {
 
     @Override
     public void onFps() {
+        Openverse.logger().info("Fps: " + OpenverseLauncher.get().getGame().getFps() +
+                " chunks: " + worldViewer.getWorldSession().getChunkView().getChunks().size() +
+                ", vaos:" + Vao.instances +
+                ", tick:" + EntityManager.ENTITY_TICK_PROFILER.getAverageNanos() + "(" + EntityManager.ENTITY_TICK_PROFILER.getCallCount() + ")"
+        );
+        EntityManager.ENTITY_TICK_PROFILER.reset();//TODO: add ProfileSystem
     }
 
     @Override

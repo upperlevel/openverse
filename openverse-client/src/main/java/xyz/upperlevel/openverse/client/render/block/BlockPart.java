@@ -2,11 +2,8 @@ package xyz.upperlevel.openverse.client.render.block;
 
 import lombok.Getter;
 import xyz.upperlevel.openverse.util.config.Config;
-import xyz.upperlevel.openverse.util.math.Aabb3d;
 import xyz.upperlevel.openverse.util.math.Aabb3f;
 import xyz.upperlevel.openverse.world.World;
-import xyz.upperlevel.openverse.world.block.BlockType;
-import xyz.upperlevel.openverse.world.block.state.BlockState;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
