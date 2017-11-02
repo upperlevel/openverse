@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.joml.Vector3d;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.util.math.Aabb3d;
+import xyz.upperlevel.openverse.util.math.LineVisitor3d.RayCastResult;
 import xyz.upperlevel.openverse.util.math.MathUtil;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.World;
@@ -13,6 +14,8 @@ import xyz.upperlevel.openverse.world.entity.event.EntityMoveEvent;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static xyz.upperlevel.openverse.util.math.MathUtil.lerp;
+import static xyz.upperlevel.openverse.util.math.MathUtil.lerpAngle;
 
 public class Entity {
     public static final double GRAVITY = 9.8/50.0;
@@ -74,6 +77,20 @@ public class Entity {
 
     public Location getLocation() {
         return new Location(location);
+    }
+
+    public Location getLocation(float partialTicks) {
+        if (lastLocation == null || partialTicks >= 1) {
+            return getLocation();
+        }
+        return new Location(
+                location.getWorld(),
+                lerp(lastLocation.getX(), location.getX(), partialTicks),
+                lerp(lastLocation.getY(), location.getY(), partialTicks),
+                lerp(lastLocation.getZ(), location.getZ(), partialTicks),
+                lerpAngle(lastLocation.getYaw(), location.getYaw(), partialTicks),
+                lerp(lastLocation.getPitch(), location.getPitch(), partialTicks)
+        );
     }
 
     public void setRotation(double yaw, double pitch) {
@@ -191,5 +208,27 @@ public class Entity {
         ticksLived++;
         this.lastLocation = location.copy();
         updateMovement();
+    }
+
+    public int getBlockReach() {
+        return 4;
+    }
+
+    public double getEyeHeight() {
+        return 0;
+    }
+
+    public Location getEyePosition(float partialTicks) {
+        return getLocation(partialTicks).add(0, getEyeHeight(), 0);
+    }
+
+    public RayCastResult rayCast(float partialTicks, int blockReach) {
+        Location loc = getEyePosition(partialTicks);
+        Vector3d look = loc.getLook().mul(blockReach);
+        return loc.getWorld().rayCast(loc.getX(), loc.getY(), loc.getZ(), loc.getX() + look.x, loc.getY() + look.y, loc.getZ() + look.z);
+    }
+
+    public RayCastResult rayCast(float partialTicks) {
+        return rayCast(partialTicks, getBlockReach());
     }
 }

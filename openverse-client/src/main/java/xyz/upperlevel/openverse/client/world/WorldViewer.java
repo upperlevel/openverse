@@ -12,7 +12,6 @@ import xyz.upperlevel.openverse.client.resource.ClientResources;
 import xyz.upperlevel.openverse.network.world.entity.PlayerChangeLookPacket;
 import xyz.upperlevel.openverse.network.world.entity.PlayerChangePositionPacket;
 import xyz.upperlevel.openverse.network.world.entity.PlayerChangeWorldPacket;
-import xyz.upperlevel.openverse.util.math.MathUtil;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.entity.LivingEntity;
 import xyz.upperlevel.ulge.opengl.shader.Program;
@@ -20,7 +19,6 @@ import xyz.upperlevel.ulge.opengl.shader.Uniform;
 import xyz.upperlevel.ulge.util.math.CameraUtil;
 
 import static xyz.upperlevel.openverse.util.math.MathUtil.lerp;
-import static xyz.upperlevel.openverse.util.math.MathUtil.lerpAngle;
 
 /**
  * This class represents the player.
@@ -29,7 +27,6 @@ import static xyz.upperlevel.openverse.util.math.MathUtil.lerpAngle;
 @Getter
 @Setter
 public class WorldViewer implements PacketListener {
-    public static final float CAMERA_HEIGHT = 1.75f;
     private final WorldSession worldSession;
 
     @Getter
@@ -56,9 +53,7 @@ public class WorldViewer implements PacketListener {
 
     public void render(float partialTicks) {
         program.bind();
-        Location loc = entity.getLastLocation();
-        // Interpolate between the previous location and the current location using loc to store results
-        interpolate(loc, entity.getLocation(), partialTicks, loc);
+        Location loc = entity.getEyePosition(partialTicks);
 
         program.uniformer.setUniformMatrix4("camera", CameraUtil.getCamera(
                 45f,
@@ -68,21 +63,11 @@ public class WorldViewer implements PacketListener {
                 (float) Math.toRadians(loc.getYaw()),
                 (float) Math.toRadians(loc.getPitch()),
                 (float) loc.getX(),
-                (float) loc.getY() + CAMERA_HEIGHT,
+                (float) loc.getY(),
                 (float) loc.getZ()
         ).get(BufferUtils.createFloatBuffer(16)));
 
         worldSession.getChunkView().render(program);
-    }
-
-    protected void interpolate(Location a, Location b, float perc, Location res) {
-        res.set(
-                lerp(a.getX(), b.getX(), perc),
-                lerp(a.getY(), b.getY(), perc),
-                lerp(a.getZ(), b.getZ(), perc),
-                lerpAngle(a.getYaw(), b.getYaw(), perc),
-                lerp(a.getPitch(), b.getPitch(), perc)// Note: pitch can only go from -90 to 90 so we don't need some special calculations
-        );
     }
 
     @PacketHandler

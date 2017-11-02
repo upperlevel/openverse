@@ -2,7 +2,9 @@ package xyz.upperlevel.openverse.world;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.joml.Vector3i;
 import xyz.upperlevel.openverse.util.math.Aabb3d;
+import xyz.upperlevel.openverse.util.math.LineVisitor3d;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.chunk.*;
 import xyz.upperlevel.openverse.world.entity.Entity;
@@ -66,8 +68,17 @@ public class World {
         return getChunkPillar(x, z).getChunk(y);
     }
 
+    public Chunk getChunk(int x, int y, int z, boolean load) {
+        ChunkPillar pillar = getChunkPillar(x, z, load);
+        return pillar == null ? null : pillar.getChunk(y);
+    }
+
     public Chunk getChunkFromBlock(int blockX, int blockY, int blockZ) {
         return getChunk(blockX >> 4, blockY >> 4, blockZ >> 4);
+    }
+
+    public Chunk getChunkFromBlock(int blockX, int blockY, int blockZ, boolean load) {
+        return getChunk(blockX >> 4, blockY >> 4, blockZ >> 4, load);
     }
 
     /**
@@ -90,8 +101,20 @@ public class World {
      * It will create a new instance of the {@link Block} object.
      */
     public Block getBlock(int x, int y, int z) {
-        Chunk chunk = getChunkFromBlock(x, y, z);
+        return getChunkFromBlock(x, y, z).getBlock(x & 0xF, y & 0xF, z & 0xF);
+    }
+
+    public Block getBlock(int x, int y, int z, boolean load) {
+        Chunk chunk = getChunkFromBlock(x, y, z, load);
         return chunk == null ? null : chunk.getBlock(x & 0xF, y & 0xF, z & 0xF);
+    }
+
+    public Block getBlock(Vector3i loc, boolean load) {
+        return getBlock(loc.x, loc.y, loc.z, load);
+    }
+
+    public Block getBlock(Vector3i loc) {
+        return getBlock(loc.x, loc.y, loc.z);
     }
 
     public Block getBlock(double x, double y, double z) {
@@ -134,7 +157,11 @@ public class World {
      * Gets the {@link BlockState} at the given coordinates.
      */
     public BlockState getBlockState(int x, int y, int z) {
-        Chunk chunk = getChunkFromBlock(x, y, z);
+        return getChunkFromBlock(x, y, z).getBlockState(x & 0xF, y & 0xF, z & 0xF);
+    }
+
+    public BlockState getBlockState(int x, int y, int z, boolean load) {
+        Chunk chunk = getChunkFromBlock(x, y, z, load);
         return chunk == null ? AIR_STATE : chunk.getBlockState(x & 0xF, y & 0xF, z & 0xF);
     }
 
@@ -143,7 +170,19 @@ public class World {
      */
     public void setBlockState(int x, int y, int z, BlockState blockState) {
         Chunk chunk = getChunkFromBlock(x, y, z);
-        if (chunk != null)
+        if (chunk != null) {
             chunk.setBlockState(x & 0xF, y & 0xF, z & 0xF, blockState);
+        }
+    }
+
+    public LineVisitor3d.RayCastResult rayCast(double startX, double startY, double startZ, double endX, double endY, double endZ) {
+        return LineVisitor3d.rayCast(startX, startY, startZ, endX, endY, endZ, (x, y, z, f) -> {
+            BlockState state = getBlockState(x, y, z, false);
+            if (state == null) {
+                return true;// Block not loaded, better return
+            }
+
+            return state != AIR_STATE && state.getBlockType().collisionRaytrace(state, this, x, y, z, startX, startY, startZ, endX, endY, endZ);
+        });
     }
 }

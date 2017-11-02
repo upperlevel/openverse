@@ -25,6 +25,11 @@ public class Player extends LivingEntity {
         return TYPE;
     }
 
+    @Override
+    public double getEyeHeight() {
+        return 1.75f;
+    }
+
     public static class Type extends EntityType {
 
         public Type() {

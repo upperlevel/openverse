@@ -4,16 +4,21 @@ import lombok.Getter;
 import lombok.Setter;
 import xyz.upperlevel.openverse.util.math.Aabb3d;
 import xyz.upperlevel.openverse.world.World;
+import xyz.upperlevel.openverse.world.block.blockentity.BlockEntity;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.block.state.BlockStateRegistry;
-import xyz.upperlevel.openverse.world.block.blockentity.BlockEntity;
 import xyz.upperlevel.openverse.world.entity.Entity;
 
 import java.util.List;
 
 @Getter
 public class BlockType {
-    public static final BlockType AIR = new BlockType("air", false);
+    public static final BlockType AIR = new BlockType("air", false) {
+        @Override
+        public Aabb3d getCollisionBox(World world, BlockState state, int x, int y, int z) {
+            return Aabb3d.ZERO;
+        }
+    };
     public static final Aabb3d FULL_BLOCK_AABB = new Aabb3d(0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
     private final String id;
     @Setter
@@ -85,5 +90,10 @@ public class BlockType {
     public int hashCode() {
         //Cannot use rawId because it could (and does) change overtime
         return id.hashCode();
+    }
+
+    public boolean collisionRaytrace(BlockState state, World world, int posX, int posY, int posZ, double startX, double startY, double startZ, double endX, double endY, double endZ) {
+        Aabb3d box = getCollisionBox(world, state, posX, posY, posZ).translate(posX, posY, posZ);
+        return box.rayTest(startX, startY, startZ, endX, endY, endZ);
     }
 }

@@ -74,6 +74,10 @@ public final class MathUtil {
         return a + shortAngleDistance(a, b) * perc;
     }
 
+    public static double normalizeAngle(double angle) {
+        return angle % 360;
+    }
+
 
     private MathUtil() {}
 }

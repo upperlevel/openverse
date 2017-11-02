@@ -10,6 +10,7 @@ import xyz.upperlevel.openverse.world.chunk.Chunk;
 
 import static java.lang.Math.floor;
 import static java.lang.Math.toIntExact;
+import static xyz.upperlevel.openverse.util.math.MathUtil.normalizeAngle;
 
 public class Location {
 
@@ -38,8 +39,8 @@ public class Location {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.yaw = yaw;
-        this.pitch = pitch;
+        this.yaw = normalizeAngle(yaw);
+        this.pitch = normalizeAngle(pitch);
     }
 
     public Location(Location location) {
@@ -59,12 +60,20 @@ public class Location {
         return world.getBlock(x, y, z);
     }
 
+    public void setYaw(double yaw) {
+        this.yaw = normalizeAngle(yaw);
+    }
+
+    public void setPitch(double pitch) {
+        this.pitch = normalizeAngle(pitch);
+    }
+
     public Location set(double x, double y, double z, double yaw, double pitch) {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.yaw = yaw;
-        this.pitch = pitch;
+        this.yaw = normalizeAngle(yaw);
+        this.pitch = normalizeAngle(pitch);
         return this;
     }
 
@@ -85,8 +94,8 @@ public class Location {
     }
 
     public Location setRotation(double yaw, double pitch) {
-        this.yaw = yaw;
-        this.pitch = pitch;
+        this.yaw = normalizeAngle(yaw);
+        this.pitch = normalizeAngle(pitch);
         return this;
     }
 
@@ -234,14 +243,14 @@ public class Location {
 
 
     public double distance(Location location) {
-        double dx = x - location.getX(),
+        double  dx = x - location.getX(),
                 dy = y - location.getY(),
                 dz = z - location.getZ();
         return Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
 
     public double distanceSquared(Location location) {
-        double dx = x - location.getX(),
+        double  dx = x - location.getX(),
                 dy = y - location.getY(),
                 dz = z - location.getZ();
         return dx * dx + dy * dy + dz * dz;
@@ -266,6 +275,14 @@ public class Location {
         return dest;
     }
 
+    public Vector3d getLook() {
+        double cosYaw = Math.cos(Math.toRadians(-yaw) + Math.PI);
+        double sinYaw = Math.sin(Math.toRadians(-yaw) + Math.PI);
+        double cosPitch = Math.cos(Math.toRadians(-pitch));
+        double sinPitch = Math.sin(Math.toRadians(-pitch));
+        return new Vector3d(sinYaw * cosPitch, sinPitch, cosYaw * cosPitch);
+    }
+
     public Location copy() {
         return new Location(this);
     }
@@ -278,5 +295,9 @@ public class Location {
     @Override
     public String toString() {
         return x + ", " + y + ", " +  z;
+    }
+
+    public String toStringComplete() {
+        return toString() + ", " + yaw + ", " + pitch;
     }
 }

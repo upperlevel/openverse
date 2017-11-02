@@ -5,6 +5,9 @@ import org.joml.Intersectiond;
 import org.joml.Vector3d;
 import org.joml.Vector3dc;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
 @EqualsAndHashCode
 public class Aabb3d {
     public static final Aabb3d ZERO = new Aabb3d(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
@@ -167,6 +170,39 @@ public class Aabb3d {
             }
         }
         return vel;
+    }
+
+    public boolean rayTest(double startX, double startY, double startZ, double endX, double endY, double endZ) {
+        // Using the slabs implementation (https://gamedev.stackexchange.com/questions/18436/most-efficient-aabb-vs-ray-collision-algorithms)
+        double dX = endX - startX;
+        double dY = endY - startY;
+        double dZ = endZ - startZ;
+
+        double tx1 = (minX - startX) / dX;
+        double tx2 = (maxX - startX) / dX;
+
+        double ty1 = (minY - startY) / dY;
+        double ty2 = (maxY - startY) / dY;
+
+        double tz1 = (minZ - startZ) / dZ;
+        double tz2 = (maxZ - startZ) / dZ;
+
+        double tmin = max(max(min(tx1, tx2), min(ty1, ty2)), min(tz1, tz2));
+        double tmax = min(min(max(tx1, tx2), max(ty1, ty2)), max(tz1, tz2));
+
+        if (tmax < 0) {//Intersecting behind
+            return false;
+        }
+
+        if (tmin >= tmax) {// Not intersecting
+            return false;
+        }
+        //Intersecting
+        return true;
+    }
+
+    public static void main(String[] args) {
+        new Aabb3d(2, 2, 2, 4, 4, 4).rayTest(1, 1, 1, 5, 5, 5);
     }
 
     @Override

@@ -152,6 +152,11 @@ public class BlockStateRegistry {
         public int hashCode() {
             return properties.hashCode();
         }
+
+        @Override
+        public String toString() {
+            return "{type:" + blockType.getId() + ",index:" + index + ",proprieties:" + properties + "}";
+        }
     }
 
     public static BlockStateRegistry of(BlockType blockType, BlockProperty<?>... properties) {

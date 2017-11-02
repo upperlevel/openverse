@@ -1,6 +1,5 @@
 package xyz.upperlevel.openverse.world.chunk;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.block.BlockType;
@@ -50,5 +49,10 @@ public class Block {
 
     public void setState(BlockState state) {
         storage.setBlockState(chunkRelativeX, chunkRelativeY, chunkRelativeZ, state);
+    }
+
+    @Override
+    public String toString() {
+        return "{loc:{" + x + "," + y + "," + z + "},state:" + getState() + "}";
     }
 }
