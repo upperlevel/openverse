@@ -7,7 +7,6 @@ import xyz.upperlevel.hermes.reflect.PacketListener;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.network.world.entity.PlayerChangeLookPacket;
 import xyz.upperlevel.openverse.network.world.entity.PlayerChangePositionPacket;
-import xyz.upperlevel.openverse.network.world.entity.PlayerChangeWorldPacket;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.entity.player.Player;
 import xyz.upperlevel.openverse.world.entity.event.PlayerMoveEvent;

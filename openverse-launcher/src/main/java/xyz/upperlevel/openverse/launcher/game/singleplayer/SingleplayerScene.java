@@ -1,12 +1,9 @@
 package xyz.upperlevel.openverse.launcher.game.singleplayer;
 
 import lombok.Getter;
-import xyz.upperlevel.hermes.client.Client;
 import xyz.upperlevel.hermes.client.impl.direct.DirectClient;
 import xyz.upperlevel.hermes.client.impl.direct.DirectClientConnection;
-import xyz.upperlevel.hermes.server.Server;
 import xyz.upperlevel.hermes.server.impl.direct.DirectServer;
-import xyz.upperlevel.hermes.server.impl.direct.DirectServerConnection;
 import xyz.upperlevel.openverse.launcher.OpenverseLauncher;
 import xyz.upperlevel.openverse.launcher.loaders.ClientLoader;
 import xyz.upperlevel.openverse.launcher.loaders.ClientWrapper;

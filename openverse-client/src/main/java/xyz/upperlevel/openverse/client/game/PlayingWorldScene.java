@@ -80,7 +80,7 @@ public class PlayingWorldScene implements Scene, Listener {
 
     @EventHandler
     public void onKey(KeyChangeEvent event) {
-        if(event.getAction() == Action.PRESS) {
+        if (event.getAction() == Action.PRESS) {
             switch (event.getKey()) {
                 case L:
                     Location loc = worldViewer.getEntity().getLocation(getPartialTicks());

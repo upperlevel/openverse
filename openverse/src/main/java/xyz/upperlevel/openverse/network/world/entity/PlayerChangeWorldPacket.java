@@ -1,7 +1,6 @@
 package xyz.upperlevel.openverse.network.world.entity;
 
 import io.netty.buffer.ByteBuf;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import xyz.upperlevel.hermes.Packet;

@@ -19,7 +19,7 @@ import static xyz.upperlevel.openverse.util.math.MathUtil.lerpAngle;
 
 public class Entity {
     public static final double GRAVITY = 9.8/50.0;
-    public static final double JUMP_MULTIPLER = 3;
+    public static final double JUMP_MULTIPLIER = 3;
 
     @Getter
     @Setter
@@ -192,7 +192,7 @@ public class Entity {
         velocity.z = -cosYaw * forward + sinYaw * strafe;
 
         if (onGround) {
-            velocity.y += up * JUMP_MULTIPLER;
+            velocity.y += up * JUMP_MULTIPLIER;
         }
     }
 

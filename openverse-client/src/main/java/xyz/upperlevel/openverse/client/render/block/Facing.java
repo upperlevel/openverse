@@ -2,10 +2,7 @@ package xyz.upperlevel.openverse.client.render.block;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.joml.AxisAngle4f;
-import org.joml.Vector3f;
 import xyz.upperlevel.openverse.util.math.Aabb2f;
-import xyz.upperlevel.openverse.util.math.Aabb3d;
 import xyz.upperlevel.openverse.util.math.Aabb3f;
 
 @Getter

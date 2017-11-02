@@ -139,7 +139,7 @@ public class Aabb3d {
         if (    this.maxX > other.minX &&
                 this.maxZ > other.minZ &&
                 this.minX < other.maxX &&
-                this.minZ < other.maxZ){
+                this.minZ < other.maxZ) {
             //See in which face it entered
             if (vel > 0 && this.minY >= other.maxY) {
                 return this.minY - other.maxY;

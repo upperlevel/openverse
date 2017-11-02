@@ -54,23 +54,23 @@ public final class ChatColor {
     public static final String COLOR_OFF		    = "\u001B[39m";
 
 
-    public static final String	BACKGROUND_BLACK	= "\u001B[40m";
-    public static final String	BACKGROUND_RED		= "\u001B[41m";
-    public static final String	BACKGROUND_GREEN	= "\u001B[42m";
-    public static final String	BACKGROUND_YELLOW	= "\u001B[43m";
-    public static final String	BACKGROUND_BLUE		= "\u001B[44m";
-    public static final String	BACKGROUND_MAGENTA	= "\u001B[45m";
-    public static final String	BACKGROUND_CYAN		= "\u001B[46m";
-    public static final String	BACKGROUND_WHITE	= "\u001B[47m";
-    public static final String	BACKGROUND_CUSTOM	= "\u001B[48;2;";
-    public static final String	BACKFROUND_OFF		= "\u001B[49m";
+    public static final String BACKGROUND_BLACK	= "\u001B[40m";
+    public static final String BACKGROUND_RED		= "\u001B[41m";
+    public static final String BACKGROUND_GREEN	= "\u001B[42m";
+    public static final String BACKGROUND_YELLOW	= "\u001B[43m";
+    public static final String BACKGROUND_BLUE		= "\u001B[44m";
+    public static final String BACKGROUND_MAGENTA	= "\u001B[45m";
+    public static final String BACKGROUND_CYAN		= "\u001B[46m";
+    public static final String BACKGROUND_WHITE	= "\u001B[47m";
+    public static final String BACKGROUND_CUSTOM	= "\u001B[48;2;";
+    public static final String BACKGROUND_OFF = "\u001B[49m";
 
-    public static final String	FRAMED      		= "\u001B[51m";
-    public static final String	ENCIRCLED   		= "\u001B[52m";
-    public static final String	OVERLINED   		= "\u001B[53m";
+    public static final String FRAMED      		= "\u001B[51m";
+    public static final String ENCIRCLED   		= "\u001B[52m";
+    public static final String OVERLINED   		= "\u001B[53m";
 
-    public static final String	FRAMED_ENCIRCLED_OFF= "\u001B[54m";
-    public static final String	OVERLINED_OFF		= "\u001B[55m";
+    public static final String FRAMED_ENCIRCLED_OFF= "\u001B[54m";
+    public static final String OVERLINED_OFF		= "\u001B[55m";
 
 
     public static final ChatColor reset = new ChatColor(RESET);
@@ -112,7 +112,7 @@ public final class ChatColor {
     public static final ChatColor bgMagenta = new ChatColor(BACKGROUND_MAGENTA);
     public static final ChatColor bgCyan = new ChatColor(BACKGROUND_CYAN);
     public static final ChatColor bgWhite = new ChatColor(BACKGROUND_WHITE);
-    public static final ChatColor bgOff = new ChatColor(BACKFROUND_OFF);
+    public static final ChatColor bgOff = new ChatColor(BACKGROUND_OFF);
 
     public static final ChatColor framed = new ChatColor(FRAMED);
     public static final ChatColor encircled = new ChatColor(ENCIRCLED);

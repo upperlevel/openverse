@@ -11,9 +11,7 @@ import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.console.log.OpenverseLogger;
 import xyz.upperlevel.openverse.event.ShutdownEvent;
-import xyz.upperlevel.openverse.resource.Resources;
 import xyz.upperlevel.openverse.server.resource.ServerResources;
-import xyz.upperlevel.openverse.server.world.ServerPlayer;
 import xyz.upperlevel.openverse.server.world.Universe;
 import xyz.upperlevel.openverse.world.entity.EntityManager;
 

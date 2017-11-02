@@ -90,7 +90,7 @@ public class LineVisitor3d {
             }
 
             if (nextX < nextY) {
-                if(nextX < nextZ) {
+                if (nextX < nextZ) {
                     //Go to the next x block
                     face = faceX;
                     x += stepX;

@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
-public class CoinciseFormatter extends Formatter {
+public class ConciseFormatter extends Formatter {
     private final DateFormat date = new SimpleDateFormat("HH:mm:ss");
 
     @Override

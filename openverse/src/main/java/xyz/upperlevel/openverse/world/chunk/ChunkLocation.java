@@ -38,7 +38,7 @@ public class ChunkLocation {
 
     @Override
     public boolean equals(Object other) {
-        if(other instanceof ChunkLocation) {
+        if (other instanceof ChunkLocation) {
             ChunkLocation c = (ChunkLocation) other;
             return  c.x == x &&
                     c.y == y &&

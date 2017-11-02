@@ -1,29 +1,18 @@
 package xyz.upperlevel.openverse.client.render.block;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.ulge.opengl.texture.Texture2dArray;
-import xyz.upperlevel.ulge.opengl.texture.TextureParameter;
-import xyz.upperlevel.ulge.opengl.texture.TextureParameter.Type;
-import xyz.upperlevel.ulge.opengl.texture.TextureParameter.Type.Wrapping;
-import xyz.upperlevel.ulge.opengl.texture.TextureParameter.Value;
-import xyz.upperlevel.ulge.opengl.texture.TextureParameters;
 import xyz.upperlevel.ulge.opengl.texture.loader.ImageContent;
 
 import javax.imageio.ImageIO;
-import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
 import static org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
@@ -33,7 +22,7 @@ public final class TextureBakery {
     public static final ImageContent NULL;
 
     static {
-        ByteBuffer data = (ByteBuffer) BufferUtils.createByteBuffer(4 * 16 * 16);
+        ByteBuffer data = BufferUtils.createByteBuffer(4 * 16 * 16);
         for (int i = 0; i < 16 * 16; i++)
             data.put(new byte[]{(byte) 255, (byte) 255, (byte) 255, (byte) 255});
         data.flip();

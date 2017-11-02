@@ -18,8 +18,6 @@ import xyz.upperlevel.ulge.opengl.shader.Program;
 import xyz.upperlevel.ulge.opengl.shader.Uniform;
 import xyz.upperlevel.ulge.util.math.CameraUtil;
 
-import static xyz.upperlevel.openverse.util.math.MathUtil.lerp;
-
 /**
  * This class represents the player.
  * <p>Better, it represents the camera moving around the world and manages rendering stuff.

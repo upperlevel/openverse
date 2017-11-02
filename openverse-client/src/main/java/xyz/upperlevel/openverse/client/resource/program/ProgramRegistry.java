@@ -1,7 +1,6 @@
 package xyz.upperlevel.openverse.client.resource.program;
 
 import lombok.Getter;
-import xyz.upperlevel.openverse.client.resource.shader.ShaderRegistry;
 import xyz.upperlevel.openverse.resource.ResourceLoader;
 import xyz.upperlevel.openverse.resource.ResourceRegistry;
 import xyz.upperlevel.ulge.opengl.shader.Program;

@@ -334,7 +334,7 @@ public interface Config {
     @SuppressWarnings("unchecked")//-_-
     default Map<String, Object> getSection(String key) {
         Object raw = get(key);
-        if(raw == null)
+        if (raw == null)
             return null;
         if (raw instanceof Map)
             return (Map<String, Object>) raw;
@@ -434,7 +434,7 @@ public interface Config {
     }
 
     static void invalidValue(String key, Object value, String expected) {
-        throw new InvalidVauleConfigException(key, value, expected);
+        throw new InvalidValueConfigException(key, value, expected);
     }
 
     static Config wrap(Map<String, Object> map) {

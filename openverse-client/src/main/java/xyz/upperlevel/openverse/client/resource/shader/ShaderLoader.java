@@ -2,7 +2,6 @@ package xyz.upperlevel.openverse.client.resource.shader;
 
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.resource.Identifier;
-import xyz.upperlevel.openverse.resource.Resources;
 import xyz.upperlevel.openverse.resource.ResourceLoader;
 import xyz.upperlevel.ulge.opengl.shader.Shader;
 import xyz.upperlevel.ulge.opengl.shader.ShaderType;
@@ -22,7 +21,7 @@ public class ShaderLoader implements ResourceLoader<Shader> {
             throw new IllegalStateException("Cannot link source on file \"" + file + "\": " + e);
         }
         shader.compileSource();
-        if(shader.getCompileStatus().isOk())
+        if (shader.getCompileStatus().isOk())
             Openverse.logger().info("Shader status: " + shader.getCompileStatus().getLog());
         else
             throw new IllegalArgumentException("Error compiling shader \"" + file + "\": " + shader.getCompileStatus().getLog());

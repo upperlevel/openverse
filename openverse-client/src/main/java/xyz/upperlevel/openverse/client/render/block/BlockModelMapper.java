@@ -50,7 +50,7 @@ public class BlockModelMapper {
                         BlockProperty<?> p = reg.getProperty(prop.getKey());
                         Optional<?> val = p.parse((String) prop.getValue());
                         if (val.isPresent()) {
-                            state = state.with((BlockProperty) p, (Comparable) val.get());
+                            state = state.with(p, (Comparable) val.get());
                         } else
                             Openverse.logger().warning("Cannot parse value \"" + prop.getValue() + "\" of property: " + p.getName() + " ");
                     }

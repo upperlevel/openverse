@@ -34,7 +34,7 @@ public class VertexBuffer {
     }
 
     public ByteBuffer byteBuffer() {
-        if(handle == null)
+        if (handle == null)
             throw new IllegalStateException("ensureCapacity not yet called!");
         return handle;
     }
@@ -44,7 +44,7 @@ public class VertexBuffer {
     }
 
     public VertexBuffer claim() {
-        if(!claimed) {
+        if (!claimed) {
             claimed = true;
         }
         return this;

@@ -5,8 +5,6 @@ import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.render.world.util.VertexBuffer;
 import xyz.upperlevel.openverse.client.render.world.util.VertexBufferPool;
 
-import java.util.Queue;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 
@@ -19,7 +17,7 @@ public class ChunkCompileTask {
     private int vertexCount;
     private State state = State.PENDING;
 
-    protected void askBufer() {
+    protected void askBuffer() {
         if (buffer == null) {
             try {
                 buffer = bufferPool.waitForBuffer();
@@ -43,7 +41,7 @@ public class ChunkCompileTask {
             stateLock.unlock();
         }
 
-        askBufer();
+        askBuffer();
         if (buffer == null) {
             //Buffer retrieving failed
             return;

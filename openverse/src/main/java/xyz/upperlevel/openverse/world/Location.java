@@ -9,7 +9,6 @@ import xyz.upperlevel.openverse.world.chunk.Block;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 
 import static java.lang.Math.floor;
-import static java.lang.Math.toIntExact;
 import static xyz.upperlevel.openverse.util.math.MathUtil.normalizeAngle;
 
 public class Location {

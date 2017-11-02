@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 
 @Getter
 public class OpenverseLogger extends Logger {
-    private final Formatter formatter = new CoinciseFormatter();
+    private final Formatter formatter = new ConciseFormatter();
     private final LogDispatcher dispatcher = new LogDispatcher(this);
     private final String loggerName;
 

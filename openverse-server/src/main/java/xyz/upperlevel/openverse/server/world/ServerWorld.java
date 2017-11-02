@@ -1,13 +1,9 @@
 package xyz.upperlevel.openverse.server.world;
 
 import lombok.Getter;
-import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.server.world.entity.EntityWatcher;
-import xyz.upperlevel.openverse.server.world.generators.FlatChunkGenerator;
 import xyz.upperlevel.openverse.server.world.generators.SimpleWorldGenerator;
-import xyz.upperlevel.openverse.server.world.generators.SingleBlockGenerator;
 import xyz.upperlevel.openverse.world.World;
-import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 
 @Getter

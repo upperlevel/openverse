@@ -8,12 +8,6 @@ import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
-import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
-import xyz.upperlevel.openverse.world.chunk.ChunkPillar;
-
-import java.util.Arrays;
-
-import static xyz.upperlevel.openverse.network.SerialUtil.*;
 
 @Getter
 @NoArgsConstructor

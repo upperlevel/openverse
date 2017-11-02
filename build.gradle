@@ -75,7 +75,7 @@ distributions {
 }
 
 def targetFile
-if(!project.hasProperty('target')) {
+if (!project.hasProperty('target')) {
     targetFile = file(project.buildDir.toPath().resolve('game'))
 } else {
     targetFile = file(target)
