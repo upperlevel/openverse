@@ -4,11 +4,11 @@ import lombok.Getter;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.client.render.world.util.VertexBuffer;
 import xyz.upperlevel.openverse.client.render.world.util.VertexBufferPool;
 import xyz.upperlevel.openverse.client.world.ClientWorld;
 import xyz.upperlevel.openverse.event.ShutdownEvent;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
+import xyz.upperlevel.openverse.world.chunk.event.BlockLightChangeEvent;
 import xyz.upperlevel.openverse.world.event.ChunkLoadEvent;
 import xyz.upperlevel.openverse.world.event.ChunkUnloadEvent;
 import xyz.upperlevel.ulge.opengl.shader.Program;
@@ -113,6 +113,13 @@ public class ChunkViewRenderer implements Listener {
     @EventHandler
     public void onChunkUnload(ChunkUnloadEvent e) {
         unloadChunk(e.getChunk().getLocation());
+    }
+
+    @EventHandler
+    public void onBlockLightChange(BlockLightChangeEvent e) {
+        ChunkRenderer r = chunks.get(e.getBlock().getChunk().getLocation());
+        if (r != null)
+            recompileChunk(r, ChunkCompileMode.ASYNC);
     }
 
     @EventHandler

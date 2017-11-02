@@ -1,6 +1,7 @@
 package xyz.upperlevel.openverse.world.chunk;
 
 import lombok.Getter;
+import xyz.upperlevel.openverse.world.BlockFace;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 
@@ -31,8 +32,21 @@ public class ChunkPillar {
         return verticalChunkProvider.getChunk(y);
     }
 
+    /**
+     * Sets the chunk at the given height and update lights of the adjacent ones.
+     */
     public void setChunk(int y, Chunk chunk) {
         verticalChunkProvider.setChunk(y, chunk);
+        // Updates lights for all relative chunks (including himself)
+        for (int offX = -1; offX <= 1; offX++) {
+            for (int offY = -1; offY <= 1; offY++) {
+                for (int offZ = -1; offZ <= 1; offZ++) {
+                    Chunk r = chunk.getRelative(offX, offY, offZ);
+                    if (r != null)
+                        r.diffuseAllBlockLights();
+                }
+            }
+        }
     }
 
     public boolean unloadChunk(int y) {
