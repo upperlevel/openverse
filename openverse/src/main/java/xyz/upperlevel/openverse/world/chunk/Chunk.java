@@ -83,10 +83,16 @@ public class Chunk {
      * diffuses its produced light.
      */
     public void setBlockState(int x, int y, int z, BlockState blockState) {
+        BlockState old = blockStorage.getBlockState(x, y, z);
+        int ol = old.getBlockType().getEmittedBlockLight(old);
+        int nl = blockState.getBlockType().getEmittedBlockLight(blockState);
+        setBlockLight(x, y, z, nl);
+        if (ol > 0 && nl == 0) {
+            removeBlockLightDiffusion(x, y, z);
+            lights.remove(x << 8 | y << 4 | z);
+        }
         blockStorage.setBlockState(x, y, z, blockState);
-        int light = blockState.getBlockType().getEmittedBlockLight(blockState);
-        if (light > 0) {
-            setBlockLight(x, y, z, light);
+        if (nl > 0) {
             diffuseBlockLight(x, y, z);
             lights.add(x << 8 | y << 4 | z);
         }
@@ -97,6 +103,10 @@ public class Chunk {
      */
     public void diffuseBlockLight(int x, int y, int z) {
         world.diffuseBlockLight(x + getX() * 16, y + this.y * 16, z + getZ() * 16);
+    }
+
+    public void removeBlockLightDiffusion(int x, int y, int z) {
+        world.removeBlockLightDiffusion(x + getX() * 16, y + this.y * 16, z + getZ() * 16);
     }
 
     /**
@@ -117,11 +127,27 @@ public class Chunk {
         return blockStorage.getBlockLight(x, y, z);
     }
 
-    /**
-     * Sets the block light without diffusing it.
-     */
     public void setBlockLight(int x, int y, int z, int blockLight) {
-        Openverse.getEventManager().call(new BlockLightChangeEvent(getBlock(x, y, z), getBlockLight(x, y, z), blockLight));
+        setBlockLight(x, y, z, blockLight, true);
+    }
+
+    public void setBlockLight(int x, int y, int z, int blockLight, boolean diffuse) {
         blockStorage.setBlockLight(x, y, z, blockLight);
+        if (diffuse)
+            diffuseBlockLight(x, y, z);
+        Openverse.getEventManager().call(new BlockLightChangeEvent(getBlock(x, y, z), getBlockLight(x, y, z), blockLight));
+    }
+
+
+    public int getBlockSkylight(int x, int y, int z) {
+        return blockStorage.getBlockSkylight(x, y, z);
+    }
+
+    public void setBlockSkylight(int x, int y, int z, int blockSkylight) {
+        setBlockSkylight(x, y, z, blockSkylight, true);
+    }
+
+    public void setBlockSkylight(int x, int y, int z, int blockSkylight, boolean diffuse) {
+        blockStorage.setBlockSkylight(x, y, z, blockSkylight);
     }
 }

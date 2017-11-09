@@ -20,7 +20,7 @@ public class SimpleBlockStorage implements BlockStorage {
 
     private BlockStateStorage blockStateStorage;
     private Map<Integer, BlockEntity> blockEntityMap;
-    private NibbleArray blockSkyLightArray;
+    private NibbleArray blockSkylightArray;
     private NibbleArray blockLightArray;
 
     public SimpleBlockStorage(Chunk chunk) {
@@ -28,7 +28,7 @@ public class SimpleBlockStorage implements BlockStorage {
         this.chunk = chunk;
         this.blockStateStorage = createBlockStateStorage();
         this.blockEntityMap = new HashMap<>();
-        this.blockSkyLightArray = new NibbleArray(16 * 16 * 16);
+        this.blockSkylightArray = new NibbleArray(16 * 16 * 16);
         this.blockLightArray = new NibbleArray(16 * 16 * 16);
     }
 
@@ -82,12 +82,12 @@ public class SimpleBlockStorage implements BlockStorage {
 
 
     @Override
-    public int getBlockSkyLight(int x, int y, int z) {
-        return blockSkyLightArray.get(x << 8 | y << 4 | z);
+    public int getBlockSkylight(int x, int y, int z) {
+        return blockSkylightArray.get(x << 8 | y << 4 | z);
     }
 
     @Override
-    public void setBlockSkyLight(int x, int y, int z, int blockSkyLight) {
-        blockSkyLightArray.set(x << 8 | y << 4 | z, (byte) blockSkyLight);
+    public void setBlockSkylight(int x, int y, int z, int blockSkyLight) {
+        blockSkylightArray.set(x << 8 | y << 4 | z, (byte) blockSkyLight);
     }
 }

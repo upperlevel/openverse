@@ -111,23 +111,25 @@ public class World {
     }
 
     public void setBlockLight(int x, int y, int z, int blockLight) {
-        Chunk chunk = getChunkFromBlock(x, y, z);
-        if (chunk != null)
-            chunk.setBlockLight(x & 0xF, y & 0xF, z & 0xF, blockLight);
+        setBlockLight(x, y, z, blockLight, true);
     }
 
-    /**
-     * Diffuses block light of the block at the given coordinates.
-     */
+    public void setBlockLight(int x, int y, int z, int blockLight, boolean diffuse) {
+        Chunk chunk = getChunkFromBlock(x, y, z);
+        if (chunk != null)
+            chunk.setBlockLight(x & 0xF, y & 0xF, z & 0xF, blockLight, diffuse);
+    }
+
+
     public void diffuseBlockLight(int x, int y, int z) {
-        Queue<Integer> bfsLightsQueue = new ArrayDeque<>();
+        Queue<Integer> bfsQueue = new ArrayDeque<>();
 
         // fills the center block (15, 15, 15) with the full light (15)
         int i = 0x0F_0F_0F_00 | (getBlockLight(x, y, z) & 0xF);
-        bfsLightsQueue.add(i);
+        bfsQueue.add(i);
 
-        while (!bfsLightsQueue.isEmpty()) {
-            int j = bfsLightsQueue.poll();
+        while (!bfsQueue.isEmpty()) {
+            int j = bfsQueue.poll();
 
             // light field coordinates
             int lx = (j & 0xFF_00_00_00) >> 24;
@@ -155,7 +157,48 @@ public class World {
                 if ((rlx >= 0 && rlx <= 31) && (rly >= 0 && rly <= 31) && (rlz >= 0 && rlz <= 31) && (getBlockLight(rwx, rwy, rwz) + 2) <= lt) {
                     int rlt = lt - 1;
                     setBlockLight(rwx, rwy, rwz, rlt);
-                    bfsLightsQueue.add((rlx & 0xFF) << 24 | (rly & 0xFF) << 16 | (rlz & 0xFF) << 8 | (rlt & 0xF));
+                    bfsQueue.add((rlx & 0xFF) << 24 | (rly & 0xFF) << 16 | (rlz & 0xFF) << 8 | (rlt & 0xF));
+                }
+            }
+        }
+    }
+
+    public void removeBlockLightDiffusion(int x, int y, int z) {
+        Queue<Integer> bfsQueue = new ArrayDeque<>();
+        int i = 0x0F0F0F;
+        bfsQueue.add(i);
+
+        while (!bfsQueue.isEmpty()) {
+            i = bfsQueue.poll();
+            int cx = (i & 0xFF0000) >> 16;
+            int cy = (i & 0x00FF00) >> 8;
+            int cz = (i & 0x0000FF);
+
+            int cwx = cx - 15 + x;
+            int cwy = cy - 15 + y;
+            int cwz = cz - 15 + z;
+
+            int cll = getBlockLight(cwx, cwy, cwz);
+            for (BlockFace r : BlockFace.values()) {
+                // Neighbor light field coords
+                int nlx = cx + r.offsetX;
+                int nly = cy + r.offsetY;
+                int nlz = cz + r.offsetZ;
+
+                if ((nlx >= 0 && nlx <= 31) && (nly >= 0 && nly <= 31) && (nlz >= 0 && nlz <= 31)) {
+                    // Neighbor world coords
+                    int nwx = x + r.offsetX;
+                    int nwy = y + r.offsetY;
+                    int nwz = z + r.offsetZ;
+
+                    int nll = getBlockLight(nwx, nwy, nwz);
+                    int ni = (nlx & 0xFF) << 16 | (nly & 0xFF) << 8 | (nlz & 0xFF);
+                    if (nll != 0 && nll < cll) {
+                        setBlockLight(nwx, nwy, nwz, 0);
+                        bfsQueue.add(ni);
+                    } else if (nll >= cll) {
+                        bfsQueue.add(ni);
+                    }
                 }
             }
         }

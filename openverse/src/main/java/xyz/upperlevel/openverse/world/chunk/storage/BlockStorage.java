@@ -37,7 +37,7 @@ public interface BlockStorage {
     void setBlockLight(int x, int y, int z, int blockLight);
 
 
-    int getBlockSkyLight(int x, int y, int z);
+    int getBlockSkylight(int x, int y, int z);
 
-    void setBlockSkyLight(int x, int y, int z, int blockSkyLight);
+    void setBlockSkylight(int x, int y, int z, int blockSkyLight);
 }
