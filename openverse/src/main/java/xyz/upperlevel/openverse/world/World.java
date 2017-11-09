@@ -3,10 +3,12 @@ package xyz.upperlevel.openverse.world;
 import lombok.Getter;
 import lombok.Setter;
 import org.joml.Vector3i;
+import xyz.upperlevel.hermes.reflect.PacketListener;
 import xyz.upperlevel.openverse.util.math.Aabb3d;
 import xyz.upperlevel.openverse.util.math.LineVisitor3d;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.chunk.*;
+import xyz.upperlevel.openverse.world.chunk.storage.BlockStorage;
 import xyz.upperlevel.openverse.world.entity.Entity;
 
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ import static xyz.upperlevel.openverse.world.chunk.storage.BlockStorage.AIR_STAT
 
 @Getter
 @Setter
-public class World {
+public class World implements PacketListener {
     private final String name;
     private ChunkPillarProvider chunkPillarProvider;
 
@@ -154,12 +156,20 @@ public class World {
 
 
     /**
-     * Gets the {@link BlockState} at the given coordinates.
+     * Gets the {@link BlockState} at the given coordinates, loads the chunk if possible
      */
     public BlockState getBlockState(int x, int y, int z) {
         return getChunkFromBlock(x, y, z).getBlockState(x & 0xF, y & 0xF, z & 0xF);
     }
 
+    /**
+     * Gets the {@link BlockState} at the given coordinates, loads the chunk if specified otherwise returns null
+     * @param x the x-axis location
+     * @param y the y-axis location
+     * @param z the z-axis location
+     * @param load loads the chunk if it's not loaded
+     * @return the BlockState at that specific location or {@link BlockStorage#AIR_STATE} if not loaded
+     */
     public BlockState getBlockState(int x, int y, int z, boolean load) {
         Chunk chunk = getChunkFromBlock(x, y, z, load);
         return chunk == null ? AIR_STATE : chunk.getBlockState(x & 0xF, y & 0xF, z & 0xF);
@@ -167,12 +177,21 @@ public class World {
 
     /**
      * Sets the {@link BlockState} at the given coordinates to the given one.
+     * <br>Note: the change doesn't get sent to the other side (server/client) a packet should be sent that will cause the state change
+     * <br>Example: if the player breaks a block don't send a BlockChange packet but a BlockBreak
+     *
+     * @param x the x-axis location
+     * @param y the y-axis location
+     * @param z the z-axis location
+     * @param blockState the new state the block will be set to
+     * @return the old state (the block was before this call)
      */
-    public void setBlockState(int x, int y, int z, BlockState blockState) {
+    public BlockState setBlockState(int x, int y, int z, BlockState blockState) {
         Chunk chunk = getChunkFromBlock(x, y, z);
         if (chunk != null) {
-            chunk.setBlockState(x & 0xF, y & 0xF, z & 0xF, blockState);
+            return chunk.setBlockState(x & 0xF, y & 0xF, z & 0xF, blockState);
         }
+        return null;
     }
 
     public LineVisitor3d.RayCastResult rayCast(double startX, double startY, double startZ, double endX, double endY, double endZ) {

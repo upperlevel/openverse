@@ -20,7 +20,10 @@ public class Location {
 
     @Getter
     @Setter
-    private double x, y, z, yaw, pitch;
+    private double x, y, z;
+
+    @Getter
+    private double yaw, pitch;
 
     public Location(World world) {
         this.world = world;

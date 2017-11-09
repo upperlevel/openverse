@@ -2,6 +2,7 @@ package xyz.upperlevel.openverse.client;
 
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import xyz.upperlevel.event.EventManager;
 import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.hermes.PacketSide;
@@ -13,6 +14,7 @@ import xyz.upperlevel.openverse.client.game.ClientScene;
 import xyz.upperlevel.openverse.client.resource.ClientResources;
 import xyz.upperlevel.openverse.console.log.OpenverseLogger;
 import xyz.upperlevel.openverse.world.entity.EntityManager;
+import xyz.upperlevel.openverse.world.entity.player.Player;
 import xyz.upperlevel.ulge.game.Stage;
 
 import java.util.logging.Logger;
@@ -30,6 +32,8 @@ public class OpenverseClient implements OpenverseProxy {
     private final ClientResources resources; // resources are loaded per universe
     private final EventManager eventManager = new EventManager();
     private final EntityManager entityManager;
+    @Setter
+    private Player player;
 
     public OpenverseClient(@NonNull Client client) {
         instance = this;

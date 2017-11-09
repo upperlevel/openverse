@@ -50,4 +50,8 @@ public interface BlockState {
      * @return the id of the BlockState
      */
     int getId();
+
+    default int getFullId() {
+        return getBlockType().getFullId(this);
+    }
 }

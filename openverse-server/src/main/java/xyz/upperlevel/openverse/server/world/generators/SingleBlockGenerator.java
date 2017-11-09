@@ -22,6 +22,6 @@ public class SingleBlockGenerator implements ChunkGenerator {
 
     @Override
     public void generate(Chunk chunk) {
-        chunk.setBlockType(0, 0, 0, fullType);
+        chunk.setBlockType(0, 0, 0, fullType, false);
     }
 }

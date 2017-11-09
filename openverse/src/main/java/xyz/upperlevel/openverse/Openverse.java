@@ -30,6 +30,7 @@ public final class Openverse {
             .packet(PacketSide.SERVER, LoginResponsePacket.class)
             .packet(PacketSide.SERVER, BlockRegistryPacket.class)
             .packet(PacketSide.SERVER, EntityChangeVelocityPacket.class)
+            .packet(PacketSide.SHARED, PlayerBreakBlockPacket.class)
             .build();
 
     private static OpenverseProxy proxy;

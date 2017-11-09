@@ -35,11 +35,11 @@ public class Block {
 
 
     public BlockType getType() {
-        return storage.getBlockType(chunkRelativeX, chunkRelativeY, chunkRelativeZ);
+        return storage.getBlockState(chunkRelativeX, chunkRelativeY, chunkRelativeZ).getBlockType();
     }
 
     public void setType(BlockType type) {
-        storage.setBlockType(chunkRelativeX, chunkRelativeY, chunkRelativeZ, type);
+        storage.setBlockState(chunkRelativeX, chunkRelativeY, chunkRelativeZ, type.getDefaultBlockState());
     }
 
 

@@ -1,9 +1,11 @@
 package xyz.upperlevel.openverse.client.game;
 
 import lombok.Getter;
+import org.joml.Vector3i;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.client.OpenverseClient;
 import xyz.upperlevel.openverse.client.world.WorldViewer;
 import xyz.upperlevel.openverse.client.world.updater.PlayerLocationWatcher;
 import xyz.upperlevel.openverse.launcher.OpenverseLauncher;
@@ -12,6 +14,7 @@ import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.entity.Entity;
 import xyz.upperlevel.openverse.world.entity.EntityManager;
 import xyz.upperlevel.openverse.world.entity.LivingEntity;
+import xyz.upperlevel.openverse.world.entity.player.Player;
 import xyz.upperlevel.ulge.game.Scene;
 import xyz.upperlevel.ulge.opengl.buffer.Vao;
 import xyz.upperlevel.ulge.window.Window;
@@ -34,7 +37,8 @@ public class PlayingWorldScene implements Scene, Listener {
     private long ticksEach;
     private long lastTick;
 
-    public PlayingWorldScene(LivingEntity player) {
+    public PlayingWorldScene(Player player) {
+        OpenverseClient.get().setPlayer(player);
         this.worldViewer = new WorldViewer(player);
         this.playerWatcher = new PlayerLocationWatcher(player);
         Window window = OpenverseLauncher.get().getGame().getWindow();
@@ -92,13 +96,18 @@ public class PlayingWorldScene implements Scene, Listener {
 
     @EventHandler
     public void onClick(MouseButtonChangeEvent e) {
-        if (e.getAction() == Action.PRESS && e.getButton() == MouseButton.RIGHT) {
+        if (e.getAction() == Action.PRESS) {
             Entity clicker = worldViewer.getEntity();
             LineVisitor3d.RayCastResult rayCast = clicker.rayCast(getPartialTicks());
             if (rayCast == null) {
                 Openverse.logger().info("Clicked nothing");
             } else {
-                Openverse.logger().info("Clicked " + clicker.getWorld().getBlock(rayCast.getBlock()));
+                Vector3i loc = rayCast.getBlock();
+                Openverse.logger().info("Clicked " + clicker.getWorld().getBlock(loc));
+                if (e.getButton() == MouseButton.LEFT) {
+                    // TODO: only player can break blocks, right? 0_o
+                    ((Player) clicker).breakBlock(loc.x, loc.y, loc.z);
+                }
             }
         }
     }

@@ -16,9 +16,7 @@ import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 import xyz.upperlevel.openverse.world.chunk.ChunkMap;
 import xyz.upperlevel.openverse.world.entity.event.PlayerMoveEvent;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 @Getter
