@@ -1,5 +1,6 @@
 package xyz.upperlevel.openverse.resource;
 
+import xyz.upperlevel.openverse.item.ItemTypeRegistry;
 import xyz.upperlevel.openverse.world.block.BlockTypeRegistry;
 import xyz.upperlevel.openverse.world.entity.EntityTypeRegistry;
 
@@ -15,12 +16,14 @@ public class Resources {
     protected final Logger logger;
 
     private final BlockTypeRegistry blockTypeRegistry;
+    private final ItemTypeRegistry itemTypeRegistry;
     private final EntityTypeRegistry entityTypeRegistry;
 
     public Resources(File folder, Logger logger) {
         this.folder = folder;
         this.logger = logger;
         this.blockTypeRegistry = createBlockTypeRegistry();
+        this.itemTypeRegistry = createItemTypeRegistry(blockTypeRegistry);
         this.entityTypeRegistry = createEntityTypeRegistry(folder, logger);
     }
 
@@ -28,16 +31,28 @@ public class Resources {
         return new BlockTypeRegistry();
     }
 
+    protected ItemTypeRegistry createItemTypeRegistry(BlockTypeRegistry blockTypes) {
+        return new ItemTypeRegistry(blockTypes);
+    }
+
     protected EntityTypeRegistry createEntityTypeRegistry(File folder, Logger logger) {
         return new EntityTypeRegistry();
     }
 
     /**
-     * Returns the {@link BlockTypeRegistry} object.
+     * Returns the {@link xyz.upperlevel.openverse.world.block.BlockType} registry
      */
     public BlockTypeRegistry blockTypes() {
         return blockTypeRegistry;
     }
+
+    /**
+     * Returns the {@link xyz.upperlevel.openverse.item.ItemType} registry
+     */
+    public ItemTypeRegistry itemTypes() {
+        return itemTypeRegistry;
+    }
+
 
     protected void onSetup() {
     }

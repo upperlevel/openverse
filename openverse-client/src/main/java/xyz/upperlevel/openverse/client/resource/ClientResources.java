@@ -4,6 +4,7 @@ import xyz.upperlevel.openverse.client.render.block.TextureBakery;
 import xyz.upperlevel.openverse.client.resource.program.ProgramRegistry;
 import xyz.upperlevel.openverse.client.resource.shader.ShaderRegistry;
 import xyz.upperlevel.openverse.resource.Resources;
+import xyz.upperlevel.openverse.world.block.BlockTypeRegistry;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -46,10 +47,20 @@ public class ClientResources extends Resources {
         return new ClientBlockTypeRegistry();
     }
 
+    @Override
+    protected ClientItemTypeRegistry createItemTypeRegistry(BlockTypeRegistry blockTypes) {
+        return new ClientItemTypeRegistry(blockTypes);
+    }
+
     //TODO: come on it's the only freaking class that needs to do this hack, and it's not even necessary!
     @Override
     public ClientBlockTypeRegistry blockTypes() {
         return (ClientBlockTypeRegistry) super.blockTypes();
+    }
+
+    @Override
+    public ClientItemTypeRegistry itemTypes() {
+        return (ClientItemTypeRegistry) super.itemTypes();
     }
 
     @Override

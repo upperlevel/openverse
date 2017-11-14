@@ -8,6 +8,7 @@ import xyz.upperlevel.openverse.world.block.blockentity.BlockEntity;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.block.state.BlockStateRegistry;
 import xyz.upperlevel.openverse.world.entity.Entity;
+import xyz.upperlevel.openverse.world.entity.player.Player;
 
 import java.util.List;
 
@@ -84,6 +85,10 @@ public class BlockType {
      */
     public BlockEntity createBlockEntity(BlockState state) {
         return null;
+    }
+
+    public BlockState getStateWhenPlaced(Player placer, int x, int y, int z) {
+        return getDefaultBlockState();
     }
 
     @Override

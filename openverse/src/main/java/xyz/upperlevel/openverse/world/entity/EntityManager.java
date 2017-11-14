@@ -1,6 +1,7 @@
 package xyz.upperlevel.openverse.world.entity;
 
 import lombok.NonNull;
+import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.hermes.reflect.PacketHandler;
 import xyz.upperlevel.hermes.reflect.PacketListener;

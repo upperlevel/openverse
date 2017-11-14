@@ -4,7 +4,7 @@ import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.hermes.reflect.PacketHandler;
 import xyz.upperlevel.hermes.reflect.PacketListener;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.network.world.BlockRegistryPacket;
+import xyz.upperlevel.openverse.network.world.registry.BlockRegistryPacket;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.block.BlockTypeRegistry;
 

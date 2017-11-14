@@ -10,6 +10,7 @@ import xyz.upperlevel.openverse.network.LoginRequestPacket;
 import xyz.upperlevel.openverse.network.LoginResponsePacket;
 import xyz.upperlevel.openverse.network.world.entity.*;
 import xyz.upperlevel.openverse.network.world.*;
+import xyz.upperlevel.openverse.network.world.registry.BlockRegistryPacket;
 import xyz.upperlevel.openverse.resource.Resources;
 import xyz.upperlevel.openverse.world.entity.EntityManager;
 
@@ -31,6 +32,7 @@ public final class Openverse {
             .packet(PacketSide.SERVER, BlockRegistryPacket.class)
             .packet(PacketSide.SERVER, EntityChangeVelocityPacket.class)
             .packet(PacketSide.SHARED, PlayerBreakBlockPacket.class)
+            .packet(PacketSide.SHARED, PlayerUseItemPacket.class)
             .build();
 
     private static OpenverseProxy proxy;

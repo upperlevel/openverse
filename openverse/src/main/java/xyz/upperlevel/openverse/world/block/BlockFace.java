@@ -38,5 +38,15 @@ public enum BlockFace {
         }
     };
 
+    private static BlockFace[] values = values();
+
     public abstract BlockFace opposite();
+
+    public byte getId() {
+        return (byte) ordinal();
+    }
+
+    public static BlockFace fromId(byte id) {
+        return values[id];
+    }
 }

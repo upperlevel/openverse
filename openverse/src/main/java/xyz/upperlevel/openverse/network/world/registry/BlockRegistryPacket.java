@@ -1,4 +1,4 @@
-package xyz.upperlevel.openverse.network.world;
+package xyz.upperlevel.openverse.network.world.registry;
 
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
@@ -29,7 +29,7 @@ public class BlockRegistryPacket implements Packet {
 
     @Override
     public void toData(ByteBuf out) {
-        System.out.println("Sending BlockRegistryPacket: " + Arrays.asList(blocks));
+        System.out.println("Sending BlockRegistryPacket: " + Arrays.toString(blocks));
         out.writeInt(blocks.length);
         for (String str : blocks) {
             SerialUtil.writeString(str, out);
@@ -43,6 +43,6 @@ public class BlockRegistryPacket implements Packet {
         for (int i = 0; i < len; i++) {
             blocks[i] = SerialUtil.readString(in);
         }
-        System.out.println("Received BlockRegistryPacket: " + Arrays.asList(blocks));
+        System.out.println("Received BlockRegistryPacket: " + Arrays.toString(blocks));
     }
 }

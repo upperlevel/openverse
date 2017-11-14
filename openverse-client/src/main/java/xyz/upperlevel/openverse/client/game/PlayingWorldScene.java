@@ -13,7 +13,6 @@ import xyz.upperlevel.openverse.util.math.LineVisitor3d;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.entity.Entity;
 import xyz.upperlevel.openverse.world.entity.EntityManager;
-import xyz.upperlevel.openverse.world.entity.LivingEntity;
 import xyz.upperlevel.openverse.world.entity.player.Player;
 import xyz.upperlevel.ulge.game.Scene;
 import xyz.upperlevel.ulge.opengl.buffer.Vao;
@@ -107,6 +106,8 @@ public class PlayingWorldScene implements Scene, Listener {
                 if (e.getButton() == MouseButton.LEFT) {
                     // TODO: only player can break blocks, right? 0_o
                     ((Player) clicker).breakBlock(loc.x, loc.y, loc.z);
+                } else {
+                    ((Player) clicker).useItemInHand(loc.x, loc.y, loc.z, rayCast.getFace());
                 }
             }
         }
