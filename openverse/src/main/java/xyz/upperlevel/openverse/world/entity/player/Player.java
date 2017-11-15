@@ -30,7 +30,6 @@ public class Player extends LivingEntity {
         super(TYPE, loc);
         this.name = name;
         setSize(0.6f, 1.8f);
-        inventory.setHandItem(new ItemStack(ItemType.fromBlock(Openverse.resources().blockTypes().entry("dirt"))));
     }
 
     public EntityType getType() {

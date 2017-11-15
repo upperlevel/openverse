@@ -6,11 +6,16 @@ import xyz.upperlevel.hermes.Endpoint;
 import xyz.upperlevel.hermes.PacketSide;
 import xyz.upperlevel.hermes.Protocol;
 import xyz.upperlevel.hermes.channel.Channel;
+import xyz.upperlevel.openverse.inventory.InventoryContent;
 import xyz.upperlevel.openverse.network.LoginRequestPacket;
 import xyz.upperlevel.openverse.network.LoginResponsePacket;
+import xyz.upperlevel.openverse.network.inventory.InventoryContentPacket;
+import xyz.upperlevel.openverse.network.inventory.PlayerInventoryActionPacket;
+import xyz.upperlevel.openverse.network.inventory.SlotChangePacket;
 import xyz.upperlevel.openverse.network.world.entity.*;
 import xyz.upperlevel.openverse.network.world.*;
 import xyz.upperlevel.openverse.network.world.registry.BlockRegistryPacket;
+import xyz.upperlevel.openverse.network.world.registry.ItemRegistryPacket;
 import xyz.upperlevel.openverse.resource.Resources;
 import xyz.upperlevel.openverse.world.entity.EntityManager;
 
@@ -30,9 +35,13 @@ public final class Openverse {
             .packet(PacketSide.CLIENT, LoginRequestPacket.class)
             .packet(PacketSide.SERVER, LoginResponsePacket.class)
             .packet(PacketSide.SERVER, BlockRegistryPacket.class)
+            .packet(PacketSide.SERVER, ItemRegistryPacket.class)
             .packet(PacketSide.SERVER, EntityChangeVelocityPacket.class)
             .packet(PacketSide.SHARED, PlayerBreakBlockPacket.class)
             .packet(PacketSide.SHARED, PlayerUseItemPacket.class)
+            .packet(PacketSide.SERVER, SlotChangePacket.class)
+            .packet(PacketSide.SERVER, InventoryContentPacket.class)
+            .packet(PacketSide.CLIENT, PlayerInventoryActionPacket.class)
             .build();
 
     private static OpenverseProxy proxy;

@@ -10,6 +10,8 @@ import xyz.upperlevel.hermes.event.ConnectionOpenEvent;
 import xyz.upperlevel.hermes.reflect.PacketHandler;
 import xyz.upperlevel.hermes.server.Server;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.item.ItemStack;
+import xyz.upperlevel.openverse.network.inventory.PlayerInventoryActionPacket;
 import xyz.upperlevel.openverse.network.world.PlayerBreakBlockPacket;
 import xyz.upperlevel.openverse.network.world.PlayerUseItemPacket;
 import xyz.upperlevel.openverse.network.world.entity.EntityTeleportPacket;
@@ -26,8 +28,6 @@ import xyz.upperlevel.openverse.world.entity.player.Player;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import static xyz.upperlevel.openverse.world.chunk.storage.BlockStorage.AIR_STATE;
 
 public class PlayerManager implements Listener {
     private final Map<String, ServerPlayer> playersByName = new HashMap<>();
@@ -77,6 +77,10 @@ public class PlayerManager implements Listener {
         sp.getConnection().send(Openverse.channel(), new PlayerChangeWorldPacket(spawn.getWorld()));
         sp.getConnection().send(Openverse.channel(), new EntityTeleportPacket(sp));
         Openverse.getEventManager().call(new PlayerJoinEvent(sp));
+
+        //Add a block of dirt in his hand
+        sp.getInventory().setHandItem(new ItemStack(Openverse.resources().itemTypes().entry("dirt")));
+        sp.updateInventory();
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -87,7 +91,7 @@ public class PlayerManager implements Listener {
     }
 
     @PacketHandler
-    protected void onBlockBreak(Connection conn, PlayerBreakBlockPacket packet) {
+    public void onBlockBreak(Connection conn, PlayerBreakBlockPacket packet) {
         Player player = OpenverseServer.get().getPlayerManager().getPlayer(conn);
         // Apply changes to the world
         player.breakBlock(packet.getX(), packet.getY(), packet.getZ(), false);
@@ -101,7 +105,7 @@ public class PlayerManager implements Listener {
     }
 
     @PacketHandler
-    protected void onItemUse(Connection conn, PlayerUseItemPacket packet) {
+    public void onItemUse(Connection conn, PlayerUseItemPacket packet) {
         Player player = OpenverseServer.get().getPlayerManager().getPlayer(conn);
         // Apply changes to the world
         player.useItemInHand(packet.getX(), packet.getY(), packet.getZ(), packet.getFace(), false);
@@ -112,5 +116,12 @@ public class PlayerManager implements Listener {
                 p.getConnection().send(Openverse.channel(), packet);
             }
         }
+    }
+
+    @PacketHandler
+    public void onInventoryAction(Connection conn, PlayerInventoryActionPacket packet) {
+        Player player = OpenverseServer.get().getPlayerManager().getPlayer(conn);
+        //TODO: add inventory interaction
+        Openverse.logger().info("Inventory action received (inventory:" + packet.getInventoryId() + ", slot:" + packet.getSlotId() + ", action:" + packet.getAction().name() + ")");
     }
 }

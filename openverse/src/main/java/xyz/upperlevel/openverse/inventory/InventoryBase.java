@@ -32,12 +32,6 @@ public abstract class InventoryBase implements Inventory {
     }
 
     @Override
-    public void onSlotChangePacket(int slot, ItemStack newItem) {
-        sendPacketsForNextChange = false;
-        get(slot).swap(newItem);
-    }
-
-    @Override
     public void assignId(long id) {
         if (this.id != -1) {
             throw new IllegalStateException("Id already assigned");

@@ -1,7 +1,6 @@
 package xyz.upperlevel.openverse.item;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import lombok.Getter;
 import lombok.Setter;
 import xyz.upperlevel.openverse.Openverse;
@@ -48,6 +47,9 @@ public class ItemStack {
     }
 
     public void toData(ByteBuf out) {
+        if (type.getRawId() < 0) {
+            throw new IllegalStateException("Item not yet registered: " + type.getId());
+        }
         out.writeInt(type.getRawId());
         out.writeInt(count);
     }

@@ -37,6 +37,10 @@ public class PlayerInventory extends InventoryBase {
         return slots[index];
     }
 
+    @Override
+    public int getSize() {
+        return slots.length;
+    }
 
     public ItemStack getHotbarItem(int i) {
         return get(convertHotbarSlot(i)).getContent();

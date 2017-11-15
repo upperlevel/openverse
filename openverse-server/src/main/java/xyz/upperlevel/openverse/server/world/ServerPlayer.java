@@ -5,6 +5,8 @@ import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.hermes.reflect.PacketHandler;
 import xyz.upperlevel.hermes.reflect.PacketListener;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.network.inventory.InventoryContentPacket;
+import xyz.upperlevel.openverse.network.inventory.SlotChangePacket;
 import xyz.upperlevel.openverse.network.world.entity.PlayerChangeLookPacket;
 import xyz.upperlevel.openverse.network.world.entity.PlayerChangePositionPacket;
 import xyz.upperlevel.openverse.world.Location;
@@ -19,6 +21,14 @@ public class ServerPlayer extends Player implements PacketListener {
         super(loc, name);
         this.connection = connection;
         Openverse.channel().register(this);
+        getInventory().addListener((inventory, slot) -> {
+            SlotChangePacket packet = new SlotChangePacket(inventory.getId(), slot.getId(), slot.getContent());
+            Openverse.endpoint().getConnections().forEach(c -> c.send(Openverse.channel(), packet));
+        });
+    }
+
+    public void updateInventory() {
+        connection.send(Openverse.channel(), new InventoryContentPacket(getInventory()));
     }
 
     @Override

@@ -8,12 +8,18 @@ import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.hermes.reflect.PacketHandler;
 import xyz.upperlevel.hermes.reflect.PacketListener;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.client.OpenverseClient;
 import xyz.upperlevel.openverse.client.resource.ClientResources;
+import xyz.upperlevel.openverse.network.inventory.InventoryContentPacket;
+import xyz.upperlevel.openverse.network.inventory.SlotChangePacket;
 import xyz.upperlevel.openverse.network.world.entity.PlayerChangeLookPacket;
 import xyz.upperlevel.openverse.network.world.entity.PlayerChangePositionPacket;
 import xyz.upperlevel.openverse.network.world.entity.PlayerChangeWorldPacket;
+import xyz.upperlevel.openverse.util.exceptions.NotImplementedException;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.entity.LivingEntity;
+import xyz.upperlevel.openverse.world.entity.player.Player;
+import xyz.upperlevel.openverse.world.entity.player.PlayerInventory;
 import xyz.upperlevel.ulge.opengl.shader.Program;
 import xyz.upperlevel.ulge.opengl.shader.Uniform;
 import xyz.upperlevel.ulge.util.math.CameraUtil;
@@ -71,18 +77,40 @@ public class WorldViewer implements PacketListener {
     @PacketHandler
     public void onPlayerChangeWorld(Connection conn, PlayerChangeWorldPacket pkt) {
         worldSession.setWorld(new ClientWorld(pkt.getWorldName()));
-        //Openverse.logger().info("Viewer changed world to: " + pkt.getWorldName());
+        Openverse.logger().info("Viewer changed world to: " + pkt.getWorldName());
     }
 
     @PacketHandler
     public void onPlayerChangePosition(Connection conn, PlayerChangePositionPacket pkt) {
         //TODO update player pos
-        //Openverse.logger().info("Viewer changed position to: " + pkt.getX() + " " + pkt.getY() + " " + pkt.getZ());
+        Openverse.logger().info("Viewer changed position to: " + pkt.getX() + " " + pkt.getY() + " " + pkt.getZ());
     }
 
     @PacketHandler
     public void onPlayerChangeLook(Connection conn, PlayerChangeLookPacket pkt) {
         //TODO update player look
-        //Openverse.logger().info("Viewer changed position to: " + pkt.getYaw() + " " + pkt.getPitch());
+        Openverse.logger().info("Viewer changed position to: " + pkt.getYaw() + " " + pkt.getPitch());
+    }
+
+    @PacketHandler
+    public void onSlotChange(Connection conn, SlotChangePacket packet) {
+        Player player = OpenverseClient.get().getPlayer();
+        if (packet.getInventoryId() == 0) {//Player inventory is always 0
+            PlayerInventory inventory = player.getInventory();
+            inventory.get(packet.getSlotId()).swap(packet.getNewItem());
+        } else throw new NotImplementedException();
+        Openverse.logger().info("slot change received");
+        //TODO update multi-inventory view and graphic things
+    }
+
+    @PacketHandler
+    public void onInventoryContent(Connection conn, InventoryContentPacket packet) {
+        Player player = OpenverseClient.get().getPlayer();
+        if (packet.getInventoryId() == 0) {//Player inventory is always 0
+            PlayerInventory inventory = player.getInventory();
+            packet.apply(inventory);
+        } else throw new NotImplementedException();
+        Openverse.logger().info("Inventory content received");
+        //TODO update multi-inventory view and graphic things
     }
 }

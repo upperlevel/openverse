@@ -29,13 +29,6 @@ public interface Inventory extends Iterable<Slot> {
     void onSlotChange(Slot slot);
 
     /**
-     * Called ONLY when the slot is changed from the connection channel
-     * @param slotId the slot id
-     * @param newItem the new item
-     */
-    void onSlotChangePacket(int slotId, ItemStack newItem);
-
-    /**
      * Adds the passed listener to the inventory's listeners
      * @param listener the listener to be added
      * @return true if the listener was added to the list, false otherwise
@@ -63,6 +56,12 @@ public interface Inventory extends Iterable<Slot> {
      * @exception IndexOutOfBoundsException if the slot isn't in the id bounds (no slot with that id is found)
      */
     Slot get(int slotId);
+
+    /**
+     * Gets this inventory's slot count
+     * @return the number of slots inside the inventory
+     */
+    int getSize();
 
     /**
      * A class that is notified when a {@link Slot} in that inventory is changed

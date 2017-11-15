@@ -2,6 +2,7 @@ package xyz.upperlevel.openverse.item;
 
 import lombok.Getter;
 import lombok.Setter;
+import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.world.block.BlockFace;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.entity.player.Player;
