@@ -17,6 +17,7 @@ import xyz.upperlevel.openverse.world.entity.EntityManager;
 import xyz.upperlevel.openverse.world.entity.player.Player;
 import xyz.upperlevel.ulge.game.Stage;
 
+import java.io.PrintStream;
 import java.util.logging.Logger;
 
 import static xyz.upperlevel.openverse.Openverse.PROTOCOL;
@@ -35,13 +36,13 @@ public class OpenverseClient implements OpenverseProxy {
     @Setter
     private Player player;
 
-    public OpenverseClient(@NonNull Client client) {
+    public OpenverseClient(@NonNull Client client, PrintStream writer) {
         instance = this;
         Openverse.setProxy(this);
 
         endpoint = client;
 
-        logger = new OpenverseLogger(this, "Client");
+        logger = new OpenverseLogger(this, "Client", writer);
 
         Connection connection = client.getConnection();
         channel = new Channel("main").setProtocol(PROTOCOL.compile(PacketSide.CLIENT));

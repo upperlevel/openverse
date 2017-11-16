@@ -3,6 +3,7 @@ package xyz.upperlevel.openverse.launcher.loaders;
 import xyz.upperlevel.hermes.client.Client;
 
 import java.io.File;
+import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 
@@ -21,7 +22,7 @@ public class ClientLoader {
     }
 
     @SuppressWarnings("unchecked")
-    public ClientWrapper createClient(Client connection) {
+    public ClientWrapper createClient(Client connection, PrintStream writer) {
         Class<?> clientClass;
         try {
              clientClass = loader.loadClass(OPENVERSE_CLIENT_PATH);
@@ -30,12 +31,12 @@ public class ClientLoader {
         }
         Constructor<?> constructor;
         try {
-            constructor = clientClass.getConstructor(Client.class);
+            constructor = clientClass.getConstructor(Client.class, PrintStream.class);
         } catch (NoSuchMethodException e) {
             throw new IllegalStateException("Cannot find OpenverseClient constructor!", e);
         }
         try {
-            Object hnd = constructor.newInstance(connection);
+            Object hnd = constructor.newInstance(connection, writer);
             return new ClientWrapper(hnd);
         } catch (Exception e) {
             throw new IllegalStateException("Cannot initialize OpenverseClient!", e);

@@ -3,6 +3,7 @@ package xyz.upperlevel.openverse.launcher.loaders;
 import xyz.upperlevel.hermes.server.Server;
 
 import java.io.File;
+import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 
@@ -21,7 +22,7 @@ public class ServerLoader {
     }
 
     @SuppressWarnings("unchecked")
-    public ServerWrapper createServer(Server connection) {
+    public ServerWrapper createServer(Server connection, PrintStream writer) {
         Class<?> serverClass;
         try {
             serverClass = loader.loadClass(OPENVERSE_SERVER_PATH);
@@ -30,12 +31,12 @@ public class ServerLoader {
         }
         Constructor<?> constructor;
         try {
-            constructor = serverClass.getConstructor(Server.class);
+            constructor = serverClass.getConstructor(Server.class, PrintStream.class);
         } catch (NoSuchMethodException e) {
             throw new IllegalStateException("Cannot find OpenverseServer constructor!", e);
         }
         try {
-            return new ServerWrapper(constructor.newInstance(connection));
+            return new ServerWrapper(constructor.newInstance(connection, writer));
         } catch (Exception e) {
             throw new IllegalStateException("Cannot initialize OpenverseServer!", e);
         }

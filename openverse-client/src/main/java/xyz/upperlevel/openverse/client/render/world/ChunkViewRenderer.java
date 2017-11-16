@@ -99,7 +99,7 @@ public class ChunkViewRenderer implements Listener {
      * Destroys all chunks and remove them from memory.
      */
     public void destroy() {
-        Openverse.logger().fine("Shutting down compiler");
+        Openverse.logger().fine("Shutting down chunk compiler");
         detachedChunkCompiler.shutdownNow();
         Openverse.logger().fine("Done");
         chunks.values().forEach(ChunkRenderer::destroy);

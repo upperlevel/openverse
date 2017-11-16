@@ -56,6 +56,7 @@ public class GameScene extends Stage implements Listener {
     public void onDisable(Scene next) {
         getScene().onDisable(next);
         Openverse.getEventManager().call(new ShutdownEvent());
+        System.exit(0);//Damn it jline, really?
     }
 
     @Override
