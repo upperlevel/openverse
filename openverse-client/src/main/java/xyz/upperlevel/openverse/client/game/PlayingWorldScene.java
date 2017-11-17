@@ -16,11 +16,15 @@ import xyz.upperlevel.openverse.world.entity.EntityManager;
 import xyz.upperlevel.openverse.world.entity.player.Player;
 import xyz.upperlevel.ulge.game.Scene;
 import xyz.upperlevel.ulge.opengl.buffer.Vao;
+import xyz.upperlevel.ulge.util.Screenshot;
 import xyz.upperlevel.ulge.window.Window;
 import xyz.upperlevel.ulge.window.event.KeyChangeEvent;
 import xyz.upperlevel.ulge.window.event.MouseButtonChangeEvent;
 import xyz.upperlevel.ulge.window.event.action.Action;
 import xyz.upperlevel.ulge.window.event.button.MouseButton;
+
+import java.io.File;
+import java.io.IOException;
 
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
@@ -31,10 +35,15 @@ import static org.lwjgl.opengl.GL11.glClear;
  */
 @Getter
 public class PlayingWorldScene implements Scene, Listener {
+    private static final File SCREENSHOTS_DIR = new File("screenshots");
     private final WorldViewer worldViewer;
     private final PlayerLocationWatcher playerWatcher;
     private long ticksEach;
     private long lastTick;
+
+    static {
+        SCREENSHOTS_DIR.mkdir();
+    }
 
     public PlayingWorldScene(Player player) {
         OpenverseClient.get().setPlayer(player);
@@ -88,6 +97,16 @@ public class PlayingWorldScene implements Scene, Listener {
                 case L:
                     Location loc = worldViewer.getEntity().getLocation(getPartialTicks());
                     Openverse.logger().info("loc: " + loc.toStringComplete());
+                    break;
+                case F1:
+                    File file = new File(SCREENSHOTS_DIR, System.currentTimeMillis() + ".png");
+                    try {
+                        Screenshot.saveToFile(OpenverseLauncher.get().getGame().getWindow(), file, "png");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        break;
+                    }
+                    Openverse.logger().fine("Screenshot saved in " + file.getAbsolutePath());
                     break;
             }
         }
