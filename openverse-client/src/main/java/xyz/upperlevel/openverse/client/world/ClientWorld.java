@@ -4,9 +4,11 @@ import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.hermes.reflect.PacketHandler;
 import xyz.upperlevel.hermes.reflect.PacketListener;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.client.OpenverseClient;
 import xyz.upperlevel.openverse.network.world.PlayerBreakBlockPacket;
 import xyz.upperlevel.openverse.network.world.ChunkCreatePacket;
 import xyz.upperlevel.openverse.network.world.ChunkDestroyPacket;
+import xyz.upperlevel.openverse.network.world.entity.PlayerChangeHandSlotPacket;
 import xyz.upperlevel.openverse.world.World;
 
 import static xyz.upperlevel.openverse.world.chunk.storage.BlockStorage.AIR_STATE;
@@ -28,7 +30,12 @@ public class ClientWorld extends World implements PacketListener {
     }
 
     @PacketHandler
-    protected void onBlockBreak(Connection conn, PlayerBreakBlockPacket packet) {
+    public void onBlockBreak(Connection conn, PlayerBreakBlockPacket packet) {
         setBlockState(packet.getX(), packet.getY(), packet.getZ(), AIR_STATE);
+    }
+
+    @PacketHandler
+    public void onPlayerChangeSlot(Connection conn, PlayerChangeHandSlotPacket packet) {
+        OpenverseClient.get().getPlayer().getInventory().unsafeSetHandSlot(packet.getNewHandSlotId());
     }
 }

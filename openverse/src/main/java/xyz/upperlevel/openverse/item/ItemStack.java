@@ -62,4 +62,9 @@ public class ItemStack {
         }
         return new ItemStack(itemType, in.readInt());
     }
+
+    @Override
+    public String toString() {
+        return type.getId() + (count != 0 ? "[" + count + "]" : "");
+    }
 }

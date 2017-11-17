@@ -81,8 +81,8 @@ public class OpenverseServer implements OpenverseProxy, Listener {
         commandInterpreter.process(CommandSender.CONSOLE, commandRegistry, line);
     }
 
-    public List<String> tabComplete(String line) {
-        return commandInterpreter.tabComplete(CommandSender.CONSOLE, commandRegistry, line);
+    public int tabComplete(String line, List<String> completions) {
+        return commandInterpreter.tabComplete(CommandSender.CONSOLE, commandRegistry, line, completions);
     }
 
     public void stop() {

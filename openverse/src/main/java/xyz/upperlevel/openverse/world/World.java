@@ -20,7 +20,7 @@ import static xyz.upperlevel.openverse.world.chunk.storage.BlockStorage.AIR_STAT
 
 @Getter
 @Setter
-public class World implements PacketListener {
+public class World {
     private final String name;
     private ChunkPillarProvider chunkPillarProvider;
 

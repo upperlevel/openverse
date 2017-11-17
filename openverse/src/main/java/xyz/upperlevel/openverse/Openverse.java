@@ -42,6 +42,7 @@ public final class Openverse {
             .packet(PacketSide.SERVER, SlotChangePacket.class)
             .packet(PacketSide.SERVER, InventoryContentPacket.class)
             .packet(PacketSide.CLIENT, PlayerInventoryActionPacket.class)
+            .packet(PacketSide.SHARED, PlayerChangeHandSlotPacket.class)
             .build();
 
     private static OpenverseProxy proxy;

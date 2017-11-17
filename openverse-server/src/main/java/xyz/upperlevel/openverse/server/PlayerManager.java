@@ -15,6 +15,7 @@ import xyz.upperlevel.openverse.network.inventory.PlayerInventoryActionPacket;
 import xyz.upperlevel.openverse.network.world.PlayerBreakBlockPacket;
 import xyz.upperlevel.openverse.network.world.PlayerUseItemPacket;
 import xyz.upperlevel.openverse.network.world.entity.EntityTeleportPacket;
+import xyz.upperlevel.openverse.network.world.entity.PlayerChangeHandSlotPacket;
 import xyz.upperlevel.openverse.network.world.entity.PlayerChangeWorldPacket;
 import xyz.upperlevel.openverse.server.event.PlayerJoinEvent;
 import xyz.upperlevel.openverse.server.event.PlayerQuitEvent;
@@ -123,5 +124,11 @@ public class PlayerManager implements Listener {
         Player player = OpenverseServer.get().getPlayerManager().getPlayer(conn);
         //TODO: add inventory interaction
         Openverse.logger().info("Inventory action received (inventory:" + packet.getInventoryId() + ", slot:" + packet.getSlotId() + ", action:" + packet.getAction().name() + ")");
+    }
+
+    @PacketHandler
+    public void onPlayerChangeHandSlot(Connection conn, PlayerChangeHandSlotPacket packet) {
+        Player player = OpenverseServer.get().getPlayerManager().getPlayer(conn);
+        player.getInventory().unsafeSetHandSlot(packet.getNewHandSlotId());
     }
 }

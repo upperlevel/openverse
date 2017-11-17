@@ -2,13 +2,12 @@ package xyz.upperlevel.openverse.server.command;
 
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.server.command.def.EchoCommand;
+import xyz.upperlevel.openverse.server.command.def.HelpCommand;
+import xyz.upperlevel.openverse.server.command.def.HotbarCommand;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-public class CommandRegistry {
+public class CommandRegistry implements Iterable<Command> {
     private Set<Command> commands = new HashSet<>();
     private Map<String, Command> nameMappedCommands = new HashMap<>();
 
@@ -49,11 +48,23 @@ public class CommandRegistry {
         return nameMappedCommands.get(id);
     }
 
+    public Set<Command> getCommands() {
+        return Collections.unmodifiableSet(commands);
+    }
+
+
     protected void registerDefaultCommands() {
         register(new EchoCommand());
+        register(new HelpCommand(this));
+        register(new HotbarCommand());
     }
 
     protected void warn(String str) {
         Openverse.logger().warning("[Command]" + str);
+    }
+
+    @Override
+    public Iterator<Command> iterator() {
+        return commands.iterator();
     }
 }

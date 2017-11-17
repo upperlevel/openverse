@@ -39,7 +39,6 @@ public class ConsoleListener {
     }
 
     private int onComplete(String line, int cursor, List<CharSequence> candidates) {
-        candidates.addAll(server.tabComplete(line));
-        return cursor;
+        return server.tabComplete(line, (List)candidates);
     }
 }

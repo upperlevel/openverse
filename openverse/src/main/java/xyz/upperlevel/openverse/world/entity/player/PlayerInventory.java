@@ -1,8 +1,10 @@
 package xyz.upperlevel.openverse.world.entity.player;
 
 import lombok.Getter;
+import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.inventory.*;
 import xyz.upperlevel.openverse.item.ItemStack;
+import xyz.upperlevel.openverse.network.world.entity.PlayerChangeHandSlotPacket;
 import xyz.upperlevel.openverse.util.math.MathUtil;
 
 import java.util.Arrays;
@@ -31,6 +33,7 @@ public class PlayerInventory extends InventoryBase {
     @Override
     public void onSlotChange(Slot slot) {
         content.set(slot.getId(), slot.getContent());
+        super.onSlotChange(slot);
     }
 
     public Slot get(int index) {
@@ -66,8 +69,15 @@ public class PlayerInventory extends InventoryBase {
         return getHand().swap(item);
     }
 
+    public void unsafeSetHandSlot(int slot) {
+        checkHotbarBounds(slot);
+        this.handSlot = slot;
+    }
+
     public void setHandSlot(int slot) {
         checkHotbarBounds(slot);
+        PlayerChangeHandSlotPacket packet = new PlayerChangeHandSlotPacket(slot);
+        Openverse.endpoint().getConnections().forEach(c -> c.send(Openverse.channel(), packet));
         this.handSlot = slot;
     }
 

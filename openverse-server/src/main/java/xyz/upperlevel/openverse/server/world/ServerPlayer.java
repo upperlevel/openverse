@@ -22,6 +22,7 @@ public class ServerPlayer extends Player implements PacketListener {
         this.connection = connection;
         Openverse.channel().register(this);
         getInventory().addListener((inventory, slot) -> {
+            Openverse.logger().severe("CHANGING ITEM IN " + slot);
             SlotChangePacket packet = new SlotChangePacket(inventory.getId(), slot.getId(), slot.getContent());
             Openverse.endpoint().getConnections().forEach(c -> c.send(Openverse.channel(), packet));
         });

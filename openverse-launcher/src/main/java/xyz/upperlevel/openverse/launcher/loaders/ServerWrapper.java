@@ -30,13 +30,13 @@ public class ServerWrapper {
     }
 
     @SuppressWarnings("unchecked")
-    public List<String> tabComplete(String line) {
+    public int tabComplete(String line, List<String> completions) {
         try {
-            return (List<String>) handle.getClass().getDeclaredMethod("tabComplete", String.class).invoke(handle, line);
+            return (Integer) handle.getClass().getDeclaredMethod("tabComplete", String.class, List.class).invoke(handle, line, completions);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }
-        return Collections.emptyList();
+        return 0;
     }
 
     public void close() {

@@ -11,7 +11,6 @@ import java.util.List;
 public abstract class InventoryBase implements Inventory {
     @Getter
     private long id = -1;
-    private boolean sendPacketsForNextChange = true;
     /*
      * Why an List and not a Set you may ask?
      * The first reason is that the inventory listener are designed to be accessed in a fast way
@@ -22,10 +21,6 @@ public abstract class InventoryBase implements Inventory {
 
     @Override
     public void onSlotChange(Slot slot) {
-        if (sendPacketsForNextChange) {
-            SlotChangePacket packet = new SlotChangePacket(this.id, slot.getId(), slot.getContent());
-            Openverse.endpoint().getConnections().forEach(c -> c.send(Openverse.channel(), packet));
-        } else sendPacketsForNextChange = true;
         for (ChangeListener listener : listeners) {
             listener.onChange(this, slot);
         }
