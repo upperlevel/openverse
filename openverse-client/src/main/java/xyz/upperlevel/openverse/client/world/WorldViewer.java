@@ -24,6 +24,10 @@ import xyz.upperlevel.ulge.opengl.shader.Program;
 import xyz.upperlevel.ulge.opengl.shader.Uniform;
 import xyz.upperlevel.ulge.util.math.CameraUtil;
 
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glClear;
+
 /**
  * This class represents the player.
  * <p>Better, it represents the camera moving around the world and manages rendering stuff.
@@ -59,7 +63,7 @@ public class WorldViewer implements PacketListener {
         program.bind();
         Location loc = entity.getEyePosition(partialTicks);
 
-        program.uniformer.setUniformMatrix4("camera", CameraUtil.getCamera(
+        cameraLoc.set(CameraUtil.getCamera(
                 45f,
                 1f,
                 0.01f,
@@ -69,7 +73,7 @@ public class WorldViewer implements PacketListener {
                 (float) loc.getX(),
                 (float) loc.getY(),
                 (float) loc.getZ()
-        ).get(BufferUtils.createFloatBuffer(16)));
+        ));
 
         worldSession.getChunkView().render(program);
     }

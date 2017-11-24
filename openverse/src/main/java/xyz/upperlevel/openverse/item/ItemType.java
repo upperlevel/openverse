@@ -46,7 +46,24 @@ public class ItemType {
      * @param type the block type used to generate the item type
      * @return a new {@link BlockItemType} generated from the block type passed as argument
      */
-    public static BlockItemType fromBlock(BlockType type) {
+    public static BlockItemType createFromBlock(BlockType type) {
         return new BlockItemType(type);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == this) return true;
+        if (!(other instanceof ItemType)) return false;
+        return ((ItemType) other).getId().equals(id);
+    }
+
+    @Override
+    public String toString() {
+        return id;
     }
 }

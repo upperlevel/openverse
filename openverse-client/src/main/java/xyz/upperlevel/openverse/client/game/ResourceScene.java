@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.lwjgl.opengl.GL11;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.client.OpenverseClient;
 import xyz.upperlevel.openverse.client.render.block.*;
 import xyz.upperlevel.ulge.game.Scene;
 
@@ -31,6 +32,7 @@ public class ResourceScene implements Scene {
 
         TextureBakery.bake();
         BlockTypeModelMapper.bake(); // bakes models
+        OpenverseClient.get().getItemRendererRegistry().init(); // bakes item icons
 
         Openverse.logger().info("Resources loaded in " + (System.currentTimeMillis() - init) + " ms.");
 

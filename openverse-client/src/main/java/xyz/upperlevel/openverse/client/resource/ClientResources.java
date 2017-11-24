@@ -15,14 +15,19 @@ import java.util.logging.Logger;
  * classes that are needed only in client-side (and other different implementations).
  */
 public class ClientResources extends Resources {
-    private final ShaderRegistry shaderRegistry;
-    private final ProgramRegistry programRegistry;
+    private ShaderRegistry shaderRegistry;
+    private ProgramRegistry programRegistry;
 
     /**
      * The constructor of {@link ClientResources} initializes all sub resource managers.
      */
     public ClientResources(Logger logger) {
         super(new File("client/resources"), logger);
+    }
+
+    @Override
+    public void init() {
+        super.init();
         this.shaderRegistry = new ShaderRegistry(folder, logger);
         this.programRegistry = new ProgramRegistry(folder, logger);
     }

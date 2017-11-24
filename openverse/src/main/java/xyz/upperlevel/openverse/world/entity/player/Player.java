@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.inventory.Inventory;
 import xyz.upperlevel.openverse.item.ItemStack;
 import xyz.upperlevel.openverse.item.ItemType;
 import xyz.upperlevel.openverse.network.world.PlayerBreakBlockPacket;
@@ -12,6 +13,8 @@ import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.block.BlockFace;
 import xyz.upperlevel.openverse.world.entity.EntityType;
 import xyz.upperlevel.openverse.world.entity.LivingEntity;
+import xyz.upperlevel.openverse.world.entity.player.events.PlayerInventoryCloseEvent;
+import xyz.upperlevel.openverse.world.entity.player.events.PlayerInventoryOpenEvent;
 
 import static xyz.upperlevel.openverse.world.chunk.storage.BlockStorage.AIR_STATE;
 
@@ -25,6 +28,8 @@ public class Player extends LivingEntity {
     @Getter
     @Setter
     private PlayerInventory inventory = new PlayerInventory();
+
+    private Inventory openedInventory;
 
     public Player(Location loc, String name) {
         super(TYPE, loc);
@@ -64,6 +69,32 @@ public class Player extends LivingEntity {
 
     public boolean useItemInHand(int x, int y, int z, BlockFace face) {
         return useItemInHand(x, y, z, face, true);
+    }
+
+    public void openInventory(Inventory inventory) {
+        if (inventory == openedInventory)
+        if (openedInventory != null) {
+            closeInventory();
+        }
+        Openverse.getEventManager().call(new PlayerInventoryOpenEvent(this, inventory));
+        openedInventory = inventory;
+    }
+
+    public void openInventory() {
+        openInventory(inventory);
+    }
+
+    public Inventory getOpenedInventory() {
+        return openedInventory;
+    }
+
+    public void closeInventory() {
+        if (openedInventory == null) {
+            Openverse.logger().warning("Trying to close a closed inventory");
+            return;
+        }
+        Openverse.getEventManager().call(new PlayerInventoryCloseEvent(this, openedInventory));
+        openedInventory = null;
     }
 
     @Override

@@ -11,6 +11,9 @@ import xyz.upperlevel.hermes.client.Client;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.client.game.ClientScene;
+import xyz.upperlevel.openverse.client.render.inventory.GuiManager;
+import xyz.upperlevel.openverse.client.render.inventory.InventoryGuiRegistry;
+import xyz.upperlevel.openverse.client.render.inventory.ItemRendererRegistry;
 import xyz.upperlevel.openverse.client.resource.ClientResources;
 import xyz.upperlevel.openverse.console.log.OpenverseLogger;
 import xyz.upperlevel.openverse.world.entity.EntityManager;
@@ -33,6 +36,9 @@ public class OpenverseClient implements OpenverseProxy {
     private final ClientResources resources; // resources are loaded per universe
     private final EventManager eventManager = new EventManager();
     private final EntityManager entityManager;
+    private final ItemRendererRegistry itemRendererRegistry;
+    private final InventoryGuiRegistry inventoryGuiRegistry;
+    private final GuiManager guiManager;
     @Setter
     private Player player;
 
@@ -48,7 +54,11 @@ public class OpenverseClient implements OpenverseProxy {
         channel = new Channel("main").setProtocol(PROTOCOL.compile(PacketSide.CLIENT));
         connection.setDefaultChannel(channel);
         resources = new ClientResources(logger);
+        resources.init();
         entityManager = new EntityManager();
+        itemRendererRegistry = new ItemRendererRegistry();
+        inventoryGuiRegistry = new InventoryGuiRegistry();
+        guiManager = new GuiManager();
     }
 
     public void onTick() {

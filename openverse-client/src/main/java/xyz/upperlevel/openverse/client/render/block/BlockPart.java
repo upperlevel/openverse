@@ -51,7 +51,7 @@ public class BlockPart {
     public int renderOnBuffer(World world, int x, int y, int z, ByteBuffer buffer) {
         int v = 0;
         for (Facing f : Facing.values()) {
-            v += faces.get(f).renderOnBuffer(world, x, y, z, buffer);
+            v += faces.get(f).checkAndRenderOnBuffer(world, x, y, z, buffer);
         }
         return v;
     }

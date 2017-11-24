@@ -4,6 +4,7 @@ import xyz.upperlevel.hermes.util.DynamicArray;
 import xyz.upperlevel.openverse.resource.Registry;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.block.BlockTypeRegistry;
+import xyz.upperlevel.openverse.world.block.BlockTypes;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
@@ -14,10 +15,10 @@ public class ItemTypeRegistry extends Registry<ItemType> {
     private int nextId = 0;
     private DynamicArray<ItemType> idRegistry = new DynamicArray<>(256);
 
-    public ItemTypeRegistry(BlockTypeRegistry blockRegistry) {
+    public ItemTypeRegistry(BlockTypeRegistry blockRegistry) {//TODO remove parameter
         register(AIR);
-        registerForBlock(blockRegistry.entry("grass"));
-        registerForBlock(blockRegistry.entry("dirt"));
+        registerForBlock(BlockTypes.DIRT);
+        registerForBlock(BlockTypes.GRASS);
     }
 
     public void register(ItemType type) {
@@ -25,7 +26,7 @@ public class ItemTypeRegistry extends Registry<ItemType> {
     }
 
     public void registerForBlock(BlockType type) {
-        register(ItemType.fromBlock(type));
+        register(ItemType.createFromBlock(type));
     }
 
     public ItemType entry(int id) {

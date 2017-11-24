@@ -55,6 +55,7 @@ public class OpenverseServer implements OpenverseProxy, Listener {
         this.inventoryManager = new InventoryManager();
         this.commandRegistry = new CommandRegistry();
         this.resources = new ServerResources(new File("server/resources"), logger);
+        resources.init();
     }
 
     /**

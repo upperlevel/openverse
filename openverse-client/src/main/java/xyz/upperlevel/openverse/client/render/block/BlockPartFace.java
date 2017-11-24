@@ -128,10 +128,14 @@ public class BlockPartFace {
     /**
      * Renders baked model on the given buffer only if visible.
      */
-    public int renderOnBuffer(World world, int x, int y, int z, ByteBuffer buffer) {
+    public int checkAndRenderOnBuffer(World world, int x, int y, int z, ByteBuffer buffer) {
+        // checks if the face is hidden
         if (!baked || !shouldBeRendered(world, x, y, z))
             return 0;
-        // checks if the face is hidden
+        return renderOnBuffer(x, y, z, buffer);
+    }
+
+    public int renderOnBuffer(int x, int y, int z, ByteBuffer buffer) {
         for (int i = 0; i < 4; i++) {
             buffer
                     .putFloat(x + verticesX[i])

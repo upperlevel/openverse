@@ -15,13 +15,16 @@ public class Resources {
     protected final File folder;
     protected final Logger logger;
 
-    private final BlockTypeRegistry blockTypeRegistry;
-    private final ItemTypeRegistry itemTypeRegistry;
-    private final EntityTypeRegistry entityTypeRegistry;
+    private BlockTypeRegistry blockTypeRegistry;
+    private ItemTypeRegistry itemTypeRegistry;
+    private EntityTypeRegistry entityTypeRegistry;
 
     public Resources(File folder, Logger logger) {
         this.folder = folder;
         this.logger = logger;
+    }
+
+    public void init() {
         this.blockTypeRegistry = createBlockTypeRegistry();
         this.itemTypeRegistry = createItemTypeRegistry(blockTypeRegistry);
         this.entityTypeRegistry = createEntityTypeRegistry(folder, logger);

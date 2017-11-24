@@ -87,12 +87,15 @@ public class PlayingWorldScene implements Scene, Listener {
     @Override
     public void onRender() {
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-        worldViewer.render(getPartialTicks());
+        float partialTicks = getPartialTicks();
+        worldViewer.render(partialTicks);
+        OpenverseClient.get().getGuiManager().render(partialTicks);
     }
 
     @EventHandler
     public void onKey(KeyChangeEvent event) {
         if (event.getAction() == Action.PRESS) {
+            //TODO: a normal freakin' input system
             switch (event.getKey()) {
                 case L:
                     Location loc = worldViewer.getEntity().getLocation(getPartialTicks());
@@ -107,6 +110,15 @@ public class PlayingWorldScene implements Scene, Listener {
                         break;
                     }
                     Openverse.logger().fine("Screenshot saved in " + file.getAbsolutePath());
+                    break;
+                case E:
+                    OpenverseClient.get().getPlayer().openInventory();
+                    break;
+                case Q: //TODO: replace Q with ESCAPE
+                    Player p = OpenverseClient.get().getPlayer();
+                    if (p.getOpenedInventory() != null) {
+                        p.closeInventory();
+                    }
                     break;
             }
         }
