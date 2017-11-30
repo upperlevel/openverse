@@ -1,25 +1,19 @@
 package xyz.upperlevel.openverse.client.render.inventory;
 
-import org.joml.Matrix4f;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.EventPriority;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.OpenverseClient;
+import xyz.upperlevel.openverse.launcher.OpenverseLauncher;
 import xyz.upperlevel.openverse.world.entity.player.events.PlayerInventoryCloseEvent;
 import xyz.upperlevel.openverse.world.entity.player.events.PlayerInventoryOpenEvent;
-import xyz.upperlevel.ulge.gui.Gui;
-import xyz.upperlevel.ulge.gui.GuiRenderer;
-import xyz.upperlevel.ulge.gui.SingleGuiViewer;
-import xyz.upperlevel.ulge.gui.impl.GuiPane;
-import xyz.upperlevel.ulge.util.Color;
+import xyz.upperlevel.ulge.gui.GuiViewer;
 
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.*;
 
 public class GuiManager implements Listener {
-    private SingleGuiViewer viewer = new SingleGuiViewer();
-    private GuiRenderer renderer = new GuiRenderer();
+    private GuiViewer viewer = new GuiViewer(OpenverseLauncher.get().getGame().getWindow());
 
     public GuiManager() {
         Openverse.getEventManager().register(this);
@@ -42,25 +36,11 @@ public class GuiManager implements Listener {
     }
 
     public void render(float partialTicks) {
-        Gui gui = viewer.get();
-        if (gui != null) {
-            renderer.getProgram().bind();
-            gui.render(new Matrix4f(), renderer);
-        }
-    }
-
-    public static class CustomGuiPane extends GuiPane {
-
-        @Override
-        public void render(Matrix4f transformation, GuiRenderer renderer) {
-            if (isClicked()) {
-                setColor(Color.RED);
-            } else if (isHover()) {
-                setColor(Color.YELLOW);
-            } else {
-                setColor(Color.GREEN);
-            }
-            super.render(transformation, renderer);
+        if (viewer.getHandle() != null) {
+            glClear(GL_DEPTH_BUFFER_BIT);
+            glDisable(GL_CULL_FACE);
+            viewer.render();
+            glEnable(GL_CULL_FACE);
         }
     }
 }

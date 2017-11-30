@@ -1,9 +1,9 @@
 package xyz.upperlevel.openverse.client.render.inventory.player;
 
-import org.joml.Matrix4f;
 import xyz.upperlevel.openverse.client.render.inventory.InventoryGui;
 import xyz.upperlevel.openverse.client.render.inventory.SlotGui;
 import xyz.upperlevel.openverse.world.entity.player.PlayerInventory;
+import xyz.upperlevel.ulge.gui.GuiBounds;
 import xyz.upperlevel.ulge.gui.GuiRenderer;
 import xyz.upperlevel.ulge.util.Color;
 
@@ -28,12 +28,14 @@ public class PlayerInventoryGui extends InventoryGui<PlayerInventory> {
         return Arrays.asList(slots);
     }
 
-    public void render(Matrix4f transformation, GuiRenderer renderer) {
-        super.render(transformation, renderer);
+    @Override
+    public void render(GuiBounds upperBounds) {
+        GuiBounds bounds = upperBounds.insideRelative(getBounds());
+        GuiRenderer renderer = GuiRenderer.get();
         renderer.setColor(Color.GREEN);
-        renderer.render();
+        renderer.render(bounds);
         for (SlotGui slot : slots) {
-            slot.render(new Matrix4f(transformation), renderer);
+            slot.render(bounds);
         }
     }
 }

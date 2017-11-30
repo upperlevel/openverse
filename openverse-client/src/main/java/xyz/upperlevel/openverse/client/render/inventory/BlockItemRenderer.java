@@ -7,6 +7,7 @@ import xyz.upperlevel.openverse.client.render.block.*;
 import xyz.upperlevel.openverse.client.resource.ClientResources;
 import xyz.upperlevel.openverse.util.exceptions.NotImplementedException;
 import xyz.upperlevel.openverse.world.block.BlockType;
+import xyz.upperlevel.ulge.gui.GuiBounds;
 import xyz.upperlevel.ulge.opengl.buffer.*;
 import xyz.upperlevel.ulge.opengl.shader.Program;
 import xyz.upperlevel.ulge.opengl.shader.Uniform;
@@ -15,15 +16,21 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.lwjgl.opengl.GL11.GL_DEPTH;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+
 public class BlockItemRenderer implements ItemRenderer {
     private static final Program program;
-    private static Uniform cameraLoc;
+    private static Uniform boundsLoc;
     private Vao vao;
     private Vbo vbo;
     private int vertices;
 
     static {
-        program = ((ClientResources) Openverse.resources()).programs().entry("simple_shader");
+        program = ((ClientResources) Openverse.resources()).programs().entry("gui_item_shader");
+        program.bind();
+        boundsLoc = program.uniformer.get("bounds");
     }
 
     public BlockItemRenderer(BlockType type) {
@@ -59,16 +66,18 @@ public class BlockItemRenderer implements ItemRenderer {
 
         vbo.unbind();
         vao.unbind();
-
-        if (cameraLoc == null) {
-            cameraLoc = program.uniformer.get("camera");
-        }
     }
 
     @Override
-    public void renderInSlot(Matrix4f trans, SlotGui slot) {
+    public void renderInSlot(GuiBounds bounds, SlotGui slot) {
         program.bind();
-        cameraLoc.set(trans);
+        boundsLoc.set(
+                (float) bounds.minX,
+                (float) bounds.minY,         // Invert y
+                (float) (bounds.maxX - bounds.minX),    // Convert maxX to width
+                (float) (bounds.maxY - bounds.minY)     // Convert maxY to height & Invert y: 1 - (max - min) = (min - max)
+        );
+        TextureBakery.bind();
         vao.bind();
         vao.draw(DrawMode.QUADS, 0, vertices);
     }

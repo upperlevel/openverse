@@ -1,0 +1,3 @@
+{
+  "shaders": ["gui_item_shader.vs", "gui_item_shader.fs"]
+}
