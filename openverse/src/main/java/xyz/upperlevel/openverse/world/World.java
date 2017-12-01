@@ -85,18 +85,13 @@ public class World {
         return getBlock((int) floor(x), (int) floor(y), (int) floor(z));
     }
 
+    // Block state
 
-    /**
-     * Gets the {@link BlockState} at the given coordinates.
-     */
     public BlockState getBlockState(int x, int y, int z) {
         Chunk chunk = getChunkFromBlock(x, y, z);
         return chunk == null ? AIR_STATE : chunk.getBlockState(x & 0xF, y & 0xF, z & 0xF);
     }
 
-    /**
-     * Sets the {@link BlockState} at the given coordinates to the given one.
-     */
     public void setBlockState(int x, int y, int z, BlockState blockState) {
         Chunk chunk = getChunkFromBlock(x, y, z);
         if (chunk != null) {
@@ -104,103 +99,31 @@ public class World {
         }
     }
 
+    // Block light
 
     public int getBlockLight(int x, int y, int z) {
         Chunk chunk = getChunkFromBlock(x, y, z);
         return chunk == null ? 0 : chunk.getBlockLight(x & 0xF, y & 0xF, z & 0xF);
     }
 
-    public void setBlockLight(int x, int y, int z, int blockLight) {
-        setBlockLight(x, y, z, blockLight, true);
-    }
-
     public void setBlockLight(int x, int y, int z, int blockLight, boolean diffuse) {
         Chunk chunk = getChunkFromBlock(x, y, z);
-        if (chunk != null)
+        if (chunk != null) {
             chunk.setBlockLight(x & 0xF, y & 0xF, z & 0xF, blockLight, diffuse);
-    }
-
-
-    public void diffuseBlockLight(int x, int y, int z) {
-        Queue<Integer> bfsQueue = new ArrayDeque<>();
-
-        // fills the center block (15, 15, 15) with the full light (15)
-        int i = 0x0F_0F_0F_00 | (getBlockLight(x, y, z) & 0xF);
-        bfsQueue.add(i);
-
-        while (!bfsQueue.isEmpty()) {
-            int j = bfsQueue.poll();
-
-            // light field coordinates
-            int lx = (j & 0xFF_00_00_00) >> 24;
-            int ly = (j & 0x00_FF_00_00) >> 16;
-            int lz = (j & 0x00_00_FF_00) >> 8;
-
-            // world coordinates based on light field
-            int wx = lx - 15 + x;
-            int wy = ly - 15 + y;
-            int wz = lz - 15 + z;
-
-            int lt = getBlockLight(wx, wy, wz);
-
-            for (BlockFace rel : BlockFace.values()) {
-                // relative light field coords
-                int rlx = lx + rel.offsetX;
-                int rly = ly + rel.offsetY;
-                int rlz = lz + rel.offsetZ;
-
-                // relative world coords
-                int rwx = wx + rel.offsetX;
-                int rwy = wy + rel.offsetY;
-                int rwz = wz + rel.offsetZ;
-
-                if ((rlx >= 0 && rlx <= 31) && (rly >= 0 && rly <= 31) && (rlz >= 0 && rlz <= 31) && (getBlockLight(rwx, rwy, rwz) + 2) <= lt) {
-                    int rlt = lt - 1;
-                    setBlockLight(rwx, rwy, rwz, rlt);
-                    bfsQueue.add((rlx & 0xFF) << 24 | (rly & 0xFF) << 16 | (rlz & 0xFF) << 8 | (rlt & 0xF));
-                }
-            }
         }
     }
 
-    public void removeBlockLightDiffusion(int x, int y, int z) {
-        Queue<Integer> bfsQueue = new ArrayDeque<>();
-        int i = 0x0F0F0F;
-        bfsQueue.add(i);
+    // Block skylight
 
-        while (!bfsQueue.isEmpty()) {
-            i = bfsQueue.poll();
-            int cx = (i & 0xFF0000) >> 16;
-            int cy = (i & 0x00FF00) >> 8;
-            int cz = (i & 0x0000FF);
+    public int getBlockSkylight(int x, int y, int z) {
+        Chunk chunk = getChunkFromBlock(x, y, z);
+        return chunk == null ? 0 : chunk.getBlockSkylight(x & 0xF, y & 0xF, z & 0xF);
+    }
 
-            int cwx = cx - 15 + x;
-            int cwy = cy - 15 + y;
-            int cwz = cz - 15 + z;
-
-            int cll = getBlockLight(cwx, cwy, cwz);
-            for (BlockFace r : BlockFace.values()) {
-                // Neighbor light field coords
-                int nlx = cx + r.offsetX;
-                int nly = cy + r.offsetY;
-                int nlz = cz + r.offsetZ;
-
-                if ((nlx >= 0 && nlx <= 31) && (nly >= 0 && nly <= 31) && (nlz >= 0 && nlz <= 31)) {
-                    // Neighbor world coords
-                    int nwx = x + r.offsetX;
-                    int nwy = y + r.offsetY;
-                    int nwz = z + r.offsetZ;
-
-                    int nll = getBlockLight(nwx, nwy, nwz);
-                    int ni = (nlx & 0xFF) << 16 | (nly & 0xFF) << 8 | (nlz & 0xFF);
-                    if (nll != 0 && nll < cll) {
-                        setBlockLight(nwx, nwy, nwz, 0);
-                        bfsQueue.add(ni);
-                    } else if (nll >= cll) {
-                        bfsQueue.add(ni);
-                    }
-                }
-            }
+    public void setBlockSkylight(int x, int y, int z, int blockSkylight, boolean diffuse) {
+        Chunk chunk = getChunkFromBlock(x, y, z);
+        if (chunk != null) {
+            chunk.setBlockSkylight(x & 0xF, y & 0xF, z & 0xF, blockSkylight, diffuse);
         }
     }
 }

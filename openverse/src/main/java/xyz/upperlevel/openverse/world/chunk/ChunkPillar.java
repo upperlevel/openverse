@@ -42,8 +42,7 @@ public class ChunkPillar {
             for (int offY = -1; offY <= 1; offY++) {
                 for (int offZ = -1; offZ <= 1; offZ++) {
                     Chunk r = chunk.getRelative(offX, offY, offZ);
-                    if (r != null)
-                        r.diffuseAllBlockLights();
+                    r.updateBlockLights();
                 }
             }
         }
