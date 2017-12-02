@@ -2,10 +2,20 @@ package xyz.upperlevel.openverse.world;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.joml.Vector3i;
+import xyz.upperlevel.hermes.reflect.PacketListener;
+import xyz.upperlevel.openverse.util.math.Aabb3d;
+import xyz.upperlevel.openverse.util.math.LineVisitor3d;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
-import xyz.upperlevel.openverse.world.chunk.Block;
 import xyz.upperlevel.openverse.world.chunk.*;
+import xyz.upperlevel.openverse.world.chunk.storage.BlockStorage;
+import xyz.upperlevel.openverse.world.entity.Entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static xyz.upperlevel.openverse.util.math.MathUtil.ceili;
+import static xyz.upperlevel.openverse.util.math.MathUtil.floori;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
@@ -27,8 +37,12 @@ public class World {
     /**
      * Gets the {@link ChunkPillar} at the given chunk coordinates.
      */
+    public ChunkPillar getChunkPillar(int x, int z, boolean load) {
+        return chunkPillarProvider.getChunkPillar(x, z, load);
+    }
+
     public ChunkPillar getChunkPillar(int x, int z) {
-        return chunkPillarProvider.getChunkPillar(x, z);
+        return chunkPillarProvider.getChunkPillar(x, z, true);
     }
 
     /**
@@ -45,6 +59,13 @@ public class World {
         return chunkPillarProvider.unloadChunkPillar(x, z);
     }
 
+    public boolean isChunkLoaded(int x, int y, int z) {
+        return chunkPillarProvider.hasChunk(x, y, z);
+    }
+
+    public boolean isBlockLoaded(int x, int y, int z) {
+        return chunkPillarProvider.hasChunk(x >> 4, y, z >> 4);
+    }
 
     /**
      * Gets the {@link Chunk} at the given chunk coordinates.
@@ -53,8 +74,17 @@ public class World {
         return getChunkPillar(x, z).getChunk(y);
     }
 
+    public Chunk getChunk(int x, int y, int z, boolean load) {
+        ChunkPillar pillar = getChunkPillar(x, z, load);
+        return pillar == null ? null : pillar.getChunk(y);
+    }
+
     public Chunk getChunkFromBlock(int blockX, int blockY, int blockZ) {
         return getChunk(blockX >> 4, blockY >> 4, blockZ >> 4);
+    }
+
+    public Chunk getChunkFromBlock(int blockX, int blockY, int blockZ, boolean load) {
+        return getChunk(blockX >> 4, blockY >> 4, blockZ >> 4, load);
     }
 
     /**
@@ -77,26 +107,106 @@ public class World {
      * It will create a new instance of the {@link Block} object.
      */
     public Block getBlock(int x, int y, int z) {
-        Chunk chunk = getChunkFromBlock(x, y, z);
+        return getChunkFromBlock(x, y, z).getBlock(x & 0xF, y & 0xF, z & 0xF);
+    }
+
+    public Block getBlock(int x, int y, int z, boolean load) {
+        Chunk chunk = getChunkFromBlock(x, y, z, load);
         return chunk == null ? null : chunk.getBlock(x & 0xF, y & 0xF, z & 0xF);
     }
 
-    public Block getBlock(double x, double y, double z) {
-        return getBlock((int) floor(x), (int) floor(y), (int) floor(z));
+    public Block getBlock(Vector3i loc, boolean load) {
+        return getBlock(loc.x, loc.y, loc.z, load);
     }
 
-    // Block state
+    public Block getBlock(Vector3i loc) {
+        return getBlock(loc.x, loc.y, loc.z);
+    }
 
+    public Block getBlock(double x, double y, double z) {
+        return getBlock(floori(x), floori(y), floori(z));
+    }
+
+    public List<Aabb3d> getBlockCollisions(Entity entity, Aabb3d box) {
+        List<Aabb3d> res = new ArrayList<>();
+
+        final int minX = floori(box.minX) - 1;
+        final int minY = floori(box.minY) - 1;
+        final int minZ = floori(box.minZ) - 1;
+        final int maxX = ceili(box.maxX) + 1;
+        final int maxY = ceili(box.maxY) + 1;
+        final int maxZ = ceili(box.maxZ) + 1;
+
+        for (int x = minX; x < maxX; x++) {
+            for (int z = minZ; z < maxZ; z++) {
+                ChunkPillar pillar = getChunkPillar(x >> 4, z >> 4, false);
+                if (pillar == null) {
+                    //Chunk not loaded
+                    continue;
+                }
+                for (int y = minY; y < maxY; y++) {
+                    BlockState state = pillar.getChunk(y >> 4).getBlockState(x & 15, y & 15, z & 15);
+                    if (state == AIR_STATE) {
+                        //Block is air
+                        continue;
+                    }
+                    state.getBlockType().addCollisionBoxes(state, entity, x, y, z, box, res);
+                }
+            }
+        }
+
+        return res;
+    }
+
+
+    /**
+     * Gets the {@link BlockState} at the given coordinates, loads the chunk if possible
+     */
     public BlockState getBlockState(int x, int y, int z) {
-        Chunk chunk = getChunkFromBlock(x, y, z);
+        return getChunkFromBlock(x, y, z).getBlockState(x & 0xF, y & 0xF, z & 0xF);
+    }
+
+    /**
+     * Gets the {@link BlockState} at the given coordinates, loads the chunk if specified otherwise returns null
+     * @param x the x-axis location
+     * @param y the y-axis location
+     * @param z the z-axis location
+     * @param load loads the chunk if it's not loaded
+     * @return the BlockState at that specific location or {@link BlockStorage#AIR_STATE} if not loaded
+     */
+    public BlockState getBlockState(int x, int y, int z, boolean load) {
+        Chunk chunk = getChunkFromBlock(x, y, z, load);
         return chunk == null ? AIR_STATE : chunk.getBlockState(x & 0xF, y & 0xF, z & 0xF);
     }
 
-    public void setBlockState(int x, int y, int z, BlockState blockState) {
+    /**
+     * Sets the {@link BlockState} at the given coordinates to the given one.
+     * <br>Note: the change doesn't get sent to the other side (server/client) a packet should be sent that will cause the state change
+     * <br>Example: if the player breaks a block don't send a BlockChange packet but a BlockBreak
+     *
+     * @param x the x-axis location
+     * @param y the y-axis location
+     * @param z the z-axis location
+     * @param blockState the new state the block will be set to
+     * @return the old state (the block was before this call)
+     */
+    public BlockState setBlockState(int x, int y, int z, BlockState blockState) {
         Chunk chunk = getChunkFromBlock(x, y, z);
         if (chunk != null) {
-            chunk.setBlockState(x & 0xF, y & 0xF, z & 0xF, blockState);
+            return chunk.setBlockState(x & 0xF, y & 0xF, z & 0xF, blockState);
         }
+        return null;
+    }
+
+    public LineVisitor3d.RayCastResult rayCast(double startX, double startY, double startZ, double endX, double endY, double endZ) {
+        return LineVisitor3d.rayCast(startX, startY, startZ, endX, endY, endZ, (x, y, z, f) -> {
+            BlockState state = getBlockState(x, y, z, false);
+            if (state == null) {
+                return true;// Block not loaded, better return
+            }
+
+            return state != AIR_STATE && state.getBlockType().collisionRaytrace(state, this, x, y, z, startX, startY, startZ, endX, endY, endZ);
+        });
     }
 
     // Block light

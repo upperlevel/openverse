@@ -1,7 +1,6 @@
 package xyz.upperlevel.openverse.network;
 
 import io.netty.buffer.ByteBuf;
-import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;

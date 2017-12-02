@@ -21,18 +21,23 @@ public class SimpleVerticalChunkProvider implements VerticalChunkProvider {
     }
 
     public Chunk getChunk(int y) {
-        //Using method reference so there's no need to create a lambda instance every time
-        return chunksMap.computeIfAbsent(y, this::createChunk);
-    }
-
-    private Chunk createChunk(int y) {
-        return new Chunk(chunkPillar, y);
+        Chunk chunk = chunksMap.get(y);
+        if (chunk == null) {
+            chunk = new Chunk(chunkPillar, y);
+            chunksMap.put(y, chunk);
+        }
+        return chunk;
     }
 
     @Override
     public void setChunk(int y, Chunk chunk) {
         chunksMap.put(y, chunk);
         Openverse.getEventManager().call(new ChunkLoadEvent(chunk));
+    }
+
+    @Override
+    public boolean hasChunk(int y) {
+        return chunksMap.containsKey(y);
     }
 
     @Override

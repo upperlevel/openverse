@@ -2,6 +2,7 @@ package xyz.upperlevel.openverse.client;
 
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import xyz.upperlevel.event.EventManager;
 import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.hermes.PacketSide;
@@ -9,10 +10,14 @@ import xyz.upperlevel.hermes.channel.Channel;
 import xyz.upperlevel.hermes.client.Client;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.OpenverseProxy;
+import xyz.upperlevel.openverse.client.game.ClientScene;
 import xyz.upperlevel.openverse.client.resource.ClientResources;
 import xyz.upperlevel.openverse.console.log.OpenverseLogger;
+import xyz.upperlevel.openverse.world.entity.EntityManager;
+import xyz.upperlevel.openverse.world.entity.player.Player;
 import xyz.upperlevel.ulge.game.Stage;
 
+import java.io.PrintStream;
 import java.util.logging.Logger;
 
 import static xyz.upperlevel.openverse.Openverse.PROTOCOL;
@@ -27,19 +32,27 @@ public class OpenverseClient implements OpenverseProxy {
     private final Channel channel;
     private final ClientResources resources; // resources are loaded per universe
     private final EventManager eventManager = new EventManager();
+    private final EntityManager entityManager;
+    @Setter
+    private Player player;
 
-    public OpenverseClient(@NonNull Client client) {
+    public OpenverseClient(@NonNull Client client, PrintStream writer) {
         instance = this;
         Openverse.setProxy(this);
 
         endpoint = client;
 
-        logger = new OpenverseLogger(this, "Client");
+        logger = new OpenverseLogger(this, "Client", writer);
 
         Connection connection = client.getConnection();
         channel = new Channel("main").setProtocol(PROTOCOL.compile(PacketSide.CLIENT));
         connection.setDefaultChannel(channel);
         resources = new ClientResources(logger);
+        entityManager = new EntityManager();
+    }
+
+    public void onTick() {
+        entityManager.onTick();
     }
 
     public static OpenverseClient get() {
@@ -59,5 +72,10 @@ public class OpenverseClient implements OpenverseProxy {
     @Override
     public ClientResources getResources() {
         return resources;
+    }
+
+    @Override
+    public EntityManager getEntityManager() {
+        return entityManager;
     }
 }

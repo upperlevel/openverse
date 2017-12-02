@@ -9,6 +9,7 @@ import xyz.upperlevel.openverse.event.ShutdownEvent;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -16,16 +17,15 @@ import java.util.logging.Logger;
 
 @Getter
 public class OpenverseLogger extends Logger {
-    private final Formatter formatter = new CoinciseFormatter();
+    private final Formatter formatter = new ConciseFormatter();
     private final LogDispatcher dispatcher = new LogDispatcher(this);
     private final String loggerName;
 
-    public OpenverseLogger(OpenverseProxy openverse, String name) {
+    public OpenverseLogger(OpenverseProxy openverse, String name, PrintStream writer) {
         super(openverse.getClass().getCanonicalName(), null);
         setLevel(Level.ALL);
         AnsiConsole.systemInstall();
-
-        ColoredWriter handler = new ColoredWriter(System.out);
+        ColoredWriter handler = new ColoredWriter(writer);
         handler.setLevel(getLevel());
         handler.setFormatter(formatter);
         addHandler(handler);

@@ -48,6 +48,10 @@ public class ChunkPillar {
         }
     }
 
+    public boolean hasChunk(int y) {
+        return verticalChunkProvider.hasChunk(y);
+    }
+
     public boolean unloadChunk(int y) {
         return verticalChunkProvider.unloadChunk(y);
     }
@@ -72,5 +76,9 @@ public class ChunkPillar {
         if (getHeight(x, z) > y)
             setHeight(x, z, y);
         // todo sets block in chunk
+    }
+
+    public static long hash(int x, int z) {
+        return ((long) x << 32) | ((long) z) & 0xFFFF_FFFFL;
     }
 }

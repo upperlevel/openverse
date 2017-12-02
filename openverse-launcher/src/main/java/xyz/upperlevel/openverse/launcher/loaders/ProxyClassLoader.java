@@ -9,7 +9,7 @@ public class ProxyClassLoader extends URLClassLoader {
     public ProxyClassLoader(URL proxyFile) {
         super(new URL[]{ proxyFile });
         try {
-            if(!Paths.get(proxyFile.toURI()).toFile().exists()) {
+            if (!Paths.get(proxyFile.toURI()).toFile().exists()) {
                 throw new IllegalArgumentException("Proxy file absent! " + proxyFile);
             }
         } catch (URISyntaxException e) {

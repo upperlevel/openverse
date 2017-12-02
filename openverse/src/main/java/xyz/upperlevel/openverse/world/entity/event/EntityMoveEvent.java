@@ -20,7 +20,7 @@ public class EntityMoveEvent extends CancellableEvent {
     }
 
     public void setLocation(Location location) {
-        if(location.getWorld() != oldLocation.getWorld())
+        if (location.getWorld() != oldLocation.getWorld())
             throw new IllegalArgumentException("Cannot change world");
     }
 }

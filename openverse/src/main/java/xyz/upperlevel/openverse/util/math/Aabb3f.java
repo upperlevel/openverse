@@ -44,19 +44,19 @@ public class Aabb3f {
     }
 
     public boolean intersect(Aabb3f other) {
-        return  this.maxX >= other.minX &&
-                this.maxY >= other.minY &&
-                this.maxZ >= other.minZ &&
-                this.minX <= other.maxX &&
-                this.minY <= other.maxY &&
-                this.minZ <= other.maxZ;
+        return  this.maxX > other.minX &&
+                this.maxY > other.minY &&
+                this.maxZ > other.minZ &&
+                this.minX < other.maxX &&
+                this.minY < other.maxY &&
+                this.minZ < other.maxZ;
     }
 
     public Aabb3f grow(float x, float y, float z) {
         return new Aabb3f(
-                x < 0 ? minX - x : minX,
-                y < 0 ? minY - y : minY,
-                z < 0 ? minZ - z : minZ,
+                x < 0 ? minX + x : minX,
+                y < 0 ? minY + y : minY,
+                z < 0 ? minZ + z : minZ,
                 x > 0 ? maxX + x : maxX,
                 y > 0 ? maxY + y : maxY,
                 z > 0 ? maxZ + z : maxZ
@@ -68,9 +68,9 @@ public class Aabb3f {
                 x > 0 ? minX + x : minX,
                 y > 0 ? minY + y : minY,
                 z > 0 ? minZ + z : minZ,
-                x < 0 ? maxX - x : maxX,
-                y < 0 ? maxY - y : maxY,
-                z < 0 ? maxZ - z : maxZ
+                x < 0 ? maxX + x : maxX,
+                y < 0 ? maxY + y : maxY,
+                z < 0 ? maxZ + z : maxZ
         );
     }
 

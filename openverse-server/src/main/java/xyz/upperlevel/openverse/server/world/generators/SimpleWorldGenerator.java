@@ -42,15 +42,10 @@ public class SimpleWorldGenerator implements ChunkGenerator {
 
                 int h = chkPil.getHeight(x, z);
                 for (int y = 0, by = y + chunk.getY() * 16; y < 16 && by <= h; y++, by++) {
-                    int wy = y + chunk.getY() * 16;
-                    if (by == h) {
-                        if (x == 0 && z == 0) {
-                            chunk.getWorld().setBlockState(wx, wy, wz, photonType.getDefaultBlockState());
-                        } else {
-                            chunk.getWorld().setBlockState(wx, wy, wz, grassType.getDefaultBlockState());
-                        }
-                    } else
-                        chunk.getWorld().setBlockState(wx, wy, wz, dirtType.getDefaultBlockState());
+                    if (by == h)
+                        chunk.setBlockType(x, y, z, grassType, false);
+                    else
+                        chunk.setBlockType(x, y, z, dirtType, false);
                 }
             }
         }

@@ -1,34 +1,21 @@
 package xyz.upperlevel.openverse.client.render.entity;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import xyz.upperlevel.openverse.resource.entity.EntityType;
-import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.entity.Entity;
-import xyz.upperlevel.openverse.world.entity.event.EntityMoveEvent;
+import xyz.upperlevel.openverse.world.entity.EntityType;
 
 /**
- * This class takes care to render the referred entity.
+ * This class takes care to render the referred type.
  */
-@Getter
-@Setter
-public class EntityRenderer {
-    private final int id;
-    private final EntityType type;
+public abstract class EntityRenderer<E extends Entity> {
+    @Getter
+    protected final EntityType type;
 
-    private Location location;
-
-    public EntityRenderer(Entity entity) {
-        this.id = entity.getId();
-        this.type = entity.getType();
+    public EntityRenderer(EntityType type) {
+        this.type = type;
     }
 
-    public void render() {
-        // todo
-    }
+    public abstract void render(E entity);
 
-    public void destroy() {
-        // todo
-    }
+    public abstract void destroy();
 }

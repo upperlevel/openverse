@@ -1,7 +1,6 @@
 package xyz.upperlevel.openverse.resource;
 
 import lombok.Getter;
-import xyz.upperlevel.openverse.Openverse;
 
 import java.io.File;
 import java.util.logging.Logger;

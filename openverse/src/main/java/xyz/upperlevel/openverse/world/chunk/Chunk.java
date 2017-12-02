@@ -3,6 +3,8 @@ package xyz.upperlevel.openverse.world.chunk;
 import lombok.Getter;
 import lombok.Setter;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.event.BlockUpdateEvent;
+import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.world.BlockFace;
 import xyz.upperlevel.openverse.world.light.LightDiffuser;
 import xyz.upperlevel.openverse.world.LightType;
@@ -63,25 +65,77 @@ public class Chunk {
 
 
     public BlockType getBlockType(int x, int y, int z) {
-        return blockStorage.getBlockState(x, y, z).getBlockType();
+        return getBlockState(x, y, z).getBlockType();
     }
 
-    public void setBlockType(int x, int y, int z, BlockType blockType) {
-        blockStorage.setBlockState(x, y, z, blockType == null ? AIR_STATE : blockType.getDefaultBlockState());
+    /**
+     * Sets the {@link BlockState} at the given coordinates to the given one.
+     * <br>Note: the change doesn't get sent to the other side (server/client) a packet should be sent that will cause the state change
+     * <br>Example: if the player breaks a block don't send a BlockChange packet but a BlockBreak
+     *
+     * @param x the x-axis location
+     * @param y the y-axis location
+     * @param z the z-axis location
+     * @param type the new type the block will be set to (precisely his default state)
+     * @param blockUpdate if true calls a block update
+     * @return the old state (the block was before this call)
+     */
+    public BlockState setBlockType(int x, int y, int z, BlockType type, boolean blockUpdate) {
+        return setBlockState(x, y, z, type != null ? type.getDefaultBlockState() : AIR_STATE, blockUpdate);
     }
 
-    // Block state
+    /**
+     * Sets the {@link BlockState} at the given coordinates to the given one.
+     * <br>Note: the change doesn't get sent to the other side (server/client) a packet should be sent that will cause the state change
+     * <br>Example: if the player breaks a block don't send a BlockChange packet but a BlockBreak
+     *
+     * @param x the x-axis location
+     * @param y the y-axis location
+     * @param z the z-axis location
+     * @param type the new type the block will be set to (precisely his default state)
+     * @return the old state (the block was before this call)
+     */
+    public BlockState setBlockType(int x, int y, int z, BlockType type) {
+        return setBlockState(x, y, z, type != null ? type.getDefaultBlockState() : AIR_STATE, true);
+    }
 
     public BlockState getBlockState(int x, int y, int z) {
         return blockStorage.getBlockState(x, y, z);
     }
 
     /**
-     * Sets the given {@link BlockState} and the emitted light.
+     * Sets the {@link BlockState} at the given coordinates to the given one.
+     * <br>Note: the change doesn't get sent to the other side (server/client) a packet should be sent that will cause the state change
+     * <br>Example: if the player breaks a block don't send a BlockChange packet but a BlockBreak
+     *
+     * @param x the x-axis location
+     * @param y the y-axis location
+     * @param z the z-axis location
+     * @param blockState the new state the block will be set to
+     * @param blockUpdate if true calls a block update
+     * @return the old state (the block was before this call)
      */
-    public void setBlockState(int x, int y, int z, BlockState blockState) {
-        blockStorage.setBlockState(x, y, z, blockState);
-        setBlockLight(x, y, z, blockState.getBlockType().getEmittedBlockLight(blockState), true);
+    public BlockState setBlockState(int x, int y, int z, BlockState blockState, boolean blockUpdate) {
+        BlockState oldState = blockStorage.setBlockState(x, y, z, blockState);
+        if (blockUpdate) {
+            Openverse.getEventManager().call(new BlockUpdateEvent(world, x + (location.x << 4), y + (location.y  << 4), z + (location.z << 4), oldState, blockState));
+        }
+        return oldState;
+    }
+
+    /**
+     * Sets the {@link BlockState} at the given coordinates to the given one.
+     * <br>Note: the change doesn't get sent to the other side (server/client) a packet should be sent that will cause the state change
+     * <br>Example: if the player breaks a block don't send a BlockChange packet but a BlockBreak
+     *
+     * @param x the x-axis location
+     * @param y the y-axis location
+     * @param z the z-axis location
+     * @param blockState the new state the block will be set to
+     * @return the old state (the block was before this call)
+     */
+    public BlockState setBlockState(int x, int y, int z, BlockState blockState) {
+        return setBlockState(x, y, z, blockState, true);
     }
 
     // Block light

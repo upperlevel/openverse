@@ -36,16 +36,16 @@ public class Aabb2f {
     }
 
     public boolean intersect(Aabb2f other) {
-        return  this.maxX >= other.minX &&
-                this.maxY >= other.minY &&
-                this.minX <= other.maxX &&
-                this.minY <= other.maxY;
+        return  this.maxX > other.minX &&
+                this.maxY > other.minY &&
+                this.minX < other.maxX &&
+                this.minY < other.maxY;
     }
 
     public Aabb2f grow(float x, float y) {
         return new Aabb2f(
-                x < 0 ? minX - x : minX,
-                y < 0 ? minY - y : minY,
+                x < 0 ? minX + x : minX,
+                y < 0 ? minY + y : minY,
                 x > 0 ? maxX + x : maxX,
                 y > 0 ? maxY + y : maxY
         );
@@ -55,8 +55,8 @@ public class Aabb2f {
         return new Aabb2f(
                 x > 0 ? minX + x : minX,
                 y > 0 ? minY + y : minY,
-                x < 0 ? maxX - x : maxX,
-                y < 0 ? maxY - y : maxY
+                x < 0 ? maxX + x : maxX,
+                y < 0 ? maxY + y : maxY
         );
     }
 

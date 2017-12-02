@@ -27,6 +27,10 @@ public class ChunkLocation {
                         (y & 0x03FF);
     }
 
+    public long getPillarId() {
+        return ChunkPillar.hash(x, z);
+    }
+
     @Override
     public int hashCode() {
         return hashCode;
@@ -34,7 +38,7 @@ public class ChunkLocation {
 
     @Override
     public boolean equals(Object other) {
-        if(other instanceof ChunkLocation) {
+        if (other instanceof ChunkLocation) {
             ChunkLocation c = (ChunkLocation) other;
             return  c.x == x &&
                     c.y == y &&

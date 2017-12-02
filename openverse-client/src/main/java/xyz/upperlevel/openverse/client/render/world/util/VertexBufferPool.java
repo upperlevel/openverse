@@ -34,7 +34,7 @@ public class VertexBufferPool {
 
     /**
      * Gets the biggest VertexBuffer available, if none is available it waits until one is released
-     * @return a usable VertexVuffer
+     * @return a usable VertexBuffer
      * @throws InterruptedException if the program is interrupted while waiting
      */
     public VertexBuffer waitForBuffer() throws InterruptedException {

@@ -28,11 +28,11 @@ public class VariableBitArray {
         checkIndex(index);
         int bitIndex = index * bitsPerEntry;
         int realIndex = bitIndex / ENTRY_LEN;
-        int bitOffest = bitIndex % ENTRY_LEN;
+        int bitOffset = bitIndex % ENTRY_LEN;
 
-        array[realIndex] = array[realIndex] & ~(maxValueMask << bitOffest) | (value & maxValueMask) << bitOffest;
+        array[realIndex] = array[realIndex] & ~(maxValueMask << bitOffset) | (value & maxValueMask) << bitOffset;
 
-        int written = ENTRY_LEN - bitOffest;
+        int written = ENTRY_LEN - bitOffset;
         if (written < bitsPerEntry) {
             int i = realIndex + 1;
             array[i] = array[i] & ~(maxValueMask >>> written) | (value & maxValueMask) >>> written;
@@ -43,13 +43,13 @@ public class VariableBitArray {
         checkIndex(index);
         int bitIndex = index * bitsPerEntry;
         int realIndex = bitIndex / ENTRY_LEN;
-        int bitOffest = bitIndex % ENTRY_LEN;
+        int bitOffset = bitIndex % ENTRY_LEN;
 
-        int written = ENTRY_LEN - bitOffest;
+        int written = ENTRY_LEN - bitOffset;
         if (written >= bitsPerEntry) {
-            return (int) ((array[realIndex] >>> bitOffest) & maxValueMask);
+            return (int) ((array[realIndex] >>> bitOffset) & maxValueMask);
         } else {
-            return (int) (((array[realIndex] >>> bitOffest) | (array[realIndex + 1] << written)) & maxValueMask);
+            return (int) (((array[realIndex] >>> bitOffset) | (array[realIndex + 1] << written)) & maxValueMask);
         }
     }
 

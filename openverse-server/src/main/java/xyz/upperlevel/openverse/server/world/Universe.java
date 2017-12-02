@@ -1,5 +1,6 @@
 package xyz.upperlevel.openverse.server.world;
 
+import xyz.upperlevel.hermes.reflect.PacketListener;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.World;
 
@@ -8,7 +9,7 @@ import java.util.*;
 /**
  * This is something similar to the World manager, in the sense that it stores all the worlds and their ids.
  */
-public class Universe {
+public class Universe implements PacketListener {
     // the spawn location is just server side
     private Location spawn;
     private final Map<String, ServerWorld> worlds = new HashMap<>();
@@ -17,7 +18,7 @@ public class Universe {
         if (spawn == null) {
             ServerWorld w = new ServerWorld("world");
             addWorld(w);
-            spawn = new Location(w, 0, 0, 0);
+            spawn = new Location(w, 0, 50, 0);
         }
         return spawn;
     }
@@ -41,5 +42,11 @@ public class Universe {
 
     public Collection<World> getWorlds() {
         return Collections.unmodifiableCollection(worlds.values());
+    }
+
+    public void onTick() {
+        for (ServerWorld  world : worlds.values()) {
+            world.onTick();
+        }
     }
 }

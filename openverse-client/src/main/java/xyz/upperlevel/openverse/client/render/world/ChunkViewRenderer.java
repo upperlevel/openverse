@@ -6,7 +6,9 @@ import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.render.world.util.VertexBufferPool;
 import xyz.upperlevel.openverse.client.world.ClientWorld;
+import xyz.upperlevel.openverse.event.BlockUpdateEvent;
 import xyz.upperlevel.openverse.event.ShutdownEvent;
+import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 import xyz.upperlevel.openverse.world.chunk.event.BlockLightChangeEvent;
 import xyz.upperlevel.openverse.world.event.ChunkLoadEvent;
@@ -26,7 +28,8 @@ public class ChunkViewRenderer implements Listener {
 
     private final Program program;
     private ClientWorld world;
-    private VertexBufferPool vertexProvider = new VertexBufferPool(10);
+    private VertexBufferPool vertexProvider = new VertexBufferPool(50);
+    private VertexBufferPool syncProvider = new VertexBufferPool(1);
     private ExecutorService detachedChunkCompiler = Executors.newSingleThreadExecutor(t -> new Thread(t, "Chunk Compiler thread"));
     private Queue<ChunkCompileTask> pendingTasks = new ArrayDeque<>(10);
 
@@ -69,7 +72,7 @@ public class ChunkViewRenderer implements Listener {
 
     public void recompileChunk(ChunkRenderer chunk, ChunkCompileMode mode) {
         if (mode == ChunkCompileMode.INSTANT) {
-            pendingTasks.add(new ChunkCompileTask(null, chunk));
+            pendingTasks.add(new ChunkCompileTask(syncProvider, chunk));
         } else {
             ChunkCompileTask task = chunk.createCompileTask(vertexProvider);
             detachedChunkCompiler.execute(() -> {
@@ -97,7 +100,7 @@ public class ChunkViewRenderer implements Listener {
      * Destroys all chunks and remove them from memory.
      */
     public void destroy() {
-        Openverse.logger().fine("Shutting down compiler");
+        Openverse.logger().fine("Shutting down chunk compiler");
         detachedChunkCompiler.shutdownNow();
         Openverse.logger().fine("Done");
         chunks.values().forEach(ChunkRenderer::destroy);
@@ -116,10 +119,32 @@ public class ChunkViewRenderer implements Listener {
     }
 
     @EventHandler
-    public void onBlockLightChange(BlockLightChangeEvent e) {
-        ChunkRenderer r = chunks.get(e.getBlock().getChunk().getLocation());
-        if (r != null)
-            recompileChunk(r, ChunkCompileMode.ASYNC);
+    public void onBlockUpdate(BlockUpdateEvent e) {
+        if (world != e.getWorld()) {
+            return;
+        }
+        int ux = e.getX();
+        int uy = e.getY();
+        int uz = e.getZ();
+
+        int minX = (ux - 1) >> 4;
+        int minY = (uy - 1) >> 4;
+        int minZ = (uz - 1) >> 4;
+        int maxX = (ux + 1) >> 4;
+        int maxY = (uy + 1) >> 4;
+        int maxZ = (uz + 1) >> 4;
+
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                for (int z = minZ; z <= maxZ; z++) {
+                    ChunkRenderer chunk = getChunk(ChunkLocation.of(x, y, z));
+                    if (chunk == null) {
+                        continue;
+                    }
+                    recompileChunk(chunk, ChunkCompileMode.INSTANT);
+                }
+            }
+        }
     }
 
     @EventHandler

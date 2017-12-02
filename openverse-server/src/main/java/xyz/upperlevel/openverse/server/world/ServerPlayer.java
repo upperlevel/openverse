@@ -5,11 +5,12 @@ import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.hermes.reflect.PacketHandler;
 import xyz.upperlevel.hermes.reflect.PacketListener;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.network.world.PlayerChangeLookPacket;
-import xyz.upperlevel.openverse.network.world.PlayerChangePositionPacket;
-import xyz.upperlevel.openverse.network.world.PlayerChangeWorldPacket;
+import xyz.upperlevel.openverse.network.inventory.InventoryContentPacket;
+import xyz.upperlevel.openverse.network.inventory.SlotChangePacket;
+import xyz.upperlevel.openverse.network.world.entity.PlayerChangeLookPacket;
+import xyz.upperlevel.openverse.network.world.entity.PlayerChangePositionPacket;
 import xyz.upperlevel.openverse.world.Location;
-import xyz.upperlevel.openverse.world.entity.Player;
+import xyz.upperlevel.openverse.world.entity.player.Player;
 import xyz.upperlevel.openverse.world.entity.event.PlayerMoveEvent;
 
 @Getter
@@ -20,21 +21,23 @@ public class ServerPlayer extends Player implements PacketListener {
         super(loc, name);
         this.connection = connection;
         Openverse.channel().register(this);
+        getInventory().addListener((inventory, slot) -> {
+            Openverse.logger().severe("CHANGING ITEM IN " + slot);
+            SlotChangePacket packet = new SlotChangePacket(inventory.getId(), slot.getId(), slot.getContent());
+            Openverse.endpoint().getConnections().forEach(c -> c.send(Openverse.channel(), packet));
+        });
+    }
+
+    public void updateInventory() {
+        connection.send(Openverse.channel(), new InventoryContentPacket(getInventory()));
     }
 
     @Override
-    public void setLocation(Location loc, boolean update) {
+    public void setLocation(Location loc) {
         if (loc == null)
             throw new IllegalArgumentException("Invalid player location");
         PlayerMoveEvent e = new PlayerMoveEvent(this, loc);
         Openverse.getEventManager().call(e);
-        if (update) {
-            if (this.location != null && loc.getWorld() != this.location.getWorld()) {
-                connection.send(Openverse.channel(), new PlayerChangeWorldPacket(loc.getWorld()));
-            }
-            connection.send(Openverse.channel(), new PlayerChangePositionPacket(loc.getX(), loc.getY(), loc.getZ()));
-            connection.send(Openverse.channel(), new PlayerChangeLookPacket(loc.getYaw(), loc.getPitch()));
-        }
         this.location = loc;
     }
 
@@ -44,7 +47,7 @@ public class ServerPlayer extends Player implements PacketListener {
             Location loc = getLocation();
             loc.setYaw(pkt.getYaw());
             loc.setPitch(pkt.getPitch());
-            setLocation(loc, false);
+            setLocation(loc);
         }
     }
 
@@ -53,7 +56,7 @@ public class ServerPlayer extends Player implements PacketListener {
         if (connection.equals(conn)) {
             Location loc = getLocation();
             loc.set(pkt.getX(), pkt.getY(), pkt.getZ());
-            setLocation(loc, false);
+            setLocation(loc);
         }
     }
 }

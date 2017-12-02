@@ -27,4 +27,9 @@ public abstract class BaseBlockProperty<T extends Comparable<T>> implements Bloc
     public int hashCode() {
         return name.hashCode();
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

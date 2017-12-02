@@ -19,10 +19,9 @@ public interface BlockStorage {
 
     Block getBlock(int x, int y, int z);
 
-
     BlockState getBlockState(int x, int y, int z);
 
-    void setBlockState(int x, int y, int z, BlockState blockState);
+    BlockState setBlockState(int x, int y, int z, BlockState blockState);
 
 
     BlockEntity getBlockEntity(int x, int y, int z);

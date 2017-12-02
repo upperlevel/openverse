@@ -7,32 +7,26 @@ import xyz.upperlevel.hermes.Packet;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.World;
+import xyz.upperlevel.openverse.world.block.BlockTypeRegistry;
+import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
-import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
-import xyz.upperlevel.openverse.world.chunk.ChunkPillar;
-
-import java.util.Arrays;
-
-import static xyz.upperlevel.openverse.network.SerialUtil.*;
-import static xyz.upperlevel.openverse.world.chunk.storage.BlockStorage.AIR_STATE;
 
 @Getter
 @NoArgsConstructor
 public class ChunkCreatePacket implements Packet {
     private int x, y, z;
-    private int blockTypes[];
+    private int[] states = new int[16 * 16 * 16];
 
     public ChunkCreatePacket(Chunk chunk) {
         this.x = chunk.getX();
         this.y = chunk.getY();
         this.z = chunk.getZ();
-        this.blockTypes = new int[16 * 16 * 16];
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
                 for (int z = 0; z < 16; z++) {
-                    BlockType bType = chunk.getBlockType(x, y, z);
+                    BlockState bType = chunk.getBlockState(x, y, z);
                     if (bType != null && bType != BlockType.AIR) {
-                        blockTypes[x << 8 | y << 4 | z] = bType.getRawId();
+                        states[x << 8 | y << 4 | z] = bType.getFullId();
                     }
                 }
             }
@@ -41,13 +35,14 @@ public class ChunkCreatePacket implements Packet {
 
     public Chunk resolveChunk(World world) {
         Chunk chunk = world.getChunkPillar(x, z).getChunk(y);
+        BlockTypeRegistry reg = Openverse.resources().blockTypes();
         for (int i = 0; i < 16 * 16 * 16; i++) {
-            if (blockTypes[i] != 0) {
-                BlockType bType = Openverse.resources().blockTypes().entry(blockTypes[i]);
+            if (states[i] != 0) {
+                BlockState bType = reg.getState(states[i]);
                 if (bType == null) {
-                    Openverse.logger().warning("Unresolved id in ChunkCreatePacket: " + blockTypes[i]);
+                    Openverse.logger().warning("Unresolved id in ChunkCreatePacket: " + states[i]);
                 }
-                world.setBlockState(x * 16 + (i >> 8), y * 16 + (i >> 4 & 0xF), z * 16 + (i & 0xF), bType == null ? AIR_STATE : bType.getDefaultBlockState());
+                chunk.setBlockState(i >> 8, i >> 4 & 0xF, i & 0xF, bType, false);
             }
         }
         return chunk;
@@ -58,8 +53,9 @@ public class ChunkCreatePacket implements Packet {
         out.writeInt(x);
         out.writeInt(y);
         out.writeInt(z);
-        for (int i = 0; i < 16 * 16 * 16; i++)
-            out.writeInt(blockTypes[i]);
+        for (int i = 0; i < 16 * 16 * 16; i++) {
+            out.writeInt(states[i]);
+        }
     }
 
     @Override
@@ -67,8 +63,8 @@ public class ChunkCreatePacket implements Packet {
         x = in.readInt();
         y = in.readInt();
         z = in.readInt();
-        blockTypes = new int[16 * 16 * 16];
-        for (int i = 0; i < blockTypes.length; i++)
-            blockTypes[i] = in.readInt();
+        for (int i = 0; i < states.length; i++) {
+            states[i] = in.readInt();
+        }
     }
 }

@@ -47,7 +47,7 @@ public class BlockStateRegistry {
         }
         ImmutableMap.Builder<K, V> map = ImmutableMap.builder();
         Iterator<V> valueIt = values.iterator();
-        for(K key : keys) {
+        for (K key : keys) {
             map.put(key, valueIt.next());
         }
         return map.build();
@@ -151,6 +151,11 @@ public class BlockStateRegistry {
         @Override
         public int hashCode() {
             return properties.hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return "{type:" + blockType.getId() + ",index:" + index + ",proprieties:" + properties + "}";
         }
     }
 

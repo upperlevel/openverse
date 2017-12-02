@@ -4,7 +4,7 @@ import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.EventPriority;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.network.world.BlockRegistryPacket;
+import xyz.upperlevel.openverse.network.world.registry.BlockRegistryPacket;
 import xyz.upperlevel.openverse.server.event.PlayerJoinEvent;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.block.BlockTypeRegistry;

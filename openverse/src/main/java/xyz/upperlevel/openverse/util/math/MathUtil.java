@@ -46,6 +46,38 @@ public final class MathUtil {
         return v <= min ? min : v >= max ? max : v;
     }
 
+    public static float lerp(float a, float b, float perc) {
+        return a * (1f - perc) + b * perc;
+    }
+
+    public static double lerp(double a, double b, float perc) {
+        return a * (1f - perc) + b * perc;
+    }
+
+    public static double shortAngleDistance(float a, float b) {
+        final int MAX_ANGLE = 360;
+        float da = (b - a) % MAX_ANGLE;
+        return 2*da % MAX_ANGLE - da;
+    }
+
+    public static double shortAngleDistance(double a, double b) {
+        final int MAX_ANGLE = 360;
+        double da = (b - a) % MAX_ANGLE;
+        return 2*da % MAX_ANGLE - da;
+    }
+
+    public static double lerpAngle(float a, float b, float perc) {
+        return a + shortAngleDistance(a, b) * perc;
+    }
+
+    public static double lerpAngle(double a, double b, double perc) {
+        return a + shortAngleDistance(a, b) * perc;
+    }
+
+    public static double normalizeAngle(double angle) {
+        return angle % 360;
+    }
+
 
     private MathUtil() {}
 }

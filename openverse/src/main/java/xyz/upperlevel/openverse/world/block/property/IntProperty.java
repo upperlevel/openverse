@@ -49,7 +49,7 @@ public class IntProperty extends BaseBlockProperty<Integer> {
         if (this == other) {
             return true;
         }
-        if(other instanceof IntProperty && super.equals(other)) {
+        if (other instanceof IntProperty && super.equals(other)) {
             return  this.min == ((IntProperty) other).min &&
                     this.max == ((IntProperty) other).max;
         }
