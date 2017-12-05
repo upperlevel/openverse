@@ -22,7 +22,7 @@ public class ChunkCompileTask {
             try {
                 buffer = bufferPool.waitForBuffer();
             } catch (InterruptedException e) {
-                Openverse.logger().log(Level.WARNING, "Chunk compiler: interrupted pool retrieving");
+                Openverse.getLogger().log(Level.WARNING, "Chunk compiler: interrupted pool retrieving");
             }
         }
     }
@@ -51,7 +51,7 @@ public class ChunkCompileTask {
         try {
             vertexCount = chunk.compile(buffer.byteBuffer());
         } catch (Exception e) {
-            Openverse.logger().log(Level.SEVERE, "Error while compiling chunk (data:" + (chunk.getAllocateDataCount() * Float.BYTES) + ", cap:" + buffer.byteBuffer().capacity() + ")", e);
+            Openverse.getLogger().log(Level.SEVERE, "Error while compiling chunk (data:" + (chunk.getAllocateDataCount() * Float.BYTES) + ", cap:" + buffer.byteBuffer().capacity() + ")", e);
             buffer.release();
             return;
         }

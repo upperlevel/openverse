@@ -19,7 +19,7 @@ public class ResourceScene implements Scene {
     public void onEnable(Scene previous) {
         long init = System.currentTimeMillis();
 
-        Openverse.logger().info("Loading resources...");
+        Openverse.getLogger().info("Loading resources...");
 
         Openverse.resources().setup();
         Openverse.resources().load();
@@ -33,7 +33,7 @@ public class ResourceScene implements Scene {
         TextureBakery.bake();
         BlockTypeModelMapper.bake(); // bakes models
 
-        Openverse.logger().info("Resources loaded in " + (System.currentTimeMillis() - init) + " ms.");
+        Openverse.getLogger().info("Resources loaded in " + (System.currentTimeMillis() - init) + " ms.");
 
         parent.setScene(new GameScene(parent));
     }

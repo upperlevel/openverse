@@ -13,7 +13,7 @@ import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.entity.player.Player;
 import xyz.upperlevel.ulge.game.Scene;
 
-import static xyz.upperlevel.openverse.Openverse.channel;
+import static xyz.upperlevel.openverse.Openverse.getChannel;
 
 @RequiredArgsConstructor
 public class ReceivingWorldScene implements Scene, PacketListener {
@@ -21,13 +21,13 @@ public class ReceivingWorldScene implements Scene, PacketListener {
 
     @Override
     public void onEnable(Scene scene) {
-        channel().register(this);
-        Openverse.logger().info("Waiting for world...");
+        getChannel().register(this);
+        Openverse.getLogger().info("Waiting for world...");
     }
 
     @Override
     public void onDisable(Scene scene) {
-        channel().unregister(this);
+        getChannel().unregister(this);
     }
 
     @Override
@@ -51,6 +51,6 @@ public class ReceivingWorldScene implements Scene, PacketListener {
         pl.setDriver(new KeyboardInputEntityDriver(gameScene.getWindow()));
         Openverse.entities().register(pl);
         gameScene.setScene(new PlayingWorldScene(pl));
-        Openverse.logger().info("Received world, now you can play!");
+        Openverse.getLogger().info("Received world, now you can play!");
     }
 }

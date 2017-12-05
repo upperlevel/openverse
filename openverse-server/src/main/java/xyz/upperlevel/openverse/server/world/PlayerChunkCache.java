@@ -10,18 +10,30 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-@RequiredArgsConstructor
+/**
+ * This class represents a chunk containing a set of players.
+ */
 @Getter
-public class PlayerChunk {
+public class PlayerChunkCache {
     private final Chunk chunk;
-
-    //TODO too memory waste?
     private Set<Player> players = new HashSet<>();
 
+    public PlayerChunkCache(Chunk chunk) {
+        this.chunk = chunk;
+    }
+
+    /**
+     * Adds a new player to the chunk.
+     */
     public void addPlayer(Player player) {
         players.add(player);
     }
 
+    /**
+     * Removes the given player from the chunk.
+     *
+     * @param player the player
+     */
     public void removePlayer(Player player) {
         players.remove(player);
     }

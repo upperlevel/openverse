@@ -52,7 +52,7 @@ public class BlockPartFace {
     }
 
     /**
-     * Obtains vertex positions from the super {@link BlockPart}.
+     * Extract all the four vertices of the quad representing the face.
      */
     public void bake() {
         Aabb3f aabb = blockPart.getAabb();
@@ -102,6 +102,11 @@ public class BlockPartFace {
         baked = true;
     }
 
+    /**
+     * Is the face ready to be rendered?
+     *
+     * @return {@code true} if the face is baked, otherwise {@code false}
+     */
     public boolean isBaked() {
         return baked;
     }
@@ -114,6 +119,8 @@ public class BlockPartFace {
     }
 
     private boolean shouldBeRendered(World world, int x, int y, int z) {
+        if (!baked)
+            return false;
         BlockModel relModel = BlockTypeModelMapper.model(world.getBlockState(x + blockFace.offsetX, y + blockFace.offsetY, z + blockFace.offsetZ));
         if (relModel != null) {
             List<BlockPartFace> extFac = relModel.getExternalFaces().get(blockFace.getOpposite());
@@ -131,22 +138,19 @@ public class BlockPartFace {
      * Renders baked model on the given buffer only if visible.
      */
     public int renderOnBuffer(World world, int x, int y, int z, ByteBuffer buffer) {
-        if (!baked || !shouldBeRendered(world, x, y, z))
+        // Checks if the face is hidden
+        if (!shouldBeRendered(world, x, y, z))
             return 0;
-        // checks if the face is hidden
         for (int i = 0; i < 4; i++) {
-            buffer
-                    .putFloat(x + verticesX[i])
+            // Adds block vertices to the chunk
+            buffer.putFloat(x + verticesX[i])
                     .putFloat(y + verticesY[i])
                     .putFloat(z + verticesZ[i])
-
                     .putFloat(verticesU[i])
                     .putFloat(verticesV[i])
                     .putFloat(textureLayer)
-
-                    .putFloat(world.getBlockLight(x, y, z) / 15f);
+                    .putFloat(world.getBlockSkylight(x, y, z) / 15f);
         }
-
         return 4;
     }
 

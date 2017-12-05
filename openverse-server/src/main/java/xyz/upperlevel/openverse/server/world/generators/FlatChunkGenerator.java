@@ -20,17 +20,16 @@ public class FlatChunkGenerator implements ChunkGenerator {
     }
 
     @Override
-    public void buildHeightMap(ChunkPillar chunkPillar) {
+    public void generateHeightmap(ChunkPillar chunkPillar) {
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 chunkPillar.setHeight(x, z, maxHeight);
             }
         }
-        chunkPillar.setHeightMapGenerated(true);
     }
 
     @Override
-    public void generate(Chunk chunk) {
+    public void generateChunk(Chunk chunk) {
         int limitY = heightChunk == chunk.getY() ? maxHeight & 4 : (heightChunk > chunk.getY() ? 16 : 0);
         for (int x = 0; x < 16; x++) {
             for (int y = 0; y < 16; y++) {
@@ -39,5 +38,6 @@ public class FlatChunkGenerator implements ChunkGenerator {
                 }
             }
         }
+        chunk.appendBlockSkylights(true);
     }
 }

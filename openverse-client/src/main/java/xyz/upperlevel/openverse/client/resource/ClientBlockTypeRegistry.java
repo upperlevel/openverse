@@ -11,7 +11,7 @@ import xyz.upperlevel.openverse.world.block.BlockTypeRegistry;
 public class ClientBlockTypeRegistry extends BlockTypeRegistry implements PacketListener {
 
     public ClientBlockTypeRegistry() {
-        Openverse.channel().register(this);
+        Openverse.getChannel().register(this);
     }
 
     @PacketHandler
@@ -22,7 +22,7 @@ public class ClientBlockTypeRegistry extends BlockTypeRegistry implements Packet
             if (type != null) {
                 super.registerId(type);
             } else {
-                Openverse.logger().severe("Illegal BlockRegistryPacket data: cannot find block \"" + blockName + "\"");
+                Openverse.getLogger().severe("Illegal BlockRegistryPacket data: cannot find block \"" + blockName + "\"");
             }
         }
     }

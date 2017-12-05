@@ -76,7 +76,7 @@ public class PlayingWorldScene implements Scene, Listener {
 
     @Override
     public void onFps() {
-        Openverse.logger().info("Fps: " + OpenverseLauncher.get().getGame().getFps() +
+        Openverse.getLogger().info("Fps: " + OpenverseLauncher.get().getGame().getFps() +
                 " chunks: " + worldViewer.getWorldSession().getChunkView().getChunks().size() +
                 ", vaos:" + Vao.instances +
                 ", tick:" + EntityManager.ENTITY_TICK_PROFILER.getAverageNanos() + "(" + EntityManager.ENTITY_TICK_PROFILER.getCallCount() + ")"
@@ -96,7 +96,7 @@ public class PlayingWorldScene implements Scene, Listener {
             switch (event.getKey()) {
                 case L:
                     Location loc = worldViewer.getEntity().getLocation(getPartialTicks());
-                    Openverse.logger().info("loc: " + loc.toStringComplete());
+                    Openverse.getLogger().info("loc: " + loc.toStringComplete());
                     break;
                 case F1:
                     File file = new File(SCREENSHOTS_DIR, System.currentTimeMillis() + ".png");
@@ -106,7 +106,7 @@ public class PlayingWorldScene implements Scene, Listener {
                         e.printStackTrace();
                         break;
                     }
-                    Openverse.logger().fine("Screenshot saved in " + file.getAbsolutePath());
+                    Openverse.getLogger().fine("Screenshot saved in " + file.getAbsolutePath());
                     break;
             }
         }
@@ -118,10 +118,10 @@ public class PlayingWorldScene implements Scene, Listener {
             Entity clicker = worldViewer.getEntity();
             LineVisitor3d.RayCastResult rayCast = clicker.rayCast(getPartialTicks());
             if (rayCast == null) {
-                Openverse.logger().info("Clicked nothing");
+                Openverse.getLogger().info("Clicked nothing");
             } else {
                 Vector3i loc = rayCast.getBlock();
-                Openverse.logger().info("Clicked " + clicker.getWorld().getBlock(loc));
+                Openverse.getLogger().info("Clicked " + clicker.getWorld().getBlock(loc));
                 if (e.getButton() == MouseButton.LEFT) {
                     // TODO: only player can break blocks, right? 0_o
                     ((Player) clicker).breakBlock(loc.x, loc.y, loc.z);

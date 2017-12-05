@@ -89,7 +89,7 @@ public class ChunkRenderer {
         new VertexLinker()
                 .attrib(program.uniformer.getAttribLocation("position"), 3)
                 .attrib(program.uniformer.getAttribLocation("texCoords"), 3)
-                .attrib(program.uniformer.getAttribLocation("blockLight"), 1)
+                .attrib(program.uniformer.getAttribLocation("blockSkylight"), 1)
                 .setup();
 
         vbo.unbind();
@@ -136,6 +136,7 @@ public class ChunkRenderer {
 
     @SuppressWarnings("deprecation")
     public void render(Program program) {
+        program.uniformer.setUniform("worldSkylight", chunk.getWorld().getSkylight());
         //TODO: draw TileEntities
         if (drawVerticesCount != 0) {
             vao.bind();

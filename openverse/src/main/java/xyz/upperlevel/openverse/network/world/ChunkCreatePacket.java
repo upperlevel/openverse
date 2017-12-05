@@ -40,7 +40,7 @@ public class ChunkCreatePacket implements Packet {
             if (states[i] != 0) {
                 BlockState bType = reg.getState(states[i]);
                 if (bType == null) {
-                    Openverse.logger().warning("Unresolved id in ChunkCreatePacket: " + states[i]);
+                    Openverse.getLogger().warning("Unresolved id in ChunkCreatePacket: " + states[i]);
                 }
                 chunk.setBlockState(i >> 8, i >> 4 & 0xF, i & 0xF, bType, false);
             }

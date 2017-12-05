@@ -26,7 +26,7 @@ public class VertexBuffer {
                 finalCap = roundUp(capacity, CAPACITY_STEP);
             else
                 finalCap = CAPACITY_STEP;
-            Openverse.logger().fine("Resizing buffer from " + (handle == null ? 0 : handle.capacity()) + " to " + capacity + " (" + finalCap + ")");
+            Openverse.getLogger().fine("Resizing buffer from " + (handle == null ? 0 : handle.capacity()) + " to " + capacity + " (" + finalCap + ")");
             handle = BufferUtils.createByteBuffer(finalCap);
         } else {
             handle.clear();

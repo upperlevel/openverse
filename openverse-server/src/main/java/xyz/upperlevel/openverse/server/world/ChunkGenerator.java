@@ -4,7 +4,17 @@ import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkPillar;
 
 public interface ChunkGenerator {
-    void buildHeightMap(ChunkPillar chunkPillar);
+    /**
+     * Generates the heightmap for the given {@link ChunkPillar}.
+     *
+     * @param chunkPillar the {@link ChunkPillar}
+     */
+    void generateHeightmap(ChunkPillar chunkPillar);
 
-    void generate(Chunk chunk);
+    /**
+     * Generates the blocks of the given {@link Chunk}.
+     *
+     * @param chunk the {@link Chunk}
+     */
+    void generateChunk(Chunk chunk);
 }

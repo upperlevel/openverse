@@ -35,7 +35,7 @@ public class PlayerLocationWatcher {
             z = loc.getZ();
 
             Packet packet = new PlayerChangePositionPacket(x, y, z);
-            OpenverseClient.get().getEndpoint().getConnection().send(Openverse.channel(), packet);
+            OpenverseClient.get().getEndpoint().getConnection().send(Openverse.getChannel(), packet);
         }
 
         if (    loc.getYaw() != yaw ||
@@ -44,7 +44,7 @@ public class PlayerLocationWatcher {
             pitch = loc.getPitch();
 
             Packet packet = new PlayerChangeLookPacket(yaw, pitch);
-            OpenverseClient.get().getEndpoint().getConnection().send(Openverse.channel(), packet);
+            OpenverseClient.get().getEndpoint().getConnection().send(Openverse.getChannel(), packet);
         }
     }
 }

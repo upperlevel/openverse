@@ -20,7 +20,7 @@ public final class BlockTypeModelMapper {
 
     @SuppressWarnings("unchecked")
     public static BlockModelMapper load(BlockType type, Path path) {
-        Openverse.logger().info("Attempting to associate type " + type.getId() + " at \"" + path + "\"...");
+        Openverse.getLogger().info("Attempting to associate type " + type.getId() + " at \"" + path + "\"...");
         BlockModelMapper models;
         try {
             models = new BlockModelMapper(type, Config.wrap(GSON.fromJson(new FileReader(path.toFile()), Map.class)));
@@ -28,7 +28,7 @@ public final class BlockTypeModelMapper {
             throw new IllegalStateException(e);
         }
         modelMappers.put(type, models);
-        Openverse.logger().info("Block type associated!");
+        Openverse.getLogger().info("Block type associated!");
         return models;
     }
 

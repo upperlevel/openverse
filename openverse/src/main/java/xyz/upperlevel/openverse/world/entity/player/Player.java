@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.item.ItemStack;
-import xyz.upperlevel.openverse.item.ItemType;
 import xyz.upperlevel.openverse.network.world.PlayerBreakBlockPacket;
 import xyz.upperlevel.openverse.network.world.PlayerUseItemPacket;
 import xyz.upperlevel.openverse.world.Location;
@@ -40,7 +38,7 @@ public class Player extends LivingEntity {
         getWorld().setBlockState(x, y, z, AIR_STATE);
         if (sendPacket) {
             PlayerBreakBlockPacket packet = new PlayerBreakBlockPacket(x, y, z);
-            Openverse.endpoint().getConnections().forEach(s -> s.send(Openverse.channel(), packet));
+            Openverse.endpoint().getConnections().forEach(s -> s.send(Openverse.getChannel(), packet));
         }
     }
 
@@ -56,7 +54,7 @@ public class Player extends LivingEntity {
 
         if (sendPacket) {
             PlayerUseItemPacket packet = new PlayerUseItemPacket(x, y, z, face);
-            Openverse.endpoint().getConnections().forEach(s -> s.send(Openverse.channel(), packet));
+            Openverse.endpoint().getConnections().forEach(s -> s.send(Openverse.getChannel(), packet));
         }
 
         return result;

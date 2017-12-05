@@ -43,9 +43,13 @@ public class BlockPart {
         return 6 * 4;
     }
 
+    /**
+     * Prepares the faces of this part to be used for rendering.
+     */
     public void bake() {
-        for (BlockPartFace f : faces.values())
-            f.bake();
+        for (BlockPartFace face : faces.values()) {
+            face.bake();
+        }
     }
 
 

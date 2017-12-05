@@ -8,9 +8,7 @@ import xyz.upperlevel.openverse.client.render.world.util.VertexBufferPool;
 import xyz.upperlevel.openverse.client.world.ClientWorld;
 import xyz.upperlevel.openverse.event.BlockUpdateEvent;
 import xyz.upperlevel.openverse.event.ShutdownEvent;
-import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
-import xyz.upperlevel.openverse.world.chunk.event.BlockLightChangeEvent;
 import xyz.upperlevel.openverse.world.event.ChunkLoadEvent;
 import xyz.upperlevel.openverse.world.event.ChunkUnloadEvent;
 import xyz.upperlevel.ulge.opengl.shader.Program;
@@ -100,9 +98,9 @@ public class ChunkViewRenderer implements Listener {
      * Destroys all chunks and remove them from memory.
      */
     public void destroy() {
-        Openverse.logger().fine("Shutting down chunk compiler");
+        Openverse.getLogger().fine("Shutting down chunk compiler");
         detachedChunkCompiler.shutdownNow();
-        Openverse.logger().fine("Done");
+        Openverse.getLogger().fine("Done");
         chunks.values().forEach(ChunkRenderer::destroy);
         chunks.clear();
     }

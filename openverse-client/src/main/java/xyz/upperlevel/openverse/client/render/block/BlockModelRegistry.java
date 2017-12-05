@@ -33,7 +33,7 @@ public final class BlockModelRegistry {
             register(path, model);
             return model;
         }
-        Openverse.logger().warning("Given file \"" + file + "\" is a directory!");
+        Openverse.getLogger().warning("Given file \"" + file + "\" is a directory!");
         return null;
     }
 
@@ -51,7 +51,7 @@ public final class BlockModelRegistry {
             }
             return parts;
         } else {
-            Openverse.logger().warning("Given folder \"" + folder + "\" is a file!");
+            Openverse.getLogger().warning("Given folder \"" + folder + "\" is a file!");
             return Collections.emptyList();
         }
     }

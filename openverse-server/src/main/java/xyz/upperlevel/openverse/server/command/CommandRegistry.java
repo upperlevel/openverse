@@ -60,7 +60,7 @@ public class CommandRegistry implements Iterable<Command> {
     }
 
     protected void warn(String str) {
-        Openverse.logger().warning("[Command]" + str);
+        Openverse.getLogger().warning("[Command]" + str);
     }
 
     @Override

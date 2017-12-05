@@ -52,7 +52,7 @@ public class WorldViewer implements PacketListener {
      * Starts listening for server packets.
      */
     public void listen() {
-        Openverse.channel().register(this);
+        Openverse.getChannel().register(this);
     }
 
     public void render(float partialTicks) {
@@ -77,19 +77,19 @@ public class WorldViewer implements PacketListener {
     @PacketHandler
     public void onPlayerChangeWorld(Connection conn, PlayerChangeWorldPacket pkt) {
         worldSession.setWorld(new ClientWorld(pkt.getWorldName()));
-        Openverse.logger().info("Viewer changed world to: " + pkt.getWorldName());
+        Openverse.getLogger().info("Viewer changed world to: " + pkt.getWorldName());
     }
 
     @PacketHandler
     public void onPlayerChangePosition(Connection conn, PlayerChangePositionPacket pkt) {
         //TODO update player pos
-        Openverse.logger().info("Viewer changed position to: " + pkt.getX() + " " + pkt.getY() + " " + pkt.getZ());
+        Openverse.getLogger().info("Viewer changed position to: " + pkt.getX() + " " + pkt.getY() + " " + pkt.getZ());
     }
 
     @PacketHandler
     public void onPlayerChangeLook(Connection conn, PlayerChangeLookPacket pkt) {
         //TODO update player look
-        Openverse.logger().info("Viewer changed position to: " + pkt.getYaw() + " " + pkt.getPitch());
+        Openverse.getLogger().info("Viewer changed position to: " + pkt.getYaw() + " " + pkt.getPitch());
     }
 
     @PacketHandler
@@ -99,7 +99,7 @@ public class WorldViewer implements PacketListener {
             PlayerInventory inventory = player.getInventory();
             inventory.get(packet.getSlotId()).swap(packet.getNewItem());
         } else throw new NotImplementedException();
-        Openverse.logger().info("slot change received");
+        Openverse.getLogger().info("slot change received");
         //TODO update multi-inventory view and graphic things
     }
 
@@ -110,7 +110,7 @@ public class WorldViewer implements PacketListener {
             PlayerInventory inventory = player.getInventory();
             packet.apply(inventory);
         } else throw new NotImplementedException();
-        Openverse.logger().info("Inventory content received");
+        Openverse.getLogger().info("Inventory content received");
         //TODO update multi-inventory view and graphic things
     }
 }

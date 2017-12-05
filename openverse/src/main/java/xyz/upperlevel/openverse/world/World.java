@@ -3,9 +3,10 @@ package xyz.upperlevel.openverse.world;
 import lombok.Getter;
 import lombok.Setter;
 import org.joml.Vector3i;
-import xyz.upperlevel.hermes.reflect.PacketListener;
 import xyz.upperlevel.openverse.util.math.Aabb3d;
 import xyz.upperlevel.openverse.util.math.LineVisitor3d;
+import xyz.upperlevel.openverse.util.math.bfs.FastFloodAlgorithm;
+import xyz.upperlevel.openverse.util.math.bfs.FastFloodContext;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.chunk.*;
 import xyz.upperlevel.openverse.world.chunk.storage.BlockStorage;
@@ -16,10 +17,7 @@ import java.util.List;
 
 import static xyz.upperlevel.openverse.util.math.MathUtil.ceili;
 import static xyz.upperlevel.openverse.util.math.MathUtil.floori;
-import java.util.ArrayDeque;
-import java.util.Queue;
 
-import static java.lang.Math.floor;
 import static xyz.upperlevel.openverse.world.chunk.storage.BlockStorage.AIR_STATE;
 
 @Getter
@@ -28,9 +26,20 @@ public class World {
     private final String name;
     private ChunkPillarProvider chunkPillarProvider;
 
+    // These instances are used to diffuse lights
+    // There is one of them foreach light type todo :(
+    private FastFloodAlgorithm lightDiffusion;
+    private FastFloodAlgorithm skylightDiffusion;
+
+    // A value that atm goes from 0 to 1 where 0 is the deep night and 1 the day
+    private float skylight = 1f; // todo update skylight value
+
     public World(String name) {
         this.name = name;
         this.chunkPillarProvider = new SimpleChunkPillarProvider(this);
+
+        lightDiffusion = new FastFloodAlgorithm();
+        skylightDiffusion = new FastFloodAlgorithm();
     }
 
 
@@ -168,9 +177,10 @@ public class World {
 
     /**
      * Gets the {@link BlockState} at the given coordinates, loads the chunk if specified otherwise returns null
-     * @param x the x-axis location
-     * @param y the y-axis location
-     * @param z the z-axis location
+     *
+     * @param x    the x-axis location
+     * @param y    the y-axis location
+     * @param z    the z-axis location
      * @param load loads the chunk if it's not loaded
      * @return the BlockState at that specific location or {@link BlockStorage#AIR_STATE} if not loaded
      */
@@ -184,9 +194,9 @@ public class World {
      * <br>Note: the change doesn't get sent to the other side (server/client) a packet should be sent that will cause the state change
      * <br>Example: if the player breaks a block don't send a BlockChange packet but a BlockBreak
      *
-     * @param x the x-axis location
-     * @param y the y-axis location
-     * @param z the z-axis location
+     * @param x          the x-axis location
+     * @param y          the y-axis location
+     * @param z          the z-axis location
      * @param blockState the new state the block will be set to
      * @return the old state (the block was before this call)
      */
@@ -201,39 +211,148 @@ public class World {
     public LineVisitor3d.RayCastResult rayCast(double startX, double startY, double startZ, double endX, double endY, double endZ) {
         return LineVisitor3d.rayCast(startX, startY, startZ, endX, endY, endZ, (x, y, z, f) -> {
             BlockState state = getBlockState(x, y, z, false);
-            if (state == null) {
-                return true;// Block not loaded, better return
-            }
-
-            return state != AIR_STATE && state.getBlockType().collisionRaytrace(state, this, x, y, z, startX, startY, startZ, endX, endY, endZ);
+            // If the block is not loaded, better return
+            return state == null || state != AIR_STATE && state.getBlockType().collisionRaytrace(state, this, x, y, z, startX, startY, startZ, endX, endY, endZ);
         });
     }
 
-    // Block light
+    /**
+     * A context for the block light fast flood algorithm.
+     * Needed to use the FastFlood API.
+     */
+    private final FastFloodContext blockLightContext = new FastFloodContext() {
+        @Override
+        public boolean isOutOfBounds(int x, int y, int z) {
+            return false;
+        }
 
+        @Override
+        public int getValue(int x, int y, int z) {
+            return getBlockLight(x, y, z);
+        }
+
+        @Override
+        public void setValue(int x, int y, int z, int value) {
+            Chunk chk = getChunkFromBlock(x, y, z);
+            if (chk != null) {
+                // Sets the block light directly to the storage without diffusion.
+                // This is the only way to access block light storage.
+                chk.getBlockStorage().setBlockLight(x & 0xF, y & 0xF, z & 0xF, value);
+            }
+        }
+    };
+
+    /**
+     * Gets the block light at the given location.
+     *
+     * @param x the x-axis location
+     * @param y the y-axis location
+     * @param z the z-axis location
+     * @return the block light
+     */
     public int getBlockLight(int x, int y, int z) {
         Chunk chunk = getChunkFromBlock(x, y, z);
         return chunk == null ? 0 : chunk.getBlockLight(x & 0xF, y & 0xF, z & 0xF);
     }
 
-    public void setBlockLight(int x, int y, int z, int blockLight, boolean diffuse) {
+    /**
+     * Appends a new node to the light diffusion algorithm.
+     * To effectively apply the lights use {@link #updateBlockLights()}.
+     *
+     * @param x          the x-axis location
+     * @param y          the y-axis location
+     * @param z          the z-axis location
+     * @param blockLight the block light
+     */
+    public void appendBlockLight(int x, int y, int z, int blockLight, boolean instantUpdate) {
         Chunk chunk = getChunkFromBlock(x, y, z);
         if (chunk != null) {
-            chunk.setBlockLight(x & 0xF, y & 0xF, z & 0xF, blockLight, diffuse);
+            int oldLev = getBlockLight(x, y, z);
+            if (oldLev > blockLight) {
+                lightDiffusion.addRemovalNode(x, y, z, oldLev);
+                lightDiffusion.addNode(x, y, z, blockLight);
+            } else if (oldLev < blockLight) {
+                lightDiffusion.addNode(x, y, z, blockLight);
+            }
+            if (instantUpdate)
+                updateBlockLights();
         }
     }
 
-    // Block skylight
+    /**
+     * Diffuses all the block lights appended until now.
+     */
+    public void updateBlockLights() {
+        lightDiffusion.start(blockLightContext);
+    }
 
+    /**
+     * A context for the block skylight fast flood algorithm.
+     * Needed to use the FastFlood API.
+     */
+    private final FastFloodContext blockSkylightContext = new FastFloodContext() {
+        @Override
+        public boolean isOutOfBounds(int x, int y, int z) {
+            return false;
+        }
+
+        @Override
+        public int getValue(int x, int y, int z) {
+            return getBlockSkylight(x, y, z);
+        }
+
+        @Override
+        public void setValue(int x, int y, int z, int value) {
+            Chunk chk = getChunkFromBlock(x, y, z);
+            if (chk != null) {
+                // Sets the skylight directly to the storage without diffusion.
+                // This is the only way to access block skylight storage.
+                chk.getBlockStorage().setBlockSkylight(x & 0xF, y & 0xF, z & 0xF, value);
+            }
+        }
+    };
+
+    /**
+     * Gets the block skylight at the given location.
+     *
+     * @param x the x-axis location
+     * @param y the y-axis location
+     * @param z the z-axis location
+     * @return the block skylight
+     */
     public int getBlockSkylight(int x, int y, int z) {
         Chunk chunk = getChunkFromBlock(x, y, z);
         return chunk == null ? 0 : chunk.getBlockSkylight(x & 0xF, y & 0xF, z & 0xF);
     }
 
-    public void setBlockSkylight(int x, int y, int z, int blockSkylight, boolean diffuse) {
+    /**
+     * Appends a new node to the skylight diffusion algorithm.
+     * To effectively apply the skylights use {@link #updateBlockSkylights()}.
+     *
+     * @param x          the x-axis location
+     * @param y          the y-axis location
+     * @param z          the z-axis location
+     * @param blockSkylight the block light
+     */
+    public void appendBlockSkylight(int x, int y, int z, int blockSkylight, boolean instantUpdate) {
         Chunk chunk = getChunkFromBlock(x, y, z);
         if (chunk != null) {
-            chunk.setBlockSkylight(x & 0xF, y & 0xF, z & 0xF, blockSkylight, diffuse);
+            int oldLev = getBlockLight(x, y, z);
+            if (oldLev > blockSkylight) {
+                skylightDiffusion.addRemovalNode(x, y, z, oldLev);
+                skylightDiffusion.addNode(x, y, z, blockSkylight);
+            } else if (oldLev < blockSkylight) {
+                skylightDiffusion.addNode(x, y, z, blockSkylight);
+            }
+            if (instantUpdate)
+                updateBlockLights();
         }
+    }
+
+    /**
+     * Diffuses all the block skylights appended until now.
+     */
+    public void updateBlockSkylights() {
+        skylightDiffusion.start(blockSkylightContext);
     }
 }

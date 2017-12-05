@@ -71,9 +71,13 @@ public class BlockModel {
         loadExternalFaces(blockPart);
     }
 
+    /**
+     * Prepares the parts of this model to be used for rendering.
+     */
     public void bake() {
-        for (BlockPart p : blockParts)
-            p.bake();
+        for (BlockPart part : blockParts) {
+            part.bake();
+        }
     }
 
     public int getVerticesCount() {

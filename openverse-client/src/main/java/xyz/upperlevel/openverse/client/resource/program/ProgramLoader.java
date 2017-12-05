@@ -20,18 +20,18 @@ public class ProgramLoader implements ResourceLoader<Program> {
 
                 if (shad != null) {
                     prg.attach(shad);
-                    Openverse.logger().info("Attached shader: " + shader);
+                    Openverse.getLogger().info("Attached shader: " + shader);
                 }
             }
             prg.link();
-            Openverse.logger().info("Program linked.");
+            Openverse.getLogger().info("Program linked.");
         }
         return prg;
     }
 
     @Override
     public Identifier<Program> load(File file) {
-        Openverse.logger().info("Loading program at: " + file.getName());
+        Openverse.getLogger().info("Loading program at: " + file.getName());
         return new Identifier<>(
                 FileUtil.stripExtension(file),
                 load(Config.json(file))

@@ -87,6 +87,10 @@ public class BlockType {
         return getDefaultBlockState();
     }
 
+    public int getEmittedBlockLight(BlockState blockState) {
+        return 0;
+    }
+
     @Override
     public int hashCode() {
         //Cannot use rawId because it could (and does) change overtime

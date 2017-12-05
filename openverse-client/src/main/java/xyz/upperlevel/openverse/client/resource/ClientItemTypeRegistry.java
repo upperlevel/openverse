@@ -6,16 +6,14 @@ import xyz.upperlevel.hermes.reflect.PacketListener;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.item.ItemType;
 import xyz.upperlevel.openverse.item.ItemTypeRegistry;
-import xyz.upperlevel.openverse.network.world.registry.BlockRegistryPacket;
 import xyz.upperlevel.openverse.network.world.registry.ItemRegistryPacket;
-import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.block.BlockTypeRegistry;
 
 public class ClientItemTypeRegistry extends ItemTypeRegistry implements PacketListener {
 
     public ClientItemTypeRegistry(BlockTypeRegistry blockTypes) {
         super(blockTypes);
-        Openverse.channel().register(this);
+        Openverse.getChannel().register(this);
     }
 
     @PacketHandler
@@ -26,7 +24,7 @@ public class ClientItemTypeRegistry extends ItemTypeRegistry implements PacketLi
             if (type != null) {
                 super.registerId(type);
             } else {
-                Openverse.logger().severe("Illegal ItemRegistryPacket data: cannot find item \"" + itemName + "\"");
+                Openverse.getLogger().severe("Illegal ItemRegistryPacket data: cannot find item \"" + itemName + "\"");
             }
         }
     }
