@@ -11,6 +11,7 @@ import xyz.upperlevel.ulge.gui.GuiBounds;
 import xyz.upperlevel.ulge.opengl.buffer.*;
 import xyz.upperlevel.ulge.opengl.shader.Program;
 import xyz.upperlevel.ulge.opengl.shader.Uniform;
+import xyz.upperlevel.ulge.window.Window;
 
 import java.nio.ByteBuffer;
 import java.util.List;
@@ -31,6 +32,7 @@ public class BlockItemRenderer implements ItemRenderer {
         program = ((ClientResources) Openverse.resources()).programs().entry("gui_item_shader");
         program.bind();
         boundsLoc = program.uniformer.get("bounds");
+        if (boundsLoc == null) throw new IllegalStateException("Cannot find Uniform 'bounds'");
     }
 
     public BlockItemRenderer(BlockType type) {
@@ -69,13 +71,15 @@ public class BlockItemRenderer implements ItemRenderer {
     }
 
     @Override
-    public void renderInSlot(GuiBounds bounds, SlotGui slot) {
+    public void renderInSlot(Window window, GuiBounds bounds, SlotGui slot) {
         program.bind();
+        float invWidth = 1f / window.getWidth();
+        float invHeight = 1f / window.getHeight();
         boundsLoc.set(
-                (float) bounds.minX,
-                (float) bounds.minY,         // Invert y
-                (float) (bounds.maxX - bounds.minX),    // Convert maxX to width
-                (float) (bounds.maxY - bounds.minY)     // Convert maxY to height & Invert y: 1 - (max - min) = (min - max)
+                (float) bounds.minX * invWidth,
+                1.0f - (float) bounds.minY * invHeight,         // Invert y
+                (float) (bounds.maxX - bounds.minX) * invWidth,    // Convert maxX to width
+                (float) (bounds.minY - bounds.maxY) * invHeight     // Convert maxY to height & Invert y: 1 - (max - min) = (min - max)
         );
         TextureBakery.bind();
         vao.bind();

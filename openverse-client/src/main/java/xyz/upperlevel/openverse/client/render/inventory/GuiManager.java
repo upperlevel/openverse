@@ -26,6 +26,7 @@ public class GuiManager implements Listener {
         if (event.getPlayer() != OpenverseClient.get().getPlayer()) return;
         InventoryGui<?> currentGui = OpenverseClient.get().getInventoryGuiRegistry().create(event.getInventory());
         viewer.open(currentGui);
+        currentGui.reloadLayout();
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -39,7 +40,9 @@ public class GuiManager implements Listener {
         if (viewer.getHandle() != null) {
             glClear(GL_DEPTH_BUFFER_BIT);
             glDisable(GL_CULL_FACE);
+            glDisable(GL_DEPTH_TEST);
             viewer.render();
+            glEnable(GL_DEPTH_TEST);
             glEnable(GL_CULL_FACE);
         }
     }
