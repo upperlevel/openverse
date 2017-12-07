@@ -3,6 +3,7 @@ package xyz.upperlevel.openverse.client.world;
 import lombok.Getter;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
+import xyz.upperlevel.openverse.client.OpenverseClient;
 import xyz.upperlevel.openverse.world.entity.input.LivingEntityDriver;
 import xyz.upperlevel.ulge.window.Window;
 import xyz.upperlevel.ulge.window.event.CursorMoveEvent;
@@ -26,6 +27,14 @@ public class KeyboardInputEntityDriver implements LivingEntityDriver, Listener {
 
     @Override
     public void onTick() {
+        if (!OpenverseClient.get().isCaptureInput()) {
+            strafe = 0;
+            up = 0;
+            forward = 0;
+            yaw = 0;
+            pitch = 0;
+            return;
+        }
         strafe  = getMovement(Key.D,     Key.A,          SPEED);
         up      = getMovement(Key.SPACE, Key.LEFT_SHIFT, SPEED);
         forward = getMovement(Key.W,     Key.S,          SPEED);
@@ -50,8 +59,10 @@ public class KeyboardInputEntityDriver implements LivingEntityDriver, Listener {
 
     @EventHandler
     public void onCursorMove(CursorMoveEvent e) {
-        cumulativeYaw   += (float) (e.getX() - lastCursorX) * SENSIBILITY;
-        cumulativePitch += (float) (e.getY() - lastCursorY) * SENSIBILITY;
+        if (OpenverseClient.get().isCaptureInput()) {
+            cumulativeYaw += (float) (e.getX() - lastCursorX) * SENSIBILITY;
+            cumulativePitch += (float) (e.getY() - lastCursorY) * SENSIBILITY;
+        }
 
         lastCursorX = e.getX();
         lastCursorY = e.getY();

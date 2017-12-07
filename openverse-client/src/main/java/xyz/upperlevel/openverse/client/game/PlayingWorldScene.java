@@ -126,6 +126,8 @@ public class PlayingWorldScene implements Scene, Listener {
 
     @EventHandler
     public void onClick(MouseButtonChangeEvent e) {
+        // If game interaction is disabled quit event handling
+        if (!OpenverseClient.get().isCaptureInput()) return;
         if (e.getAction() == Action.PRESS) {
             Entity clicker = worldViewer.getEntity();
             LineVisitor3d.RayCastResult rayCast = clicker.rayCast(getPartialTicks());

@@ -7,27 +7,29 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import xyz.upperlevel.hermes.Packet;
 
+
+/**
+ * Packet for sending {@link xyz.upperlevel.openverse.world.entity.player.Player} interaction with the inventory!
+ * <br>The packet pretty much explains himself.
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 public class PlayerInventoryActionPacket implements Packet {
-    private long inventoryId;
-    private int slotId;
     private Action action;
+    private int slotId;
 
     @Override
     public void toData(ByteBuf out) {
-        out.writeLong(inventoryId);
+        out.writeByte(action.toId());
         out.writeInt(slotId);
-        out.writeShort(action.toId());
     }
 
     @Override
     public void fromData(ByteBuf in) {
-        inventoryId = in.readLong();
-        slotId = in.readInt();
         action = Action.fromId(in.readByte());
+        slotId = in.readInt();
     }
 
     public enum Action {

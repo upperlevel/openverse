@@ -16,9 +16,12 @@ import xyz.upperlevel.openverse.client.render.inventory.InventoryGuiRegistry;
 import xyz.upperlevel.openverse.client.render.inventory.ItemRendererRegistry;
 import xyz.upperlevel.openverse.client.resource.ClientResources;
 import xyz.upperlevel.openverse.console.log.OpenverseLogger;
+import xyz.upperlevel.openverse.launcher.OpenverseLauncher;
 import xyz.upperlevel.openverse.world.entity.EntityManager;
 import xyz.upperlevel.openverse.world.entity.player.Player;
 import xyz.upperlevel.ulge.game.Stage;
+import xyz.upperlevel.ulge.window.Window;
+import xyz.upperlevel.ulge.window.event.key.Key;
 
 import java.io.PrintStream;
 import java.util.logging.Logger;
@@ -39,6 +42,9 @@ public class OpenverseClient implements OpenverseProxy {
     private final ItemRendererRegistry itemRendererRegistry;
     private final InventoryGuiRegistry inventoryGuiRegistry;
     private final GuiManager guiManager;
+
+    @Getter
+    private boolean captureInput = true;
     @Setter
     private Player player;
 
@@ -65,10 +71,6 @@ public class OpenverseClient implements OpenverseProxy {
         entityManager.onTick();
     }
 
-    public static OpenverseClient get() {
-        return instance;
-    }
-
     /**
      * This method is called from the launcher to initialize the {@link OpenverseClient}.
      * It will setup the client scene for the given stage.
@@ -79,6 +81,16 @@ public class OpenverseClient implements OpenverseProxy {
         stage.setScene(new ClientScene());
     }
 
+    public void setCaptureInput(boolean enable) {
+        OpenverseLauncher.get().getGame().getWindow().setCursorEnabled(!enable);
+        captureInput = enable;
+    }
+
+    public boolean isShifting() {
+        Window w = OpenverseLauncher.get().getGame().getWindow();
+        return w.getKey(Key.LEFT_SHIFT) || w.getKey(Key.RIGHT_SHIFT);
+    }
+
     @Override
     public ClientResources getResources() {
         return resources;
@@ -87,5 +99,9 @@ public class OpenverseClient implements OpenverseProxy {
     @Override
     public EntityManager getEntityManager() {
         return entityManager;
+    }
+
+    public static OpenverseClient get() {
+        return instance;
     }
 }

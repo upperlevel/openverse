@@ -8,10 +8,10 @@ import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.hermes.event.ConnectionCloseEvent;
 import xyz.upperlevel.hermes.event.ConnectionOpenEvent;
 import xyz.upperlevel.hermes.reflect.PacketHandler;
+import xyz.upperlevel.hermes.reflect.PacketListener;
 import xyz.upperlevel.hermes.server.Server;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.item.ItemStack;
-import xyz.upperlevel.openverse.item.ItemType;
 import xyz.upperlevel.openverse.item.ItemTypes;
 import xyz.upperlevel.openverse.network.inventory.PlayerInventoryActionPacket;
 import xyz.upperlevel.openverse.network.world.PlayerBreakBlockPacket;
@@ -29,11 +29,12 @@ import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 import xyz.upperlevel.openverse.world.entity.player.Player;
 import xyz.upperlevel.openverse.world.entity.player.PlayerInventory;
 
+import javax.swing.text.html.ListView;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PlayerManager implements Listener {
+public class PlayerManager implements Listener, PacketListener {
     private final Map<String, ServerPlayer> playersByName = new HashMap<>();
     private final Map<Connection, ServerPlayer> playersByConnection = new HashMap<>();
 
@@ -41,14 +42,16 @@ public class PlayerManager implements Listener {
      * Starts listening for incoming connections.
      */
     public void start() {
-        ((Server) Openverse.endpoint()).getEventManager().register(this);
+        OpenverseServer.get().getEndpoint().getEventManager().register(this);
+        Openverse.channel().register(this);
     }
 
     /**
      * Stops listening for incoming connections.
      */
     public void close() {
-        ((Server) Openverse.endpoint()).getEventManager().unregister(this);
+        OpenverseServer.get().getEndpoint().getEventManager().unregister(this);
+        Openverse.channel().unregister(this);
     }
 
     public void register(@NonNull ServerPlayer player) {
@@ -132,7 +135,7 @@ public class PlayerManager implements Listener {
     public void onInventoryAction(Connection conn, PlayerInventoryActionPacket packet) {
         Player player = OpenverseServer.get().getPlayerManager().getPlayer(conn);
         //TODO: add inventory interaction
-        Openverse.logger().info("Inventory action received (inventory:" + packet.getInventoryId() + ", slot:" + packet.getSlotId() + ", action:" + packet.getAction().name() + ")");
+        Openverse.logger().info("Inventory action received (slot:" + packet.getSlotId() + ", action:" + packet.getAction().name() + ")");
     }
 
     @PacketHandler

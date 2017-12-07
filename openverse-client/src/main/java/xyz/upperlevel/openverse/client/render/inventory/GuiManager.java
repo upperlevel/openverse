@@ -24,6 +24,7 @@ public class GuiManager implements Listener {
     public void onPlayerOpenInventory(PlayerInventoryOpenEvent event) {
         //Should never happen but you never know
         if (event.getPlayer() != OpenverseClient.get().getPlayer()) return;
+        OpenverseClient.get().setCaptureInput(false);
         InventoryGui<?> currentGui = OpenverseClient.get().getInventoryGuiRegistry().create(event.getInventory());
         viewer.open(currentGui);
         currentGui.reloadLayout();
@@ -34,6 +35,7 @@ public class GuiManager implements Listener {
         //Should never happen but you never know
         if (event.getPlayer() != OpenverseClient.get().getPlayer()) return;
         viewer.close();
+        OpenverseClient.get().setCaptureInput(true);
     }
 
     public void render(float partialTicks) {

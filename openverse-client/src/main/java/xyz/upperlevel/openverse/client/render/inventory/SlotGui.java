@@ -5,10 +5,14 @@ import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.OpenverseClient;
 import xyz.upperlevel.openverse.inventory.Slot;
 import xyz.upperlevel.openverse.item.ItemType;
+import xyz.upperlevel.openverse.network.inventory.PlayerInventoryActionPacket;
 import xyz.upperlevel.ulge.gui.Gui;
 import xyz.upperlevel.ulge.gui.GuiRenderer;
 import xyz.upperlevel.ulge.opengl.texture.Texture2d;
 import xyz.upperlevel.ulge.util.Color;
+import xyz.upperlevel.ulge.window.event.button.MouseButton;
+
+import static xyz.upperlevel.openverse.network.inventory.PlayerInventoryActionPacket.Action.*;
 
 public class SlotGui extends Gui {
     @Getter
@@ -40,5 +44,25 @@ public class SlotGui extends Gui {
             return;
         }
         renderer.renderInSlot(getWindow(), getBounds(), this);
+    }
+
+    @Override
+    public void onClickBegin(double x, double y, MouseButton button) {
+        PlayerInventoryActionPacket.Action action;
+        switch (button) {
+            case LEFT:
+                action = OpenverseClient.get().isShifting() ? SHIFT_LEFT_CLICK : LEFT_CLICK;
+                break;
+            case RIGHT:
+                action = OpenverseClient.get().isShifting() ? SHIFT_RIGHT_CLICK : RIGHT_CLICK;
+                break;
+            default:
+                action = null;
+                break;
+        }
+        if (action != null) {
+            OpenverseClient.get().getEndpoint().getConnection().send(Openverse.channel(), new PlayerInventoryActionPacket(action, handle.getId()));
+        }
+        super.onClickBegin(x, y, button);
     }
 }
