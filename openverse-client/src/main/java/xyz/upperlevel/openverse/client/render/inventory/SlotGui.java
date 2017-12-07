@@ -6,7 +6,6 @@ import xyz.upperlevel.openverse.client.OpenverseClient;
 import xyz.upperlevel.openverse.inventory.Slot;
 import xyz.upperlevel.openverse.item.ItemType;
 import xyz.upperlevel.ulge.gui.Gui;
-import xyz.upperlevel.ulge.gui.GuiBounds;
 import xyz.upperlevel.ulge.gui.GuiRenderer;
 import xyz.upperlevel.ulge.opengl.texture.Texture2d;
 import xyz.upperlevel.ulge.util.Color;
@@ -22,9 +21,6 @@ public class SlotGui extends Gui {
     @Override
     public void reloadLayout(int pX, int pY, int pW, int pH) {
         super.reloadLayout(pX, pY, pW, pH);
-        if (!handle.getContent().isEmpty()) {
-            System.out.println("SLOT: {" + pX + ", " + pY + ", " + pW + ", " + pH + "}");
-        }
     }
 
     @Override

@@ -2,9 +2,9 @@ package xyz.upperlevel.openverse.client.render.inventory;
 
 import lombok.Getter;
 import lombok.Setter;
-import xyz.upperlevel.ulge.gui.GuiContainer;
+import xyz.upperlevel.ulge.gui.Gui;
 
-public class SlotContainerGui extends GuiContainer {
+public class SlotContainerGui extends Gui {
     private SlotGui[] slots;
 
     @Getter
@@ -27,9 +27,10 @@ public class SlotContainerGui extends GuiContainer {
         super.reloadLayout(parX, parY, parW, parH);
         int slotWidth = getWidth() / horizontalSlots - slotPadding * 2;
         int slotHeight = getHeight() / verticalSlots - slotPadding * 2;
-        System.out.println("PARE SIZE: {" + parX + ", " + parY + ", " + parW + ", " + parH + "}");
-        System.out.println("THIS SIZE: {" + getBounds() + "}" );
-        System.out.println("SLOT SIZE: {" + slotWidth + ", " + slotHeight + "}");
+        // Left here for debugging purposes
+        /*System.out.println("PARE SIZE: {" + parX + ", " + parY + ", " + parW + ", " + parH + "}");
+        System.out.println("THIS SIZE: {" + getBounds() + "} -> w: " + getWidth() + ", h: " + getHeight());
+        System.out.println("SLOT SIZE: {" + slotWidth + ", " + slotHeight + "}");*/
         for (SlotGui slot : slots) {
             if (slot != null) {
                 slot.setSize(slotWidth, slotHeight);
@@ -41,8 +42,8 @@ public class SlotContainerGui extends GuiContainer {
                 int i = index(x, y);
                 if (slots[i] == null) continue;
                 slots[i].reloadLayout(
-                        getRealX() + slotPadding + x * (slotPadding + slotWidth),
-                        getRealY() + slotPadding + y * (slotPadding + slotHeight),
+                        getRealX() + slotPadding + x * (slotPadding * 2 + slotWidth),
+                        getRealY() + slotPadding + y * (slotPadding * 2 + slotHeight),
                         slotWidth,
                         slotHeight
                 );

@@ -5,6 +5,7 @@ import xyz.upperlevel.openverse.client.render.inventory.SlotContainerGui;
 import xyz.upperlevel.openverse.client.render.inventory.SlotGui;
 import xyz.upperlevel.openverse.world.entity.player.PlayerInventory;
 import xyz.upperlevel.ulge.gui.GuiAlign;
+import xyz.upperlevel.ulge.gui.GuiBackground;
 import xyz.upperlevel.ulge.gui.GuiRenderer;
 import xyz.upperlevel.ulge.opengl.texture.Texture2d;
 import xyz.upperlevel.ulge.util.Color;
@@ -16,6 +17,9 @@ public class PlayerInventoryGui extends InventoryGui<PlayerInventory> {
     public PlayerInventoryGui(PlayerInventory handle) {
         super(handle);
         buildSlots(handle);
+        slotGui.setAlign(GuiAlign.CENTER);
+        slotGui.setBackground(GuiBackground.color(Color.RED));
+        slotGui.setOffset(0);
         addChild(slotGui);
         setAlign(GuiAlign.CENTER);
         setOffset(30);
@@ -58,6 +62,10 @@ public class PlayerInventoryGui extends InventoryGui<PlayerInventory> {
         Window w = getWindow();
         if (w != null) {
             setSize(getParent().getWidth() - (getOffsetLeft() + getOffsetRight()), getParent().getHeight() - (getOffsetTop() + getOffsetBottom()));
+            int width = (getWidth() - (slotGui.getOffsetLeft() + slotGui.getOffsetRight())) / slotGui.getHorizontalSlots();
+            int height = (getHeight() - (slotGui.getOffsetTop() + slotGui.getOffsetBottom())) / slotGui.getVerticalSlots();
+            int value = Math.min(width, height);
+            slotGui.setSize(value * slotGui.getHorizontalSlots(), value * slotGui.getVerticalSlots());
         }
         super.onResize();
     }

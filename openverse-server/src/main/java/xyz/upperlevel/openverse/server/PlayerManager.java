@@ -11,6 +11,8 @@ import xyz.upperlevel.hermes.reflect.PacketHandler;
 import xyz.upperlevel.hermes.server.Server;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.item.ItemStack;
+import xyz.upperlevel.openverse.item.ItemType;
+import xyz.upperlevel.openverse.item.ItemTypes;
 import xyz.upperlevel.openverse.network.inventory.PlayerInventoryActionPacket;
 import xyz.upperlevel.openverse.network.world.PlayerBreakBlockPacket;
 import xyz.upperlevel.openverse.network.world.PlayerUseItemPacket;
@@ -25,6 +27,7 @@ import xyz.upperlevel.openverse.server.world.ServerWorld;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 import xyz.upperlevel.openverse.world.entity.player.Player;
+import xyz.upperlevel.openverse.world.entity.player.PlayerInventory;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -80,7 +83,13 @@ public class PlayerManager implements Listener {
         Openverse.getEventManager().call(new PlayerJoinEvent(sp));
 
         //Add a block of dirt in his hand
-        sp.getInventory().setHandItem(new ItemStack(Openverse.resources().itemTypes().entry("dirt")));
+        //sp.getInventory().setHandItem(new ItemStack(Openverse.resources().itemTypes().entry("dirt")));
+        {
+            PlayerInventory inv = sp.getInventory();
+            for (int i = 0; i < inv.getSize(); i++) {
+                inv.get(i).swap(new ItemStack(i % 2 == 0 ? ItemTypes.DIRT : ItemTypes.GRASS));
+            }
+        }
         sp.updateInventory();
     }
 
