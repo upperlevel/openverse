@@ -1,6 +1,7 @@
 package xyz.upperlevel.openverse.inventory;
 
-import xyz.upperlevel.openverse.item.ItemStack;
+import xyz.upperlevel.openverse.inventory.PlayerInventorySession.InteractAction;
+import xyz.upperlevel.openverse.world.entity.player.Player;
 
 /**
  * A class that contains a list of {@link Slot}s which are used to modify an inventory
@@ -62,6 +63,10 @@ public interface Inventory extends Iterable<Slot> {
      * @return the number of slots inside the inventory
      */
     int getSize();
+
+    default void onPlayerInteract(Player player, Slot handSlot, Slot slot, InteractAction action) {
+        slot.swap(handSlot);
+    }
 
     /**
      * A class that is notified when a {@link Slot} in that inventory is changed

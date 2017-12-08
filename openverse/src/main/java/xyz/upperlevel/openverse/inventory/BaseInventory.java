@@ -8,7 +8,7 @@ import xyz.upperlevel.openverse.network.inventory.SlotChangePacket;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class InventoryBase implements Inventory {
+public abstract class BaseInventory implements Inventory {
     @Getter
     private long id = -1;
     /*

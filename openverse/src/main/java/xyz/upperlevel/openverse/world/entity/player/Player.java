@@ -5,6 +5,7 @@ import lombok.Setter;
 import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.inventory.Inventory;
+import xyz.upperlevel.openverse.inventory.PlayerInventorySession;
 import xyz.upperlevel.openverse.item.ItemStack;
 import xyz.upperlevel.openverse.item.ItemType;
 import xyz.upperlevel.openverse.network.world.PlayerBreakBlockPacket;
@@ -29,7 +30,7 @@ public class Player extends LivingEntity {
     @Setter
     private PlayerInventory inventory = new PlayerInventory();
 
-    private Inventory openedInventory;
+    private PlayerInventorySession inventorySession;
 
     public Player(Location loc, String name) {
         super(TYPE, loc);
@@ -72,12 +73,12 @@ public class Player extends LivingEntity {
     }
 
     public void openInventory(Inventory inventory) {
-        if (inventory == openedInventory)
-        if (openedInventory != null) {
+        if (inventorySession != null && inventorySession.getInventory() == inventory) return;
+        if (inventorySession != null) {
             closeInventory();
         }
         Openverse.getEventManager().call(new PlayerInventoryOpenEvent(this, inventory));
-        openedInventory = inventory;
+        inventorySession = new PlayerInventorySession(this, inventory);
     }
 
     public void openInventory() {
@@ -85,16 +86,21 @@ public class Player extends LivingEntity {
     }
 
     public Inventory getOpenedInventory() {
-        return openedInventory;
+        return inventorySession.getInventory();
+    }
+
+    public PlayerInventorySession getInventorySession() {
+        return inventorySession;
     }
 
     public void closeInventory() {
-        if (openedInventory == null) {
+        if (inventorySession == null) {
             Openverse.logger().warning("Trying to close a closed inventory");
             return;
         }
-        Openverse.getEventManager().call(new PlayerInventoryCloseEvent(this, openedInventory));
-        openedInventory = null;
+        inventorySession.onClose();
+        Openverse.getEventManager().call(new PlayerInventoryCloseEvent(this, inventorySession.getInventory()));
+        inventorySession = null;
     }
 
     @Override

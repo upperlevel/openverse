@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import xyz.upperlevel.hermes.Packet;
+import xyz.upperlevel.openverse.inventory.PlayerInventorySession.InteractAction;
 
 
 /**
@@ -17,7 +18,7 @@ import xyz.upperlevel.hermes.Packet;
 @Getter
 @Setter
 public class PlayerInventoryActionPacket implements Packet {
-    private Action action;
+    private InteractAction action;
     private int slotId;
 
     @Override
@@ -28,26 +29,7 @@ public class PlayerInventoryActionPacket implements Packet {
 
     @Override
     public void fromData(ByteBuf in) {
-        action = Action.fromId(in.readByte());
+        action = InteractAction.fromId(in.readByte());
         slotId = in.readInt();
-    }
-
-    public enum Action {
-        RIGHT_CLICK,
-        LEFT_CLICK,
-        SHIFT_RIGHT_CLICK,
-        SHIFT_LEFT_CLICK,
-        DROP,
-        DROP_STACK;
-
-        private static Action[] values = values();
-
-        public byte toId() {
-            return (byte) ordinal();
-        }
-
-        public static Action fromId(byte id) {
-            return values[id];
-        }
     }
 }

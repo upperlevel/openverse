@@ -1,6 +1,7 @@
 package xyz.upperlevel.openverse.server;
 
 import lombok.NonNull;
+import lombok.Setter;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.EventPriority;
 import xyz.upperlevel.event.Listener;
@@ -11,6 +12,8 @@ import xyz.upperlevel.hermes.reflect.PacketHandler;
 import xyz.upperlevel.hermes.reflect.PacketListener;
 import xyz.upperlevel.hermes.server.Server;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.inventory.PlayerInventorySession;
+import xyz.upperlevel.openverse.inventory.Slot;
 import xyz.upperlevel.openverse.item.ItemStack;
 import xyz.upperlevel.openverse.item.ItemTypes;
 import xyz.upperlevel.openverse.network.inventory.PlayerInventoryActionPacket;
@@ -136,6 +139,17 @@ public class PlayerManager implements Listener, PacketListener {
         Player player = OpenverseServer.get().getPlayerManager().getPlayer(conn);
         //TODO: add inventory interaction
         Openverse.logger().info("Inventory action received (slot:" + packet.getSlotId() + ", action:" + packet.getAction().name() + ")");
+        PlayerInventorySession session = player.getInventorySession();
+        if (session == null) {
+            Openverse.logger().severe("Client sent PlayerInventoryActionPacket without any gui session!");
+            return;
+        }
+        Slot slot = session.getInventory().get(packet.getSlotId());
+        if (slot == null) {
+            Openverse.logger().severe("Client sent PlayerInventoryActionPacket with an invalid slot!!");
+            return;
+        }
+        session.onInteract(slot, packet.getAction());
     }
 
     @PacketHandler

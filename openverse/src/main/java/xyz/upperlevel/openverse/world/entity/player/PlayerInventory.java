@@ -16,7 +16,7 @@ import java.util.Iterator;
  * <br>The server can know which player to refer using the received connection while the client already knows it's his inventory
  * <br>So we can assign the same id at every player's inventory
  */
-public class PlayerInventory extends InventoryBase {
+public class PlayerInventory extends BaseInventory {
     private InventoryContent content = new SimpleInventoryContent(4*9);
     private Slot[] slots = new Slot[4*9];
     @Getter

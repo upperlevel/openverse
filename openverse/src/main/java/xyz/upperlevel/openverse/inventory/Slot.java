@@ -28,6 +28,14 @@ public class Slot {
         return taken;
     }
 
+    public void swap(Slot other) {
+        ItemStack taken = content;
+        content = other.content;
+        other.content = taken;
+        parent.onSlotChange(this);
+        other.parent.onSlotChange(other);
+    }
+
     public ItemStack swap(ItemStack other) {
         ItemStack taken = content;
         content = other;

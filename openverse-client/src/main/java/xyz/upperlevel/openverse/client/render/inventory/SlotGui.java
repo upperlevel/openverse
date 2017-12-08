@@ -3,6 +3,7 @@ package xyz.upperlevel.openverse.client.render.inventory;
 import lombok.Getter;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.OpenverseClient;
+import xyz.upperlevel.openverse.inventory.PlayerInventorySession.InteractAction;
 import xyz.upperlevel.openverse.inventory.Slot;
 import xyz.upperlevel.openverse.item.ItemType;
 import xyz.upperlevel.openverse.network.inventory.PlayerInventoryActionPacket;
@@ -12,7 +13,9 @@ import xyz.upperlevel.ulge.opengl.texture.Texture2d;
 import xyz.upperlevel.ulge.util.Color;
 import xyz.upperlevel.ulge.window.event.button.MouseButton;
 
-import static xyz.upperlevel.openverse.network.inventory.PlayerInventoryActionPacket.Action.*;
+import static xyz.upperlevel.openverse.inventory.PlayerInventorySession.InteractAction.*;
+
+import static xyz.upperlevel.openverse.inventory.PlayerInventorySession.InteractAction.SHIFT_LEFT_CLICK;
 
 public class SlotGui extends Gui {
     @Getter
@@ -48,7 +51,7 @@ public class SlotGui extends Gui {
 
     @Override
     public void onClickBegin(double x, double y, MouseButton button) {
-        PlayerInventoryActionPacket.Action action;
+        InteractAction action;
         switch (button) {
             case LEFT:
                 action = OpenverseClient.get().isShifting() ? SHIFT_LEFT_CLICK : LEFT_CLICK;
@@ -62,6 +65,7 @@ public class SlotGui extends Gui {
         }
         if (action != null) {
             OpenverseClient.get().getEndpoint().getConnection().send(Openverse.channel(), new PlayerInventoryActionPacket(action, handle.getId()));
+            OpenverseClient.get().getPlayer().getInventorySession().onInteract(handle, action);
         }
         super.onClickBegin(x, y, button);
     }
