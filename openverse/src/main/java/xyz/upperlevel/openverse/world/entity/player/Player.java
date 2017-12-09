@@ -8,6 +8,7 @@ import xyz.upperlevel.openverse.inventory.Inventory;
 import xyz.upperlevel.openverse.inventory.PlayerInventorySession;
 import xyz.upperlevel.openverse.item.ItemStack;
 import xyz.upperlevel.openverse.item.ItemType;
+import xyz.upperlevel.openverse.network.inventory.PlayerCloseInventoryPacket;
 import xyz.upperlevel.openverse.network.inventory.PlayerOpenInventoryPacket;
 import xyz.upperlevel.openverse.network.world.PlayerBreakBlockPacket;
 import xyz.upperlevel.openverse.network.world.PlayerUseItemPacket;
@@ -105,9 +106,27 @@ public class Player extends LivingEntity {
         return inventorySession;
     }
 
+    /**
+     * Closes the inventory and notifies the endpoint.
+     * <br>If you don't want to notify the endpoint use {@link #onCloseInventory()}.
+     */
     public void closeInventory() {
         if (inventorySession == null) {
             Openverse.logger().warning("Trying to close a closed inventory");
+            return;
+        }
+        getConnection().send(Openverse.channel(), new PlayerCloseInventoryPacket());
+        onCloseInventory();
+    }
+
+    /**
+     * Closes the inventory without sending any packet.
+     * <br>Used when a the inventory needs to be closed without the other endpoint noticing.
+     * <br> To notify the endpoint us4e {@link #closeInventory()}.
+     */
+    public void onCloseInventory() {
+        if (inventorySession == null) {
+            Openverse.logger().warning("Server trying to close a closed inventory");
             return;
         }
         inventorySession.onClose();

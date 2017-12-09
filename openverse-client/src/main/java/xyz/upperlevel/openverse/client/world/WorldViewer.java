@@ -11,6 +11,7 @@ import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.OpenverseClient;
 import xyz.upperlevel.openverse.client.resource.ClientResources;
 import xyz.upperlevel.openverse.network.inventory.InventoryContentPacket;
+import xyz.upperlevel.openverse.network.inventory.PlayerCloseInventoryPacket;
 import xyz.upperlevel.openverse.network.inventory.PlayerOpenInventoryPacket;
 import xyz.upperlevel.openverse.network.inventory.SlotChangePacket;
 import xyz.upperlevel.openverse.network.world.entity.PlayerChangeLookPacket;
@@ -127,5 +128,11 @@ public class WorldViewer implements PacketListener {
         // Player#openInventory() is seen as an input so it sends the packet while
         // Player#openInventory(Inventory) does not
         player.openInventory(player.getInventory());
+    }
+
+    @PacketHandler
+    public void onPlayerCloseInventory(Connection conn, PlayerCloseInventoryPacket packet) {
+        Player player = OpenverseClient.get().getPlayer();
+        player.onCloseInventory();
     }
 }

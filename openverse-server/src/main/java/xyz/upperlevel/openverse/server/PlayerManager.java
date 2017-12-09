@@ -16,6 +16,7 @@ import xyz.upperlevel.openverse.inventory.PlayerInventorySession;
 import xyz.upperlevel.openverse.inventory.Slot;
 import xyz.upperlevel.openverse.item.ItemStack;
 import xyz.upperlevel.openverse.item.ItemTypes;
+import xyz.upperlevel.openverse.network.inventory.PlayerCloseInventoryPacket;
 import xyz.upperlevel.openverse.network.inventory.PlayerInventoryActionPacket;
 import xyz.upperlevel.openverse.network.inventory.PlayerOpenInventoryPacket;
 import xyz.upperlevel.openverse.network.world.PlayerBreakBlockPacket;
@@ -144,6 +145,13 @@ public class PlayerManager implements Listener, PacketListener {
         // Player#openInventory() is seen as an input so it sends the packet while
         // Player#openInventory(Inventory) does not
         player.openInventory(player.getInventory());
+    }
+
+    @PacketHandler
+    public void onPlayerCloseInventory(Connection conn, PlayerCloseInventoryPacket packet) {
+        Player player = OpenverseServer.get().getPlayerManager().getPlayer(conn);
+
+        player.onCloseInventory();
     }
 
     @PacketHandler
