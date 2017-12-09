@@ -8,6 +8,7 @@ import xyz.upperlevel.openverse.inventory.Inventory;
 import xyz.upperlevel.openverse.inventory.PlayerInventorySession;
 import xyz.upperlevel.openverse.item.ItemStack;
 import xyz.upperlevel.openverse.item.ItemType;
+import xyz.upperlevel.openverse.network.inventory.PlayerOpenInventoryPacket;
 import xyz.upperlevel.openverse.network.world.PlayerBreakBlockPacket;
 import xyz.upperlevel.openverse.network.world.PlayerUseItemPacket;
 import xyz.upperlevel.openverse.world.Location;
@@ -72,6 +73,11 @@ public class Player extends LivingEntity {
         return useItemInHand(x, y, z, face, true);
     }
 
+    /**
+     * Opens an inventory without sending any packet.
+     * <br>This may call the events {@link PlayerInventoryCloseEvent} and {@link PlayerInventoryOpenEvent}
+     * @param inventory the inventory to open
+     */
     public void openInventory(Inventory inventory) {
         if (inventorySession != null && inventorySession.getInventory() == inventory) return;
         if (inventorySession != null) {
@@ -81,7 +87,13 @@ public class Player extends LivingEntity {
         inventorySession = new PlayerInventorySession(this, inventory);
     }
 
+    /**
+     * Opens the player inventory on both endpoints.
+     * <br>This method sends a packet to the other endpoint because it's seen as an input, use {@link #openInventory(Inventory)} otherwise
+     * <br>This may call the events {@link PlayerInventoryCloseEvent} and {@link PlayerInventoryOpenEvent}
+     */
     public void openInventory() {
+        getConnection().send(Openverse.channel(), new PlayerOpenInventoryPacket());
         openInventory(inventory);
     }
 

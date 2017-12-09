@@ -48,6 +48,7 @@ public class ReceivingWorldScene implements Scene, PacketListener {
     public void onPlayerChangeWorld(Connection conn, PlayerChangeWorldPacket pkt) {
         ClientWorld w = new ClientWorld(pkt.getWorldName());
         Player pl = new Player(new Location(w, 0, 0, 0), "Maurizio"); // TODO add real player
+        pl.setConnection(conn);
         pl.setDriver(new KeyboardInputEntityDriver(gameScene.getWindow()));
         Openverse.entities().register(pl);
         gameScene.setScene(new PlayingWorldScene(pl));

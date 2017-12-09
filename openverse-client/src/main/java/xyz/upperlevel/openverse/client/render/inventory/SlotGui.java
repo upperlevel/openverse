@@ -64,8 +64,8 @@ public class SlotGui extends Gui {
                 break;
         }
         if (action != null) {
-            OpenverseClient.get().getEndpoint().getConnection().send(Openverse.channel(), new PlayerInventoryActionPacket(action, handle.getId()));
             OpenverseClient.get().getPlayer().getInventorySession().onInteract(handle, action);
+            OpenverseClient.get().getEndpoint().getConnection().send(Openverse.channel(), new PlayerInventoryActionPacket(action, handle.getId()));
         }
         super.onClickBegin(x, y, button);
     }

@@ -10,6 +10,7 @@ import xyz.upperlevel.openverse.network.LoginRequestPacket;
 import xyz.upperlevel.openverse.network.LoginResponsePacket;
 import xyz.upperlevel.openverse.network.inventory.InventoryContentPacket;
 import xyz.upperlevel.openverse.network.inventory.PlayerInventoryActionPacket;
+import xyz.upperlevel.openverse.network.inventory.PlayerOpenInventoryPacket;
 import xyz.upperlevel.openverse.network.inventory.SlotChangePacket;
 import xyz.upperlevel.openverse.network.world.ChunkCreatePacket;
 import xyz.upperlevel.openverse.network.world.ChunkDestroyPacket;
@@ -42,6 +43,7 @@ public final class Openverse {
             .packet(PacketSide.SHARED, PlayerBreakBlockPacket.class)
             .packet(PacketSide.SHARED, PlayerUseItemPacket.class)
             .packet(PacketSide.SERVER, SlotChangePacket.class)
+            .packet(PacketSide.SHARED, PlayerOpenInventoryPacket.class)
             .packet(PacketSide.SERVER, InventoryContentPacket.class)
             .packet(PacketSide.CLIENT, PlayerInventoryActionPacket.class)
             .packet(PacketSide.SHARED, PlayerChangeHandSlotPacket.class)

@@ -17,6 +17,7 @@ import xyz.upperlevel.openverse.inventory.Slot;
 import xyz.upperlevel.openverse.item.ItemStack;
 import xyz.upperlevel.openverse.item.ItemTypes;
 import xyz.upperlevel.openverse.network.inventory.PlayerInventoryActionPacket;
+import xyz.upperlevel.openverse.network.inventory.PlayerOpenInventoryPacket;
 import xyz.upperlevel.openverse.network.world.PlayerBreakBlockPacket;
 import xyz.upperlevel.openverse.network.world.PlayerUseItemPacket;
 import xyz.upperlevel.openverse.network.world.entity.EntityTeleportPacket;
@@ -83,6 +84,7 @@ public class PlayerManager implements Listener, PacketListener {
     public void onConnect(ConnectionOpenEvent event) {
         Location spawn = OpenverseServer.get().getUniverse().getSpawn();
         ServerPlayer sp = new ServerPlayer(spawn, "Hobbit", event.getConnection());
+        sp.setConnection(sp.getConnection());
         register(sp);
         sp.getConnection().send(Openverse.channel(), new PlayerChangeWorldPacket(spawn.getWorld()));
         sp.getConnection().send(Openverse.channel(), new EntityTeleportPacket(sp));
@@ -132,6 +134,16 @@ public class PlayerManager implements Listener, PacketListener {
                 p.getConnection().send(Openverse.channel(), packet);
             }
         }
+    }
+
+
+    @PacketHandler
+    public void onPlayerOpenInventory(Connection conn, PlayerOpenInventoryPacket packet) {
+        Player player = OpenverseServer.get().getPlayerManager().getPlayer(conn);
+
+        // Player#openInventory() is seen as an input so it sends the packet while
+        // Player#openInventory(Inventory) does not
+        player.openInventory(player.getInventory());
     }
 
     @PacketHandler
