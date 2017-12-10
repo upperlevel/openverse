@@ -12,6 +12,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static xyz.upperlevel.openverse.network.SerialUtil.unsignNumber;
+
 @SuppressWarnings("unchecked")
 public interface Config {
 
@@ -217,6 +219,9 @@ public interface Config {
         if (raw == null) return null;
         if (raw instanceof Boolean) {
             return (Boolean) raw;
+        } else if (raw instanceof Number) {
+            // Use C definition (0 = false, true otherwise)
+            return ((Number) raw).intValue() != 0;
         } else if (raw instanceof String) {
             switch (((String) raw).toLowerCase()) {
                 case "no":
@@ -226,8 +231,6 @@ public interface Config {
                 case "true":
                     return true;
             }
-        } else if (raw instanceof Number) {
-            return ((Number) raw).intValue() == 1;
         }
         invalidValue(key, raw, "Boolean");
         return null;
@@ -307,13 +310,19 @@ public interface Config {
     //------------------------Enum
 
     default <T extends Enum<T>> T getEnum(String key, Class<T> clazz) {
-        String raw = getString(key);
+        Object raw = get(key);
         if (raw == null) return null;
-        raw = raw.replace(' ', '_').toUpperCase(Locale.ENGLISH);
-        try {
-            return Enum.valueOf(clazz, raw);
-        } catch (IllegalArgumentException e) {
-            throw new InvalidConfigurationException("Cannot find \"" + clazz.getSimpleName().toLowerCase() + "\" \"" + raw + "\"");
+        if (raw instanceof Number) {
+            int n = unsignNumber((Number) raw);
+            return clazz.getEnumConstants()[n];//TODO: please spare my RAM, she did nothing wrong!
+        } else {
+            String str = getString(key);
+            str = str.replace(' ', '_').toUpperCase(Locale.ENGLISH);
+            try {
+                return Enum.valueOf(clazz, str);
+            } catch (IllegalArgumentException e) {
+                throw new InvalidConfigurationException("Cannot find \"" + clazz.getSimpleName().toLowerCase() + "\" \"" + raw + "\"");
+            }
         }
     }
 
