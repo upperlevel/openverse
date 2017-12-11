@@ -66,8 +66,8 @@ public class PlayerChunkMap implements Listener {
                 // Generates heightmap
                 ChunkPillar plr = world.getChunkPillar(x, z);
                 world.getChunkGenerator().generateHeightmap(plr);
-                // Ready to send heightmap
-                player.getConnection().send(Openverse.getChannel(), new HeightmapPacket(x, z, plr.getHeightmap()));
+                player.getConnection().send(Openverse.getChannel(), new HeightmapPacket(plr));
+
                 for (int y = minY; y <= maxY; y++) {
                     // Generates chunk
                     Chunk chk = plr.getChunk(y);
@@ -176,7 +176,7 @@ public class PlayerChunkMap implements Listener {
                 // todo fix this!
                 ChunkPillar plr = world.getChunkPillar(x, z);
                 world.getChunkGenerator().generateHeightmap(plr);
-                player.getConnection().send(Openverse.getChannel(), new HeightmapPacket(x, z, plr.getHeightmap()));
+                player.getConnection().send(Openverse.getChannel(), new HeightmapPacket(plr));
                 //
                 for (int y = -radius; y <= radius; y++) {
                     // Find toAdd
