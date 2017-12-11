@@ -57,6 +57,5 @@ public class SimpleWorldGenerator implements ChunkGenerator {
         }
         // Appends block skylights for the chunk and updates (diffuses) them
         chunk.appendBlockSkylights(true);
-        Openverse.getLogger().info("Skylight diffused for chunk " + chunk.getX() + " " + chunk.getY());
     }
 }

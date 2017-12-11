@@ -61,6 +61,10 @@ public class World {
         chunkPillarProvider.setChunkPillar(chunkPillar);
     }
 
+    public ChunkPillar getPillarFromBlock(int x, int z) {
+        return getChunkPillar(x >> 4, z >> 4);
+    }
+
     /**
      * Unloads the {@link ChunkPillar} at the given chunk coordinates (this implies inside chunks unloading).
      */

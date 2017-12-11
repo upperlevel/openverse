@@ -7,23 +7,17 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 import xyz.upperlevel.openverse.world.chunk.Block;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
+import xyz.upperlevel.openverse.world.chunk.ChunkPillar;
 
 import static java.lang.Math.floor;
 import static xyz.upperlevel.openverse.util.math.MathUtil.normalizeAngle;
 
+@Getter
+@Setter
 public class Location {
-
-    @Getter
-    @Setter
-    @NonNull
     private World world;
-
-    @Getter
-    @Setter
-    private double x, y, z;
-
-    @Getter
-    private double yaw, pitch;
+    public double x, y, z;
+    public double yaw, pitch;
 
     public Location(World world) {
         this.world = world;
@@ -54,8 +48,12 @@ public class Location {
         pitch = location.pitch;
     }
 
+    public ChunkPillar getChunkPillar() {
+        return world.getPillarFromBlock((int) floor(x), (int) floor(z));
+    }
+
     public Chunk getChunk() {
-        return world.getChunkFromBlock((int)floor(x), (int)floor(y), (int)floor(z));
+        return world.getChunkFromBlock((int) floor(x), (int) floor(y), (int) floor(z));
     }
 
     public Block getBlock() {
@@ -245,14 +243,14 @@ public class Location {
 
 
     public double distance(Location location) {
-        double  dx = x - location.getX(),
+        double dx = x - location.getX(),
                 dy = y - location.getY(),
                 dz = z - location.getZ();
         return Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
 
     public double distanceSquared(Location location) {
-        double  dx = x - location.getX(),
+        double dx = x - location.getX(),
                 dy = y - location.getY(),
                 dz = z - location.getZ();
         return dx * dx + dy * dy + dz * dz;
@@ -296,7 +294,7 @@ public class Location {
 
     @Override
     public String toString() {
-        return x + ", " + y + ", " +  z;
+        return x + ", " + y + ", " + z;
     }
 
     public String toStringComplete() {

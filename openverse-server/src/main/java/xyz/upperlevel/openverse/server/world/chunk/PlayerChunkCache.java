@@ -1,4 +1,4 @@
-package xyz.upperlevel.openverse.server.world;
+package xyz.upperlevel.openverse.server.world.chunk;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

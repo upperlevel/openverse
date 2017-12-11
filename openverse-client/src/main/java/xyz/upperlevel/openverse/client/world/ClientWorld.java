@@ -29,7 +29,6 @@ public class ClientWorld extends World implements PacketListener {
     public void onHeightmapReceive(Connection conn, HeightmapPacket pkt) {
         ChunkPillar plr = getChunkPillar(pkt.getX(), pkt.getZ());
         plr.setHeightmap(pkt.getHeightmap());
-        Openverse.getLogger().severe("Received height-map for chunk pillar at " + plr.getX() + " " + plr.getZ());
     }
 
     /**
@@ -40,7 +39,6 @@ public class ClientWorld extends World implements PacketListener {
         Chunk c = pkt.resolveChunk(this);
         setChunk(pkt.getX(), pkt.getY(), pkt.getZ(), c);
         c.appendBlockSkylights(true);
-        Openverse.getLogger().severe("Built received chunk at " + c.getX() + " " + c.getY() + " " + c.getZ());
     }
 
     /**

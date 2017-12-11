@@ -1,14 +1,10 @@
 package xyz.upperlevel.openverse.server.world;
 
 import lombok.Getter;
-import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.server.world.chunk.PlayerChunkMap;
 import xyz.upperlevel.openverse.server.world.entity.EntityWatcher;
 import xyz.upperlevel.openverse.server.world.generators.SimpleWorldGenerator;
 import xyz.upperlevel.openverse.world.World;
-import xyz.upperlevel.openverse.world.chunk.ChunkPillar;
-import xyz.upperlevel.openverse.world.chunk.HeightmapPacket;
-
-import static xyz.upperlevel.openverse.Openverse.getLogger;
 
 @Getter
 public class ServerWorld extends World {

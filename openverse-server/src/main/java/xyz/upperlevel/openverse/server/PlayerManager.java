@@ -19,7 +19,7 @@ import xyz.upperlevel.openverse.network.world.entity.PlayerChangeHandSlotPacket;
 import xyz.upperlevel.openverse.network.world.entity.PlayerChangeWorldPacket;
 import xyz.upperlevel.openverse.server.event.PlayerJoinEvent;
 import xyz.upperlevel.openverse.server.event.PlayerQuitEvent;
-import xyz.upperlevel.openverse.server.world.PlayerChunkCache;
+import xyz.upperlevel.openverse.server.world.chunk.PlayerChunkCache;
 import xyz.upperlevel.openverse.server.world.ServerPlayer;
 import xyz.upperlevel.openverse.server.world.ServerWorld;
 import xyz.upperlevel.openverse.world.Location;

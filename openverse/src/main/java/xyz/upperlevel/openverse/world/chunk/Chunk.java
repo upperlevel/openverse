@@ -186,6 +186,5 @@ public class Chunk {
         if (instantUpdate) {
             world.updateBlockSkylights();
         }
-        Openverse.getLogger().warning("Block skylights updated!");
     }
 }
