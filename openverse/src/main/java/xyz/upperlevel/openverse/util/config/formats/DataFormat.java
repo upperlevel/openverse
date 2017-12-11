@@ -12,7 +12,6 @@ public interface DataFormat {
         return Config.wrap(deserialize(in));
     }
 
-
     Map<String, Object> deserialize(DataInput in) throws IOException;
 
     void serialize(Map<String, Object> map, DataOutput out) throws IOException;
