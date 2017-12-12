@@ -15,7 +15,6 @@ import xyz.upperlevel.openverse.world.entity.player.events.PlayerInventoryOpenEv
 import xyz.upperlevel.ulge.gui.GuiBounds;
 import xyz.upperlevel.ulge.gui.GuiViewer;
 import xyz.upperlevel.ulge.window.Window;
-import xyz.upperlevel.ulge.window.event.ResizeEvent;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -52,6 +51,8 @@ public class GuiManager implements Listener {
             glClear(GL_DEPTH_BUFFER_BIT);
             glDisable(GL_CULL_FACE);
             glDisable(GL_DEPTH_TEST);
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             viewer.render();
 
             PlayerInventorySession session = OpenverseClient.get()
@@ -74,6 +75,7 @@ public class GuiManager implements Listener {
                 }
             } else Openverse.logger().warning("Null session!");
 
+            glDisable(GL_BLEND);
             glEnable(GL_DEPTH_TEST);
             glEnable(GL_CULL_FACE);
         }

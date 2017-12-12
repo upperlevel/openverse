@@ -99,7 +99,11 @@ public class Player extends LivingEntity {
     }
 
     public Inventory getOpenedInventory() {
-        return inventorySession.getInventory();
+        return inventorySession == null ? null : inventorySession.getInventory();
+    }
+
+    public boolean hasOpenedInventory() {
+        return inventorySession != null;
     }
 
     public PlayerInventorySession getInventorySession() {

@@ -116,7 +116,7 @@ public class PlayingWorldScene implements Scene, Listener {
                     break;
                 case Q: //TODO: replace Q with ESCAPE
                     Player p = OpenverseClient.get().getPlayer();
-                    if (p.getOpenedInventory() != null) {
+                    if (p.hasOpenedInventory()) {
                         p.closeInventory();
                     }
                     break;
