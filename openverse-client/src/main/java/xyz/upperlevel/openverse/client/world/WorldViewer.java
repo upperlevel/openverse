@@ -3,13 +3,15 @@ package xyz.upperlevel.openverse.client.world;
 import lombok.Getter;
 import lombok.Setter;
 import org.joml.Matrix4f;
-import org.lwjgl.BufferUtils;
+import xyz.upperlevel.event.EventHandler;
+import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.hermes.reflect.PacketHandler;
 import xyz.upperlevel.hermes.reflect.PacketListener;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.OpenverseClient;
 import xyz.upperlevel.openverse.client.resource.ClientResources;
+import xyz.upperlevel.openverse.launcher.OpenverseLauncher;
 import xyz.upperlevel.openverse.network.inventory.InventoryContentPacket;
 import xyz.upperlevel.openverse.network.inventory.PlayerCloseInventoryPacket;
 import xyz.upperlevel.openverse.network.inventory.PlayerOpenInventoryPacket;
@@ -25,10 +27,8 @@ import xyz.upperlevel.openverse.world.entity.player.PlayerInventory;
 import xyz.upperlevel.ulge.opengl.shader.Program;
 import xyz.upperlevel.ulge.opengl.shader.Uniform;
 import xyz.upperlevel.ulge.util.math.CameraUtil;
-
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.glClear;
+import xyz.upperlevel.ulge.window.Window;
+import xyz.upperlevel.ulge.window.event.ResizeEvent;
 
 /**
  * This class represents the player.
@@ -36,7 +36,7 @@ import static org.lwjgl.opengl.GL11.glClear;
  */
 @Getter
 @Setter
-public class WorldViewer implements PacketListener {
+public class WorldViewer implements PacketListener, Listener {
     private final WorldSession worldSession;
 
     @Getter
@@ -46,12 +46,16 @@ public class WorldViewer implements PacketListener {
     private Program program;
     private Uniform cameraLoc;
     private Matrix4f camera;
+    private float aspectRatio = 1f;
 
     public WorldViewer(LivingEntity entity) {
         this.entity = entity;
         this.program = ((ClientResources) Openverse.resources()).programs().entry("simple_shader");
         this.worldSession = new WorldSession(program);
         this.cameraLoc = program.uniformer.get("camera");
+        Window window = OpenverseLauncher.get().getGame().getWindow();
+        window.getEventManager().register(this);
+        reloadAspectRatio();
     }
 
     /**
@@ -67,7 +71,7 @@ public class WorldViewer implements PacketListener {
 
         cameraLoc.set(CameraUtil.getCamera(
                 45f,
-                1f,
+                aspectRatio,
                 0.01f,
                 10000f,
                 (float) Math.toRadians(loc.getYaw()),
@@ -78,6 +82,16 @@ public class WorldViewer implements PacketListener {
         ));
 
         worldSession.getChunkView().render(program);
+    }
+
+    public void reloadAspectRatio() {
+        Window window = OpenverseLauncher.get().getGame().getWindow();
+        aspectRatio = window.getWidth() / (float) window.getHeight();
+    }
+
+    @EventHandler
+    public void onWindowResize(ResizeEvent event) {
+        reloadAspectRatio();
     }
 
     @PacketHandler
