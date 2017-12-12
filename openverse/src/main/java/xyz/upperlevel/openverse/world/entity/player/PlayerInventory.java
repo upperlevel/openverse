@@ -84,7 +84,7 @@ public class PlayerInventory extends BaseInventory {
     public void scrollHand(int direction) {
         direction = MathUtil.clamp(direction, -1, 1);
         // Circular scroll from 0 to max: (a + max) % max
-        this.handSlot = (handSlot + direction + 9) % 9;
+        setHandSlot((handSlot + direction + 9) % 9);
     }
 
     public int convertHotbarSlot(int slot) {

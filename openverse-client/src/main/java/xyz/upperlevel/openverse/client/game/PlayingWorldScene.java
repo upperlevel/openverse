@@ -20,6 +20,7 @@ import xyz.upperlevel.ulge.util.Screenshot;
 import xyz.upperlevel.ulge.window.Window;
 import xyz.upperlevel.ulge.window.event.KeyChangeEvent;
 import xyz.upperlevel.ulge.window.event.MouseButtonChangeEvent;
+import xyz.upperlevel.ulge.window.event.MouseScrollEvent;
 import xyz.upperlevel.ulge.window.event.action.Action;
 import xyz.upperlevel.ulge.window.event.button.MouseButton;
 
@@ -122,6 +123,14 @@ public class PlayingWorldScene implements Scene, Listener {
                     break;
             }
         }
+    }
+
+    @EventHandler
+    public void onScroll(MouseScrollEvent e) {
+        // If game interaction is disabled quit event handling
+        if (!OpenverseClient.get().isCaptureInput()) return;
+        Player p = OpenverseClient.get().getPlayer();
+        p.getInventory().scrollHand(e.getY() > 0 ? 1 : -1);
     }
 
     @EventHandler
