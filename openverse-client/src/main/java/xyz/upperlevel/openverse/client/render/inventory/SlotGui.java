@@ -15,8 +15,6 @@ import xyz.upperlevel.ulge.window.event.button.MouseButton;
 
 import static xyz.upperlevel.openverse.inventory.PlayerInventorySession.InteractAction.*;
 
-import static xyz.upperlevel.openverse.inventory.PlayerInventorySession.InteractAction.SHIFT_LEFT_CLICK;
-
 public class SlotGui extends Gui {
     @Getter
     private final Slot handle;
