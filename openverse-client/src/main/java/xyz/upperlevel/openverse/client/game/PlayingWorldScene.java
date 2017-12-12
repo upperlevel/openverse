@@ -130,7 +130,7 @@ public class PlayingWorldScene implements Scene, Listener {
         // If game interaction is disabled quit event handling
         if (!OpenverseClient.get().isCaptureInput()) return;
         Player p = OpenverseClient.get().getPlayer();
-        p.getInventory().scrollHand(e.getY() > 0 ? 1 : -1);
+        p.getInventory().scrollHand(e.getY() > 0 ? -1 : 1);
     }
 
     @EventHandler

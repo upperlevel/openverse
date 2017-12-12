@@ -18,15 +18,17 @@ public class SlotContainerGui extends Gui {
     // Layout dependant classes!
     /**
      * The number of pixels of the whole gui in a "block-dependant reference", where every block's pixels is 16x16.
+     * @return total pixels in the gui (padding and slots)
      */
-    private final int wPixels, hPixels;
+    @Getter
+    private final int relWidthPixels, relHeightPixels;
 
     public SlotContainerGui(int horizontalSlots, int verticalSlots) {
         this.horizontalSlots = horizontalSlots;
         this.verticalSlots = verticalSlots;
         slots = new SlotGui[horizontalSlots * verticalSlots];
-        this.wPixels = slotPadding + (16 + slotPadding) * horizontalSlots;
-        this.hPixels = slotPadding + (16 + slotPadding) * verticalSlots;
+        this.relWidthPixels = slotPadding + (16 + slotPadding) * horizontalSlots;
+        this.relHeightPixels = slotPadding + (16 + slotPadding) * verticalSlots;
     }
 
 
@@ -35,8 +37,8 @@ public class SlotContainerGui extends Gui {
         super.reloadLayout(parX, parY, parW, parH);
 
         // Get the ratio between texture coords (16x16 pixels every gui) and screen coords
-        float widthRatio = getWidth() / (float) wPixels;
-        float heightRatio = getHeight() / (float) hPixels;
+        float widthRatio = getWidth() / (float) relWidthPixels;
+        float heightRatio = getHeight() / (float) relHeightPixels;
 
         final float slotWidth = 16 * widthRatio;
         final float slotHeight = 16 * heightRatio;
@@ -68,7 +70,10 @@ public class SlotContainerGui extends Gui {
     }
 
     public void setSlot(int x, int y, SlotGui slot) {
-        int index = index(x, y);
+        setSlot(index(x, y), slot);
+    }
+
+    public void setSlot(int index, SlotGui slot) {
         if (slots[index] != null) {
             removeChild(slots[index]);
         }
@@ -79,7 +84,11 @@ public class SlotContainerGui extends Gui {
     }
 
     public SlotGui getSlot(int x, int y) {
-        return slots[index(x, y)];
+        return getSlot(index(x, y));
+    }
+
+    public SlotGui getSlot(int index) {
+        return slots[index];
     }
 
     public int getCapacity() {
