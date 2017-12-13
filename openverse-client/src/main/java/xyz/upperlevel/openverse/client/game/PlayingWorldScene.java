@@ -23,6 +23,7 @@ import xyz.upperlevel.ulge.window.event.MouseButtonChangeEvent;
 import xyz.upperlevel.ulge.window.event.MouseScrollEvent;
 import xyz.upperlevel.ulge.window.event.action.Action;
 import xyz.upperlevel.ulge.window.event.button.MouseButton;
+import xyz.upperlevel.ulge.window.event.key.Key;
 
 import java.io.File;
 import java.io.IOException;
@@ -93,11 +94,16 @@ public class PlayingWorldScene implements Scene, Listener {
         OpenverseClient.get().getGuiManager().render(partialTicks);
     }
 
+    private Player getPlayer() {
+        return OpenverseClient.get().getPlayer();
+    }
+
     @EventHandler
     public void onKey(KeyChangeEvent event) {
         if (event.getAction() == Action.PRESS) {
             //TODO: a normal freakin' input system
-            switch (event.getKey()) {
+            Key key = event.getKey();
+            switch (key) {
                 case L:
                     Location loc = worldViewer.getEntity().getLocation(getPartialTicks());
                     Openverse.logger().info("loc: " + loc.toStringComplete());
@@ -113,14 +119,18 @@ public class PlayingWorldScene implements Scene, Listener {
                     Openverse.logger().fine("Screenshot saved in " + file.getAbsolutePath());
                     break;
                 case E:
-                    OpenverseClient.get().getPlayer().openInventory();
+                    getPlayer().openInventory();
                     break;
                 case Q: //TODO: replace Q with ESCAPE
-                    Player p = OpenverseClient.get().getPlayer();
+                    Player p = getPlayer();
                     if (p.hasOpenedInventory()) {
                         p.closeInventory();
                     }
                     break;
+            }
+            // Inventory switching with numbers
+            if (key.ordinal() >= Key.KEY_1.ordinal() && key.ordinal() <= Key.KEY_9.ordinal()) {
+                getPlayer().getInventory().setHandSlot(key.ordinal() - Key.KEY_1.ordinal());
             }
         }
     }
