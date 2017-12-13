@@ -8,7 +8,7 @@ import org.joml.Vector3f;
 import xyz.upperlevel.openverse.world.chunk.Block;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 
-import static java.lang.Math.floor;
+import static xyz.upperlevel.openverse.util.math.MathUtil.floori;
 import static xyz.upperlevel.openverse.util.math.MathUtil.normalizeAngle;
 
 public class Location {
@@ -55,7 +55,7 @@ public class Location {
     }
 
     public Chunk getChunk() {
-        return world.getChunkFromBlock((int)floor(x), (int)floor(y), (int)floor(z));
+        return world.getChunkFromBlock(floori(x), floori(y), floori(z));
     }
 
     public Block getBlock() {

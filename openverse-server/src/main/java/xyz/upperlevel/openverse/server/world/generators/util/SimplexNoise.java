@@ -1,5 +1,7 @@
 package xyz.upperlevel.openverse.server.world.generators.util;
 
+import static xyz.upperlevel.openverse.util.math.MathUtil.floori;
+
 /**
  * A speed-improved simplex noise algorithm for 2D, 3D and 4D in Java.
  *
@@ -65,12 +67,6 @@ public final class SimplexNoise {  // Simplex noise in 2D, 3D and 4D
     private SimplexNoise() {
     }
 
-    // This method is a *lot* faster than using (int)Math.floor(x)
-    private static int fastfloor(double x) {
-        int xi = (int) x;
-        return x < xi ? xi - 1 : xi;
-    }
-
     private static double dot(Grad g, double x, double y) {
         return g.x * x + g.y * y;
     }
@@ -89,8 +85,8 @@ public final class SimplexNoise {  // Simplex noise in 2D, 3D and 4D
         double n0, n1, n2; // Noise contributions from the three corners
         // Skew the input space to determine which simplex cell we're in
         double s = (xin + yin) * F2; // Hairy factor for 2D
-        int i = fastfloor(xin + s);
-        int j = fastfloor(yin + s);
+        int i = floori(xin + s);
+        int j = floori(yin + s);
         double t = (i + j) * G2;
         double X0 = i - t; // Unskew the cell origin back to (x,y) space
         double Y0 = j - t;
@@ -150,9 +146,9 @@ public final class SimplexNoise {  // Simplex noise in 2D, 3D and 4D
         double n0, n1, n2, n3; // Noise contributions from the four corners
         // Skew the input space to determine which simplex cell we're in
         double s = (xin + yin + zin) * F3; // Very nice and simple skew factor for 3D
-        int i = fastfloor(xin + s);
-        int j = fastfloor(yin + s);
-        int k = fastfloor(zin + s);
+        int i = floori(xin + s);
+        int j = floori(yin + s);
+        int k = floori(zin + s);
         double t = (i + j + k) * G3;
         double X0 = i - t; // Unskew the cell origin back to (x,y,z) space
         double Y0 = j - t;
@@ -273,10 +269,10 @@ public final class SimplexNoise {  // Simplex noise in 2D, 3D and 4D
         double n0, n1, n2, n3, n4; // Noise contributions from the five corners
         // Skew the (x,y,z,w) space to determine which cell of 24 simplices we're in
         double s = (x + y + z + w) * F4; // Factor for 4D skewing
-        int i = fastfloor(x + s);
-        int j = fastfloor(y + s);
-        int k = fastfloor(z + s);
-        int l = fastfloor(w + s);
+        int i = floori(x + s);
+        int j = floori(y + s);
+        int k = floori(z + s);
+        int l = floori(w + s);
         double t = (i + j + k + l) * G4; // Factor for 4D unskewing
         double X0 = i - t; // Unskew the cell origin back to (x,y,z,w) space
         double Y0 = j - t;
