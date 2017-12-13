@@ -9,7 +9,7 @@ public class GrassType extends BlockType {
     public GrassType() {
         super("grass");
         opaque = true;
-        setDefaultState(getDefaultBlockState().with(DRY, true));
+        setDefaultState(getDefaultBlockState().with(DRY, false));
     }
 
     @Override

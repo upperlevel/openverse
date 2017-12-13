@@ -37,12 +37,14 @@ public class BlockModelMapper {
         }
         model.addBlockPart(part);
         System.out.println("Added " + path + " to def state of " + type.getId());
-        models.put(reg.getDefaultState(), model);
+        for (BlockState state : reg.getStates()) {
+            models.put(state, model);
+        }
 
         List<Config> vars = config.getConfigList("variants");
         if (vars != null) {
             for (Config varCfg : vars) {
-                model = model.copy();
+                model = new BlockModel();
                 Map<String, Object> stateMap = varCfg.getSection("state");
                 if (stateMap != null) {
                     BlockState state = reg.getDefaultState();

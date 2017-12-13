@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import xyz.upperlevel.hermes.Packet;
 import xyz.upperlevel.openverse.Openverse;
-import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.World;
+import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.block.BlockTypeRegistry;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
@@ -41,6 +41,7 @@ public class ChunkCreatePacket implements Packet {
                 BlockState bType = reg.getState(states[i]);
                 if (bType == null) {
                     Openverse.logger().warning("Unresolved id in ChunkCreatePacket: " + states[i]);
+                    continue;
                 }
                 chunk.setBlockState(i >> 8, i >> 4 & 0xF, i & 0xF, bType, false);
             }

@@ -63,7 +63,7 @@ public class BlockType {
     }
 
     public int getFullId(BlockState state) {
-        return rawId | (state.getId() & 0xF);
+        return rawId | ((state.getId() & 0xF) << 28) ;
     }
 
     public void addCollisionBoxes(BlockState state, Entity entity, int x, int y, int z, Aabb3d entityBox, List<Aabb3d> res) {

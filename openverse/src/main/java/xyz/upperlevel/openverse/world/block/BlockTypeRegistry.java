@@ -31,7 +31,7 @@ public class BlockTypeRegistry extends Registry<BlockType> {
     }
 
     public BlockState getState(int id) {
-        return entry(id & 0x0FFFFFFF).getBlockState(id >> (Integer.BYTES * 8 - 4));
+        return entry(id & 0x0FFFFFFF).getBlockState(id >> 28);
     }
 
     public int getId(BlockState state) {
