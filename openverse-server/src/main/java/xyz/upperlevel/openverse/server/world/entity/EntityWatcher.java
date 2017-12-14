@@ -7,7 +7,7 @@ import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.network.world.entity.EntityChangeVelocityPacket;
 import xyz.upperlevel.openverse.network.world.entity.EntityTeleportPacket;
 import xyz.upperlevel.openverse.server.world.chunk.PlayerChunkCache;
-import xyz.upperlevel.openverse.server.world.chunk.PlayerChunkMap;
+import xyz.upperlevel.openverse.server.world.chunk.PlayerChunkMapListener;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.chunk.ChunkMap;
 import xyz.upperlevel.openverse.world.entity.Entity;
@@ -18,10 +18,10 @@ import java.util.Map;
 
 public class EntityWatcher {
     @Getter
-    private final PlayerChunkMap map;
+    private final PlayerChunkMapListener map;
     private ChunkMap<Map<Entity, Data>> entities = new ChunkMap<>();
 
-    public EntityWatcher(PlayerChunkMap map) {
+    public EntityWatcher(PlayerChunkMapListener map) {
         this.map = map;
     }
 

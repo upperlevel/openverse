@@ -21,12 +21,7 @@ public class SimpleVerticalChunkProvider implements VerticalChunkProvider {
     }
 
     public Chunk getChunk(int y) {
-        Chunk chunk = chunksMap.get(y);
-        if (chunk == null) {
-            chunk = new Chunk(chunkPillar, y);
-            chunksMap.put(y, chunk);
-        }
-        return chunk;
+        return  chunksMap.get(y);
     }
 
     @Override
@@ -41,12 +36,11 @@ public class SimpleVerticalChunkProvider implements VerticalChunkProvider {
     }
 
     @Override
-    public boolean unloadChunk(int y) {
+    public Chunk unloadChunk(int y) {
         Chunk removed = chunksMap.remove(y);
         if (removed != null) {
             Openverse.getEventManager().call(new ChunkUnloadEvent(removed));
-            return true;
         }
-        return false;
+        return removed;
     }
 }

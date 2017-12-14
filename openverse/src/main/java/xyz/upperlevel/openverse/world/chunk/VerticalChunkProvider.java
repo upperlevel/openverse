@@ -13,5 +13,5 @@ public interface VerticalChunkProvider {
 
     boolean hasChunk(int y);
 
-    boolean unloadChunk(int y);
+    Chunk unloadChunk(int y);
 }

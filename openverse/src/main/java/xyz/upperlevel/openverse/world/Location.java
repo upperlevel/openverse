@@ -1,12 +1,12 @@
 package xyz.upperlevel.openverse.world;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import xyz.upperlevel.openverse.world.chunk.Block;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
+import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 import xyz.upperlevel.openverse.world.chunk.ChunkPillar;
 
 import static java.lang.Math.floor;
@@ -49,15 +49,43 @@ public class Location {
     }
 
     public ChunkPillar getChunkPillar() {
-        return world.getPillarFromBlock((int) floor(x), (int) floor(z));
+        return world.getChunkPillarFromBlock((int) floor(x), (int) floor(z));
     }
 
     public Chunk getChunk() {
         return world.getChunkFromBlock((int) floor(x), (int) floor(y), (int) floor(z));
     }
 
+    public ChunkLocation getChunkLocation() {
+        return new ChunkLocation(getChunkX(), getChunkY(), getChunkZ());
+    }
+
+    public int getChunkX() {
+        return getBlockX() >> 4;
+    }
+
+    public int getChunkY() {
+        return getBlockY() >> 4;
+    }
+
+    public int getChunkZ() {
+        return getBlockZ() >> 4;
+    }
+
     public Block getBlock() {
         return world.getBlock(x, y, z);
+    }
+
+    public int getBlockX() {
+        return (int) floor(x);
+    }
+
+    public int getBlockY() {
+        return (int) floor(y);
+    }
+
+    public int getBlockZ() {
+        return (int) floor(z);
     }
 
     public void setYaw(double yaw) {

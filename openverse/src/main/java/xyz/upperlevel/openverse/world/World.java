@@ -9,7 +9,6 @@ import xyz.upperlevel.openverse.util.math.bfs.FastFloodAlgorithm;
 import xyz.upperlevel.openverse.util.math.bfs.FastFloodContext;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.chunk.*;
-import xyz.upperlevel.openverse.world.chunk.storage.BlockStorage;
 import xyz.upperlevel.openverse.world.entity.Entity;
 
 import java.util.ArrayList;
@@ -42,16 +41,8 @@ public class World {
         skylightDiffusion = new FastFloodAlgorithm();
     }
 
-
-    /**
-     * Gets the {@link ChunkPillar} at the given chunk coordinates.
-     */
-    public ChunkPillar getChunkPillar(int x, int z, boolean load) {
-        return chunkPillarProvider.getChunkPillar(x, z, load);
-    }
-
     public ChunkPillar getChunkPillar(int x, int z) {
-        return chunkPillarProvider.getChunkPillar(x, z, true);
+        return chunkPillarProvider.getChunkPillar(x, z);
     }
 
     /**
@@ -61,14 +52,14 @@ public class World {
         chunkPillarProvider.setChunkPillar(chunkPillar);
     }
 
-    public ChunkPillar getPillarFromBlock(int x, int z) {
+    public ChunkPillar getChunkPillarFromBlock(int x, int z) {
         return getChunkPillar(x >> 4, z >> 4);
     }
 
     /**
      * Unloads the {@link ChunkPillar} at the given chunk coordinates (this implies inside chunks unloading).
      */
-    public boolean unloadChunkPillar(int x, int z) {
+    public ChunkPillar unloadChunkPillar(int x, int z) {
         return chunkPillarProvider.unloadChunkPillar(x, z);
     }
 
@@ -84,33 +75,28 @@ public class World {
      * Gets the {@link Chunk} at the given chunk coordinates.
      */
     public Chunk getChunk(int x, int y, int z) {
-        return getChunkPillar(x, z).getChunk(y);
-    }
-
-    public Chunk getChunk(int x, int y, int z, boolean load) {
-        ChunkPillar pillar = getChunkPillar(x, z, load);
-        return pillar == null ? null : pillar.getChunk(y);
+        ChunkPillar plr = getChunkPillar(x, z);
+        if (plr == null) {
+            return null;
+        }
+        return plr.getChunk(y);
     }
 
     public Chunk getChunkFromBlock(int blockX, int blockY, int blockZ) {
         return getChunk(blockX >> 4, blockY >> 4, blockZ >> 4);
     }
 
-    public Chunk getChunkFromBlock(int blockX, int blockY, int blockZ, boolean load) {
-        return getChunk(blockX >> 4, blockY >> 4, blockZ >> 4, load);
-    }
-
-    /**
-     * Sets the {@link Chunk} at the given chunk coordinates to the given one.
-     */
-    public void setChunk(int x, int y, int z, Chunk chunk) {
-        getChunkPillar(x, z).setChunk(y, chunk);
+    public void setChunk(Chunk chunk) {
+        ChunkPillar plr = getChunkPillar(chunk.getX(), chunk.getZ());
+        if (plr != null) {
+            plr.setChunk(chunk.getY(), chunk);
+        }
     }
 
     /**
      * Unloads the {@link Chunk} at the given chunk coordinates.
      */
-    public boolean unloadChunk(int x, int y, int z) {
+    public Chunk unloadChunk(int x, int y, int z) {
         return getChunkPillar(x, z).unloadChunk(y);
     }
 
@@ -121,15 +107,6 @@ public class World {
      */
     public Block getBlock(int x, int y, int z) {
         return getChunkFromBlock(x, y, z).getBlock(x & 0xF, y & 0xF, z & 0xF);
-    }
-
-    public Block getBlock(int x, int y, int z, boolean load) {
-        Chunk chunk = getChunkFromBlock(x, y, z, load);
-        return chunk == null ? null : chunk.getBlock(x & 0xF, y & 0xF, z & 0xF);
-    }
-
-    public Block getBlock(Vector3i loc, boolean load) {
-        return getBlock(loc.x, loc.y, loc.z, load);
     }
 
     public Block getBlock(Vector3i loc) {
@@ -152,45 +129,29 @@ public class World {
 
         for (int x = minX; x < maxX; x++) {
             for (int z = minZ; z < maxZ; z++) {
-                ChunkPillar pillar = getChunkPillar(x >> 4, z >> 4, false);
-                if (pillar == null) {
-                    //Chunk not loaded
+                ChunkPillar plr = getChunkPillar(x >> 4, z >> 4);
+                if (plr == null) {
                     continue;
                 }
                 for (int y = minY; y < maxY; y++) {
-                    BlockState state = pillar.getChunk(y >> 4).getBlockState(x & 15, y & 15, z & 15);
+                    Chunk chk = plr.getChunk(y >> 4);
+                    if (chk == null) {
+                        continue;
+                    }
+                    BlockState state = chk.getBlockState(x & 15, y & 15, z & 15);
                     if (state == AIR_STATE) {
-                        //Block is air
                         continue;
                     }
                     state.getBlockType().addCollisionBoxes(state, entity, x, y, z, box, res);
                 }
             }
         }
-
         return res;
     }
 
-
-    /**
-     * Gets the {@link BlockState} at the given coordinates, loads the chunk if possible
-     */
     public BlockState getBlockState(int x, int y, int z) {
-        return getChunkFromBlock(x, y, z).getBlockState(x & 0xF, y & 0xF, z & 0xF);
-    }
-
-    /**
-     * Gets the {@link BlockState} at the given coordinates, loads the chunk if specified otherwise returns null
-     *
-     * @param x    the x-axis location
-     * @param y    the y-axis location
-     * @param z    the z-axis location
-     * @param load loads the chunk if it's not loaded
-     * @return the BlockState at that specific location or {@link BlockStorage#AIR_STATE} if not loaded
-     */
-    public BlockState getBlockState(int x, int y, int z, boolean load) {
-        Chunk chunk = getChunkFromBlock(x, y, z, load);
-        return chunk == null ? AIR_STATE : chunk.getBlockState(x & 0xF, y & 0xF, z & 0xF);
+        Chunk chk = getChunkFromBlock(x, y, z);
+        return chk == null ? AIR_STATE : chk.getBlockState(x & 0xF, y & 0xF, z & 0xF);
     }
 
     /**
@@ -205,16 +166,16 @@ public class World {
      * @return the old state (the block was before this call)
      */
     public BlockState setBlockState(int x, int y, int z, BlockState blockState) {
-        Chunk chunk = getChunkFromBlock(x, y, z);
-        if (chunk != null) {
-            return chunk.setBlockState(x & 0xF, y & 0xF, z & 0xF, blockState);
+        Chunk chk = getChunkFromBlock(x, y, z);
+        if (chk != null) {
+            return chk.setBlockState(x & 0xF, y & 0xF, z & 0xF, blockState);
         }
         return null;
     }
 
     public LineVisitor3d.RayCastResult rayCast(double startX, double startY, double startZ, double endX, double endY, double endZ) {
         return LineVisitor3d.rayCast(startX, startY, startZ, endX, endY, endZ, (x, y, z, f) -> {
-            BlockState state = getBlockState(x, y, z, false);
+            BlockState state = getBlockState(x, y, z);
             // If the block is not loaded, better return
             return state == null || state != AIR_STATE && state.getBlockType().collisionRaytrace(state, this, x, y, z, startX, startY, startZ, endX, endY, endZ);
         });
@@ -333,9 +294,9 @@ public class World {
      * Appends a new node to the skylight diffusion algorithm.
      * To effectively apply the skylights use {@link #updateBlockSkylights()}.
      *
-     * @param x          the x-axis location
-     * @param y          the y-axis location
-     * @param z          the z-axis location
+     * @param x             the x-axis location
+     * @param y             the y-axis location
+     * @param z             the z-axis location
      * @param blockSkylight the block light
      */
     public void appendBlockSkylight(int x, int y, int z, int blockSkylight, boolean instantUpdate) {

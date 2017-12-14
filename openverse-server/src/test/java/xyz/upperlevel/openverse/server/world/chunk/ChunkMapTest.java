@@ -6,23 +6,34 @@ import xyz.upperlevel.openverse.console.ChatColor;
 import xyz.upperlevel.openverse.server.world.ServerPlayer;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 
+import java.util.Random;
+
 public class ChunkMapTest {
     @Test
     public void chunkMapTest() {
         TestChunkMap map = new TestChunkMap(1, 11, 11, 11);
         map.spawn(5, 5, 5);
-
-        map.move(0, 1, 0);
-        map.move(0, 0, 1);
-        map.move(1, 0, 0);
-        map.move(7, 0, 0);
-        map.move(-8, 10, 0);
-        map.move(0, -11, -1);
-
+        // Lol test
+        Random rnd = new Random();
+        for (int i = 0; i < 1000; i++) {
+            int x = rnd.nextInt(3) - 1;
+            if ((map.current.x + x + map.getRadius()) >= map.width || (map.current.x + x - map.getRadius()) < 0) {
+                x = -x;
+            }
+            int y = rnd.nextInt(3) - 1;
+            if ((map.current.y + y + map.getRadius()) >= map.width || (map.current.y + y - map.getRadius()) < 0) {
+                y = -y;
+            }
+            int z = rnd.nextInt(3) - 1;
+            if ((map.current.z + z + map.getRadius()) >= map.width || (map.current.z + z - map.getRadius()) < 0) {
+                z = -z;
+            }
+            map.move(x, y, z);
+        }
         map.despawn();
     }
 
-    public static class TestChunkMap extends ChunkMapHandler {
+    public static class TestChunkMap extends PlayerChunkMap {
         private final int width, height, length;
         private final boolean[][] sentChunkPillars;
         private final boolean[][][] sentChunks;
@@ -60,7 +71,7 @@ public class ChunkMapTest {
 
         public void spawn(int x, int y, int z) {
             current = new ChunkLocation(x, y, z);
-            addChunkView(null, current);
+            sendChunkView(null, current);
             if (!isCorrect()) {
                 fail();
             }
@@ -80,7 +91,7 @@ public class ChunkMapTest {
         public void despawn() {
             if (current == null)
                 throw new IllegalStateException("Not spawned");
-            removeChunkView(null, current);
+            destroyChunkView(null, current);
             current = null;
             if (!isEmpty()) {
                 fail();
@@ -100,9 +111,10 @@ public class ChunkMapTest {
                         for (int y = 0; y < height; y++) {
                             if (y >= current.y - rad && y <= current.y + rad) {
                                 if (!sentChunks[x][y][z]) {
-                                    printChunksOnXY();
                                     return false;
                                 }
+                            } else if (sentChunks[x][y][z]) {
+                                return false;
                             }
                         }
                     } else {
@@ -110,10 +122,8 @@ public class ChunkMapTest {
                             return false;
                         }
                         for (int y = 0; y < height; y++) {
-                            if (y < current.y - rad || y > current.y + rad) {
-                                if (sentChunks[x][y][z]) {
-                                    return false;
-                                }
+                            if (sentChunks[x][y][z]) {
+                                return false;
                             }
                         }
                     }
@@ -148,30 +158,42 @@ public class ChunkMapTest {
         }
 
         @Override
-        public void onChunkPillarAdd(ServerPlayer player, int x, int z) {
+        public void onChunkPillarSend(ServerPlayer player, int x, int z) {
             if (isOut(x, z))
                 return;
+            if (sentChunkPillars[x][z]) {
+                Assert.fail("Chunk pillar at x=" + x + " z=" + z + " already existed!");
+            }
             sentChunkPillars[x][z] = true;
         }
 
         @Override
-        public void onChunkPillarRemove(ServerPlayer player, int x, int z) {
+        public void onChunkPillarDestroy(ServerPlayer player, int x, int z) {
             if (isOut(x, z))
                 return;
+            if (!sentChunkPillars[x][z]) {
+                Assert.fail("Chunk pillar at x=" + x + " z=" + z + " already destroyed!");
+            }
             sentChunkPillars[x][z] = false;
         }
 
         @Override
-        public void onChunkAdd(ServerPlayer player, int x, int y, int z) {
+        public void onChunkSend(ServerPlayer player, int x, int y, int z) {
             if (isOut(x, y, z))
                 return;
+            if (sentChunks[x][y][z]) {
+                Assert.fail("Chunk at x=" + x + " y=" + y + " z=" + z + " already existed!");
+            }
             sentChunks[x][y][z] = true;
         }
 
         @Override
-        public void onChunkRemove(ServerPlayer player, int x, int y, int z) {
+        public void onChunkDestroy(ServerPlayer player, int x, int y, int z) {
             if (isOut(x, y, z))
                 return;
+            if (!sentChunks[x][y][z]) {
+                Assert.fail("Chunk at x=" + x + " y=" + y + " z=" + z + " already destroyed!");
+            }
             sentChunks[x][y][z] = false;
         }
 

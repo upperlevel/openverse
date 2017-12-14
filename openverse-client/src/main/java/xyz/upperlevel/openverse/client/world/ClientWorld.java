@@ -27,8 +27,9 @@ public class ClientWorld extends World implements PacketListener {
      */
     @PacketHandler
     public void onHeightmapReceive(Connection conn, HeightmapPacket pkt) {
-        ChunkPillar plr = getChunkPillar(pkt.getX(), pkt.getZ());
+        ChunkPillar plr = new ChunkPillar(this, pkt.getX(), pkt.getZ());
         plr.setHeightmap(pkt.getHeightmap());
+        setChunkPillar(plr);
     }
 
     /**
@@ -36,9 +37,15 @@ public class ClientWorld extends World implements PacketListener {
      */
     @PacketHandler
     public void onChunkCreate(Connection conn, ChunkCreatePacket pkt) {
-        Chunk c = pkt.resolveChunk(this);
-        setChunk(pkt.getX(), pkt.getY(), pkt.getZ(), c);
-        c.appendBlockSkylights(true);
+        ChunkPillar plr = getChunkPillar(pkt.getX(), pkt.getZ());
+        if (plr == null) {
+            Openverse.getLogger().warning("Chunk received at x=" + pkt.getX() + " y=" + pkt.getY() + " z=" + pkt.getZ() + " but there is no pillar!");
+            return;
+        }
+        Chunk chk = new Chunk(plr, pkt.getY());
+        pkt.setBlockStates(chk);
+        setChunk(chk);
+        //c.appendBlockSkylights(true);
     }
 
     /**

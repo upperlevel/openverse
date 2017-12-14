@@ -33,19 +33,18 @@ public class ChunkCreatePacket implements Packet {
         }
     }
 
-    public Chunk resolveChunk(World world) {
-        Chunk chunk = world.getChunkPillar(x, z).getChunk(y);
+    public void setBlockStates(Chunk chunk) {
         BlockTypeRegistry reg = Openverse.resources().blockTypes();
         for (int i = 0; i < 16 * 16 * 16; i++) {
             if (states[i] != 0) {
-                BlockState bType = reg.getState(states[i]);
-                if (bType == null) {
-                    Openverse.getLogger().warning("Unresolved id in ChunkCreatePacket: " + states[i]);
+                BlockState state = reg.getState(states[i]);
+                if (state == null) {
+                    Openverse.getLogger().warning("Unresolved block-state id in ChunkCreatePacket: " + states[i]);
+                } else {
+                    chunk.setBlockState(i >> 8, i >> 4 & 0xF, i & 0xF, state, false);
                 }
-                chunk.setBlockState(i >> 8, i >> 4 & 0xF, i & 0xF, bType, false);
             }
         }
-        return chunk;
     }
 
     @Override

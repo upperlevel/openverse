@@ -73,7 +73,7 @@ public class PlayerManager implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onConnect(ConnectionOpenEvent event) {
         Location spawn = OpenverseServer.get().getUniverse().getSpawn();
-        ServerPlayer sp = new ServerPlayer(spawn, "Hobbit", event.getConnection());
+        ServerPlayer sp = new ServerPlayer(spawn, "Maurizio", event.getConnection());
         register(sp);
         sp.getConnection().send(Openverse.getChannel(), new PlayerChangeWorldPacket(spawn.getWorld()));
         sp.getConnection().send(Openverse.getChannel(), new EntityTeleportPacket(sp));
