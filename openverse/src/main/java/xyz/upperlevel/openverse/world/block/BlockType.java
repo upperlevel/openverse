@@ -2,6 +2,7 @@ package xyz.upperlevel.openverse.world.block;
 
 import lombok.Getter;
 import lombok.Setter;
+import xyz.upperlevel.openverse.item.ItemStack;
 import xyz.upperlevel.openverse.util.math.Aabb3d;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.block.blockentity.BlockEntity;
@@ -33,7 +34,7 @@ public class BlockType {
     public BlockType(String id) {
         this.id = id;
         this.stateRegistry = createBlockState();
-        setDefaultState(stateRegistry.getDefaultState());
+        setDefaultState(stateRegistry.getState(0));
     }
 
     public BlockType(String id, boolean opaque) {
@@ -87,8 +88,12 @@ public class BlockType {
         return null;
     }
 
-    public BlockState getStateWhenPlaced(Player placer, int x, int y, int z) {
-        return getDefaultBlockState();
+    public BlockState getStateWhenPlaced(Player placer, ItemStack itemStack, int x, int y, int z) {
+        if (itemStack == null) {
+            return getDefaultBlockState();
+        } else {
+            return getStateRegistry().getState(itemStack.getState());
+        }
     }
 
     @Override

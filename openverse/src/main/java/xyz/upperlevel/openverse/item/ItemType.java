@@ -7,6 +7,8 @@ import xyz.upperlevel.openverse.world.block.BlockFace;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.entity.player.Player;
 
+import java.util.Map;
+
 @Getter
 public class ItemType {
     public static final ItemType AIR = new ItemType("air");
@@ -23,14 +25,21 @@ public class ItemType {
     /**
      * Called when the player uses (right-clicks) a block with the item
      * @param player the player who clicked the block
+     * @param itemStack the ItemStack with which the block was clicked
      * @param x the block's x location
      * @param y the block's y location
      * @param z the block's z location
      * @param face the clicked block face
      * @return true only if the item has been successfully used
      */
-    public boolean onUseBlock(Player player, int x, int y, int z, BlockFace face) {
+    public boolean onUseBlock(Player player, ItemStack itemStack, int x, int y, int z, BlockFace face) {
         return false;
+    }
+
+    public ItemStack getStackWithData(int count, Map<String, Object> inData) {
+        ItemStack itemStack = new ItemStack(this, count);
+        itemStack.getData().putAll(inData);
+        return itemStack;
     }
 
     /**
@@ -39,6 +48,10 @@ public class ItemType {
      */
     public int getMaxStack() {
         return 64;
+    }
+
+    public byte getDefaultState() {
+        return 0;
     }
 
     /**

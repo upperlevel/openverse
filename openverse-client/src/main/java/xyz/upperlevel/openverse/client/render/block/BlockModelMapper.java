@@ -47,7 +47,7 @@ public class BlockModelMapper {
                 model = new BlockModel();
                 Map<String, Object> stateMap = varCfg.getSection("state");
                 if (stateMap != null) {
-                    BlockState state = reg.getDefaultState();
+                    BlockState state = reg.getBlockType().getDefaultState();
                     for (Map.Entry<String, Object> prop : stateMap.entrySet()) {
                         BlockProperty<?> p = reg.getProperty(prop.getKey());
                         Optional<?> val = p.parse((String) prop.getValue());

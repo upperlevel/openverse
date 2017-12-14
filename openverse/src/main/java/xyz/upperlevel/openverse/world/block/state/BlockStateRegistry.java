@@ -53,15 +53,11 @@ public class BlockStateRegistry {
         return map.build();
     }
 
-    public BlockState getDefaultState() {
-        return states.get(0);
-    }
-
     public BlockType getBlockType() {
         return type;
     }
 
-    public ImmutableList<SimpleBlockState> getStates() {
+    public ImmutableList<? extends BlockState> getStates() {
         return states;
     }
 
@@ -69,8 +65,12 @@ public class BlockStateRegistry {
         return states.get(id);
     }
 
-    public BlockProperty getProperty(String name) {
+    public BlockProperty<?> getProperty(String name) {
         return nameBakedProperties.get(name);
+    }
+
+    public ImmutableCollection<BlockProperty<?>> getProperties() {
+        return nameBakedProperties.values();
     }
 
     public static class SimpleBlockState implements BlockState {

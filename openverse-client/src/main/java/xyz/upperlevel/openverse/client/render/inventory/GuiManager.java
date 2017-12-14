@@ -71,7 +71,7 @@ public class GuiManager implements Listener {
                     Vector2d mousePos = window.getCursorPosition();
                     ItemRenderer renderer = OpenverseClient.get().getItemRendererRegistry().get(item.getType());
                     int size = Math.min(window.getWidth() / 10, window.getHeight() / 10);
-                    renderer.renderInSlot(window, new GuiBounds(mousePos.x - size/2, mousePos.y - size/2, mousePos.x + size, mousePos.y + size), handSlotGui);
+                    renderer.renderInSlot(item, window, new GuiBounds(mousePos.x - size/2, mousePos.y - size/2, mousePos.x + size, mousePos.y + size), handSlotGui);
                 }
             } else Openverse.logger().warning("Null session!");
 

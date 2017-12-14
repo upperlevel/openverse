@@ -2,6 +2,7 @@ package xyz.upperlevel.openverse.server.command;
 
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.server.command.def.EchoCommand;
+import xyz.upperlevel.openverse.server.command.def.GiveCommand;
 import xyz.upperlevel.openverse.server.command.def.HelpCommand;
 import xyz.upperlevel.openverse.server.command.def.HotbarCommand;
 
@@ -57,6 +58,7 @@ public class CommandRegistry implements Iterable<Command> {
         register(new EchoCommand());
         register(new HelpCommand(this));
         register(new HotbarCommand());
+        register(new GiveCommand());
     }
 
     protected void warn(String str) {

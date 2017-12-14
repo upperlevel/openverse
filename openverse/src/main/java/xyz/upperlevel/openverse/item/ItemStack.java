@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 import xyz.upperlevel.openverse.Openverse;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ItemStack {
     public static final ItemStack EMPTY = new ItemStack(ItemType.AIR, 0);
 
@@ -13,14 +16,24 @@ public class ItemStack {
     @Getter
     @Setter
     private int count;
+    @Getter
+    @Setter
+    private int state;
+    @Getter
+    private Map<String, Object> data = new HashMap<>();
 
-    public ItemStack(ItemType type, int count) {
+    public ItemStack(ItemType type, int count, byte state) {
         this.type = type;
         this.count = count;
+        this.state = state;
+    }
+
+    public ItemStack(ItemType type, int count) {
+        this(type, count, type.getDefaultState());
     }
 
     public ItemStack(ItemType type) {
-        this(type, 1);
+        this(type, 1, type.getDefaultState());
     }
 
     public boolean isEmpty() {
@@ -52,6 +65,8 @@ public class ItemStack {
         }
         out.writeInt(type.getRawId());
         out.writeInt(count);
+        out.writeByte(state);
+        //TODO Write obf data
     }
 
     public static ItemStack fromData(ByteBuf in) {
@@ -60,7 +75,8 @@ public class ItemStack {
         if (itemType == null) {
             throw new IllegalArgumentException("Invalid data: cannot find typeId " + itemTypeId);
         }
-        return new ItemStack(itemType, in.readInt());
+        //TODO Read obf data
+        return new ItemStack(itemType, in.readInt(), in.readByte());
     }
 
     @Override

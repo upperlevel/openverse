@@ -44,7 +44,7 @@ public class SlotGui extends Gui {
             Openverse.logger().warning("Cannot find renderer for type: " + type);
             return;
         }
-        renderer.renderInSlot(getWindow(), getBounds(), this);
+        renderer.renderInSlot(handle.getContent(), getWindow(), getBounds(), this);
     }
 
     @Override

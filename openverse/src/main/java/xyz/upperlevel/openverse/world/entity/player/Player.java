@@ -60,7 +60,7 @@ public class Player extends LivingEntity {
         boolean result = inventory
                 .getHandItem()
                 .getType()
-                .onUseBlock(this, x, y, z, face);
+                .onUseBlock(this, inventory.getHandItem(), x, y, z, face);
 
         if (sendPacket) {
             PlayerUseItemPacket packet = new PlayerUseItemPacket(x, y, z, face);
