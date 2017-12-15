@@ -156,7 +156,7 @@ public class BlockPartFace {
                     .putFloat(textureLayer)
 
                     .putFloat(lightVal)
-                    .putFloat(1f);
+                    .putFloat(skylightVal);
         }
         return 4;
     }
