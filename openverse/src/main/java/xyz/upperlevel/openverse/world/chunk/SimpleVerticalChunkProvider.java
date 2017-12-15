@@ -21,7 +21,7 @@ public class SimpleVerticalChunkProvider implements VerticalChunkProvider {
     }
 
     public Chunk getChunk(int y) {
-        return  chunksMap.get(y);
+        return chunksMap.get(y);
     }
 
     @Override

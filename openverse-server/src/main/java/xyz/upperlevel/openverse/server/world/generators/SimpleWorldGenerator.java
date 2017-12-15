@@ -49,9 +49,9 @@ public class SimpleWorldGenerator implements ChunkGenerator {
 
                 for (int y = 0; y < 16; y++) {
                     int wy = (chunk.getY() << 4 | y);
-                    if (wy < nh - 1) {
+                    if (wy < nh) {
                         chunk.setBlockType(x, y, z, dirtType, false);
-                    } else if (wy == nh - 1) {
+                    } else if (wy == nh) {
                         chunk.setBlockType(x, y, z, grassType, false);
                     }
                 }

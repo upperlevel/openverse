@@ -117,6 +117,8 @@ public class Chunk {
     public BlockState setBlockState(int x, int y, int z, BlockState blockState, boolean blockUpdate) {
         BlockState oldState = blockStorage.setBlockState(x, y, z, blockState);
         if (blockUpdate) {
+            rebuildHeightFor(x, z, y, true);
+            updateSkylightOnBlockChange(x, z, y);
             Openverse.getEventManager().call(new BlockUpdateEvent(world, x + (location.x << 4), y + (location.y << 4), z + (location.z << 4), oldState, blockState));
         }
         return oldState;
@@ -162,7 +164,7 @@ public class Chunk {
     }
 
     public boolean isHeightmapTestable() {
-        return y >= chunkPillar.getHeightmapMinimum() >> 4 && y <= chunkPillar.getHeightmapMaximum() >> 4;
+        return y > chunkPillar.getHeightmapMinimum() >> 4 && y < chunkPillar.getHeightmapMaximum() >> 4;
     }
 
     public void updateSkylightGaps() {
@@ -224,8 +226,99 @@ public class Chunk {
         }
     }
 
+    protected void updateSkylightRemoveLight(int x, int z) {
+        for (int y = 15; y >= 0; y--) {
+            if (blockStorage.getBlockState(x, y, z) != AIR_STATE) return;
+            blockStorage.setBlockSkylight(x, y, z, 0);
+        }
+        // No block found, need to update the chunk below
+        Chunk chunkBelow = chunkPillar.getChunk(y - 1);
+        if (chunkBelow != null) {
+            chunkBelow.updateSkylightRemoveLight(x, z);
+        }
+    }
+
+    public void updateSkylightOnBlockChange(int x, int z, int initY) {
+        final int height = chunkPillar.getHeight(x, z);
+        final int realY = y * 16;
+        if (height < realY + initY) { // Block broken
+            int startY = height < realY ? 0 : (height & 15) + 1;
+            for (int y = startY; y <= initY; y++) {
+                blockStorage.setBlockSkylight(x, y, z, 15);
+            }
+            if (height < realY) {
+                // height is below this chunk, update chunk below
+                Chunk chunkBelow = chunkPillar.getChunk(this.y - 1);
+                if (chunkBelow != null) {
+                    chunkBelow.updateSkylightOnBlockChange(x, z, 15);
+                }
+            }
+        } else if (height == realY + initY) {// Block placed directly under sun
+            for (int y = initY - 1; y >= 0; y--) {
+                if (blockStorage.getBlockState(x, y, z) != AIR_STATE) return;
+                blockStorage.setBlockSkylight(x, y, z, 0);
+            }
+            // No block found, update chunk below
+            Chunk chunkBelow = chunkPillar.getChunk(this.y - 1);
+            if (chunkBelow != null) {
+                chunkBelow.updateSkylightRemoveLight(x, z);
+            }
+        }// else height > initY ; Block changed under the height, who cares
+    }
+
     public void updateSkylights() {
         updateDirectSkylight();
         updateSkylightGaps();
+    }
+
+    public void rebuildHeightMap() {
+        // Avoid recalculating if every value is over the chunk
+        final int realY = y * 16;
+        final int maxChunkY = realY + 15;
+        if (chunkPillar.getHeightmapMinimum() > maxChunkY) return;
+
+        for (int x = 0; x < 16; x++) {
+            xzLoop:
+            for (int z = 0; z < 16; z++) {
+                int pillarHeight = chunkPillar.getHeight(x, z);
+                if (pillarHeight > maxChunkY) continue;
+                for (int y = 15; y >= 0; y--) {
+                    if (blockStorage.getBlockState(x, y, z) != AIR_STATE) {
+                        chunkPillar.setHeight(x, z, realY + y);
+                        continue xzLoop;
+                    }
+                }
+                if (pillarHeight >= realY) { // If there was a block in this chunk
+                    Chunk chunkBelow = chunkPillar.getChunk(y - 1);
+                    if (chunkBelow != null) {
+                        chunkBelow.rebuildHeightFor(x, z, 15, false);
+                    } else {
+                        chunkPillar.setHeight(x, z, realY);
+                    }
+                }
+            }
+        }
+    }
+
+    public void rebuildHeightFor(int x, int z, int minYToCheck, boolean checkHeightMap) {
+        final int realY = y * 16;
+        if (checkHeightMap && chunkPillar.getHeight(x, z) > realY + minYToCheck) {
+            return;
+        }
+
+        for (int y = minYToCheck; y >= 0; y--)  {
+            if (blockStorage.getBlockState(x, y, z) != AIR_STATE) {
+                chunkPillar.setHeight(x, z, realY + y);
+                return;
+            }
+        }
+        // If the code arrived here there's no chunk in the chunk's xz
+        // So ask the chunk below if he has any block to update
+        Chunk chunkBelow = chunkPillar.getChunk(y - 1);
+        if (chunkBelow != null) {
+            chunkBelow.rebuildHeightFor(x, z, 15, false);
+        } else {
+            chunkPillar.setHeight(x, z, realY);
+        }
     }
 }

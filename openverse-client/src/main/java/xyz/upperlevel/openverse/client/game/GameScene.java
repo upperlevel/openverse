@@ -28,7 +28,7 @@ public class GameScene extends Stage implements Listener {
         game = OpenverseLauncher.get().getGame();
         window = game.getWindow();
         window.getEventManager().register(this);
-        window.disableCursor();
+        window.setCursorEnabled(false);
     }
 
     @Override
