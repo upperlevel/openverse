@@ -10,6 +10,9 @@ import xyz.upperlevel.openverse.world.chunk.storage.BlockStorage;
 import xyz.upperlevel.ulge.opengl.buffer.*;
 import xyz.upperlevel.ulge.opengl.shader.Program;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
 /**
@@ -37,7 +40,6 @@ public class ChunkRenderer {
         this.chunk = chunk;
         setup();
         reloadVertexSize();
-        view.recompileChunk(this, ChunkCompileMode.ASYNC);
     }
 
     public void onBlockChange(BlockState oldState, BlockState newState) {//TODO: call whenever a block changes
@@ -89,6 +91,7 @@ public class ChunkRenderer {
         new VertexLinker()
                 .attrib(program.uniformer.getAttribLocation("position"), 3)
                 .attrib(program.uniformer.getAttribLocation("texCoords"), 3)
+                .attrib(program.uniformer.getAttribLocation("blockLight"), 1)
                 .attrib(program.uniformer.getAttribLocation("blockSkylight"), 1)
                 .setup();
 

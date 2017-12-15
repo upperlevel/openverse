@@ -94,6 +94,40 @@ public class ChunkViewRenderer implements Listener {
         }
     }
 
+    public void recompileChunks(int x, int y, int z, ChunkCompileMode mode) {
+        for (int chkX = x - 1; chkX <= x + 1; chkX++) {
+            for (int chkY = y - 1; chkY <= y + 1; chkY++) {
+                for (int chkZ = z - 1; chkZ <= z + 1; chkZ++) {
+                    ChunkRenderer chunk = getChunk(ChunkLocation.of(chkX, chkY, chkZ));
+                    if (chunk == null) {
+                        continue;
+                    }
+                    recompileChunk(chunk, mode);
+                }
+            }
+        }
+    }
+
+    public void recompileChunksAroundBlock(int x, int y, int z, ChunkCompileMode mode) {
+        int minX = (x - 1) >> 4;
+        int minY = (y - 1) >> 4;
+        int minZ = (z - 1) >> 4;
+        int maxX = (x + 1) >> 4;
+        int maxY = (y + 1) >> 4;
+        int maxZ = (z + 1) >> 4;
+        for (int chkX = minX; chkX <= maxX; chkX++) {
+            for (int chY = minY; chY <= maxY; chY++) {
+                for (int chZ = minZ; chZ <= maxZ; chZ++) {
+                    ChunkRenderer chunk = getChunk(ChunkLocation.of(chkX, chY, chZ));
+                    if (chunk == null) {
+                        continue;
+                    }
+                    recompileChunk(chunk, mode);
+                }
+            }
+        }
+    }
+
     /**
      * Destroys all chunks and remove them from memory.
      */
@@ -105,10 +139,12 @@ public class ChunkViewRenderer implements Listener {
         chunks.clear();
     }
 
-
     @EventHandler
     public void onChunkLoad(ChunkLoadEvent e) {
         loadChunk(new ChunkRenderer(this, e.getChunk(), program));
+
+        ChunkLocation loc = e.getChunk().getLocation();
+        recompileChunks(loc.x, loc.y, loc.z, ChunkCompileMode.ASYNC);
     }
 
     @EventHandler
@@ -121,28 +157,7 @@ public class ChunkViewRenderer implements Listener {
         if (world != e.getWorld()) {
             return;
         }
-        int ux = e.getX();
-        int uy = e.getY();
-        int uz = e.getZ();
-
-        int minX = (ux - 1) >> 4;
-        int minY = (uy - 1) >> 4;
-        int minZ = (uz - 1) >> 4;
-        int maxX = (ux + 1) >> 4;
-        int maxY = (uy + 1) >> 4;
-        int maxZ = (uz + 1) >> 4;
-
-        for (int x = minX; x <= maxX; x++) {
-            for (int y = minY; y <= maxY; y++) {
-                for (int z = minZ; z <= maxZ; z++) {
-                    ChunkRenderer chunk = getChunk(ChunkLocation.of(x, y, z));
-                    if (chunk == null) {
-                        continue;
-                    }
-                    recompileChunk(chunk, ChunkCompileMode.INSTANT);
-                }
-            }
-        }
+        recompileChunksAroundBlock(e.getX(), e.getY(), e.getZ(), ChunkCompileMode.INSTANT);
     }
 
     @EventHandler

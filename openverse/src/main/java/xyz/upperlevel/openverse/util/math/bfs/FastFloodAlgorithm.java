@@ -43,6 +43,7 @@ public class FastFloodAlgorithm {
      * @param context the context on which it acts
      */
     public void start(FastFloodContext context) {
+        System.out.println("starting with removal: " + removalQueue.size() + " propagation: " + propagationQueue.size());
         // Removal algorithm
         for (BfsNode node : removalQueue) {
             context.setValue(node.x, node.y, node.z, 0);

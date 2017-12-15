@@ -116,6 +116,18 @@ public class Chunk {
      */
     public BlockState setBlockState(int x, int y, int z, BlockState blockState, boolean blockUpdate) {
         BlockState oldState = blockStorage.setBlockState(x, y, z, blockState);
+
+        int wx = getX() << 4 | x;
+        int wy = getY() << 4 | y;
+        int wz = getZ() << 4 | z;
+
+        // Block Light
+        int oldEmLight = oldState.getBlockType().getEmittedBlockLight(oldState);
+        int emLight = blockState.getBlockType().getEmittedBlockLight(blockState);
+
+        world.removeBlockLight(wx, wy, wz, oldEmLight, true);
+        world.appendBlockLight(wx, wy, wz, emLight, true);
+
         if (blockUpdate) {
             rebuildHeightFor(x, z, y, true);
             updateSkylightOnBlockChange(x, z, y);
@@ -210,6 +222,9 @@ public class Chunk {
     }
 
     public void updateDirectSkylight() {
+        if (y < chunkPillar.getHeightmapMinimum() >> 4) {
+            return;
+        }
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 int ch = chunkPillar.getHeight(x, z);
@@ -267,8 +282,8 @@ public class Chunk {
     }
 
     public void updateSkylights() {
-        updateDirectSkylight();
-        updateSkylightGaps();
+        //TODO: updateDirectSkylight();
+        //TODO: updateSkylightGaps();
     }
 
     public void rebuildHeightMap() {

@@ -215,50 +215,33 @@ public class World {
         }
     };
 
-    /**
-     * Gets the block light at the given location.
-     *
-     * @param x the x-axis location
-     * @param y the y-axis location
-     * @param z the z-axis location
-     * @return the block light
-     */
     public int getBlockLight(int x, int y, int z) {
-        Chunk chunk = getChunkFromBlock(x, y, z);
-        return chunk == null ? 0 : chunk.getBlockLight(x & 0xF, y & 0xF, z & 0xF);
+        Chunk chunk = getChunk(x >> 4, y >> 4, z >> 4);
+        if (chunk == null) {
+            return 0;
+        }
+        return chunk.getBlockLight(x & 0xF, y & 0xF, z & 0xF);
     }
 
-    /**
-     * Appends a new node to the light diffusion algorithm.
-     * To effectively apply the lights use {@link #updateBlockLights()}.
-     *
-     * @param x          the x-axis location
-     * @param y          the y-axis location
-     * @param z          the z-axis location
-     * @param blockLight the block light
-     */
     public void appendBlockLight(int x, int y, int z, int blockLight, boolean instantUpdate) {
-        Chunk chunk = getChunkFromBlock(x, y, z);
-        if (chunk != null) {
-            int oldLev = getBlockLight(x, y, z);
-            if (oldLev > blockLight) {
-                lightDiffusion.addRemovalNode(x, y, z, oldLev);
-                lightDiffusion.addNode(x, y, z, blockLight);
-            } else if (oldLev < blockLight) {
-                lightDiffusion.addNode(x, y, z, blockLight);
-            }
-            if (instantUpdate)
-                updateBlockLights();
+        lightDiffusion.addNode(x, y, z, blockLight);
+        if (instantUpdate) {
+            updateBlockLights();
         }
     }
 
-    /**
-     * Diffuses all the block lights appended until now.
-     */
+    public void removeBlockLight(int x, int y, int z, int oldBlockLight, boolean instantUpdate) {
+        lightDiffusion.addRemovalNode(x, y, z, oldBlockLight);
+        if (instantUpdate) {
+            updateBlockLights();
+        }
+    }
+
     public void updateBlockLights() {
         lightDiffusion.start(blockLightContext);
     }
 
+    //<editor-fold desc="Block Skylight">
     /**
      * A context for the block skylight fast flood algorithm.
      * Needed to use the FastFlood API.
@@ -301,6 +284,14 @@ public class World {
         return chunk.getBlockSkylight(x & 0xF, y & 0xF, z & 0xF);
     }
 
+    public void setBlockSkylight(int x, int y, int z, int skylight) {
+        Chunk chunk = getChunkFromBlock(x, y, z);
+        if (chunk == null) {
+            return;
+        }
+        chunk.getBlockStorage().setBlockSkylight(x & 0xF, y & 0xF, z & 0xF, skylight);
+    }
+
     /**
      * Appends a new node to the skylight diffusion algorithm.
      * To effectively apply the skylights use {@link #updateBlockSkylights()}.
@@ -331,4 +322,5 @@ public class World {
     public void updateBlockSkylights() {
         skylightDiffusion.start(blockSkylightContext);
     }
+    //</editor-fold>
 }

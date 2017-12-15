@@ -88,7 +88,7 @@ public class BlockModel {
     }
 
     public int getDataCount() {
-        return getVerticesCount() * (3 + 3 + 1);
+        return getVerticesCount() * (3 + 3 + 1 + 1);
     }
 
     public int renderOnBuffer(World world, int x, int y, int z, ByteBuffer buffer) {

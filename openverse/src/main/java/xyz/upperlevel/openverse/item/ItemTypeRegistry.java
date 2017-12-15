@@ -18,6 +18,7 @@ public class ItemTypeRegistry extends Registry<ItemType> {
         register(AIR);
         registerForBlock(blockRegistry.entry("grass"));
         registerForBlock(blockRegistry.entry("dirt"));
+        registerForBlock(blockRegistry.entry("photon"));
     }
 
     public void register(ItemType type) {

@@ -31,7 +31,11 @@ public class SimpleWorldGenerator implements ChunkGenerator {
             for (int z = 0; z < 16; z++) {
                 int wx = x + chunkPillar.getX() * 16;
                 int wz = z + chunkPillar.getZ() * 16;
-                chunkPillar.setHeight(x, z, getNoisedHeight(wx, wz));
+                if (wx < 0) {
+                    chunkPillar.setHeight(x, z, Integer.MIN_VALUE);
+                } else {
+                    chunkPillar.setHeight(x, z, getNoisedHeight(wx, wz));
+                }
             }
         }
     }
@@ -52,7 +56,11 @@ public class SimpleWorldGenerator implements ChunkGenerator {
                     if (wy < nh) {
                         chunk.setBlockType(x, y, z, dirtType, false);
                     } else if (wy == nh) {
-                        chunk.setBlockType(x, y, z, grassType, false);
+                        if (x == 0 && z == 0) {
+                            chunk.setBlockType(x, y, z, photonType, false);
+                        } else {
+                            chunk.setBlockType(x, y, z, grassType, false);
+                        }
                     }
                 }
             }
