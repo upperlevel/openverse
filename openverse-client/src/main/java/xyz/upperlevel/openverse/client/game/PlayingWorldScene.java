@@ -26,9 +26,7 @@ import xyz.upperlevel.ulge.window.event.button.MouseButton;
 import java.io.File;
 import java.io.IOException;
 
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  * Scene instantiated when the player, the world and the initial chunks are received.
@@ -87,6 +85,8 @@ public class PlayingWorldScene implements Scene, Listener {
     @Override
     public void onRender() {
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+        glClearColor(147f / 255f, 224f / 255f, 255f / 255f, 0);
+
         worldViewer.render(getPartialTicks());
     }
 

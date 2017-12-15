@@ -16,6 +16,7 @@ public class ChunkPillar {
 
     private int heightmap[];
     private int heightmapMinimum;
+    private int heightmapMaximum;
 
     public ChunkPillar(World world, int x, int z) {
         this.world = world;
@@ -28,7 +29,8 @@ public class ChunkPillar {
         for (int i = 0; i < heightmap.length; i++) {
             heightmap[i] = Integer.MAX_VALUE;
         }
-        this.heightmapMinimum = Integer.MAX_VALUE;
+        heightmapMinimum = Integer.MAX_VALUE;
+        heightmapMaximum = Integer.MAX_VALUE;
     }
 
     public Chunk getChunk(int y) {
@@ -80,6 +82,9 @@ public class ChunkPillar {
         if (height < heightmapMinimum) {
             heightmapMinimum = height;
         }
+        if (height > heightmapMaximum) {
+            heightmapMaximum = height;
+        }
     }
 
     /**
@@ -95,6 +100,9 @@ public class ChunkPillar {
         for (int i = 0; i < 256; i++) {
             if (heightmap[i] < heightmapMinimum) {
                 heightmapMinimum = heightmap[i];
+            }
+            if (heightmap[i] > heightmapMaximum) {
+                heightmapMaximum = heightmap[i];
             }
         }
     }

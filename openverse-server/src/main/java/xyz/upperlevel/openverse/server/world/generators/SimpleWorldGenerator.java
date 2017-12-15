@@ -31,14 +31,16 @@ public class SimpleWorldGenerator implements ChunkGenerator {
             for (int z = 0; z < 16; z++) {
                 int wx = x + chunkPillar.getX() * 16;
                 int wz = z + chunkPillar.getZ() * 16;
-                chunkPillar.setHeight(x, z, Integer.MIN_VALUE);
-                // getNoisedHeight(wx, wz)
+                chunkPillar.setHeight(x, z, getNoisedHeight(wx, wz));
             }
         }
     }
 
     @Override
     public void generateChunk(Chunk chunk) {
+        if (chunk.getX() < 0) {
+            return;
+        }
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 int wx = (chunk.getX() << 4 | x);
@@ -47,15 +49,15 @@ public class SimpleWorldGenerator implements ChunkGenerator {
 
                 for (int y = 0; y < 16; y++) {
                     int wy = (chunk.getY() << 4 | y);
-                    if (wy < nh) {
+                    if (wy < nh - 1) {
                         chunk.setBlockType(x, y, z, dirtType, false);
-                    } else if (wy == nh) {
+                    } else if (wy == nh - 1) {
                         chunk.setBlockType(x, y, z, grassType, false);
                     }
                 }
             }
         }
         // Appends block skylights for the chunk and updates (diffuses) them
-        chunk.appendBlockSkylights(true);
+        chunk.updateSkylights();
     }
 }

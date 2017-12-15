@@ -3,6 +3,7 @@ package xyz.upperlevel.openverse.world;
 import lombok.Getter;
 import lombok.Setter;
 import org.joml.Vector3i;
+import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.util.math.Aabb3d;
 import xyz.upperlevel.openverse.util.math.LineVisitor3d;
 import xyz.upperlevel.openverse.util.math.bfs.FastFloodAlgorithm;
@@ -63,6 +64,11 @@ public class World {
         return chunkPillarProvider.unloadChunkPillar(x, z);
     }
 
+    public int getHeight(int x, int z) {
+        ChunkPillar plr = getChunkPillarFromBlock(x, z);
+        return plr == null ? Integer.MAX_VALUE : plr.getHeight(x & 0xF, z & 0xF);
+    }
+
     public boolean isChunkLoaded(int x, int y, int z) {
         return chunkPillarProvider.hasChunk(x, y, z);
     }
@@ -86,11 +92,13 @@ public class World {
         return getChunk(blockX >> 4, blockY >> 4, blockZ >> 4);
     }
 
-    public void setChunk(Chunk chunk) {
+    public boolean setChunk(Chunk chunk) {
         ChunkPillar plr = getChunkPillar(chunk.getX(), chunk.getZ());
-        if (plr != null) {
-            plr.setChunk(chunk.getY(), chunk);
+        if (plr == null) {
+            return false;
         }
+        plr.setChunk(chunk.getY(), chunk);
+        return true;
     }
 
     /**
@@ -287,7 +295,10 @@ public class World {
      */
     public int getBlockSkylight(int x, int y, int z) {
         Chunk chunk = getChunkFromBlock(x, y, z);
-        return chunk == null ? 0 : chunk.getBlockSkylight(x & 0xF, y & 0xF, z & 0xF);
+        if (chunk == null) {
+            return 0;
+        }
+        return chunk.getBlockSkylight(x & 0xF, y & 0xF, z & 0xF);
     }
 
     /**
@@ -302,7 +313,7 @@ public class World {
     public void appendBlockSkylight(int x, int y, int z, int blockSkylight, boolean instantUpdate) {
         Chunk chunk = getChunkFromBlock(x, y, z);
         if (chunk != null) {
-            int oldLev = getBlockLight(x, y, z);
+            int oldLev = getBlockSkylight(x, y, z);
             if (oldLev > blockSkylight) {
                 skylightDiffusion.addRemovalNode(x, y, z, oldLev);
                 skylightDiffusion.addNode(x, y, z, blockSkylight);
@@ -310,7 +321,7 @@ public class World {
                 skylightDiffusion.addNode(x, y, z, blockSkylight);
             }
             if (instantUpdate)
-                updateBlockLights();
+                updateBlockSkylights();
         }
     }
 

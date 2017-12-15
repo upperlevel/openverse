@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.event.BlockUpdateEvent;
-import xyz.upperlevel.openverse.util.math.bfs.FastFloodAlgorithm;
-import xyz.upperlevel.openverse.util.math.bfs.FastFloodContext;
 import xyz.upperlevel.openverse.world.BlockFace;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.block.BlockType;
@@ -24,12 +22,16 @@ public class Chunk {
     private final ChunkLocation location;
     private BlockStorage blockStorage;
 
+    private boolean skylightColumnsUpdated[];
+
     public Chunk(ChunkPillar chunkPillar, int y) {
         this.world = chunkPillar.getWorld();
         this.chunkPillar = chunkPillar;
         this.y = y;
         this.location = new ChunkLocation(getX(), y, getZ());
         this.blockStorage = new SimpleBlockStorage(this);
+
+        skylightColumnsUpdated = new boolean[16 * 16];
     }
 
     /**
@@ -159,32 +161,71 @@ public class Chunk {
         return blockStorage.getBlockSkylight(x, y, z);
     }
 
-    /**
-     * Diffuses the skylights for the given chunk and
-     * the neighbour chunks. To set and update them it must be called
-     * {@link World#updateBlockSkylights()}.
-     */
-    public void appendBlockSkylights(boolean instantUpdate) {
-        int mny = (y - 1) << 4;
-        int mxy = (y + 1) << 4 | 0xF;
-        int hmv = chunkPillar.getHeightmapMinimum();
-        if (hmv >= mny && hmv <= mxy) {
-            for (int nx = getX() - 1; nx <= getX() + 1; nx++) {
-                for (int nz = getZ() - 1; nz <= getZ() + 1; nz++) {
-                    ChunkPillar nb = world.getChunkPillar(nx, nz);
-                    for (int i = 0; i < 256; i++) {
-                        int y = nb.getHeightmap()[i];
-                        if (y >= mny && y <= mxy) {
-                            int x = nx << 4 | i >> 4;
-                            int z = nz << 4 | i & 0xF;
-                            world.appendBlockSkylight(x, y, z, 15, false);
+    public boolean isHeightmapTestable() {
+        return y >= chunkPillar.getHeightmapMinimum() >> 4 && y <= chunkPillar.getHeightmapMaximum() >> 4;
+    }
+
+    public void updateSkylightGaps() {
+        if (!isHeightmapTestable()) {
+            return;
+        }
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                if (!skylightColumnsUpdated[x * 16 + z]) {
+                    skylightColumnsUpdated[x * 16 + z] = true;
+
+                    int currX = getX() << 4 | x;
+                    int currZ = getZ() << 4 | z;
+                    int height = chunkPillar.getHeight(x, z);
+
+                    if (height >> 4 == y) {
+                        for (BlockFace face : new BlockFace[]{BlockFace.BACK, BlockFace.FRONT, BlockFace.LEFT, BlockFace.RIGHT}) {
+                            int relX = currX + face.offsetX;
+                            int relZ = currZ + face.offsetZ;
+                            int relHeight = world.getHeight(relX, relZ);
+
+                            int from = Math.max(height, relHeight) - 1;
+                            if (from >> 4 == y) {
+                                from &= 0xF;
+                            } else {
+                                from = 15;
+                            }
+                            int to = Math.min(height, relHeight);
+                            if (to >> 4 == y) {
+                                to &= 0xF;
+                            } else {
+                                to = 0;
+                            }
+                            for (int y = from; y >= to; y--) {
+                                world.appendBlockSkylight(currX, this.y << 4 | y, currZ, 15, false);
+                            }
                         }
                     }
                 }
             }
         }
-        if (instantUpdate) {
-            world.updateBlockSkylights();
+        world.updateBlockSkylights();
+    }
+
+    public void updateDirectSkylight() {
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                int ch = chunkPillar.getHeight(x, z);
+                if (y > ch >> 4) {
+                    for (int y = 15; y >= 0; y--) {
+                        blockStorage.setBlockSkylight(x, y, z, 15);
+                    }
+                } else if (y == ch >> 4) {
+                    for (int y = 15; y >= (ch & 0xF); y--) {
+                        blockStorage.setBlockSkylight(x, y, z, 15);
+                    }
+                }
+            }
         }
+    }
+
+    public void updateSkylights() {
+        updateDirectSkylight();
+        updateSkylightGaps();
     }
 }

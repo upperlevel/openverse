@@ -141,6 +141,7 @@ public class BlockPartFace {
         // Checks if the face is hidden
         if (!shouldBeRendered(world, x, y, z))
             return 0;
+        float skylightVal = world.getBlockSkylight(x + blockFace.offsetX, y + blockFace.offsetY, z + blockFace.offsetZ) / 15f;
         for (int i = 0; i < 4; i++) {
             // Adds block vertices to the chunk
             buffer.putFloat(x + verticesX[i])
@@ -149,7 +150,7 @@ public class BlockPartFace {
                     .putFloat(verticesU[i])
                     .putFloat(verticesV[i])
                     .putFloat(textureLayer)
-                    .putFloat(world.getBlockSkylight(x, y, z) / 15f);
+                    .putFloat(skylightVal);
         }
         return 4;
     }

@@ -23,6 +23,6 @@ public class SingleBlockGenerator implements ChunkGenerator {
     @Override
     public void generateChunk(Chunk chunk) {
         chunk.setBlockType(0, 0, 0, fullType, false);
-        chunk.appendBlockSkylights(true);
+        chunk.updateSkylights();
     }
 }

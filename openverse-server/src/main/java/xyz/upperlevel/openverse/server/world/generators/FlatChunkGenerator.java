@@ -38,6 +38,6 @@ public class FlatChunkGenerator implements ChunkGenerator {
                 }
             }
         }
-        chunk.appendBlockSkylights(true);
+        chunk.updateSkylights();
     }
 }

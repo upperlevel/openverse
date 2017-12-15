@@ -44,8 +44,8 @@ public class ClientWorld extends World implements PacketListener {
         }
         Chunk chk = new Chunk(plr, pkt.getY());
         pkt.setBlockStates(chk);
+        chk.updateSkylights();
         setChunk(chk);
-        //c.appendBlockSkylights(true);
     }
 
     /**
