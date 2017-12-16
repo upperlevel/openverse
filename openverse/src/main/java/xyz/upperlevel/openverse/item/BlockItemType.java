@@ -11,6 +11,7 @@ import xyz.upperlevel.openverse.world.entity.player.Player;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 public class BlockItemType extends ItemType {
     @Getter
@@ -45,6 +46,11 @@ public class BlockItemType extends ItemType {
     @Override
     public byte getDefaultState() {
         return (byte) blockType.getDefaultState().getId();
+    }
+
+    @Override
+    public IntStream getStates() {
+        return IntStream.range(0, blockType.getStateRegistry().getStates().size());
     }
 
     @Override

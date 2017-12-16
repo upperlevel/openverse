@@ -15,6 +15,7 @@ import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.inventory.PlayerInventorySession;
 import xyz.upperlevel.openverse.inventory.Slot;
 import xyz.upperlevel.openverse.item.ItemStack;
+import xyz.upperlevel.openverse.item.ItemType;
 import xyz.upperlevel.openverse.item.ItemTypes;
 import xyz.upperlevel.openverse.network.inventory.PlayerCloseInventoryPacket;
 import xyz.upperlevel.openverse.network.inventory.PlayerInventoryActionPacket;
@@ -94,9 +95,13 @@ public class PlayerManager implements Listener, PacketListener {
         //Add a block of dirt in his hand
         //sp.getInventory().setHandItem(new ItemStack(Openverse.resources().itemTypes().entry("dirt")));
         {
+            int index = 9 * 3;
             PlayerInventory inv = sp.getInventory();
-            for (int i = 0; i < inv.getSize(); i++) {
-                inv.get(i).swap(new ItemStack(i % 2 == 0 ? ItemTypes.DIRT : ItemTypes.GRASS));
+            for (ItemType item : Openverse.resources().itemTypes().entries()) {
+                for (int state : item.getStates().toArray()) {
+                    if (index > 9 * 4) index = 0;
+                    inv.get(index++).swap(new ItemStack(item, 1, (byte) state));
+                }
             }
         }
         sp.updateInventory();

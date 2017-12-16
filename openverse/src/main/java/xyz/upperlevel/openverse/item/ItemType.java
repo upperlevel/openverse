@@ -7,7 +7,10 @@ import xyz.upperlevel.openverse.world.block.BlockFace;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.entity.player.Player;
 
+import java.util.BitSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.IntStream;
 
 @Getter
 public class ItemType {
@@ -52,6 +55,10 @@ public class ItemType {
 
     public byte getDefaultState() {
         return 0;
+    }
+
+    public IntStream getStates() {
+        return IntStream.of(0);
     }
 
     /**
