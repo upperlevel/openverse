@@ -15,6 +15,8 @@ import xyz.upperlevel.openverse.world.entity.player.events.PlayerInventoryOpenEv
 import xyz.upperlevel.ulge.gui.GuiBounds;
 import xyz.upperlevel.ulge.gui.GuiViewer;
 import xyz.upperlevel.ulge.window.Window;
+import xyz.upperlevel.ulge.window.event.KeyChangeEvent;
+import xyz.upperlevel.ulge.window.event.action.Action;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -24,6 +26,7 @@ public class GuiManager implements Listener {
 
     public GuiManager() {
         Openverse.getEventManager().register(this);
+        OpenverseLauncher.get().getGame().getWindow().getEventManager().register(KeyChangeEvent.class, this::onKey, EventPriority.HIGH);
     }
 
 
@@ -44,6 +47,17 @@ public class GuiManager implements Listener {
         handSlotGui = null;
         viewer.close();
         OpenverseClient.get().setCaptureInput(true);
+    }
+
+    public void onKey(KeyChangeEvent event) {
+        if (viewer.getHandle().isEmpty()) return;
+        if (event.getAction() == Action.PRESS){
+            switch (event.getKey()) {
+                case ESCAPE:
+                    OpenverseClient.get().getPlayer().closeInventory();
+                    break;
+            }
+        }
     }
 
     public void render(float partialTicks) {

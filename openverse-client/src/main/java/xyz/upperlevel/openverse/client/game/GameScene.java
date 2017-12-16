@@ -69,6 +69,7 @@ public class GameScene extends Stage implements Listener {
 
     @EventHandler
     public void onKeyChange(KeyChangeEvent e) {
+        if (!OpenverseClient.get().isCaptureInput()) return;
         if (e.getAction() == Action.PRESS) {
             switch (e.getKey()) {
                 case ESCAPE:

@@ -3,6 +3,7 @@ package xyz.upperlevel.openverse.client.game;
 import lombok.Getter;
 import org.joml.Vector3i;
 import xyz.upperlevel.event.EventHandler;
+import xyz.upperlevel.event.EventPriority;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.OpenverseClient;
@@ -98,7 +99,7 @@ public class PlayingWorldScene implements Scene, Listener {
         return OpenverseClient.get().getPlayer();
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW)
     public void onKey(KeyChangeEvent event) {
         if (event.getAction() == Action.PRESS) {
             //TODO: a normal freakin' input system
