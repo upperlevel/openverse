@@ -11,6 +11,8 @@ import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.chunk.storage.BlockStorage;
 import xyz.upperlevel.openverse.world.chunk.storage.SimpleBlockStorage;
 
+import java.util.Map;
+
 import static xyz.upperlevel.openverse.world.chunk.storage.BlockStorage.AIR_STATE;
 
 @Getter
@@ -117,20 +119,7 @@ public class Chunk {
     public BlockState setBlockState(int x, int y, int z, BlockState blockState, boolean blockUpdate) {
         BlockState oldState = blockStorage.setBlockState(x, y, z, blockState);
 
-        int wx = getX() << 4 | x;
-        int wy = getY() << 4 | y;
-        int wz = getZ() << 4 | z;
-
-        // Block Light
-        int oldEmLight = oldState.getBlockType().getEmittedBlockLight(oldState);
-        int emLight = blockState.getBlockType().getEmittedBlockLight(blockState);
-
-        if (oldEmLight > 0) {
-            world.removeBlockLight(wx, wy, wz, oldEmLight, blockUpdate);
-        }
-        if (emLight > 0) {
-            world.appendBlockLight(wx, wy, wz, emLight, blockUpdate);
-        }
+        reloadLightForBlock(x, y, z, oldState, blockState, blockUpdate);
 
         if (blockUpdate) {
             rebuildHeightFor(x, z, y, true);
@@ -141,8 +130,24 @@ public class Chunk {
         return oldState;
     }
 
-    public void reloadAllLights() {
+    protected void reloadLightForBlock(int x, int y, int z, BlockState oldState, BlockState newState, boolean calculate) {
+        int realX = getX() * 16 + x;
+        int realY = getY() * 16 + y;
+        int realZ = getZ() * 16 + z;
 
+        int oldLight = oldState.getBlockType().getEmittedBlockLight(oldState);
+        int newLight = newState.getBlockType().getEmittedBlockLight(newState);
+
+        if (oldLight != newLight) {
+            if (oldLight > 0) {
+                world.removeBlockLight(realX, realY, realZ, oldLight, calculate);
+            }
+            if (newLight > 0) {
+                world.appendBlockLight(realX, realY, realZ, newLight, calculate);
+            }
+        } else if (calculate && (oldState == AIR_STATE ^ newState == AIR_STATE)) {
+            world.recalcLightOpacity(realX, realY, realZ);
+        }
     }
 
     /**

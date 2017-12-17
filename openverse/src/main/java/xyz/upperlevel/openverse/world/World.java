@@ -328,5 +328,9 @@ public class World {
     public void updateBlockSkylights() {
         skylightDiffusion.start(blockSkylightContext);
     }
+
+    public void recalcLightOpacity(int x, int y, int z) {
+        lightDiffusion.reloadForBlock(blockLightContext, x, y, z);
+    }
     //</editor-fold>
 }

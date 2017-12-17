@@ -65,12 +65,13 @@ public class FastFloodAlgorithm {
 
                 if (!context.isOutOfBounds(rx, ry, rz)) {
                     int rv = context.getValue(rx, ry, rz);
-                    if (rv != 0 && rv <= v) {
+                    if (rv == 0) continue;
+                    if (rv <= v) {
                         context.setValue(rx, ry, rz, 0);
                         if (rv != 1) {
                             removalQueue.add(new BfsNode(rx, ry, rz, rv));
                         }
-                    } else if (rv >= v) {
+                    } else {
                         addNode(rx, ry, rz, rv);
                     }
                 }
@@ -107,6 +108,26 @@ public class FastFloodAlgorithm {
                 }
             }
         }
-        Openverse.getLogger().fine("[Light] Propagation done: " + removed + " removed, " + propagated + " propagated");
+        if (removed > 0 || propagated > 0) {
+            Openverse.getLogger().fine("[Light] Propagation done: " + removed + " removed, " + propagated + " propagated");
+        }
+    }
+
+    public void reloadForBlock(FastFloodContext context, int x, int y, int z) {
+        boolean opaque = context.isOpaque(x, y, z);
+        if (!opaque) {
+            int light = 0;
+            for (BfsRelative r : BfsRelative.values()) {
+                int value = context.getValue(x + r.getOffsetX(), y + r.getOffsetY(), z + r.getOffsetZ()) - 1;
+                if (value > light) {
+                    light = value;
+                }
+            }
+            propagationQueue.add(new BfsNode(x, y, z, light));
+            start(context);
+        } else {
+            removalQueue.add(new BfsNode(x, y, z, context.getValue(x, y, z)));
+            start(context);
+        }
     }
 }
