@@ -51,8 +51,16 @@ public class Block {
         chunk.setBlockState(chunkRelativeX, chunkRelativeY, chunkRelativeZ, state);
     }
 
+    public int getSkyLight() {
+        return storage.getBlockSkylight(chunkRelativeX, chunkRelativeY, chunkRelativeZ);
+    }
+
+    public int getBlockLight() {
+        return storage.getBlockLight(chunkRelativeX, chunkRelativeY, chunkRelativeZ);
+    }
+
     @Override
     public String toString() {
-        return "{loc:{" + x + "," + y + "," + z + "},state:" + getState() + "}";
+        return "{loc:{" + x + "," + y + "," + z + "},state:" + getState() + ",skyLight:" + getSkyLight() + ",blockLight;" + getBlockLight() + "}";
     }
 }
