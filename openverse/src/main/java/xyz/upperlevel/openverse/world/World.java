@@ -82,10 +82,7 @@ public class World {
      */
     public Chunk getChunk(int x, int y, int z) {
         ChunkPillar plr = getChunkPillar(x, z);
-        if (plr == null) {
-            return null;
-        }
-        return plr.getChunk(y);
+        return plr == null ? null : plr.getChunk(y);
     }
 
     public Chunk getChunkFromBlock(int blockX, int blockY, int blockZ) {
@@ -213,14 +210,17 @@ public class World {
                 chk.getBlockStorage().setBlockLight(x & 0xF, y & 0xF, z & 0xF, value);
             }
         }
+
+        @Override
+        public boolean isOpaque(int x, int y, int z) {
+            Chunk chunk = getChunkFromBlock(x, y, z);
+            return chunk == null || chunk.getBlockState(x & 0xF, y & 0xF, z & 0xF) != AIR_STATE;
+        }
     };
 
     public int getBlockLight(int x, int y, int z) {
-        Chunk chunk = getChunk(x >> 4, y >> 4, z >> 4);
-        if (chunk == null) {
-            return 0;
-        }
-        return chunk.getBlockLight(x & 0xF, y & 0xF, z & 0xF);
+        Chunk chunk = getChunkFromBlock(x, y, z);
+        return chunk == null ? 0 : chunk.getBlockLight(x & 0xF, y & 0xF, z & 0xF);
     }
 
     public void appendBlockLight(int x, int y, int z, int blockLight, boolean instantUpdate) {
@@ -249,7 +249,7 @@ public class World {
     private final FastFloodContext blockSkylightContext = new FastFloodContext() {
         @Override
         public boolean isOutOfBounds(int x, int y, int z) {
-            return false;
+            return getChunkFromBlock(x, y, z) != null;
         }
 
         @Override
@@ -265,6 +265,12 @@ public class World {
                 // This is the only way to access block skylight storage.
                 chk.getBlockStorage().setBlockSkylight(x & 0xF, y & 0xF, z & 0xF, value);
             }
+        }
+
+        @Override
+        public boolean isOpaque(int x, int y, int z) {
+            Chunk chunk = getChunkFromBlock(x, y, z);
+            return chunk == null || chunk.getBlockState(x & 0xF, y & 0xF, z & 0xF) != AIR_STATE;
         }
     };
 

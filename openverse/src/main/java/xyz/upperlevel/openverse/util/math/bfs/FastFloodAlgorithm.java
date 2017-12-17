@@ -1,5 +1,7 @@
 package xyz.upperlevel.openverse.util.math.bfs;
 
+import xyz.upperlevel.openverse.Openverse;
+
 import java.util.ArrayDeque;
 import java.util.Queue;
 
@@ -43,11 +45,13 @@ public class FastFloodAlgorithm {
      * @param context the context on which it acts
      */
     public void start(FastFloodContext context) {
+        long removed = 0, propagated = 0;
         // Removal algorithm
         for (BfsNode node : removalQueue) {
             context.setValue(node.x, node.y, node.z, 0);
         }
         while (!removalQueue.isEmpty()) {
+            removed++;
             BfsNode node = removalQueue.poll();
             int x = node.x;
             int y = node.y;
@@ -61,9 +65,11 @@ public class FastFloodAlgorithm {
 
                 if (!context.isOutOfBounds(rx, ry, rz)) {
                     int rv = context.getValue(rx, ry, rz);
-                    if (rv != 0 && rv < v) {
+                    if (rv != 0 && rv <= v) {
                         context.setValue(rx, ry, rz, 0);
-                        addRemovalNode(rx, ry, rz, rv);
+                        if (rv != 1) {
+                            removalQueue.add(new BfsNode(rx, ry, rz, rv));
+                        }
                     } else if (rv >= v) {
                         addNode(rx, ry, rz, rv);
                     }
@@ -75,6 +81,7 @@ public class FastFloodAlgorithm {
             context.setValue(node.x, node.y, node.z, node.value);
         }
         while (!propagationQueue.isEmpty()) {
+            propagated++;
             BfsNode node = propagationQueue.poll();
             int x = node.x;
             int y = node.y;
@@ -86,17 +93,20 @@ public class FastFloodAlgorithm {
                 int ry = y + r.getOffsetY();
                 int rz = z + r.getOffsetZ();
 
-                if (!context.isOutOfBounds(rx, ry, rz)) {
+                if (!context.isOutOfBounds(rx, ry, rz) && !context.isOpaque(rx, ry, rz)) {
                     // If the value of light of the neighbor is
                     // lower or equal than the current value - 1
                     if ((context.getValue(rx, ry, rz) + 2) <= v) {
                         int rl = v - 1;
                         // Sets the relative value
                         context.setValue(rx, ry, rz, rl);
-                        propagationQueue.add(new BfsNode(rx, ry, rz, rl));
+                        if (rl != 1) {// Just to save off some RAM
+                            propagationQueue.add(new BfsNode(rx, ry, rz, rl));
+                        }
                     }
                 }
             }
         }
+        Openverse.getLogger().fine("[Light] Propagation done: " + removed + " removed, " + propagated + " propagated");
     }
 }

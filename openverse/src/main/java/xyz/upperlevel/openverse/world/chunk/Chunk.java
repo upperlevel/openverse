@@ -117,7 +117,6 @@ public class Chunk {
     public BlockState setBlockState(int x, int y, int z, BlockState blockState, boolean blockUpdate) {
         BlockState oldState = blockStorage.setBlockState(x, y, z, blockState);
 
-        /*
         int wx = getX() << 4 | x;
         int wy = getY() << 4 | y;
         int wz = getZ() << 4 | z;
@@ -126,16 +125,24 @@ public class Chunk {
         int oldEmLight = oldState.getBlockType().getEmittedBlockLight(oldState);
         int emLight = blockState.getBlockType().getEmittedBlockLight(blockState);
 
-        world.removeBlockLight(wx, wy, wz, oldEmLight, true);
-        world.appendBlockLight(wx, wy, wz, emLight, true);
-        */
+        if (oldEmLight > 0) {
+            world.removeBlockLight(wx, wy, wz, oldEmLight, blockUpdate);
+        }
+        if (emLight > 0) {
+            world.appendBlockLight(wx, wy, wz, emLight, blockUpdate);
+        }
 
         if (blockUpdate) {
             rebuildHeightFor(x, z, y, true);
             updateSkylightOnBlockChange(x, z, y);
+
             Openverse.getEventManager().call(new BlockUpdateEvent(world, x + (location.x << 4), y + (location.y << 4), z + (location.z << 4), oldState, blockState));
         }
         return oldState;
+    }
+
+    public void reloadAllLights() {
+
     }
 
     /**
