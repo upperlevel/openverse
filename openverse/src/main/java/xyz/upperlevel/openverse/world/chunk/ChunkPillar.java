@@ -54,9 +54,13 @@ public class ChunkPillar {
     }
 
     public void setBlockState(int x, int y, int z, BlockState blockState) {
-        if (getHeight(x, z) > y)
+        if (getHeight(x, z) > y) {
             setHeight(x, z, y);
-        // todo sets block in chunk
+        }
+        Chunk chunk = getChunk(y / 16);
+        if (chunk != null) {
+            chunk.setBlockState(x, y & 15, z, blockState);
+        }
     }
 
     /**
@@ -105,6 +109,19 @@ public class ChunkPillar {
                 heightmapMaximum = heightmap[i];
             }
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return x << 16 | z & 0xFFFF;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == this) return true;
+        if (!(other instanceof ChunkPillar)) return false;
+        ChunkPillar o = (ChunkPillar) other;
+        return o.world == this.world && o.x == this.x && o.z == this.z;
     }
 
     public static long hash(int x, int z) {

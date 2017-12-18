@@ -8,6 +8,5 @@ uniform sampler2DArray image;
 uniform float worldSkylight;
 
 void main() {
-    // Todo: fix temporary ()
-    gl_FragColor = ((BlockSkylight * worldSkylight) + 1) * (BlockLight + 0.1) * texture(image, TexCoords);
+    gl_FragColor = min((BlockSkylight * worldSkylight) + (BlockLight + 0.1), 1) * texture(image, TexCoords);
 }

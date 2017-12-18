@@ -48,6 +48,7 @@ public class ServerWorld extends World {
         Chunk chk = new Chunk(getOrLoadChunkPillar(x, z), y);
         chunkGenerator.generateChunk(chk);
         setChunk(chk);
+        chk.updateNearbyChunksLights();
         return chk;
     }
 

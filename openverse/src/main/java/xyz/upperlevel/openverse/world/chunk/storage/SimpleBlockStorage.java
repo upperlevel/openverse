@@ -76,8 +76,11 @@ public class SimpleBlockStorage implements BlockStorage {
     }
 
     @Override
-    public void setBlockLight(int x, int y, int z, int blockLight) {
-        blockLightArray.set(x << 8 | y << 4 | z, (byte) blockLight);
+    public int setBlockLight(int x, int y, int z, int blockLight) {
+        final int index = x << 8 | y << 4 | z;
+        int old = blockLightArray.get(index);
+        blockLightArray.set(index, (byte) blockLight);
+        return old;
     }
 
 
@@ -87,7 +90,10 @@ public class SimpleBlockStorage implements BlockStorage {
     }
 
     @Override
-    public void setBlockSkylight(int x, int y, int z, int blockSkyLight) {
-        blockSkylightArray.set(x << 8 | y << 4 | z, (byte) blockSkyLight);
+    public int setBlockSkylight(int x, int y, int z, int blockSkyLight) {
+        final int index = x << 8 | y << 4 | z;
+        int old = blockSkylightArray.get(index);
+        blockSkylightArray.set(index, (byte) blockSkyLight);
+        return old;
     }
 }

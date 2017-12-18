@@ -9,6 +9,7 @@ import xyz.upperlevel.openverse.client.world.ClientWorld;
 import xyz.upperlevel.openverse.event.BlockUpdateEvent;
 import xyz.upperlevel.openverse.event.ShutdownEvent;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
+import xyz.upperlevel.openverse.world.chunk.event.ChunkLightChangeEvent;
 import xyz.upperlevel.openverse.world.event.ChunkLoadEvent;
 import xyz.upperlevel.openverse.world.event.ChunkUnloadEvent;
 import xyz.upperlevel.ulge.opengl.shader.Program;
@@ -94,7 +95,7 @@ public class ChunkViewRenderer implements Listener {
         }
     }
 
-    public void recompileChunks(int x, int y, int z, ChunkCompileMode mode) {
+    public void recompileChunksAround(int x, int y, int z, ChunkCompileMode mode) {
         for (int chkX = x - 1; chkX <= x + 1; chkX++) {
             for (int chkY = y - 1; chkY <= y + 1; chkY++) {
                 for (int chkZ = z - 1; chkZ <= z + 1; chkZ++) {
@@ -144,7 +145,7 @@ public class ChunkViewRenderer implements Listener {
         loadChunk(new ChunkRenderer(this, e.getChunk(), program));
 
         ChunkLocation loc = e.getChunk().getLocation();
-        recompileChunks(loc.x, loc.y, loc.z, ChunkCompileMode.ASYNC);
+        recompileChunksAround(loc.x, loc.y, loc.z, ChunkCompileMode.ASYNC);
     }
 
     @EventHandler
@@ -158,6 +159,15 @@ public class ChunkViewRenderer implements Listener {
             return;
         }
         recompileChunksAroundBlock(e.getX(), e.getY(), e.getZ(), ChunkCompileMode.INSTANT);
+    }
+
+
+    @EventHandler
+    public void onChunkLightChange(ChunkLightChangeEvent e) {
+        if (world != e.getWorld()) {
+            return;
+        }
+        recompileChunk(getChunk(e.getChunk().getLocation()), ChunkCompileMode.ASYNC);
     }
 
     @EventHandler

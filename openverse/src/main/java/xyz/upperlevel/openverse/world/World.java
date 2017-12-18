@@ -3,16 +3,21 @@ package xyz.upperlevel.openverse.world;
 import lombok.Getter;
 import lombok.Setter;
 import org.joml.Vector3i;
+import xyz.upperlevel.event.EventManager;
+import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.util.math.Aabb3d;
 import xyz.upperlevel.openverse.util.math.LineVisitor3d;
 import xyz.upperlevel.openverse.util.math.bfs.FastFloodAlgorithm;
 import xyz.upperlevel.openverse.util.math.bfs.FastFloodContext;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.chunk.*;
+import xyz.upperlevel.openverse.world.chunk.event.ChunkLightChangeEvent;
 import xyz.upperlevel.openverse.world.entity.Entity;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static xyz.upperlevel.openverse.util.math.MathUtil.ceili;
 import static xyz.upperlevel.openverse.util.math.MathUtil.floori;
@@ -23,6 +28,7 @@ import static xyz.upperlevel.openverse.world.chunk.storage.BlockStorage.AIR_STAT
 public class World {
     private final String name;
     private ChunkPillarProvider chunkPillarProvider;
+    private final Set<Chunk> lightUpdatingChunks = new HashSet<>();
 
     // These instances are used to diffuse lights
     // There is one of them foreach light type todo :(
@@ -30,7 +36,7 @@ public class World {
     private FastFloodAlgorithm skylightDiffusion;
 
     // A value that atm goes from 0 to 1 where 0 is the deep night and 1 the day
-    private float skylight = 1f; // todo update skylight value
+    private float skylight = 0f; // todo update skylight value
 
     public World(String name) {
         this.name = name;
@@ -205,7 +211,7 @@ public class World {
             if (chk != null) {
                 // Sets the block light directly to the storage without diffusion.
                 // This is the only way to access block light storage.
-                chk.getBlockStorage().setBlockLight(x & 0xF, y & 0xF, z & 0xF, value);
+                chk.setBlockLight(x & 0xF, y & 0xF, z & 0xF, value);
             }
         }
 
@@ -237,6 +243,7 @@ public class World {
 
     public void updateBlockLights() {
         lightDiffusion.start(blockLightContext);
+        flushLightChunkUpdates();
     }
 
     //<editor-fold desc="Block Skylight">
@@ -261,7 +268,7 @@ public class World {
             if (chk != null) {
                 // Sets the skylight directly to the storage without diffusion.
                 // This is the only way to access block skylight storage.
-                chk.getBlockStorage().setBlockSkylight(x & 0xF, y & 0xF, z & 0xF, value);
+                chk.setBlockSkyLight(x & 0xF, y & 0xF, z & 0xF, value);
             }
         }
 
@@ -325,10 +332,20 @@ public class World {
      */
     public void updateBlockSkylights() {
         skylightDiffusion.start(blockSkylightContext);
+        flushLightChunkUpdates();
     }
 
     public void recalcLightOpacity(int x, int y, int z) {
         lightDiffusion.reloadForBlock(blockLightContext, x, y, z);
+        flushLightChunkUpdates();
+    }
+
+    public void flushLightChunkUpdates() {
+        EventManager eventManager = Openverse.getEventManager();
+        for (Chunk chunk : lightUpdatingChunks) {
+            eventManager.call(new ChunkLightChangeEvent(chunk));
+        }
+        lightUpdatingChunks.clear();
     }
     //</editor-fold>
 }
