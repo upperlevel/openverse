@@ -9,6 +9,6 @@ public class PhotonBlockType extends BlockType {
 
     @Override
     public int getEmittedBlockLight(BlockState blockState) {
-        return 16;
+        return 15;
     }
 }

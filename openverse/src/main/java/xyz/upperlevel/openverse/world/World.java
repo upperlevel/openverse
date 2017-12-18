@@ -3,7 +3,6 @@ package xyz.upperlevel.openverse.world;
 import lombok.Getter;
 import lombok.Setter;
 import org.joml.Vector3i;
-import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.util.math.Aabb3d;
 import xyz.upperlevel.openverse.util.math.LineVisitor3d;
 import xyz.upperlevel.openverse.util.math.bfs.FastFloodAlgorithm;
@@ -17,7 +16,6 @@ import java.util.List;
 
 import static xyz.upperlevel.openverse.util.math.MathUtil.ceili;
 import static xyz.upperlevel.openverse.util.math.MathUtil.floori;
-
 import static xyz.upperlevel.openverse.world.chunk.storage.BlockStorage.AIR_STATE;
 
 @Getter

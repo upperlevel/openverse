@@ -116,15 +116,19 @@ public class FastFloodAlgorithm {
     public void reloadForBlock(FastFloodContext context, int x, int y, int z) {
         boolean opaque = context.isOpaque(x, y, z);
         if (!opaque) {
-            int light = 0;
+            int bestLight = 0;
+            BfsRelative bestReleative = null;
             for (BfsRelative r : BfsRelative.values()) {
                 int value = context.getValue(x + r.getOffsetX(), y + r.getOffsetY(), z + r.getOffsetZ()) - 1;
-                if (value > light) {
-                    light = value;
+                if (value > bestLight) {
+                    bestLight = value;
+                    bestReleative = r;
                 }
             }
-            propagationQueue.add(new BfsNode(x, y, z, light));
-            start(context);
+            if (bestReleative != null) {
+                propagationQueue.add(new BfsNode(x, y, z, bestLight));
+                start(context);
+            }
         } else {
             removalQueue.add(new BfsNode(x, y, z, context.getValue(x, y, z)));
             start(context);
