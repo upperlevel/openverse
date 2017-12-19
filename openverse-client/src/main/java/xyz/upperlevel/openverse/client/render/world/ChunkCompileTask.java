@@ -15,7 +15,7 @@ public class ChunkCompileTask {
     private final ChunkRenderer chunk;
     private VertexBuffer buffer;
     private int vertexCount;
-    private volatile State state = State.COMPILE_PENDING;
+    private State state = State.COMPILE_PENDING;
 
     protected void askBuffer() {
         if (buffer == null) {
