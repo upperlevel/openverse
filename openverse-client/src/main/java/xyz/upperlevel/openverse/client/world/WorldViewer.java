@@ -28,18 +28,18 @@ import xyz.upperlevel.ulge.util.math.CameraUtil;
  * This class represents the player.
  * <p>Better, it represents the camera moving around the world and manages rendering stuff.
  */
-@Getter
-@Setter
 public class WorldViewer implements PacketListener {
+    @Getter
     private final WorldSession worldSession;
 
     @Getter
     @Setter
     private LivingEntity entity;
 
+    @Getter
+    @Setter
     private Program program;
-    private Uniform cameraLoc;
-    private Matrix4f camera;
+    private final Uniform cameraLoc;
 
     public WorldViewer(LivingEntity entity) {
         this.entity = entity;
@@ -59,7 +59,7 @@ public class WorldViewer implements PacketListener {
         program.bind();
         Location loc = entity.getEyePosition(partialTicks);
 
-        program.uniformer.setUniformMatrix4("camera", CameraUtil.getCamera(
+        cameraLoc.set(CameraUtil.getCamera(
                 45f,
                 1f,
                 0.01f,
@@ -69,7 +69,7 @@ public class WorldViewer implements PacketListener {
                 (float) loc.getX(),
                 (float) loc.getY(),
                 (float) loc.getZ()
-        ).get(BufferUtils.createFloatBuffer(16)));
+        ));
 
         worldSession.getChunkView().render(program);
     }

@@ -9,6 +9,7 @@ import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.storage.BlockStorage;
 import xyz.upperlevel.ulge.opengl.buffer.*;
 import xyz.upperlevel.ulge.opengl.shader.Program;
+import xyz.upperlevel.ulge.opengl.shader.Uniform;
 
 import java.nio.ByteBuffer;
 
@@ -17,6 +18,8 @@ import java.nio.ByteBuffer;
  */
 @Getter
 public class ChunkRenderer {
+    private static Uniform worldSkyLightLoc;
+
     private final Program program;
     private final ChunkViewRenderer view;
     private Chunk chunk;
@@ -35,6 +38,9 @@ public class ChunkRenderer {
         this.view = view;
         this.program = program;
         this.chunk = chunk;
+        if (worldSkyLightLoc == null) {
+            worldSkyLightLoc = program.uniformer.get("worldSkylight");
+        }
         setup();
         reloadVertexSize();
     }
@@ -142,7 +148,7 @@ public class ChunkRenderer {
 
     @SuppressWarnings("deprecation")
     public void render(Program program) {
-        program.uniformer.setUniform("worldSkylight", chunk.getWorld().getSkylight());
+        worldSkyLightLoc.set(chunk.getWorld().getSkylight());
         //TODO: draw TileEntities
         if (drawVerticesCount != 0) {
             vao.bind();
