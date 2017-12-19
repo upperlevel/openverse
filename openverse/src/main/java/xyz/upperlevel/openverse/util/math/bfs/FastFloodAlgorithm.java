@@ -1,7 +1,5 @@
 package xyz.upperlevel.openverse.util.math.bfs;
 
-import xyz.upperlevel.openverse.Openverse;
-
 import java.util.ArrayDeque;
 import java.util.Queue;
 
@@ -108,9 +106,9 @@ public class FastFloodAlgorithm {
                 }
             }
         }
-        if (removed > 0 || propagated > 0) {
+        /*if (removed > 0 || propagated > 0) {
             Openverse.getLogger().fine("[Light] Propagation done: " + removed + " removed, " + propagated + " propagated");
-        }
+        }*/
     }
 
     public void reloadForBlock(FastFloodContext context, int x, int y, int z) {

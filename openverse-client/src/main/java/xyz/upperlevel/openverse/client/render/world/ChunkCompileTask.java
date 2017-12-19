@@ -1,152 +1,168 @@
 package xyz.upperlevel.openverse.client.render.world;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.render.world.util.VertexBuffer;
 import xyz.upperlevel.openverse.client.render.world.util.VertexBufferPool;
 
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 
 @RequiredArgsConstructor
 public class ChunkCompileTask {
     private final VertexBufferPool bufferPool;
+    @NonNull
     private final ChunkRenderer chunk;
-    private ReentrantLock stateLock = new ReentrantLock();
     private VertexBuffer buffer;
     private int vertexCount;
-    private State state = State.PENDING;
+    private volatile State state = State.COMPILE_PENDING;
 
     protected void askBuffer() {
         if (buffer == null) {
             try {
                 buffer = bufferPool.waitForBuffer();
             } catch (InterruptedException e) {
-                Openverse.getLogger().log(Level.WARNING, "Chunk compiler: interrupted pool retrieving");
+                Openverse.getLogger().log(Level.WARNING, " Chunk compiler: interrupted pool retrieving");
             }
         }
     }
 
-    public void compile() {
-        stateLock.lock();
-        try {
-            if (state == State.ABORTED) {
-                return;
+    public boolean abortIfNecessary() {
+        synchronized (this) {
+            switch (state) {
+                case COMPILING:
+                    state = State.ABORTED;
+                    return true;
+                case UPLOAD_PENDING:
+                    state = State.ABORTED;
+                    if (buffer != null) {
+                        buffer.release();
+                        buffer = null;
+                    }
+                    return true;
+                case DONE:
+                case ABORTED:
+                    return true;
+                default:
+                    return false;
             }
-            if (state != State.PENDING) {
-                throw new IllegalArgumentException("Cannot compile an already compiled chunk (state: " + state + ")");
+        }
+    }
+
+    public void abort() {
+        synchronized (this) {
+            switch (state) {
+                case COMPILE_PENDING:
+                case UPLOAD_PENDING:
+                    state = State.ABORTED;
+                    if (buffer != null) {
+                        buffer.release();
+                    }
+                case COMPILING:
+                    state = State.ABORTED;
+            }
+        }
+    }
+
+    protected void forceAbort() {
+        synchronized (this) {
+            if (buffer != null) {
+                buffer.release();
+                buffer = null;
+            }
+            state = State.ABORTED;
+        }
+    }
+
+    public boolean compile() {
+        synchronized (this) {
+            if (state == State.ABORTED) {
+                return false;
+            }
+            if (state != State.COMPILE_PENDING) {
+                throw new IllegalStateException("Compile called with wrong state: " + state.name());
             }
             state = State.COMPILING;
-        } finally {
-            stateLock.unlock();
         }
-
         askBuffer();
         if (buffer == null) {
-            //Buffer retrieving failed
-            return;
+            // Buffer retrieving failed (thread closed or similar reason)
+            return false;
         }
+
 
         buffer.ensureCapacity(chunk.getAllocateDataCount() * Float.BYTES);
         try {
             vertexCount = chunk.compile(buffer.byteBuffer());
         } catch (Exception e) {
             Openverse.getLogger().log(Level.SEVERE, "Error while compiling chunk (data:" + (chunk.getAllocateDataCount() * Float.BYTES) + ", cap:" + buffer.byteBuffer().capacity() + ")", e);
-            buffer.release();
-            return;
+            forceAbort();
+            return false;
         }
-        stateLock.lock();
-        try {
+
+        synchronized (this) {
             if (state == State.ABORTED) {
                 buffer.release();
-                return;
+                buffer = null;
+                return false;
             }
-            state = State.UPLOADING;
-        } finally {
-            stateLock.unlock();
+            if (vertexCount == 0) {
+                buffer.release();
+                buffer = null;
+            }
+            state = State.UPLOAD_PENDING;
         }
+        return true;
     }
 
     public void upload() {
-        try {
-            if (isValid()) {
-                chunk.setVertices(buffer.byteBuffer(), vertexCount);
-                stateLock.lock();
-                try {
-                    state = State.DONE;
-                } finally {
-                    stateLock.unlock();
-                }
+        synchronized (this) {
+            if (state == State.ABORTED) {
+                return;
             }
-        } finally {
-            buffer.release();
+            if (state != State.UPLOAD_PENDING) {
+                throw new IllegalStateException("update called with wrong state: " + state.name());
+            }
+            state = State.UPLOADING;
+        }
+        chunk.setVertices(buffer != null ? buffer.byteBuffer() : null, vertexCount);
+        synchronized (this) {
+            if (buffer != null) {
+                buffer.release();
+                buffer = null;
+            }
+            state = State.DONE;
         }
     }
 
     public void completeNow() {
-        State state;
-        stateLock.lock();
-        try {
-            state = this.state;
-        } finally {
-            stateLock.unlock();
+        State currentState;
+        synchronized (this) {
+            currentState = state;
         }
-        switch (state) {
-            case PENDING:
+        switch (currentState) {
+            case COMPILE_PENDING:
                 compile();
-                //Note the missing "break;" is not a mistake, it compiles and then uploads
-            case UPLOADING:
+                // Note the missing "break;" is not a mistake, it compiles and then uploads
+            case UPLOAD_PENDING:
                 upload();
                 break;
-            default:
-                break;
-        }
-        destroy();
-    }
-
-    public boolean isValid() {
-        stateLock.lock();
-        try {
-            return state != State.ABORTED;
-        } finally {
-            stateLock.unlock();
+            case COMPILING:
+            case UPLOADING:
+                throw new IllegalStateException("Another thread is working on the task!");
         }
     }
 
-    public boolean abort() {
-        stateLock.lock();
-        try {
-            if (state != State.ABORTED) {
-                state = State.ABORTED;
-                return true;
-            }
-            if (buffer != null) {
-                buffer.release();
-            }
-            return false;
-        } finally {
-            stateLock.unlock();
+    public boolean isDone() {
+        synchronized (this) {
+            return state == State.DONE;
         }
     }
-
-    public void destroy() {
-        stateLock.lock();
-        try {
-            if (state != State.DONE) {
-                state = State.ABORTED;
-            }
-            if (buffer != null) {
-                buffer.release();
-            }
-        } finally {
-            stateLock.unlock();
-        }
-    }
-
 
     public enum State {
-        PENDING,
+        COMPILE_PENDING,
         COMPILING,
+        UPLOAD_PENDING,
         UPLOADING,
         DONE,
         ABORTED

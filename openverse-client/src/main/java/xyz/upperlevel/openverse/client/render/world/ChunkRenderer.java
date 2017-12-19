@@ -10,9 +10,6 @@ import xyz.upperlevel.openverse.world.chunk.storage.BlockStorage;
 import xyz.upperlevel.ulge.opengl.buffer.*;
 import xyz.upperlevel.ulge.opengl.shader.Program;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 
 /**
@@ -102,6 +99,7 @@ public class ChunkRenderer {
     public ChunkCompileTask createCompileTask(VertexBufferPool pool) {
         if (compileTask != null) {
             compileTask.abort();
+            compileTask = null;
         }
         compileTask = new ChunkCompileTask(pool, this);
         return compileTask;
@@ -128,12 +126,17 @@ public class ChunkRenderer {
             }
         }
         buffer.flip();
-        //Openverse.logger().info("Vertices computed for chunk at: " + vertexCount);
+        //Openverse.getLogger().info("Vertices computed for chunk at: " + vertexCount + "(" + buffer.remaining() + ")");
         return vertexCount;
     }
 
     public void setVertices(ByteBuffer vertices, int vertexCount) {
-        vbo.loadData(vertices, VboDataUsage.STATIC_DRAW);
+        if (vertexCount > 0) {
+            if (vertices.remaining() == 0) {
+                throw new IllegalStateException("No vertex in buffer but " + vertexCount + " to draw");
+            }
+            vbo.loadData(vertices, VboDataUsage.STATIC_DRAW);
+        }
         this.drawVerticesCount = vertexCount;
     }
 

@@ -75,8 +75,11 @@ public class ChunkViewRenderer implements Listener {
         } else {
             ChunkCompileTask task = chunk.createCompileTask(vertexProvider);
             detachedChunkCompiler.execute(() -> {
-                task.compile();
-                pendingTasks.add(task);
+                if (task.compile()) {
+                    // If the task compiled successfully
+                    // Put it in the uploading queue
+                    pendingTasks.add(task);
+                }
             });
         }
     }

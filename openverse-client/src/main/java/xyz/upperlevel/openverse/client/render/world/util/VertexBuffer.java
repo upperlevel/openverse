@@ -40,7 +40,7 @@ public class VertexBuffer {
     }
 
     public int capacity() {
-        return handle.capacity();
+        return handle == null ? 0 : handle.capacity();
     }
 
     public VertexBuffer claim() {
