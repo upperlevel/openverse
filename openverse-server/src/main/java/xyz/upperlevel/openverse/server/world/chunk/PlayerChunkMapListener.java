@@ -20,13 +20,20 @@ import java.util.Set;
 @Getter
 public class PlayerChunkMapListener extends PlayerChunkMap implements Listener {
     private final ServerWorld world;
-    private ChunkMap<PlayerChunkCache> chunks = new ChunkMap<>();
+    private PlayerChunkStorage chunks;
     private Set<ServerPlayer> players = new HashSet<>(); // Todo: update this bad asshole shit
 
     public PlayerChunkMapListener(ServerWorld world, int radius) {
         super(radius);
         this.world = world;
+        chunks = new TinyPlayerChunkStorage(world, this::storageOverflow);
         Openverse.getEventManager().register(this);
+    }
+
+    private void storageOverflow() {
+        PlayerChunkStorage old = chunks;
+        chunks = new HashPlayerChunkStorage(world);
+        chunks.copy(old);
     }
 
     public PlayerChunkCache getChunk(ChunkLocation loc) {
@@ -41,11 +48,7 @@ public class PlayerChunkMapListener extends PlayerChunkMap implements Listener {
     }
 
     public void sendChunk(ServerPlayer player, Chunk chunk) {
-        PlayerChunkCache pcc = chunks.get(chunk.getX(), chunk.getY(), chunk.getZ());
-        if (pcc == null) {
-            pcc = new PlayerChunkCache(chunk);
-            chunks.put(chunk.getLocation(), pcc);
-        }
+        PlayerChunkCache pcc = chunks.getOrCreate(chunk.getLocation());
         pcc.addPlayer(player);
         player.getConnection().send(Openverse.getChannel(), new ChunkCreatePacket(chunk));
     }

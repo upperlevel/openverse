@@ -9,7 +9,7 @@ import xyz.upperlevel.openverse.world.chunk.storage.utils.VariableBitArray;
 
 import static xyz.upperlevel.openverse.world.chunk.storage.BlockStorage.AIR_STATE;
 
-public class SimpleBlockStateStorage implements BlockStateStorage {
+public class SimpleBlockStateStorage implements BlockStateStorage, BlockStatePalette.OverflowHandler {
     private BlockStatePalette palette;
     private VariableBitArray storage;
     private int bitsPerPalette;
@@ -48,9 +48,9 @@ public class SimpleBlockStateStorage implements BlockStateStorage {
 
     public void setBitsPerPalette(int bits) {
         if (bits <= 4) {
-            palette = new ArrayStatePalette(bits, this::onOverflow);
+            palette = new ArrayStatePalette(bits, this);
         } else if (bits <= 8) {
-            palette = new HashStatePalette(bits, this::onOverflow);
+            palette = new HashStatePalette(bits, this);
         } else {
             palette = RegistryStatePalette.INSTANCE;
         }
@@ -59,7 +59,8 @@ public class SimpleBlockStateStorage implements BlockStateStorage {
         this.storage = new VariableBitArray(bitsPerPalette, 16*16*16);
     }
 
-    private int onOverflow(int bitsNeeded, BlockState overflowed) {
+    @Override
+    public int onOverflow(int bitsNeeded, BlockState overflowed) {
         VariableBitArray oldIds = this.storage;
         BlockStatePalette oldPalette = this.palette;
         setBitsPerPalette(bitsNeeded);

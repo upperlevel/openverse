@@ -1,52 +1,36 @@
 package xyz.upperlevel.openverse.server.world.chunk;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 import xyz.upperlevel.openverse.world.entity.player.Player;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * This class represents a chunk containing a set of players.
  */
-@Getter
-public class PlayerChunkCache {
-    private final Chunk chunk;
-    private Set<Player> players = new HashSet<>();
+public interface PlayerChunkCache {
+    Chunk getChunk();
 
-    public PlayerChunkCache(Chunk chunk) {
-        this.chunk = chunk;
+    default ChunkLocation getLocation() {
+        return getChunk().getLocation();
     }
 
     /**
      * Adds a new player to the chunk.
      */
-    public void addPlayer(Player player) {
-        players.add(player);
-    }
+    void addPlayer(Player player);
 
     /**
      * Removes the given player from the chunk.
      *
      * @param player the player
      */
-    public void removePlayer(Player player) {
-        players.remove(player);
-    }
+    void removePlayer(Player player);
 
-    public boolean isEmpty() {
-        return players.isEmpty();
-    }
+    Collection<Player> getPlayers();
 
-    public ChunkLocation getLocation() {
-        return chunk.getLocation();
-    }
-
-    public Set<Player> getPlayers() {
-        return Collections.unmodifiableSet(players);
+    default boolean isEmpty() {
+        return getPlayers().isEmpty();
     }
 }

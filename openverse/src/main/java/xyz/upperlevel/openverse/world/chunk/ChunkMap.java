@@ -80,19 +80,19 @@ public class ChunkMap<T> implements Iterable<T> {
         }
     }
 
-    public void computeIfPresent(int x, int y, int z, CoordBiFunction<T, T> provider) {
+    public T computeIfPresent(int x, int y, int z, CoordBiFunction<T, T> provider) {
         long pillarId = ChunkPillar.hash(x, z);
         Map<Integer, T> pillar = pillars.get(pillarId);
         if (pillar == null) {
-            return;
+            return null;
         }
         T found = pillar.get(y);
         if (found == null) {
-            return;
+            return null;
         }
         T computed = provider.apply(x, y, z, found);
         if (computed == found) {
-            return;
+            return computed;
         }
         if (computed != null) {
             pillar.put(y, computed);
@@ -102,21 +102,22 @@ public class ChunkMap<T> implements Iterable<T> {
                 pillars.remove(pillarId);
             }
         }
+        return computed;
     }
 
-    public void computeIfPresent(ChunkLocation loc, BiFunction<ChunkLocation, T, T> provider) {
+    public T computeIfPresent(ChunkLocation loc, BiFunction<ChunkLocation, T, T> provider) {
         long pillarId = loc.getPillarId();
         Map<Integer, T> pillar = pillars.get(pillarId);
         if (pillar == null) {
-            return;
+            return null;
         }
         T found = pillar.get(loc.y);
         if (found == null) {
-            return;
+            return null;
         }
         T computed = provider.apply(loc, found);
         if (computed == found) {
-            return;
+            return computed;
         }
         if (computed != null) {
             pillar.put(loc.y, computed);
@@ -126,51 +127,56 @@ public class ChunkMap<T> implements Iterable<T> {
                 pillars.remove(pillarId);
             }
         }
+        return computed;
     }
 
-    public void computeIfAbsent(int x, int y, int z, CoordFunction<T> provider) {
+    public T computeIfAbsent(int x, int y, int z, CoordFunction<T> provider) {
         long pillarId = ChunkPillar.hash(x, z);
         Map<Integer, T> pillar = pillars.get(pillarId);
         if (pillar == null) {
             T computed = provider.apply(x, y, z);
             if (computed == null) {
-                return;
+                return null;
             }
             pillar = new HashMap<>();
             pillar.put(y, computed);
             pillars.put(pillarId, pillar);
+            return computed;
         } else {
-            if (pillar.containsKey(y)) {
-                return;
+            T found = pillar.get(y);
+            if (found != null) {
+                return found;
             }
             T computed = provider.apply(x, y, z);
-            if (computed == null) {
-                return;
+            if (computed != null) {
+                pillar.put(y, computed);
             }
-            pillar.put(y, computed);
+            return computed;
         }
     }
 
-    public void computeIfAbsent(ChunkLocation loc, Function<ChunkLocation, T> provider) {
+    public T computeIfAbsent(ChunkLocation loc, Function<ChunkLocation, T> provider) {
         long pillarId = loc.getPillarId();
         Map<Integer, T> pillar = pillars.get(pillarId);
         if (pillar == null) {
             T computed = provider.apply(loc);
             if (computed == null) {
-                return;
+                return null;
             }
             pillar = new HashMap<>();
             pillar.put(loc.y, computed);
             pillars.put(pillarId, pillar);
+            return computed;
         } else {
-            if (pillar.containsKey(loc.y)) {
-                return;
+            T found = pillar.get(loc.y);
+            if (found != null) {
+                return found;
             }
             T computed = provider.apply(loc);
-            if (computed == null) {
-                return;
+            if (computed != null) {
+                pillar.put(loc.y, computed);
             }
-            pillar.put(loc.y, computed);
+            return computed;
         }
     }
 

@@ -26,7 +26,7 @@ public class EntityWatcher {
     }
 
     public void onTick() {
-        for (PlayerChunkCache playerChunk : map.getChunks()) {
+        for (PlayerChunkCache playerChunk : map.getChunks().getChunks()) {
             Map<Entity, Data> entities = this.entities.get(playerChunk.getLocation());
             for (Map.Entry<Entity, Data> entityData : entities.entrySet()) {
                 entityData.getValue().update(entityData.getKey(), playerChunk.getPlayers());

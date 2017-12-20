@@ -31,7 +31,7 @@ public class ArrayStatePalette implements BlockStatePalette {
             array[used] = state;
             return used++;
         } else {
-            return overflowHandler.handle(idLen + 1, state);
+            return overflowHandler.onOverflow(idLen + 1, state);
         }
     }
 

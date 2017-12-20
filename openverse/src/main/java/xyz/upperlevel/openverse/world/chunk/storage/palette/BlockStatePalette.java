@@ -25,6 +25,6 @@ public interface BlockStatePalette {
     BlockState toState(int id);
 
     interface OverflowHandler {
-        int handle(int bits, BlockState overflowed);
+        int onOverflow(int bits, BlockState overflowed);
     }
 }
