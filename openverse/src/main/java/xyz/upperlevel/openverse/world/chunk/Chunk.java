@@ -22,16 +22,12 @@ public class Chunk {
     private final ChunkLocation location;
     private BlockStorage blockStorage;
 
-    private boolean skylightColumnsUpdated[];
-
     public Chunk(ChunkPillar chunkPillar, int y) {
         this.world = chunkPillar.getWorld();
         this.chunkPillar = chunkPillar;
         this.y = y;
         this.location = new ChunkLocation(getX(), y, getZ());
         this.blockStorage = new SimpleBlockStorage(this);
-
-        skylightColumnsUpdated = new boolean[16 * 16];
     }
 
     /**
@@ -195,45 +191,48 @@ public class Chunk {
     }
 
     public void updateSkylightGaps() {
-        if (!isHeightmapTestable()) {
-            return;
-        }
+        if (!isHeightmapTestable()) return;
+
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
-                if (!skylightColumnsUpdated[x * 16 + z]) {
-                    skylightColumnsUpdated[x * 16 + z] = true;
+                int height = chunkPillar.getHeight(x, z);
 
-                    int currX = getX() << 4 | x;
-                    int currZ = getZ() << 4 | z;
-                    int height = chunkPillar.getHeight(x, z);
+                // The height is higher than the current chunk
+                if (y * 16 > height) continue;
 
-                    if (height >> 4 == y) {
-                        for (BlockFace face : new BlockFace[]{BlockFace.BACK, BlockFace.FRONT, BlockFace.LEFT, BlockFace.RIGHT}) {
-                            int relX = currX + face.offsetX;
-                            int relZ = currZ + face.offsetZ;
-                            int relHeight = world.getHeight(relX, relZ);
+                int currX = getX() << 4 | x;
+                int currZ = getZ() << 4 | z;
 
-                            int from = Math.max(height, relHeight) - 1;
-                            if (from >> 4 == y) {
-                                from &= 0xF;
-                            } else {
-                                from = 15;
-                            }
-                            int to = Math.min(height, relHeight);
-                            if (to >> 4 == y) {
-                                to &= 0xF;
-                            } else {
-                                to = 0;
-                            }
-                            for (int y = from; y >= to; y--) {
-                                world.appendBlockSkylight(currX, this.y << 4 | y, currZ, false);
-                            }
-                        }
+                // Retrieve the max neighbour height
+                int maxHeight = Integer.MIN_VALUE;
+                for (BlockFace face : new BlockFace[]{BlockFace.BACK, BlockFace.FRONT, BlockFace.LEFT, BlockFace.RIGHT}) {
+                    int relX = currX + face.offsetX;
+                    int relZ = currZ + face.offsetZ;
+                    int relHeight = world.getHeight(relX, relZ);
+                    if (relHeight > maxHeight) {
+                        maxHeight = relHeight;
+                        // And if it's higher than the chunk, exit
+                        if (relHeight >= y * 16 + 15) break;
                     }
+                }
+
+                if (maxHeight < y * 16) {
+                    // If both are lower than the chunk, then we need to do nothing
+                    if (height < y * 16) continue;
+                    // If only the relatives are lower than the chunk
+                    // but we still have a block under us then we still need to light it
+                    maxHeight = height + 1;
+                }
+
+                // Calculate min and max values
+                int from = height < y * 16 ? 0 : (height + 1) & 0xF;
+                int to   = maxHeight > (y + 1) * 16 ? 15 : maxHeight & 0xF;
+                // And finally fill the gaps
+                for (int i = from; i <= to; i++) {
+                    world.appendBlockSkylight(currX, i, currZ, false);
                 }
             }
         }
-        world.updateBlockSkylights();
     }
 
     public void updateDirectSkylight() {
@@ -402,8 +401,8 @@ public class Chunk {
     }
 
     public void updateSkylights() {
-        updateDirectSkylight();
-        //TODO: updateSkylightGaps();
+        //updateDirectSkylight();
+        updateSkylightGaps();
     }
 
     public void rebuildHeightMap() {

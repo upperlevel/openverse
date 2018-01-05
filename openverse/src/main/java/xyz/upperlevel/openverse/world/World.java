@@ -314,10 +314,6 @@ public class World {
     public void appendBlockSkylight(int x, int y, int z, boolean instantUpdate) {
         Chunk chunk = getChunkFromBlock(x, y, z);
         if (chunk == null) return;
-        int old = chunk.getBlockSkylight(x & 0xF, y & 0xF, z & 0xF);
-        if (old > 0) {
-            skylightDiffusion.addRemovalNode(x, y, z, old);
-        }
         skylightDiffusion.addNode(x, y, z, 15);
         if (instantUpdate) {
             updateBlockSkylights();
