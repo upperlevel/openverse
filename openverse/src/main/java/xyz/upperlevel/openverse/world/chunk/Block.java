@@ -1,7 +1,9 @@
 package xyz.upperlevel.openverse.world.chunk;
 
 import lombok.Getter;
+import lombok.NonNull;
 import xyz.upperlevel.openverse.world.World;
+import xyz.upperlevel.openverse.world.block.BlockFace;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.chunk.storage.BlockStorage;
@@ -31,6 +33,18 @@ public class Block {
                 this.y + y,
                 this.z + z
         );
+    }
+
+    public Block getRelative(@NonNull BlockFace face) {
+        switch (face) {
+            case UP: return getRelative(0, 1, 0);
+            case DOWN: return getRelative(0, -1, 0);
+            case LEFT: return getRelative(1, 0, 0);
+            case RIGHT: return getRelative(-1, 0, 0);
+            case BACK: return getRelative(0, 0, 1);
+            case FRONT: return getRelative(0, 0, -1);
+            default: throw new IllegalStateException(face.name() + " not expected");
+        }
     }
 
 

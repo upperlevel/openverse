@@ -36,7 +36,7 @@ public class World {
     private FastFloodAlgorithm skylightDiffusion;
 
     // A value that atm goes from 0 to 1 where 0 is the deep night and 1 the day
-    private float skylight = 0f; // todo update skylight value
+    private float skylight = 0.5f; // todo update skylight value
 
     public World(String name) {
         this.name = name;
@@ -254,7 +254,7 @@ public class World {
     private final FastFloodContext blockSkylightContext = new FastFloodContext() {
         @Override
         public boolean isOutOfBounds(int x, int y, int z) {
-            return getChunkFromBlock(x, y, z) != null;
+            return getChunkFromBlock(x, y, z) == null;
         }
 
         @Override
@@ -268,7 +268,7 @@ public class World {
             if (chk != null) {
                 // Sets the skylight directly to the storage without diffusion.
                 // This is the only way to access block skylight storage.
-                chk.setBlockSkyLight(x & 0xF, y & 0xF, z & 0xF, value);
+                chk.setBlockSkylight(x & 0xF, y & 0xF, z & 0xF, value);
             }
         }
 
@@ -300,30 +300,44 @@ public class World {
         if (chunk == null) {
             return;
         }
-        chunk.getBlockStorage().setBlockSkylight(x & 0xF, y & 0xF, z & 0xF, skylight);
+        chunk.setBlockSkylight(x & 0xF, y & 0xF, z & 0xF, skylight);
     }
 
     /**
      * Appends a new node to the skylight diffusion algorithm.
      * To effectively apply the skylights use {@link #updateBlockSkylights()}.
      *
-     * @param x             the x-axis location
-     * @param y             the y-axis location
-     * @param z             the z-axis location
-     * @param blockSkylight the block light
+     * @param x the x-axis location
+     * @param y the y-axis location
+     * @param z the z-axis location
      */
-    public void appendBlockSkylight(int x, int y, int z, int blockSkylight, boolean instantUpdate) {
+    public void appendBlockSkylight(int x, int y, int z, boolean instantUpdate) {
         Chunk chunk = getChunkFromBlock(x, y, z);
-        if (chunk != null) {
-            int oldLev = getBlockSkylight(x, y, z);
-            if (oldLev > blockSkylight) {
-                skylightDiffusion.addRemovalNode(x, y, z, oldLev);
-                skylightDiffusion.addNode(x, y, z, blockSkylight);
-            } else if (oldLev < blockSkylight) {
-                skylightDiffusion.addNode(x, y, z, blockSkylight);
-            }
-            if (instantUpdate)
-                updateBlockSkylights();
+        if (chunk == null) return;
+        int old = chunk.getBlockSkylight(x & 0xF, y & 0xF, z & 0xF);
+        if (old > 0) {
+            skylightDiffusion.addRemovalNode(x, y, z, old);
+        }
+        skylightDiffusion.addNode(x, y, z, 15);
+        if (instantUpdate) {
+            updateBlockSkylights();
+        }
+    }
+
+    /**
+     * Appends a new node to the skylight diffusion algorithm.
+     * To effectively apply the skylights use {@link #updateBlockSkylights()}.
+     *
+     * @param x the x-axis location
+     * @param y the y-axis location
+     * @param z the z-axis location
+     */
+    public void removeBlockSkylight(int x, int y, int z, boolean instantUpdate) {
+        Chunk chunk = getChunkFromBlock(x, y, z);
+        if (chunk == null) return;
+        skylightDiffusion.addRemovalNode(x, y, z, chunk.getBlockSkylight(x & 0xF, y & 0xF, z & 0xF));
+        if (instantUpdate) {
+            updateBlockSkylights();
         }
     }
 
@@ -335,9 +349,24 @@ public class World {
         flushLightChunkUpdates();
     }
 
-    public void recalcLightOpacity(int x, int y, int z) {
-        lightDiffusion.reloadForBlock(blockLightContext, x, y, z);
+    public void updateAllLights() {
+        lightDiffusion.start(blockLightContext);
+        skylightDiffusion.start(blockSkylightContext);
         flushLightChunkUpdates();
+    }
+
+    public void recalcLightOpacity(int x, int y, int z, boolean instantUpdate) {
+        lightDiffusion.onBlockOpacityChange(blockLightContext, x, y, z, instantUpdate);
+        if (instantUpdate) {
+            flushLightChunkUpdates();
+        }
+    }
+
+    public void recalcSkyLightOpacity(int x, int y, int z, boolean instantUpdate) {
+        skylightDiffusion.onBlockOpacityChange(blockSkylightContext, x, y, z, instantUpdate);
+        if (instantUpdate) {
+            flushLightChunkUpdates();
+        }
     }
 
     public void flushLightChunkUpdates() {

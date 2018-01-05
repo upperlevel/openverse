@@ -117,11 +117,14 @@ public class Chunk {
     public BlockState setBlockState(int x, int y, int z, BlockState blockState, boolean blockUpdate) {
         BlockState oldState = blockStorage.setBlockState(x, y, z, blockState);
 
-        reloadLightForBlock(x, y, z, oldState, blockState, blockUpdate);
+        reloadLightForBlock(x, y, z, oldState, blockState, false);
 
         if (blockUpdate) {
+            world.recalcSkyLightOpacity(getX() * 16 + x, getY() * 16 + y, getZ() * 16 + z, false);
+
             rebuildHeightFor(x, z, y, true);
             updateSkylightOnBlockChange(x, z, y);
+            world.updateAllLights();
 
             Openverse.getEventManager().call(new BlockUpdateEvent(world, x + (location.x << 4), y + (location.y << 4), z + (location.z << 4), oldState, blockState));
         }
@@ -143,8 +146,8 @@ public class Chunk {
             if (newLight > 0) {
                 world.appendBlockLight(realX, realY, realZ, newLight, calculate);
             }
-        } else if (calculate && (oldState == AIR_STATE ^ newState == AIR_STATE)) {
-            world.recalcLightOpacity(realX, realY, realZ);
+        } else if (oldState == AIR_STATE ^ newState == AIR_STATE) {
+            world.recalcLightOpacity(realX, realY, realZ, calculate);
         }
     }
 
@@ -223,7 +226,7 @@ public class Chunk {
                                 to = 0;
                             }
                             for (int y = from; y >= to; y--) {
-                                world.appendBlockSkylight(currX, this.y << 4 | y, currZ, 15, false);
+                                world.appendBlockSkylight(currX, this.y << 4 | y, currZ, false);
                             }
                         }
                     }
@@ -237,44 +240,108 @@ public class Chunk {
         if (y < chunkPillar.getHeightmapMinimum() >> 4) {
             return;
         }
+        int realX = getX() * 16;
+        int realY = getY() * 16;
+        int realZ = getZ() * 16;
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 int ch = chunkPillar.getHeight(x, z);
                 if (y > ch >> 4) {
                     for (int y = 15; y >= 0; y--) {
-                        blockStorage.setBlockSkylight(x, y, z, 15);
+                        world.appendBlockSkylight(realX + x, realY + y, realZ + z, false);
+                        //blockStorage.setBlockSkylight(x, y, z, 15);
                     }
                 } else if (y == ch >> 4) {
                     for (int y = 15; y >= (ch & 0xF); y--) {
-                        blockStorage.setBlockSkylight(x, y, z, 15);
+                        world.appendBlockSkylight(realX + x, realY + y, realZ + z, false);
                     }
                 }
             }
         }
     }
 
-    public void setBlockSkyLight(int x, int y, int z, int value) {
+    public void setBlockSkylight(int x, int y, int z, int value) {
         if (blockStorage.setBlockSkylight(x, y, z, value) != value) {
             appendToLightUpdatingSet();
+            appendNeighborsToLightUpdatingSet(x, y, z);
         }
     }
 
     public void setBlockLight(int x, int y, int z, int value) {
         if (blockStorage.setBlockLight(x, y, z, value) != value) {
             appendToLightUpdatingSet();
+            appendNeighborsToLightUpdatingSet(x, y, z);
         }
     }
 
+    /**
+     * Appends this chunk to the light updating set.
+     * <br>When the {@link World#flushLightChunkUpdates()} will be called an event (and only one, no matter how many calls) for this chunk will be instanced.
+     * <br>This has use in client side where the ChunkRenderer needs to rebuild when light changes
+     */
     protected void appendToLightUpdatingSet() {
         world.getLightUpdatingChunks().add(this);
     }
 
+    /**
+     * Checks for collision with any neighbor chunk and append any chunk that touches to the light updating set.
+     * @param x the block x to be checked
+     * @param y the block y to be checked
+     * @param z the block z to be checked
+     */
+    protected void appendNeighborsToLightUpdatingSet(int x, int y, int z) {
+        if (x == 0) {
+            Chunk c = world.getChunk(getX() - 1, y, getZ());
+            if (c != null) {
+                c.appendToLightUpdatingSet();
+            }
+        } else if (x == 15) {
+            Chunk c = world.getChunk(getX() + 1, y, getZ());
+            if (c != null) {
+                c.appendToLightUpdatingSet();
+            }
+        }
+
+        if (y == 0) {
+            Chunk c = chunkPillar.getChunk(getY() - 1);
+            if (c != null) {
+                c.appendToLightUpdatingSet();
+            }
+        } else if (y == 15) {
+            Chunk c = chunkPillar.getChunk(getY() + 1);
+            if (c != null) {
+                c.appendToLightUpdatingSet();
+            }
+        }
+
+        if (z == 0) {
+            Chunk c = world.getChunk(getX(), y, getZ() - 1);
+            if (c != null) {
+                c.appendToLightUpdatingSet();
+            }
+        } else if (z == 15) {
+            Chunk c = world.getChunk(getX(), y, getZ() + 1);
+            if (c != null) {
+                c.appendToLightUpdatingSet();
+            }
+        }
+    }
+
+    /**
+     * Removes the skylight in the xz provided until a block is encountered.
+     * <br>If no block is found in the entire chunk xz pillar, then the same method in the chunk under this will be called.
+     * @param x the x coordinate that will be checked
+     * @param z the z coordinate that will be checked
+     */
     protected void updateSkylightRemoveLight(int x, int z) {
+        final int realX = getX() * 16;
+        final int realY = getY() * 16;
+        final int realZ = getZ() * 16;
+        appendToLightUpdatingSet(); // Append to the updating set no matter what
         for (int y = 15; y >= 0; y--) {
             if (blockStorage.getBlockState(x, y, z) != AIR_STATE) return;
-            blockStorage.setBlockSkylight(x, y, z, 0);
+            world.removeBlockSkylight(realX + x, realY + y,  realZ + z, false);
         }
-        appendToLightUpdatingSet();
         // No block found, need to update the chunk below
         Chunk chunkBelow = chunkPillar.getChunk(y - 1);
         if (chunkBelow != null) {
@@ -282,15 +349,24 @@ public class Chunk {
         }
     }
 
+    /**
+     * Called whenever a block changes, it looks at the block position and the new skyline height and updates the
+     * SkyLight diffusion algorithm accordingly.
+     * @param x the x of the changed block
+     * @param z the z of the changed block
+     * @param initY the y of the changed block
+     */
     public void updateSkylightOnBlockChange(int x, int z, int initY) {
         final int height = chunkPillar.getHeight(x, z);
+        final int realX = getX() * 16;
         final int realY = y * 16;
+        final int realZ = getZ() * 16;
         boolean changed = false;
 
         if (height < realY + initY) { // Block broken
             int startY = height < realY ? 0 : (height & 15) + 1;
             for (int y = startY; y <= initY; y++) {
-                blockStorage.setBlockSkylight(x, y, z, 15);
+                world.appendBlockSkylight(realX + x, realY + y,  realZ + z, false);
                 changed = true;
             }
 
@@ -300,11 +376,18 @@ public class Chunk {
                 if (chunkBelow != null) {
                     chunkBelow.updateSkylightOnBlockChange(x, z, 15);
                 }
+            } else if (changed && height == 0) {
+                // If the light changed and the last block faces the chunk below
+                // Then even the chunk below should be notified
+                Chunk c = chunkPillar.getChunk(getY() - 1);
+                if (c != null) {
+                    c.appendToLightUpdatingSet();
+                }
             }
         } else if (height == realY + initY) {// Block placed directly under sun
             for (int y = initY - 1; y >= 0; y--) {
                 if (blockStorage.getBlockState(x, y, z) != AIR_STATE) return;
-                blockStorage.setBlockSkylight(x, y, z, 0);
+                world.removeBlockSkylight(realX + x, realY + y, realZ + z, false);
                 changed = true;
             }
             // No block found, update chunk below

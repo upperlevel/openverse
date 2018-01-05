@@ -48,7 +48,7 @@ public class ClientWorld extends World implements PacketListener {
         chk.rebuildHeightMap();
         chk.updateSkylights();
         chk.updateNearbyChunksLights();
-        updateBlockLights();
+        updateAllLights();
     }
 
     /**

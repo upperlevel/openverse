@@ -11,6 +11,7 @@ import xyz.upperlevel.openverse.client.world.updater.PlayerLocationWatcher;
 import xyz.upperlevel.openverse.launcher.OpenverseLauncher;
 import xyz.upperlevel.openverse.util.math.LineVisitor3d;
 import xyz.upperlevel.openverse.world.Location;
+import xyz.upperlevel.openverse.world.chunk.Block;
 import xyz.upperlevel.openverse.world.entity.Entity;
 import xyz.upperlevel.openverse.world.entity.EntityManager;
 import xyz.upperlevel.openverse.world.entity.player.Player;
@@ -120,8 +121,13 @@ public class PlayingWorldScene implements Scene, Listener {
             if (rayCast == null) {
                 Openverse.getLogger().info("Clicked nothing");
             } else {
+
                 Vector3i loc = rayCast.getBlock();
-                Openverse.getLogger().info("Clicked " + clicker.getWorld().getBlock(loc));
+                Block block = clicker.getWorld().getBlock(loc);
+                Openverse.getLogger().info("Clicked " + block);
+                Block facing = block.getRelative(rayCast.getFace());
+                Openverse.getLogger().info("Sky: " + facing.getSkyLight() + ", Block: " + facing.getBlockLight());
+
                 if (e.getButton() == MouseButton.LEFT) {
                     // TODO: only player can break blocks, right? 0_o
                     ((Player) clicker).breakBlock(loc.x, loc.y, loc.z);

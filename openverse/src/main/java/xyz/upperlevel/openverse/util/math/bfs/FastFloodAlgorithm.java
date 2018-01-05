@@ -1,5 +1,7 @@
 package xyz.upperlevel.openverse.util.math.bfs;
 
+import xyz.upperlevel.openverse.Openverse;
+
 import java.util.ArrayDeque;
 import java.util.Queue;
 
@@ -64,7 +66,7 @@ public class FastFloodAlgorithm {
                 if (!context.isOutOfBounds(rx, ry, rz)) {
                     int rv = context.getValue(rx, ry, rz);
                     if (rv == 0) continue;
-                    if (rv <= v) {
+                    if (rv < v) {
                         context.setValue(rx, ry, rz, 0);
                         if (rv != 1) {
                             removalQueue.add(new BfsNode(rx, ry, rz, rv));
@@ -106,16 +108,26 @@ public class FastFloodAlgorithm {
                 }
             }
         }
-        /*if (removed > 0 || propagated > 0) {
+        if (removed > 0 || propagated > 0) {
             Openverse.getLogger().fine("[Light] Propagation done: " + removed + " removed, " + propagated + " propagated");
-        }*/
+        }
     }
 
-    public void reloadForBlock(FastFloodContext context, int x, int y, int z) {
+    /**
+     * Called when a node changes,
+     * @param context The Fast flood context
+     * @param x the changed block x coordinate
+     * @param y the changed block y coordinate
+     * @param z the changed block z coordinate
+     * @param compute if true the algorithm will compute, otherwise this will only update the added/removed state
+     */
+    public void onBlockOpacityChange(FastFloodContext context, int x, int y, int z, boolean compute) {
         boolean opaque = context.isOpaque(x, y, z);
         if (!opaque) {
+            // Block removed
             int bestLight = 0;
             BfsRelative bestReleative = null;
+            // Get the best relative block to fill the hole
             for (BfsRelative r : BfsRelative.values()) {
                 int value = context.getValue(x + r.getOffsetX(), y + r.getOffsetY(), z + r.getOffsetZ()) - 1;
                 if (value > bestLight) {
@@ -124,12 +136,18 @@ public class FastFloodAlgorithm {
                 }
             }
             if (bestReleative != null) {
+                // If a block was found add it to the propagation
                 propagationQueue.add(new BfsNode(x, y, z, bestLight));
-                start(context);
+                if (compute) {
+                    start(context);
+                }
             }
         } else {
+            // Block created
             removalQueue.add(new BfsNode(x, y, z, context.getValue(x, y, z)));
-            start(context);
+            if (compute) {
+                start(context);
+            }
         }
     }
 }
