@@ -143,6 +143,11 @@ public class FastFloodTest {
             field[x][y][z] = value;
         }
 
+        @Override
+        public boolean isOpaque(int x, int y, int z) {
+            return false;
+        }
+
         public String buildYzPane(int x) {
             StringBuilder str = new StringBuilder();
             for (int y = 0; y < height; y++) {

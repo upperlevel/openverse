@@ -118,6 +118,8 @@ public class Chunk {
         if (blockUpdate) {
             world.recalcSkyLightOpacity(getX() * 16 + x, getY() * 16 + y, getZ() * 16 + z, false);
 
+            // Note thet the updateSkyLight is put after the opacity so that whatever is computed by that will then be
+            // replaced by the real light if it is really under the sun
             rebuildHeightFor(x, z, y, true);
             updateSkylightOnBlockChange(x, z, y);
             world.updateAllLights();
@@ -197,14 +199,14 @@ public class Chunk {
             for (int z = 0; z < 16; z++) {
                 int height = chunkPillar.getHeight(x, z);
 
-                // The height is higher than the current chunk
-                if (y * 16 > height) continue;
+                // The height is higher than the current chunk, not our problem
+                if (y * 16 + 15 <= height) continue;
 
                 int currX = getX() << 4 | x;
                 int currZ = getZ() << 4 | z;
 
                 // Retrieve the max neighbour height
-                int maxHeight = Integer.MIN_VALUE;
+                int maxHeight = height;
                 for (BlockFace face : new BlockFace[]{BlockFace.BACK, BlockFace.FRONT, BlockFace.LEFT, BlockFace.RIGHT}) {
                     int relX = currX + face.offsetX;
                     int relZ = currZ + face.offsetZ;
@@ -216,7 +218,7 @@ public class Chunk {
                     }
                 }
 
-                if (maxHeight < y * 16) {
+                if (maxHeight <= height) {
                     // If both are lower than the chunk, then we need to do nothing
                     if (height < y * 16) continue;
                     // If only the relatives are lower than the chunk
@@ -229,7 +231,7 @@ public class Chunk {
                 int to   = maxHeight > (y + 1) * 16 ? 15 : maxHeight & 0xF;
                 // And finally fill the gaps
                 for (int i = from; i <= to; i++) {
-                    world.appendBlockSkylight(currX, i, currZ, false);
+                    world.appendBlockSkylight(currX, y * 16 + i, currZ, false);
                 }
             }
         }
@@ -251,7 +253,7 @@ public class Chunk {
                         //blockStorage.setBlockSkylight(x, y, z, 15);
                     }
                 } else if (y == ch >> 4) {
-                    for (int y = 15; y >= (ch & 0xF); y--) {
+                    for (int y = 15; y > (ch & 0xF); y--) {
                         world.appendBlockSkylight(realX + x, realY + y, realZ + z, false);
                     }
                 }
@@ -260,6 +262,7 @@ public class Chunk {
     }
 
     public void setBlockSkylight(int x, int y, int z, int value) {
+        //Openverse.getLogger().info("setBlockSkylight(" + (getX() * 16 + x) + ", " + (getY() * 16 + y) + ", " + (getZ() * 16 + z) + ", " + value + ")");
         if (blockStorage.setBlockSkylight(x, y, z, value) != value) {
             appendToLightUpdatingSet();
             appendNeighborsToLightUpdatingSet(x, y, z);
@@ -361,7 +364,11 @@ public class Chunk {
         final int realY = y * 16;
         final int realZ = getZ() * 16;
         boolean changed = false;
+        //Openverse.getLogger().info("updateSkylightOnBlockChange(" + (realX + x) + ", " + (realY + initY) + ", " + (realZ + z) + ", height=" + height);
 
+        // Remember that height represent the already-updated last block under the sun
+        // So, for us to care, it should be below the block (the block got in the way of the sunlight)
+        // or it should be the same as the block (the block is placed directly under the sun)
         if (height < realY + initY) { // Block broken
             int startY = height < realY ? 0 : (height & 15) + 1;
             for (int y = startY; y <= initY; y++) {
@@ -384,6 +391,7 @@ public class Chunk {
                 }
             }
         } else if (height == realY + initY) {// Block placed directly under sun
+            world.removeBlockSkylight(realX + x, realY + initY, realZ + z, false);// Remove placed block
             for (int y = initY - 1; y >= 0; y--) {
                 if (blockStorage.getBlockState(x, y, z) != AIR_STATE) return;
                 world.removeBlockSkylight(realX + x, realY + y, realZ + z, false);
@@ -401,7 +409,7 @@ public class Chunk {
     }
 
     public void updateSkylights() {
-        //updateDirectSkylight();
+        updateDirectSkylight();
         updateSkylightGaps();
     }
 

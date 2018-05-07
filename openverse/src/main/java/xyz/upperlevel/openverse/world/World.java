@@ -36,7 +36,7 @@ public class World {
     private FastFloodAlgorithm skylightDiffusion;
 
     // A value that atm goes from 0 to 1 where 0 is the deep night and 1 the day
-    private float skylight = 0.5f; // todo update skylight value
+    private float skylight = 0.2f; // todo update skylight value
 
     public World(String name) {
         this.name = name;
@@ -246,7 +246,6 @@ public class World {
         flushLightChunkUpdates();
     }
 
-    //<editor-fold desc="Block Skylight">
     /**
      * A context for the block skylight fast flood algorithm.
      * Needed to use the FastFlood API.
@@ -314,6 +313,10 @@ public class World {
     public void appendBlockSkylight(int x, int y, int z, boolean instantUpdate) {
         Chunk chunk = getChunkFromBlock(x, y, z);
         if (chunk == null) return;
+        // Commented code used to debug "fluorescent" skylight cubes (yeah, sometimes it happens)
+        /*if (getBlock(x, y, z).getType() != BlockType.AIR) {
+            new IllegalStateException("Setting light to a non-air block").printStackTrace();
+        }*/
         skylightDiffusion.addNode(x, y, z, 15);
         if (instantUpdate) {
             updateBlockSkylights();
@@ -372,5 +375,4 @@ public class World {
         }
         lightUpdatingChunks.clear();
     }
-    //</editor-fold>
 }
