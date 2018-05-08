@@ -45,7 +45,7 @@ public class WorldViewer implements PacketListener {
         this.entity = entity;
         this.program = ((ClientResources) Openverse.resources()).programs().entry("simple_shader");
         this.worldSession = new WorldSession(program);
-        this.cameraLoc = program.uniformer.get("camera");
+        this.cameraLoc = program.getUniform("camera");
     }
 
     /**
@@ -56,7 +56,7 @@ public class WorldViewer implements PacketListener {
     }
 
     public void render(float partialTicks) {
-        program.bind();
+        program.use();
         Location loc = entity.getEyePosition(partialTicks);
 
         cameraLoc.set(CameraUtil.getCamera(

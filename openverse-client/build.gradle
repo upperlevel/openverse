@@ -1,7 +1,7 @@
 description = 'Openverse client'
 dependencies {
     compile project(':openverse')
-    compileOnly group: 'xyz.upperlevel.ulge', name: 'ulge', version:'1.0-SNAPSHOT'
+    compileOnly group: 'xyz.upperlevel.ulge', name: 'ulge', version:'1.0'
     compileOnly group: 'xyz.upperlevel.hermes', name: 'hermes-client', version:'1.1'
     compileOnly project(':openverse-launcher')
 }
