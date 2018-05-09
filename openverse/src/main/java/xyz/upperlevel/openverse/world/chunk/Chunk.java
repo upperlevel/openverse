@@ -293,12 +293,12 @@ public class Chunk {
      */
     protected void appendNeighborsToLightUpdatingSet(int x, int y, int z) {
         if (x == 0) {
-            Chunk c = world.getChunk(getX() - 1, y, getZ());
+            Chunk c = world.getChunk(getX() - 1, getY(), getZ());
             if (c != null) {
                 c.appendToLightUpdatingSet();
             }
         } else if (x == 15) {
-            Chunk c = world.getChunk(getX() + 1, y, getZ());
+            Chunk c = world.getChunk(getX() + 1, getY(), getZ());
             if (c != null) {
                 c.appendToLightUpdatingSet();
             }
@@ -317,12 +317,12 @@ public class Chunk {
         }
 
         if (z == 0) {
-            Chunk c = world.getChunk(getX(), y, getZ() - 1);
+            Chunk c = world.getChunk(getX(), getY(), getZ() - 1);
             if (c != null) {
                 c.appendToLightUpdatingSet();
             }
         } else if (z == 15) {
-            Chunk c = world.getChunk(getX(), y, getZ() + 1);
+            Chunk c = world.getChunk(getX(), getY(), getZ() + 1);
             if (c != null) {
                 c.appendToLightUpdatingSet();
             }
