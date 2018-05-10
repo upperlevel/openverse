@@ -7,6 +7,7 @@ import xyz.upperlevel.openverse.client.render.world.util.VertexBufferPool;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.storage.BlockStorage;
+import xyz.upperlevel.ulge.opengl.DataType;
 import xyz.upperlevel.ulge.opengl.buffer.*;
 import xyz.upperlevel.ulge.opengl.shader.Program;
 import xyz.upperlevel.ulge.opengl.shader.Uniform;
@@ -39,7 +40,7 @@ public class ChunkRenderer {
         this.program = program;
         this.chunk = chunk;
         if (worldSkyLightLoc == null) {
-            worldSkyLightLoc = program.uniformer.get("worldSkylight");
+            worldSkyLightLoc = program.getUniform("worldSkylight");
         }
         setup();
         reloadVertexSize();
@@ -91,12 +92,15 @@ public class ChunkRenderer {
 
         vbo = new Vbo();
         vbo.bind();
-        new VertexLinker()
-                .attrib(program.uniformer.getAttribLocation("position"), 3)
-                .attrib(program.uniformer.getAttribLocation("texCoords"), 3)
-                .attrib(program.uniformer.getAttribLocation("blockLight"), 1)
-                .attrib(program.uniformer.getAttribLocation("blockSkylight"), 1)
-                .setup();
+
+        program.use();
+
+        VertexLinker linker = new VertexLinker();
+        linker.attrib(program.getAttribLocation("position"), 3, DataType.FLOAT, false, 0);
+        linker.attrib(program.getAttribLocation("texCoords"), 3, DataType.FLOAT, false, 3 * DataType.FLOAT.getByteCount());
+        linker.attrib(program.getAttribLocation("blockLight"), 1, DataType.FLOAT, false, 6 * DataType.FLOAT.getByteCount());
+        linker.attrib(program.getAttribLocation("blockSkylight"), 1, DataType.FLOAT, false, 7 * DataType.FLOAT.getByteCount());
+        linker.setup();
 
         vbo.unbind();
         vao.unbind();
