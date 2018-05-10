@@ -92,14 +92,14 @@ public class ChunkRenderer {
 
         vbo = new Vbo();
         vbo.bind();
+
         program.use();
 
         VertexLinker linker = new VertexLinker();
-        if (!program.hasUniform("position")) throw new IllegalStateException("Cannot find uniform location :(");
-        linker.attrib(program.getUniformLocation("position"), 3, DataType.FLOAT, false, 0);
-        linker.attrib(program.getUniformLocation("texCoords"), 3, DataType.FLOAT, false, 3 * DataType.FLOAT.getByteCount());
-        linker.attrib(program.getUniformLocation("blockLight"), 1, DataType.FLOAT, false, 4 * DataType.FLOAT.getByteCount());
-        linker.attrib(program.getUniformLocation("blockSkylight"), 1, DataType.FLOAT, false, 5 * DataType.FLOAT.getByteCount());
+        linker.attrib(program.getAttribLocation("position"), 3, DataType.FLOAT, false, 0);
+        linker.attrib(program.getAttribLocation("texCoords"), 3, DataType.FLOAT, false, 3 * DataType.FLOAT.getByteCount());
+        linker.attrib(program.getAttribLocation("blockLight"), 1, DataType.FLOAT, false, 6 * DataType.FLOAT.getByteCount());
+        linker.attrib(program.getAttribLocation("blockSkylight"), 1, DataType.FLOAT, false, 7 * DataType.FLOAT.getByteCount());
         linker.setup();
 
         vbo.unbind();
