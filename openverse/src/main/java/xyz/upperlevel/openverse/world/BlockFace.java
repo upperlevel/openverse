@@ -1,4 +1,4 @@
-package xyz.upperlevel.openverse.client.render.block;
+package xyz.upperlevel.openverse.world;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +7,7 @@ import xyz.upperlevel.openverse.util.math.Aabb3f;
 
 @Getter
 @RequiredArgsConstructor
-public enum Facing {
+public enum BlockFace {
     UP(0, 1, 0),
     DOWN(0, -1, 0),
     FRONT(0, 0, -1),
@@ -39,10 +39,10 @@ public enum Facing {
     }
 
     /**
-     * Gets the opposite {@link Facing} to this face.
-     * @return the opposite {@link Facing} to this face
+     * Gets the opposite {@link BlockFace} to this face.
+     * @return the opposite {@link BlockFace} to this face
      */
-    public Facing getOpposite() {
+    public BlockFace getOpposite() {
         switch (this) {
             case UP:
                 return DOWN;

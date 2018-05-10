@@ -1,7 +1,9 @@
 package xyz.upperlevel.openverse.world.chunk;
 
 import lombok.Getter;
+import lombok.NonNull;
 import xyz.upperlevel.openverse.world.World;
+import xyz.upperlevel.openverse.world.block.BlockFace;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.chunk.storage.BlockStorage;
@@ -33,6 +35,18 @@ public class Block {
         );
     }
 
+    public Block getRelative(@NonNull BlockFace face) {
+        switch (face) {
+            case UP: return getRelative(0, 1, 0);
+            case DOWN: return getRelative(0, -1, 0);
+            case LEFT: return getRelative(1, 0, 0);
+            case RIGHT: return getRelative(-1, 0, 0);
+            case BACK: return getRelative(0, 0, 1);
+            case FRONT: return getRelative(0, 0, -1);
+            default: throw new IllegalStateException(face.name() + " not expected");
+        }
+    }
+
 
     public BlockType getType() {
         return storage.getBlockState(chunkRelativeX, chunkRelativeY, chunkRelativeZ).getBlockType();
@@ -44,15 +58,23 @@ public class Block {
 
 
     public BlockState getState() {
-        return storage.getBlockState(chunkRelativeX, chunkRelativeY, chunkRelativeZ);
+        return chunk.getBlockState(chunkRelativeX, chunkRelativeY, chunkRelativeZ);
     }
 
     public void setState(BlockState state) {
-        storage.setBlockState(chunkRelativeX, chunkRelativeY, chunkRelativeZ, state);
+        chunk.setBlockState(chunkRelativeX, chunkRelativeY, chunkRelativeZ, state);
+    }
+
+    public int getSkyLight() {
+        return storage.getBlockSkylight(chunkRelativeX, chunkRelativeY, chunkRelativeZ);
+    }
+
+    public int getBlockLight() {
+        return storage.getBlockLight(chunkRelativeX, chunkRelativeY, chunkRelativeZ);
     }
 
     @Override
     public String toString() {
-        return "{loc:{" + x + "," + y + "," + z + "},state:" + getState() + "}";
+        return "{loc:{" + x + "," + y + "," + z + "},state:" + getState() + ",skyLight:" + getSkyLight() + ",blockLight;" + getBlockLight() + "}";
     }
 }

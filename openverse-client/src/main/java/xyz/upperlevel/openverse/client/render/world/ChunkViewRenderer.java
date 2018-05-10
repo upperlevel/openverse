@@ -8,8 +8,8 @@ import xyz.upperlevel.openverse.client.render.world.util.VertexBufferPool;
 import xyz.upperlevel.openverse.client.world.ClientWorld;
 import xyz.upperlevel.openverse.event.BlockUpdateEvent;
 import xyz.upperlevel.openverse.event.ShutdownEvent;
-import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
+import xyz.upperlevel.openverse.world.chunk.event.ChunkLightChangeEvent;
 import xyz.upperlevel.openverse.world.event.ChunkLoadEvent;
 import xyz.upperlevel.openverse.world.event.ChunkUnloadEvent;
 import xyz.upperlevel.ulge.opengl.shader.Program;
@@ -75,8 +75,11 @@ public class ChunkViewRenderer implements Listener {
         } else {
             ChunkCompileTask task = chunk.createCompileTask(vertexProvider);
             detachedChunkCompiler.execute(() -> {
-                task.compile();
-                pendingTasks.add(task);
+                if (task.compile()) {
+                    // If the task compiled successfully
+                    // Put it in the uploading queue
+                    pendingTasks.add(task);
+                }
             });
         }
     }
@@ -95,21 +98,57 @@ public class ChunkViewRenderer implements Listener {
         }
     }
 
+    public void recompileChunksAround(int x, int y, int z, ChunkCompileMode mode) {
+        for (int chkX = x - 1; chkX <= x + 1; chkX++) {
+            for (int chkY = y - 1; chkY <= y + 1; chkY++) {
+                for (int chkZ = z - 1; chkZ <= z + 1; chkZ++) {
+                    ChunkRenderer chunk = getChunk(ChunkLocation.of(chkX, chkY, chkZ));
+                    if (chunk == null) {
+                        continue;
+                    }
+                    recompileChunk(chunk, mode);
+                }
+            }
+        }
+    }
+
+    public void recompileChunksAroundBlock(int x, int y, int z, ChunkCompileMode mode) {
+        int minX = (x - 1) >> 4;
+        int minY = (y - 1) >> 4;
+        int minZ = (z - 1) >> 4;
+        int maxX = (x + 1) >> 4;
+        int maxY = (y + 1) >> 4;
+        int maxZ = (z + 1) >> 4;
+        for (int chkX = minX; chkX <= maxX; chkX++) {
+            for (int chY = minY; chY <= maxY; chY++) {
+                for (int chZ = minZ; chZ <= maxZ; chZ++) {
+                    ChunkRenderer chunk = getChunk(ChunkLocation.of(chkX, chY, chZ));
+                    if (chunk == null) {
+                        continue;
+                    }
+                    recompileChunk(chunk, mode);
+                }
+            }
+        }
+    }
+
     /**
      * Destroys all chunks and remove them from memory.
      */
     public void destroy() {
-        Openverse.logger().fine("Shutting down chunk compiler");
+        Openverse.getLogger().fine("Shutting down chunk compiler");
         detachedChunkCompiler.shutdownNow();
-        Openverse.logger().fine("Done");
+        Openverse.getLogger().fine("Done");
         chunks.values().forEach(ChunkRenderer::destroy);
         chunks.clear();
     }
 
-
     @EventHandler
     public void onChunkLoad(ChunkLoadEvent e) {
         loadChunk(new ChunkRenderer(this, e.getChunk(), program));
+
+        ChunkLocation loc = e.getChunk().getLocation();
+        recompileChunksAround(loc.x, loc.y, loc.z, ChunkCompileMode.ASYNC);
     }
 
     @EventHandler
@@ -122,28 +161,16 @@ public class ChunkViewRenderer implements Listener {
         if (world != e.getWorld()) {
             return;
         }
-        int ux = e.getX();
-        int uy = e.getY();
-        int uz = e.getZ();
+        recompileChunksAroundBlock(e.getX(), e.getY(), e.getZ(), ChunkCompileMode.INSTANT);
+    }
 
-        int minX = (ux - 1) >> 4;
-        int minY = (uy - 1) >> 4;
-        int minZ = (uz - 1) >> 4;
-        int maxX = (ux + 1) >> 4;
-        int maxY = (uy + 1) >> 4;
-        int maxZ = (uz + 1) >> 4;
 
-        for (int x = minX; x <= maxX; x++) {
-            for (int y = minY; y <= maxY; y++) {
-                for (int z = minZ; z <= maxZ; z++) {
-                    ChunkRenderer chunk = getChunk(ChunkLocation.of(x, y, z));
-                    if (chunk == null) {
-                        continue;
-                    }
-                    recompileChunk(chunk, ChunkCompileMode.INSTANT);
-                }
-            }
+    @EventHandler
+    public void onChunkLightChange(ChunkLightChangeEvent e) {
+        if (world != e.getWorld()) {
+            return;
         }
+        recompileChunk(getChunk(e.getChunk().getLocation()), ChunkCompileMode.ASYNC);
     }
 
     @EventHandler

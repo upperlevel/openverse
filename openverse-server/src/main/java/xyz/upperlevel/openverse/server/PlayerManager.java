@@ -27,9 +27,9 @@ import xyz.upperlevel.openverse.network.world.entity.PlayerChangeHandSlotPacket;
 import xyz.upperlevel.openverse.network.world.entity.PlayerChangeWorldPacket;
 import xyz.upperlevel.openverse.server.event.PlayerJoinEvent;
 import xyz.upperlevel.openverse.server.event.PlayerQuitEvent;
-import xyz.upperlevel.openverse.server.world.PlayerChunk;
 import xyz.upperlevel.openverse.server.world.ServerPlayer;
 import xyz.upperlevel.openverse.server.world.ServerWorld;
+import xyz.upperlevel.openverse.server.world.chunk.PlayerChunkCache;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
 import xyz.upperlevel.openverse.world.entity.player.Player;
@@ -49,7 +49,7 @@ public class PlayerManager implements Listener, PacketListener {
      */
     public void start() {
         OpenverseServer.get().getEndpoint().getEventManager().register(this);
-        Openverse.channel().register(this);
+        Openverse.getChannel().register(this);
     }
 
     /**
@@ -57,7 +57,7 @@ public class PlayerManager implements Listener, PacketListener {
      */
     public void close() {
         OpenverseServer.get().getEndpoint().getEventManager().unregister(this);
-        Openverse.channel().unregister(this);
+        Openverse.getChannel().unregister(this);
     }
 
     public void register(@NonNull ServerPlayer player) {
@@ -85,11 +85,10 @@ public class PlayerManager implements Listener, PacketListener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onConnect(ConnectionOpenEvent event) {
         Location spawn = OpenverseServer.get().getUniverse().getSpawn();
-        ServerPlayer sp = new ServerPlayer(spawn, "Hobbit", event.getConnection());
-        sp.setConnection(sp.getConnection());
+        ServerPlayer sp = new ServerPlayer(spawn, "Maurizio", event.getConnection());
         register(sp);
-        sp.getConnection().send(Openverse.channel(), new PlayerChangeWorldPacket(spawn.getWorld()));
-        sp.getConnection().send(Openverse.channel(), new EntityTeleportPacket(sp));
+        sp.getConnection().send(Openverse.getChannel(), new PlayerChangeWorldPacket(spawn.getWorld()));
+        sp.getConnection().send(Openverse.getChannel(), new EntityTeleportPacket(sp));
         Openverse.getEventManager().call(new PlayerJoinEvent(sp));
 
         //Add a block of dirt in his hand
@@ -120,10 +119,10 @@ public class PlayerManager implements Listener, PacketListener {
         // Apply changes to the world
         player.breakBlock(packet.getX(), packet.getY(), packet.getZ(), false);
         // Resend the packet to the other players
-        PlayerChunk c = ((ServerWorld)player.getWorld()).getChunkMap().getChunk(ChunkLocation.fromBlock(packet.getX(), packet.getY(), packet.getZ()));
+        PlayerChunkCache c = ((ServerWorld)player.getWorld()).getChunkMap().getChunk(ChunkLocation.fromBlock(packet.getX(), packet.getY(), packet.getZ()));
         for (Player p : c.getPlayers()) {
             if (p != player) {
-                p.getConnection().send(Openverse.channel(), packet);
+                p.getConnection().send(Openverse.getChannel(), packet);
             }
         }
     }
@@ -134,10 +133,10 @@ public class PlayerManager implements Listener, PacketListener {
         // Apply changes to the world
         player.useItemInHand(packet.getX(), packet.getY(), packet.getZ(), packet.getFace(), false);
         // Resend the packet to the other players (TODO: fix no entity specified in the packet for other players in multiplayer)
-        PlayerChunk c = ((ServerWorld)player.getWorld()).getChunkMap().getChunk(ChunkLocation.fromBlock(packet.getX(), packet.getY(), packet.getZ()));
+        PlayerChunkCache c = ((ServerWorld)player.getWorld()).getChunkMap().getChunk(ChunkLocation.fromBlock(packet.getX(), packet.getY(), packet.getZ()));
         for (Player p : c.getPlayers()) {
             if (p != player) {
-                p.getConnection().send(Openverse.channel(), packet);
+                p.getConnection().send(Openverse.getChannel(), packet);
             }
         }
     }
@@ -163,18 +162,7 @@ public class PlayerManager implements Listener, PacketListener {
     public void onInventoryAction(Connection conn, PlayerInventoryActionPacket packet) {
         Player player = OpenverseServer.get().getPlayerManager().getPlayer(conn);
         //TODO: add inventory interaction
-        Openverse.logger().info("Inventory action received (slot:" + packet.getSlotId() + ", action:" + packet.getAction().name() + ")");
-        PlayerInventorySession session = player.getInventorySession();
-        if (session == null) {
-            Openverse.logger().severe("Client sent PlayerInventoryActionPacket without any gui session!");
-            return;
-        }
-        Slot slot = session.getInventory().get(packet.getSlotId());
-        if (slot == null) {
-            Openverse.logger().severe("Client sent PlayerInventoryActionPacket with an invalid slot!!");
-            return;
-        }
-        session.onInteract(slot, packet.getAction());
+        //TODO: Openverse.getLogger().info("Inventory action received (inventory:" + packet.getInventoryId() + ", slot:" + packet.getSlotId() + ", action:" + packet.getAction().name() + ")");
     }
 
     @PacketHandler

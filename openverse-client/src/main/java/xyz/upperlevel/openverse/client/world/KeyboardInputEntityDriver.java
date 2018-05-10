@@ -47,8 +47,8 @@ public class KeyboardInputEntityDriver implements LivingEntityDriver, Listener {
     }
 
     protected float getMovement(Key pos, Key neg, float speed) {
-        boolean enPos = window.getKey(pos);
-        boolean enNeg = window.getKey(neg);
+        boolean enPos = window.testKey(pos);
+        boolean enNeg = window.testKey(neg);
 
         if (enPos == enNeg) {
             // All enabled or all disabled

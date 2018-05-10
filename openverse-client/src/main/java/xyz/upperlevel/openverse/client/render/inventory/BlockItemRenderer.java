@@ -7,9 +7,12 @@ import xyz.upperlevel.openverse.client.render.block.*;
 import xyz.upperlevel.openverse.client.resource.ClientResources;
 import xyz.upperlevel.openverse.item.ItemStack;
 import xyz.upperlevel.openverse.util.exceptions.NotImplementedException;
+import xyz.upperlevel.openverse.world.World;
+import xyz.upperlevel.openverse.world.block.BlockFace;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.ulge.gui.GuiBounds;
+import xyz.upperlevel.ulge.opengl.DataType;
 import xyz.upperlevel.ulge.opengl.buffer.*;
 import xyz.upperlevel.ulge.opengl.shader.Program;
 import xyz.upperlevel.ulge.opengl.shader.Uniform;
@@ -26,20 +29,20 @@ public class BlockItemRenderer implements ItemRenderer {
 
     static {
         program = ((ClientResources) Openverse.resources()).programs().entry("gui_item_shader");
-        program.bind();
-        boundsLoc = program.uniformer.get("bounds");
+        program.use();
+        boundsLoc = program.getUniform("bounds");
         if (boundsLoc == null) throw new IllegalStateException("Cannot find Uniform 'bounds'");
     }
 
     public BlockItemRenderer(BlockType type) {
-        this(type, Facing.FRONT);
+        this(type, BlockFace.FRONT);
     }
 
-    public BlockItemRenderer(BlockType type, Facing displayFace) {
+    public BlockItemRenderer(BlockType type, BlockFace displayFace) {
         setupStateRenderers(type, displayFace);
     }
 
-    private void setupStateRenderers(BlockType type, Facing displayFace) {
+    private void setupStateRenderers(BlockType type, BlockFace displayFace) {
         List<? extends BlockState> states = type.getStateRegistry().getStates();
         renderersByState = new StateRenderData[states.size()];
         for (int i = 0; i < states.size(); i++) {
@@ -50,7 +53,7 @@ public class BlockItemRenderer implements ItemRenderer {
 
     @Override
     public void renderInSlot(ItemStack item, Window window, GuiBounds bounds, SlotGui slot) {
-        program.bind();
+        program.use();
         float invWidth = 1f / window.getWidth();
         float invHeight = 1f / window.getHeight();
         boundsLoc.set(
@@ -83,7 +86,7 @@ public class BlockItemRenderer implements ItemRenderer {
         public Vbo vbo;
         public int vertices;
 
-        public void setup(BlockState state, Facing displayFace) {
+        public void setup(BlockState state, BlockFace displayFace) {
             BlockModel model = BlockTypeModelMapper.model(state);
             if (model == null) {
                 throw new IllegalStateException("Cannot find model for " + state);
@@ -94,7 +97,8 @@ public class BlockItemRenderer implements ItemRenderer {
             ByteBuffer buffer = BufferUtils.createByteBuffer(faces.size() * 4 * 6 * Float.BYTES);
             vertices = 0;
             for (BlockPartFace f : faces) {
-                vertices += f.renderOnBuffer(0, 0, 0, buffer);
+                // TODO: a world is needed!
+                // TODO: vertices += f.renderOnBuffer(world, 0, 0, 0, buffer);
             }
             buffer.flip();
 
@@ -103,10 +107,11 @@ public class BlockItemRenderer implements ItemRenderer {
 
             vbo = new Vbo();
             vbo.bind();
-            new VertexLinker()
-                    .attrib(program.uniformer.getAttribLocation("position"), 3)
-                    .attrib(program.uniformer.getAttribLocation("texCoords"), 3)
-                    .setup();
+
+            VertexLinker linker = new VertexLinker();
+            linker.attrib(program.getAttribLocation("position"), 3, DataType.FLOAT, false, 0);
+            linker.attrib(program.getAttribLocation("texCoords"), 3, DataType.FLOAT, false, 3 * DataType.FLOAT.getByteCount());
+            linker.setup();
 
             vbo.loadData(buffer, VboDataUsage.STATIC_DRAW);
         }

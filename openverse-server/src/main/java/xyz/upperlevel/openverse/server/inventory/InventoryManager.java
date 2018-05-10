@@ -12,7 +12,7 @@ public class InventoryManager implements PacketListener {
     private Map<Long, Inventory> handles = new HashMap<>();
 
     public InventoryManager() {
-        Openverse.channel().register(this);
+        Openverse.getChannel().register(this);
     }
 
     public long register(Inventory inventory) {

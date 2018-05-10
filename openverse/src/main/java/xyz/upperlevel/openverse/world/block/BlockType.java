@@ -47,10 +47,6 @@ public class BlockType {
         return BlockStateRegistry.of(this); //Creates a BlockStateRegistry with no propriety
     }
 
-    public BlockState getDefaultState() {
-        return defaultBlockState;
-    }
-
     public void setDefaultState(BlockState state) {
         this.defaultBlockState = state;
     }
@@ -94,6 +90,10 @@ public class BlockType {
         } else {
             return getStateRegistry().getState(itemStack.getState());
         }
+    }
+
+    public int getEmittedBlockLight(BlockState blockState) {
+        return 0;
     }
 
     @Override

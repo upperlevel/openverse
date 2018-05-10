@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import xyz.upperlevel.openverse.util.math.Aabb3f;
+import xyz.upperlevel.openverse.world.BlockFace;
 import xyz.upperlevel.openverse.world.World;
 
 import java.nio.ByteBuffer;
@@ -18,7 +19,7 @@ public class BlockModel {
     private Aabb3f aabb = Aabb3f.ZERO;
     private List<BlockPart> blockParts = new ArrayList<>();
 
-    private Map<Facing, List<BlockPartFace>> externalFaces = new HashMap<>();
+    private Map<BlockFace, List<BlockPartFace>> externalFaces = new HashMap<>();
 
     public BlockModel(List<BlockPart> blockParts) {
         for (BlockPart bp : blockParts)
@@ -37,7 +38,7 @@ public class BlockModel {
      * External means faces on the border of the model.
      */
     private void loadExternalFaces(BlockPart blockPart) {
-        for (Map.Entry<Facing, BlockPartFace> face : blockPart.getFaces().entrySet()) {
+        for (Map.Entry<BlockFace, BlockPartFace> face : blockPart.getFaces().entrySet()) {
             switch (face.getKey()) {
                 case UP:
                     if (blockPart.getAabb().maxY < 1f)
@@ -70,9 +71,13 @@ public class BlockModel {
         loadExternalFaces(blockPart);
     }
 
+    /**
+     * Prepares the parts of this model to be used for rendering.
+     */
     public void bake() {
-        for (BlockPart p : blockParts)
-            p.bake();
+        for (BlockPart part : blockParts) {
+            part.bake();
+        }
     }
 
     public int getVerticesCount() {
@@ -83,7 +88,7 @@ public class BlockModel {
     }
 
     public int getDataCount() {
-        return getVerticesCount() * (3 + 3);
+        return getVerticesCount() * (3 + 3 + 1 + 1);
     }
 
     public int renderOnBuffer(World world, int x, int y, int z, ByteBuffer buffer) {

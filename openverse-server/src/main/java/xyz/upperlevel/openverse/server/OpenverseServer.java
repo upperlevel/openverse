@@ -25,7 +25,6 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static xyz.upperlevel.openverse.Openverse.logger;
 import static xyz.upperlevel.openverse.Openverse.resources;
 
 @Getter
@@ -64,12 +63,12 @@ public class OpenverseServer implements OpenverseProxy, Listener {
      */
     public void join() {
         long init = System.currentTimeMillis();
-        logger().info("Loading resources...");
+        Openverse.getLogger().info("Loading resources...");
         resources().setup();
         resources().load();
-        logger().info("Resources loaded in " + (System.currentTimeMillis() - init) + " ms.");
+        Openverse.getLogger().info("Resources loaded in " + (System.currentTimeMillis() - init) + " ms.");
 
-        logger().info("Listening for incoming connections...");
+        Openverse.getLogger().info("Listening for incoming connections...");
         playerManager.start();
     }
 

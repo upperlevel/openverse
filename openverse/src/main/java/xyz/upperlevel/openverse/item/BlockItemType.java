@@ -28,7 +28,7 @@ public class BlockItemType extends ItemType {
         ItemStack itemStack = new ItemStack(this, count);
 
         BlockStateRegistry registry = blockType.getStateRegistry();
-        BlockState state = blockType.getDefaultState();
+        BlockState state = blockType.getDefaultBlockState();
         for (BlockProperty<?> property : registry.getProperties()) {
             if (!inData.containsKey(property.getName())) {
                 continue;
@@ -45,7 +45,7 @@ public class BlockItemType extends ItemType {
 
     @Override
     public byte getDefaultState() {
-        return (byte) blockType.getDefaultState().getId();
+        return (byte) blockType.getDefaultBlockState().getId();
     }
 
     @Override

@@ -88,7 +88,7 @@ public class OpenverseClient implements OpenverseProxy {
 
     public boolean isShifting() {
         Window w = OpenverseLauncher.get().getGame().getWindow();
-        return w.getKey(Key.LEFT_SHIFT) || w.getKey(Key.RIGHT_SHIFT);
+        return w.testKey(Key.LEFT_SHIFT) || w.testKey(Key.RIGHT_SHIFT);
     }
 
     @Override

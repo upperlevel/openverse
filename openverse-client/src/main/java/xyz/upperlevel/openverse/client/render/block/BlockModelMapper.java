@@ -47,7 +47,7 @@ public class BlockModelMapper {
                 model = new BlockModel();
                 Map<String, Object> stateMap = varCfg.getSection("state");
                 if (stateMap != null) {
-                    BlockState state = reg.getBlockType().getDefaultState();
+                    BlockState state = reg.getBlockType().getDefaultBlockState();
                     for (Map.Entry<String, Object> prop : stateMap.entrySet()) {
                         BlockProperty<?> p = reg.getProperty(prop.getKey());
                         Optional<?> val = p.parse((String) prop.getValue());
@@ -55,7 +55,7 @@ public class BlockModelMapper {
                             // Do NOT simplify or it won't compile (why??)
                             state = state.with((BlockProperty)p, (Comparable) val.get());
                         } else
-                            Openverse.logger().warning("Cannot parse value \"" + prop.getValue() + "\" of property: " + p.getName() + " ");
+                            Openverse.getLogger().warning("Cannot parse value \"" + prop.getValue() + "\" of property: " + p.getName() + " ");
                     }
                     path = Paths.get(varCfg.getStringRequired("model"));
                     model.addBlockPart(BlockModelRegistry.load(path.toFile()));
@@ -75,6 +75,9 @@ public class BlockModelMapper {
         return models.get(state);
     }
 
+    /**
+     * Prepares the loaded model vertices to be used for rendering.
+     */
     public void bake() {
         models.values().forEach(BlockModel::bake);
     }

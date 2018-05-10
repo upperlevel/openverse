@@ -14,7 +14,7 @@ public class ShaderLoader implements ResourceLoader<Shader> {
     @Override
     public Identifier<Shader> load(File file) {
         Shader shader = new Shader(ShaderType.getFromExtension(FileUtil.getExtension(file)));
-        Openverse.logger().info("Loading shader at: " + file.getName());
+        Openverse.getLogger().info("Loading shader at: " + file.getName());
         try {
             shader.linkSource(file);
         } catch (IOException e) {
@@ -22,7 +22,7 @@ public class ShaderLoader implements ResourceLoader<Shader> {
         }
         shader.compileSource();
         if (shader.getCompileStatus().isOk())
-            Openverse.logger().info("Shader status: " + shader.getCompileStatus().getLog());
+            Openverse.getLogger().info("Shader status: " + shader.getCompileStatus().getLog());
         else
             throw new IllegalArgumentException("Error compiling shader \"" + file + "\": " + shader.getCompileStatus().getLog());
         return new Identifier<>(file.getName(), shader);

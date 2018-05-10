@@ -9,7 +9,7 @@ public final class BlockTypes {
 
     static {
         BlockTypeRegistry reg = Openverse.resources().blockTypes();
-        Openverse.logger().info("Init BlockTypes");
+        Openverse.getLogger().info("Init BlockTypes");
         DIRT = reg.entry("dirt");
         GRASS = reg.entry("grass");
     }

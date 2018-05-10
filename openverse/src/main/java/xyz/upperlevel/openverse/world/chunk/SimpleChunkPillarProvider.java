@@ -18,19 +18,8 @@ public class SimpleChunkPillarProvider implements ChunkPillarProvider {
     }
 
     @Override
-    public ChunkPillar getChunkPillar(int x, int z, boolean load) {
-        return getChunkPillar(x, z);
-    }
-
-    @Override
     public ChunkPillar getChunkPillar(int x, int z) {
-        long i = provideIndex(x, z);
-        ChunkPillar pillar = chunkPillarsMap.get(i);
-        if (pillar == null) {
-            pillar = new ChunkPillar(world, x, z);
-            chunkPillarsMap.put(i, pillar);
-        }
-        return pillar;
+        return chunkPillarsMap.get(provideIndex(x, z));
     }
 
     @Override
@@ -44,7 +33,7 @@ public class SimpleChunkPillarProvider implements ChunkPillarProvider {
     }
 
     @Override
-    public boolean unloadChunkPillar(int x, int z) {
-        return chunkPillarsMap.remove(provideIndex(x, z)) != null;
+    public ChunkPillar unloadChunkPillar(int x, int z) {
+        return chunkPillarsMap.remove(provideIndex(x, z));
     }
 }

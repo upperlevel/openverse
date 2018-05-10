@@ -17,6 +17,7 @@ import xyz.upperlevel.openverse.network.world.entity.*;
 import xyz.upperlevel.openverse.network.world.registry.BlockRegistryPacket;
 import xyz.upperlevel.openverse.network.world.registry.ItemRegistryPacket;
 import xyz.upperlevel.openverse.resource.Resources;
+import xyz.upperlevel.openverse.world.chunk.HeightmapPacket;
 import xyz.upperlevel.openverse.world.entity.EntityManager;
 
 import java.util.logging.Logger;
@@ -29,22 +30,29 @@ public final class Openverse {
             .packet(PacketSide.SERVER, EntityTeleportPacket.class)
             .packet(PacketSide.SERVER, ChunkCreatePacket.class)
             .packet(PacketSide.SERVER, ChunkDestroyPacket.class)
-            .packet(PacketSide.SHARED, PlayerChangeLookPacket.class)
-            .packet(PacketSide.SHARED, PlayerChangePositionPacket.class)
+            .packet(PacketSide.SERVER, HeightmapPacket.class)
             .packet(PacketSide.SERVER, PlayerChangeWorldPacket.class)
-            .packet(PacketSide.CLIENT, LoginRequestPacket.class)
             .packet(PacketSide.SERVER, LoginResponsePacket.class)
+            .packet(PacketSide.SERVER, SlotChangePacket.class)
+            .packet(PacketSide.SERVER, InventoryContentPacket.class)
             .packet(PacketSide.SERVER, BlockRegistryPacket.class)
             .packet(PacketSide.SERVER, ItemRegistryPacket.class)
             .packet(PacketSide.SERVER, EntityChangeVelocityPacket.class)
-            .packet(PacketSide.SHARED, PlayerBreakBlockPacket.class)
-            .packet(PacketSide.SHARED, PlayerUseItemPacket.class)
             .packet(PacketSide.SERVER, SlotChangePacket.class)
+            .packet(PacketSide.SERVER, InventoryContentPacket.class)
+
             .packet(PacketSide.SHARED, PlayerOpenInventoryPacket.class)
             .packet(PacketSide.SHARED, PlayerCloseInventoryPacket.class)
-            .packet(PacketSide.SERVER, InventoryContentPacket.class)
-            .packet(PacketSide.CLIENT, PlayerInventoryActionPacket.class)
             .packet(PacketSide.SHARED, PlayerChangeHandSlotPacket.class)
+            .packet(PacketSide.SHARED, PlayerChangeLookPacket.class)
+            .packet(PacketSide.SHARED, PlayerChangePositionPacket.class)
+            .packet(PacketSide.SHARED, PlayerChangeLookPacket.class)
+            .packet(PacketSide.SHARED, PlayerChangePositionPacket.class)
+            .packet(PacketSide.SHARED, PlayerBreakBlockPacket.class)
+            .packet(PacketSide.SHARED, PlayerUseItemPacket.class)
+
+            .packet(PacketSide.CLIENT, LoginRequestPacket.class)
+            .packet(PacketSide.CLIENT, PlayerInventoryActionPacket.class)
             .build();
 
     private static OpenverseProxy proxy;
@@ -65,7 +73,7 @@ public final class Openverse {
         return proxy.getEntityManager();
     }
 
-    public static Logger logger() {
+    public static Logger getLogger() {
         return proxy.getLogger();
     }
 
@@ -77,7 +85,7 @@ public final class Openverse {
         return proxy.getEndpoint();
     }
 
-    public static Channel channel() {
+    public static Channel getChannel() {
         return proxy.getChannel();
     }
 }

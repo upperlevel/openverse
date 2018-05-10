@@ -25,6 +25,6 @@ public class ServerItemTypeRegistry extends ItemTypeRegistry implements Listener
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
-        event.getPlayer().getConnection().send(Openverse.channel(), new ItemRegistryPacket(getOrderedEntries()));
+        event.getPlayer().getConnection().send(Openverse.getChannel(), new ItemRegistryPacket(getOrderedEntries()));
     }
 }

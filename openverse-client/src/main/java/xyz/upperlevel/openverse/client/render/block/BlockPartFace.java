@@ -5,12 +5,14 @@ import lombok.RequiredArgsConstructor;
 import xyz.upperlevel.openverse.util.config.Config;
 import xyz.upperlevel.openverse.util.math.Aabb2f;
 import xyz.upperlevel.openverse.util.math.Aabb3f;
+import xyz.upperlevel.openverse.world.BlockFace;
 import xyz.upperlevel.openverse.world.World;
 
 import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @RequiredArgsConstructor
@@ -21,7 +23,7 @@ public class BlockPartFace {
     public static final int BOTTOM_LEFT = 3;
 
     private final BlockPart blockPart;
-    private final Facing facing;
+    private final BlockFace blockFace;
     private final Aabb2f aabb;
     private final Path textureLocation;
 
@@ -50,11 +52,11 @@ public class BlockPartFace {
     }
 
     /**
-     * Obtains vertex positions from the super {@link BlockPart}.
+     * Extract all the four vertices of the quad representing the face.
      */
     public void bake() {
         Aabb3f aabb = blockPart.getAabb();
-        switch (facing) {
+        switch (blockFace) {
             case UP:
                 bakeVertexPosition(TOP_LEFT, aabb.minX, aabb.maxY, aabb.maxZ);
                 bakeVertexPosition(TOP_RIGHT, aabb.maxX, aabb.maxY, aabb.maxZ);
@@ -100,21 +102,28 @@ public class BlockPartFace {
         baked = true;
     }
 
+    /**
+     * Is the face ready to be rendered?
+     *
+     * @return {@code true} if the face is baked, otherwise {@code false}
+     */
     public boolean isBaked() {
         return baked;
     }
 
-    public BlockPartFace(BlockPart blockPart, Facing facing, Config config) {
+    public BlockPartFace(BlockPart blockPart, BlockFace blockFace, Config config) {
         this.blockPart = blockPart;
-        this.facing = facing;
-        this.aabb = facing.resolveAabb(blockPart.getAabb());
+        this.blockFace = blockFace;
+        this.aabb = blockFace.resolveAabb(blockPart.getAabb());
         this.textureLocation = Paths.get(config.getString("texture"));
     }
 
     private boolean shouldBeRendered(World world, int x, int y, int z) {
-        BlockModel relModel = BlockTypeModelMapper.model(world.getBlockState(x + facing.offsetX, y + facing.offsetY, z + facing.offsetZ));
+        if (!baked)
+            return false;
+        BlockModel relModel = BlockTypeModelMapper.model(world.getBlockState(x + blockFace.offsetX, y + blockFace.offsetY, z + blockFace.offsetZ));
         if (relModel != null) {
-            List<BlockPartFace> extFac = relModel.getExternalFaces().get(facing.getOpposite());
+            List<BlockPartFace> extFac = relModel.getExternalFaces().get(blockFace.getOpposite());
             if (extFac != null) {
                 for (BlockPartFace touching : extFac) {
                     if (touching.aabb.inside(aabb))
@@ -128,27 +137,31 @@ public class BlockPartFace {
     /**
      * Renders baked model on the given buffer only if visible.
      */
-    public int checkAndRenderOnBuffer(World world, int x, int y, int z, ByteBuffer buffer) {
-        // checks if the face is hidden
-        if (!baked || !shouldBeRendered(world, x, y, z))
+    public int renderOnBuffer(World world, int x, int y, int z, ByteBuffer buffer) {
+        // Checks if the face is hidden
+        if (!shouldBeRendered(world, x, y, z))
             return 0;
-        return renderOnBuffer(x, y, z, buffer);
-    }
 
-    public int renderOnBuffer(int x, int y, int z, ByteBuffer buffer) {
+        float lightVal = world.getBlockLight(x + blockFace.offsetX, y + blockFace.offsetY, z + blockFace.offsetZ) / 15f;
+        float skylightVal = world.getBlockSkylight(x + blockFace.offsetX, y + blockFace.offsetY, z + blockFace.offsetZ) / 15f;
+
         for (int i = 0; i < 4; i++) {
-            buffer
-                    .putFloat(x + verticesX[i])
+            // Adds block vertices to the chunk
+            buffer.putFloat(x + verticesX[i])
                     .putFloat(y + verticesY[i])
                     .putFloat(z + verticesZ[i])
+
                     .putFloat(verticesU[i])
                     .putFloat(verticesV[i])
-                    .putFloat(textureLayer);
+                    .putFloat(textureLayer)
+
+                    .putFloat(lightVal)
+                    .putFloat(skylightVal);
         }
         return 4;
     }
 
-    public static BlockPartFace deserialize(BlockPart part, Facing facing, Config config) {
-        return new BlockPartFace(part, facing, config);
+    public static BlockPartFace deserialize(BlockPart part, BlockFace blockFace, Config config) {
+        return new BlockPartFace(part, blockFace, config);
     }
 }

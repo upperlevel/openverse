@@ -41,7 +41,7 @@ public class SlotGui extends Gui {
         //TODO: add cache (using inventory listener)
         ItemRenderer renderer = OpenverseClient.get().getItemRendererRegistry().get(type);
         if (renderer == null) {
-            Openverse.logger().warning("Cannot find renderer for type: " + type);
+            Openverse.getLogger().warning("Cannot find renderer for type: " + type);
             return;
         }
         renderer.renderInSlot(handle.getContent(), getWindow(), getBounds(), this);
@@ -63,7 +63,7 @@ public class SlotGui extends Gui {
         }
         if (action != null) {
             OpenverseClient.get().getPlayer().getInventorySession().onInteract(handle, action);
-            OpenverseClient.get().getEndpoint().getConnection().send(Openverse.channel(), new PlayerInventoryActionPacket(action, handle.getId()));
+            OpenverseClient.get().getEndpoint().getConnection().send(Openverse.getChannel(), new PlayerInventoryActionPacket(action, handle.getId()));
         }
         super.onClickBegin(x, y, button);
     }

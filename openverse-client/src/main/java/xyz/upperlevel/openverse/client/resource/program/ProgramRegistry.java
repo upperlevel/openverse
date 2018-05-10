@@ -37,7 +37,7 @@ public class ProgramRegistry extends ResourceRegistry<Program> {
 
     @Override
     protected void onUnload(Program entry) {
-        entry.unbind(); // ensure
+        entry.unuse();// ensure
         entry.destroy();
     }
 }

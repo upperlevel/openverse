@@ -45,7 +45,7 @@ public final class TextureBakery {
     }
 
     public static void bake() {
-        Openverse.logger().info("Baking " + registered.size() + " textures...");
+        Openverse.getLogger().info("Baking " + registered.size() + " textures...");
         layers = new HashMap<>();
         textureArray = new Texture2dArray();
         textureArray.allocate(4, GL_RGBA8, 16, 16, 1 + registered.size());
@@ -62,7 +62,7 @@ public final class TextureBakery {
                 layer++;
             }
         }
-        Openverse.logger().info("Textures baked!");
+        Openverse.getLogger().info("Textures baked!");
     }
 
     public static void bind() {

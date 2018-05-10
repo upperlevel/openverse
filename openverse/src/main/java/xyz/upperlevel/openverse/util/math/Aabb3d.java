@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import org.joml.Intersectiond;
 import org.joml.Vector3d;
 import org.joml.Vector3dc;
+import xyz.upperlevel.openverse.util.Aabb2d;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -32,16 +33,16 @@ public class Aabb3d {
         this(min.x, min.y, min.z, max.x, max.y, max.z);
     }
 
-    public boolean inside(double x, double y, double z) {
+    public boolean testPoint(double x, double y, double z) {
         return x >= minX && y >= minY && z >= minZ && x <= maxX && y <= maxY && z <= maxZ;
     }
 
-    public boolean inside(Vector3dc point) {
-        return inside(point.x(), point.y(), point.z());
+    public boolean testPoint(Vector3dc point) {
+        return testPoint(point.x(), point.y(), point.z());
     }
 
-    public boolean inside(Aabb3d aabb) {
-        return aabb.minX >= minX && aabb.minY >= minY && aabb.minZ >= minZ && aabb.maxX <= maxX && aabb.maxY <= maxY && aabb.maxZ <= maxZ;
+    public boolean isInside(Aabb3d aabb) {
+        return testPoint(aabb.minX, aabb.minY, aabb.minZ) && testPoint(aabb.maxX, aabb.maxY, aabb.maxZ);
     }
 
     public boolean intersectSphere(double centerX, double centerY, double centerZ, double radiusSquared) {

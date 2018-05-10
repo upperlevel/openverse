@@ -16,12 +16,13 @@ public class SingleBlockGenerator implements ChunkGenerator {
     }
 
     @Override
-    public void buildHeightMap(ChunkPillar chunkPillar) {
+    public void generateHeightmap(ChunkPillar chunkPillar) {
         chunkPillar.setHeight(0, 0, Integer.MAX_VALUE); // infinite chunks on y
     }
 
     @Override
-    public void generate(Chunk chunk) {
+    public void generateChunk(Chunk chunk) {
         chunk.setBlockType(0, 0, 0, fullType, false);
+        chunk.updateSkylights();
     }
 }

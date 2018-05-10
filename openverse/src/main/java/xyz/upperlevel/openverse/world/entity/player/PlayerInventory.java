@@ -77,7 +77,7 @@ public class PlayerInventory extends BaseInventory {
     public void setHandSlot(int slot) {
         checkHotbarBounds(slot);
         PlayerChangeHandSlotPacket packet = new PlayerChangeHandSlotPacket(slot);
-        Openverse.endpoint().getConnections().forEach(c -> c.send(Openverse.channel(), packet));
+        Openverse.endpoint().getConnections().forEach(c -> c.send(Openverse.getChannel(), packet));
         this.handSlot = slot;
     }
 

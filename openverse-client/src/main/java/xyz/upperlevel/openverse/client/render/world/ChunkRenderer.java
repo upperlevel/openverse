@@ -7,8 +7,10 @@ import xyz.upperlevel.openverse.client.render.world.util.VertexBufferPool;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.storage.BlockStorage;
+import xyz.upperlevel.ulge.opengl.DataType;
 import xyz.upperlevel.ulge.opengl.buffer.*;
 import xyz.upperlevel.ulge.opengl.shader.Program;
+import xyz.upperlevel.ulge.opengl.shader.Uniform;
 
 import java.nio.ByteBuffer;
 
@@ -17,6 +19,8 @@ import java.nio.ByteBuffer;
  */
 @Getter
 public class ChunkRenderer {
+    private static Uniform worldSkyLightLoc;
+
     private final Program program;
     private final ChunkViewRenderer view;
     private Chunk chunk;
@@ -35,9 +39,11 @@ public class ChunkRenderer {
         this.view = view;
         this.program = program;
         this.chunk = chunk;
+        if (worldSkyLightLoc == null) {
+            worldSkyLightLoc = program.getUniform("worldSkylight");
+        }
         setup();
         reloadVertexSize();
-        view.recompileChunk(this, ChunkCompileMode.ASYNC);
     }
 
     public void onBlockChange(BlockState oldState, BlockState newState) {//TODO: call whenever a block changes
@@ -86,10 +92,15 @@ public class ChunkRenderer {
 
         vbo = new Vbo();
         vbo.bind();
-        new VertexLinker()
-                .attrib(program.uniformer.getAttribLocation("position"), 3)
-                .attrib(program.uniformer.getAttribLocation("texCoords"), 3)
-                .setup();
+
+        program.use();
+
+        VertexLinker linker = new VertexLinker();
+        linker.attrib(program.getAttribLocation("position"), 3, DataType.FLOAT, false, 0);
+        linker.attrib(program.getAttribLocation("texCoords"), 3, DataType.FLOAT, false, 3 * DataType.FLOAT.getByteCount());
+        linker.attrib(program.getAttribLocation("blockLight"), 1, DataType.FLOAT, false, 6 * DataType.FLOAT.getByteCount());
+        linker.attrib(program.getAttribLocation("blockSkylight"), 1, DataType.FLOAT, false, 7 * DataType.FLOAT.getByteCount());
+        linker.setup();
 
         vbo.unbind();
         vao.unbind();
@@ -98,6 +109,7 @@ public class ChunkRenderer {
     public ChunkCompileTask createCompileTask(VertexBufferPool pool) {
         if (compileTask != null) {
             compileTask.abort();
+            compileTask = null;
         }
         compileTask = new ChunkCompileTask(pool, this);
         return compileTask;
@@ -124,17 +136,23 @@ public class ChunkRenderer {
             }
         }
         buffer.flip();
-        //Openverse.logger().info("Vertices computed for chunk at: " + vertexCount);
+        //Openverse.getLogger().info("Vertices computed for chunk at: " + vertexCount + "(" + buffer.remaining() + ")");
         return vertexCount;
     }
 
     public void setVertices(ByteBuffer vertices, int vertexCount) {
-        vbo.loadData(vertices, VboDataUsage.STATIC_DRAW);
+        if (vertexCount > 0) {
+            if (vertices.remaining() == 0) {
+                throw new IllegalStateException("No vertex in buffer but " + vertexCount + " to draw");
+            }
+            vbo.loadData(vertices, VboDataUsage.STATIC_DRAW);
+        }
         this.drawVerticesCount = vertexCount;
     }
 
     @SuppressWarnings("deprecation")
     public void render(Program program) {
+        worldSkyLightLoc.set(chunk.getWorld().getSkylight());
         //TODO: draw TileEntities
         if (drawVerticesCount != 0) {
             vao.bind();
@@ -143,7 +161,7 @@ public class ChunkRenderer {
     }
 
     public void destroy() {
-        //Openverse.logger().warning("Destroying VBO for chunk: " + location);
+        //Openverse.getLogger().warning("Destroying VBO for chunk: " + location);
         if (compileTask != null) {
             compileTask.abort();
         }

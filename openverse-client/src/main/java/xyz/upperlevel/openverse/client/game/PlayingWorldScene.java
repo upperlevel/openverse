@@ -12,6 +12,7 @@ import xyz.upperlevel.openverse.client.world.updater.PlayerLocationWatcher;
 import xyz.upperlevel.openverse.launcher.OpenverseLauncher;
 import xyz.upperlevel.openverse.util.math.LineVisitor3d;
 import xyz.upperlevel.openverse.world.Location;
+import xyz.upperlevel.openverse.world.chunk.Block;
 import xyz.upperlevel.openverse.world.entity.Entity;
 import xyz.upperlevel.openverse.world.entity.EntityManager;
 import xyz.upperlevel.openverse.world.entity.player.Player;
@@ -29,9 +30,7 @@ import xyz.upperlevel.ulge.window.event.key.Key;
 import java.io.File;
 import java.io.IOException;
 
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  * Scene instantiated when the player, the world and the initial chunks are received.
@@ -79,7 +78,7 @@ public class PlayingWorldScene implements Scene, Listener {
 
     @Override
     public void onFps() {
-        Openverse.logger().info("Fps: " + OpenverseLauncher.get().getGame().getFps() +
+        Openverse.getLogger().info("Fps: " + OpenverseLauncher.get().getGame().getFps() +
                 " chunks: " + worldViewer.getWorldSession().getChunkView().getChunks().size() +
                 ", vaos:" + Vao.instances +
                 ", tick:" + EntityManager.ENTITY_TICK_PROFILER.getAverageNanos() + "(" + EntityManager.ENTITY_TICK_PROFILER.getCallCount() + ")"
@@ -107,7 +106,7 @@ public class PlayingWorldScene implements Scene, Listener {
             switch (key) {
                 case L:
                     Location loc = worldViewer.getEntity().getLocation(getPartialTicks());
-                    Openverse.logger().info("loc: " + loc.toStringComplete());
+                    Openverse.getLogger().info("loc: " + loc.toStringComplete());
                     break;
                 case F1:
                     File file = new File(SCREENSHOTS_DIR, System.currentTimeMillis() + ".png");
@@ -117,7 +116,7 @@ public class PlayingWorldScene implements Scene, Listener {
                         e.printStackTrace();
                         break;
                     }
-                    Openverse.logger().fine("Screenshot saved in " + file.getAbsolutePath());
+                    Openverse.getLogger().fine("Screenshot saved in " + file.getAbsolutePath());
                     break;
                 case E:
                     getPlayer().openInventory();
@@ -152,10 +151,15 @@ public class PlayingWorldScene implements Scene, Listener {
             Entity clicker = worldViewer.getEntity();
             LineVisitor3d.RayCastResult rayCast = clicker.rayCast(getPartialTicks());
             if (rayCast == null) {
-                Openverse.logger().info("Clicked nothing");
+                Openverse.getLogger().info("Clicked nothing");
             } else {
+
                 Vector3i loc = rayCast.getBlock();
-                Openverse.logger().info("Clicked " + clicker.getWorld().getBlock(loc));
+                Block block = clicker.getWorld().getBlock(loc);
+                Openverse.getLogger().info("Clicked " + block);
+                Block facing = block.getRelative(rayCast.getFace());
+                Openverse.getLogger().info("Sky: " + facing.getSkyLight() + ", Block: " + facing.getBlockLight());
+
                 if (e.getButton() == MouseButton.LEFT) {
                     // TODO: only player can break blocks, right? 0_o
                     ((Player) clicker).breakBlock(loc.x, loc.y, loc.z);

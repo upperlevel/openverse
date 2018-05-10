@@ -9,7 +9,7 @@ public class ItemTypes {
 
     static {
         ItemTypeRegistry reg = Openverse.resources().itemTypes();
-        Openverse.logger().info("Init ItemTypes");
+        Openverse.getLogger().info("Init ItemTypes");
         DIRT = (BlockItemType) reg.entry("dirt");
         GRASS = (BlockItemType) reg.entry("grass");
     }

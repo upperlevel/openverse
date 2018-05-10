@@ -20,6 +20,7 @@ public class BlockTypeRegistry extends Registry<BlockType> {
         register(new GrassType());
         register(new BlockType("dirt", true));
         register(new BlockType("test", true));
+        register(new PhotonBlockType());
     }
 
     public void register(BlockType type) {

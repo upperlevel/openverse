@@ -27,7 +27,7 @@ public class WorldSession implements PacketListener {
     }
 
     public void setWorld(ClientWorld world) {
-        Openverse.logger().info("Setting world to: " + world.getName());
+        Openverse.getLogger().info("Setting world to: " + world.getName());
         this.world = world;
         chunkView.setWorld(world);
     }

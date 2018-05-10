@@ -15,16 +15,10 @@ public class ChunkLocation {
     @Getter
     public final int x, y, z;
 
-    private final int hashCode;
-
     public ChunkLocation(int x, int y, int z) {
         this.x = x;
         this.y = y;
         this.z = z;
-
-        hashCode =      (x & 0x07FF) << 21 |
-                        (z & 0x07FF) << 10 |
-                        (y & 0x03FF);
     }
 
     public long getPillarId() {
@@ -33,7 +27,7 @@ public class ChunkLocation {
 
     @Override
     public int hashCode() {
-        return hashCode;
+        return hash(x, y, z);
     }
 
     @Override
@@ -58,5 +52,11 @@ public class ChunkLocation {
 
     public static ChunkLocation fromBlock(int x, int y, int z) {
         return new ChunkLocation(x >> 4, y >> 4, z >> 4);
+    }
+
+    public static int hash(int x, int y, int z) {
+        return  (x & 0x07FF) << 21 |
+                (z & 0x07FF) << 10 |
+                (y & 0x03FF);
     }
 }

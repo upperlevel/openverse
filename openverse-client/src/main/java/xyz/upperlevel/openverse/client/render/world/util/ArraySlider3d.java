@@ -34,7 +34,7 @@ public abstract class ArraySlider3d<T> implements Iterable<T> {
         int dz = this.z - z;
         int i = dx * side * side + dy * side + dz;
         if (i < 0 || i >= size) {
-            Openverse.logger().info("calling ask from getFromAbs(" + x + "," + y + "," + z + ")");
+            Openverse.getLogger().info("calling ask from getFromAbs(" + x + "," + y + "," + z + ")");
             return ask(x, y, z);
         } else
             return this.data[i];
@@ -71,7 +71,7 @@ public abstract class ArraySlider3d<T> implements Iterable<T> {
                     int tz = iz + offsetZ;
                     T trg;
                     if (tx >= side || tx < 0 || ty >= side || ty < 0 || tz >= side || tz < 0) {
-                        Openverse.logger().info("asking because of slide");
+                        Openverse.getLogger().info("asking because of slide");
                         trg = ask(this.x + offsetX, this.y + offsetY, this.z + offsetZ); // asks the chunk from real coordinates
                     } else {
                         trg = get(tx, ty, tz);
@@ -109,7 +109,7 @@ public abstract class ArraySlider3d<T> implements Iterable<T> {
         for (int ix = 0; ix < side; ix++) {
             for (int iy = 0; iy < side; iy++) {
                 for (int iz = 0; iz < side; iz++) {
-                    Openverse.logger().info("asking because of refresh");
+                    Openverse.getLogger().info("asking because of refresh");
                     set(ix, iy, iz, ask(x + ix, y + iy, z + iz));
                 }
             }

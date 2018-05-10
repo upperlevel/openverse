@@ -32,7 +32,7 @@ public class HashStatePalette implements BlockStatePalette {
             biMap.put(state, index);
             return index;
         } else {
-            return overflowHandler.handle(idLen + 1, state);
+            return overflowHandler.onOverflow(idLen + 1, state);
         }
     }
 

@@ -23,6 +23,6 @@ public class ServerBlockTypeRegistry extends BlockTypeRegistry implements Listen
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
-        event.getPlayer().getConnection().send(Openverse.channel(), new BlockRegistryPacket(getOrderedEntries()));
+        event.getPlayer().getConnection().send(Openverse.getChannel(), new BlockRegistryPacket(getOrderedEntries()));
     }
 }

@@ -87,7 +87,7 @@ public class GuiManager implements Listener {
                     int size = Math.min(window.getWidth() / 10, window.getHeight() / 10);
                     renderer.renderInSlot(item, window, new GuiBounds(mousePos.x - size/2, mousePos.y - size/2, mousePos.x + size, mousePos.y + size), handSlotGui);
                 }
-            } else Openverse.logger().warning("Null session!");
+            } else Openverse.getLogger().warning("Null session!");
 
             glDisable(GL_BLEND);
             glEnable(GL_DEPTH_TEST);

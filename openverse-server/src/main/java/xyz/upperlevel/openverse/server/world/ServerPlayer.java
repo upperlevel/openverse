@@ -20,16 +20,16 @@ public class ServerPlayer extends Player implements PacketListener {
     public ServerPlayer(Location loc, String name, Connection connection) {
         super(loc, name);
         this.connection = connection;
-        Openverse.channel().register(this);
+        Openverse.getChannel().register(this);
         getInventory().addListener((inventory, slot) -> {
-            Openverse.logger().severe("CHANGING ITEM IN " + slot);
+            Openverse.getLogger().severe("CHANGING ITEM IN " + slot);
             SlotChangePacket packet = new SlotChangePacket(inventory.getId(), slot.getId(), slot.getContent());
-            Openverse.endpoint().getConnections().forEach(c -> c.send(Openverse.channel(), packet));
+            Openverse.endpoint().getConnections().forEach(c -> c.send(Openverse.getChannel(), packet));
         });
     }
 
     public void updateInventory() {
-        connection.send(Openverse.channel(), new InventoryContentPacket(getInventory()));
+        connection.send(Openverse.getChannel(), new InventoryContentPacket(getInventory()));
     }
 
     @Override

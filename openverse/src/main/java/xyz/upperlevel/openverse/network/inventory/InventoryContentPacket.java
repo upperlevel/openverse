@@ -53,7 +53,7 @@ public class InventoryContentPacket implements Packet {
         if (contents.length > inventory.getSize()) {
             throw new IllegalPacketException(this, "Invalid InventoryContentPacket, packet contents: " + contents.length + "inventory: " + inventory.getSize());
         } else if (contents.length < inventory.getSize()) {
-            Openverse.logger().warning("Received bad InventoryContents packet, size:" + contents.length + ", actual:" + inventory.getSize());
+            Openverse.getLogger().warning("Received bad InventoryContents packet, size:" + contents.length + ", actual:" + inventory.getSize());
         }
         for (int i = 0; i < contents.length; i++) {
             inventory.get(i).swap(contents[i]);

@@ -48,7 +48,7 @@ public class Player extends LivingEntity {
         getWorld().setBlockState(x, y, z, AIR_STATE);
         if (sendPacket) {
             PlayerBreakBlockPacket packet = new PlayerBreakBlockPacket(x, y, z);
-            Openverse.endpoint().getConnections().forEach(s -> s.send(Openverse.channel(), packet));
+            Openverse.endpoint().getConnections().forEach(s -> s.send(Openverse.getChannel(), packet));
         }
     }
 
@@ -64,7 +64,7 @@ public class Player extends LivingEntity {
 
         if (sendPacket) {
             PlayerUseItemPacket packet = new PlayerUseItemPacket(x, y, z, face);
-            Openverse.endpoint().getConnections().forEach(s -> s.send(Openverse.channel(), packet));
+            Openverse.endpoint().getConnections().forEach(s -> s.send(Openverse.getChannel(), packet));
         }
 
         return result;
@@ -94,7 +94,7 @@ public class Player extends LivingEntity {
      * <br>This may call the events {@link PlayerInventoryCloseEvent} and {@link PlayerInventoryOpenEvent}
      */
     public void openInventory() {
-        getConnection().send(Openverse.channel(), new PlayerOpenInventoryPacket());
+        getConnection().send(Openverse.getChannel(), new PlayerOpenInventoryPacket());
         openInventory(inventory);
     }
 
@@ -116,10 +116,10 @@ public class Player extends LivingEntity {
      */
     public void closeInventory() {
         if (inventorySession == null) {
-            Openverse.logger().warning("Trying to close a closed inventory");
+            Openverse.getLogger().warning("Trying to close a closed inventory");
             return;
         }
-        getConnection().send(Openverse.channel(), new PlayerCloseInventoryPacket());
+        getConnection().send(Openverse.getChannel(), new PlayerCloseInventoryPacket());
         onCloseInventory();
     }
 
@@ -130,7 +130,7 @@ public class Player extends LivingEntity {
      */
     public void onCloseInventory() {
         if (inventorySession == null) {
-            Openverse.logger().warning("Server trying to close a closed inventory");
+            Openverse.getLogger().warning("Server trying to close a closed inventory");
             return;
         }
         inventorySession.onClose();

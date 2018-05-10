@@ -34,25 +34,25 @@ import xyz.upperlevel.ulge.window.event.ResizeEvent;
  * This class represents the player.
  * <p>Better, it represents the camera moving around the world and manages rendering stuff.
  */
-@Getter
-@Setter
 public class WorldViewer implements PacketListener, Listener {
+    @Getter
     private final WorldSession worldSession;
 
     @Getter
     @Setter
     private LivingEntity entity;
 
+    @Getter
+    @Setter
     private Program program;
     private Uniform cameraLoc;
-    private Matrix4f camera;
     private float aspectRatio = 1f;
 
     public WorldViewer(LivingEntity entity) {
         this.entity = entity;
         this.program = ((ClientResources) Openverse.resources()).programs().entry("simple_shader");
         this.worldSession = new WorldSession(program);
-        this.cameraLoc = program.uniformer.get("camera");
+        this.cameraLoc = program.getUniform("camera");
         Window window = OpenverseLauncher.get().getGame().getWindow();
         window.getEventManager().register(this);
         reloadAspectRatio();
@@ -62,11 +62,11 @@ public class WorldViewer implements PacketListener, Listener {
      * Starts listening for server packets.
      */
     public void listen() {
-        Openverse.channel().register(this);
+        Openverse.getChannel().register(this);
     }
 
     public void render(float partialTicks) {
-        program.bind();
+        program.use();
         Location loc = entity.getEyePosition(partialTicks);
 
         cameraLoc.set(CameraUtil.getCamera(
@@ -97,19 +97,19 @@ public class WorldViewer implements PacketListener, Listener {
     @PacketHandler
     public void onPlayerChangeWorld(Connection conn, PlayerChangeWorldPacket pkt) {
         worldSession.setWorld(new ClientWorld(pkt.getWorldName()));
-        Openverse.logger().info("Viewer changed world to: " + pkt.getWorldName());
+        Openverse.getLogger().info("Viewer changed world to: " + pkt.getWorldName());
     }
 
     @PacketHandler
     public void onPlayerChangePosition(Connection conn, PlayerChangePositionPacket pkt) {
         //TODO update player pos
-        Openverse.logger().info("Viewer changed position to: " + pkt.getX() + " " + pkt.getY() + " " + pkt.getZ());
+        Openverse.getLogger().info("Viewer changed position to: " + pkt.getX() + " " + pkt.getY() + " " + pkt.getZ());
     }
 
     @PacketHandler
     public void onPlayerChangeLook(Connection conn, PlayerChangeLookPacket pkt) {
         //TODO update player look
-        Openverse.logger().info("Viewer changed position to: " + pkt.getYaw() + " " + pkt.getPitch());
+        Openverse.getLogger().info("Viewer changed position to: " + pkt.getYaw() + " " + pkt.getPitch());
     }
 
     @PacketHandler
@@ -119,7 +119,7 @@ public class WorldViewer implements PacketListener, Listener {
             PlayerInventory inventory = player.getInventory();
             inventory.get(packet.getSlotId()).swap(packet.getNewItem());
         } else throw new NotImplementedException();
-        Openverse.logger().info("slot change received");
+        Openverse.getLogger().info("slot change received");
         //TODO update multi-inventory view and graphic things
     }
 
@@ -130,7 +130,7 @@ public class WorldViewer implements PacketListener, Listener {
             PlayerInventory inventory = player.getInventory();
             packet.apply(inventory);
         } else throw new NotImplementedException();
-        Openverse.logger().info("Inventory content received");
+        Openverse.getLogger().info("Inventory content received");
         //TODO update multi-inventory view and graphic things
     }
 

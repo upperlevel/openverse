@@ -1,29 +1,24 @@
 package xyz.upperlevel.openverse.world;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import xyz.upperlevel.openverse.world.chunk.Block;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
+import xyz.upperlevel.openverse.world.chunk.ChunkLocation;
+import xyz.upperlevel.openverse.world.chunk.ChunkPillar;
 
+import static java.lang.Math.floor;
 import static xyz.upperlevel.openverse.util.math.MathUtil.floori;
 import static xyz.upperlevel.openverse.util.math.MathUtil.normalizeAngle;
 
+@Getter
+@Setter
 public class Location {
-
-    @Getter
-    @Setter
-    @NonNull
     private World world;
-
-    @Getter
-    @Setter
-    private double x, y, z;
-
-    @Getter
-    private double yaw, pitch;
+    public double x, y, z;
+    public double yaw, pitch;
 
     public Location(World world) {
         this.world = world;
@@ -54,12 +49,44 @@ public class Location {
         pitch = location.pitch;
     }
 
+    public ChunkPillar getChunkPillar() {
+        return world.getChunkPillarFromBlock((int) floor(x), (int) floor(z));
+    }
+
     public Chunk getChunk() {
-        return world.getChunkFromBlock(floori(x), floori(y), floori(z));
+        return world.getChunkFromBlock((int) floor(x), (int) floor(y), (int) floor(z));
+    }
+
+    public ChunkLocation getChunkLocation() {
+        return new ChunkLocation(getChunkX(), getChunkY(), getChunkZ());
+    }
+
+    public int getChunkX() {
+        return getBlockX() >> 4;
+    }
+
+    public int getChunkY() {
+        return getBlockY() >> 4;
+    }
+
+    public int getChunkZ() {
+        return getBlockZ() >> 4;
     }
 
     public Block getBlock() {
         return world.getBlock(x, y, z);
+    }
+
+    public int getBlockX() {
+        return (int) floor(x);
+    }
+
+    public int getBlockY() {
+        return (int) floor(y);
+    }
+
+    public int getBlockZ() {
+        return (int) floor(z);
     }
 
     public void setYaw(double yaw) {
@@ -245,14 +272,14 @@ public class Location {
 
 
     public double distance(Location location) {
-        double  dx = x - location.getX(),
+        double dx = x - location.getX(),
                 dy = y - location.getY(),
                 dz = z - location.getZ();
         return Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
 
     public double distanceSquared(Location location) {
-        double  dx = x - location.getX(),
+        double dx = x - location.getX(),
                 dy = y - location.getY(),
                 dz = z - location.getZ();
         return dx * dx + dy * dy + dz * dz;
@@ -296,7 +323,7 @@ public class Location {
 
     @Override
     public String toString() {
-        return x + ", " + y + ", " +  z;
+        return x + ", " + y + ", " + z;
     }
 
     public String toStringComplete() {
