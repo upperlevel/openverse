@@ -3,7 +3,7 @@ package xyz.upperlevel.openverse.client.render.block;
 import lombok.Getter;
 import xyz.upperlevel.openverse.util.config.Config;
 import xyz.upperlevel.openverse.util.math.Aabb3f;
-import xyz.upperlevel.openverse.world.BlockFace;
+import xyz.upperlevel.openverse.world.block.BlockFace;
 import xyz.upperlevel.openverse.world.World;
 
 import java.nio.ByteBuffer;

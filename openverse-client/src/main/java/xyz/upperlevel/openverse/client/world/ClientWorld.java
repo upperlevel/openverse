@@ -45,10 +45,12 @@ public class ClientWorld extends World implements PacketListener {
         Chunk chk = new Chunk(plr, pkt.getY());
         pkt.setBlockStates(chk);
         setChunk(chk);
+        chk.reloadAllLightBlocks();
         chk.rebuildHeightMap();
         chk.updateSkylights();
         chk.updateNearbyChunksLights();
-        updateAllLights();
+        //updateAllLights();
+        flushLightChunkUpdates();
     }
 
     /**

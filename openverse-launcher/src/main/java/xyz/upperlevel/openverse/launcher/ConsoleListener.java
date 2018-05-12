@@ -31,6 +31,7 @@ public class ConsoleListener {
         try {
             while (!Thread.interrupted()) {
                 String line = in.readLine();
+                if (line == null) return;
                 server.executeCommand(line);
             }
         } catch (IOException e) {

@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import xyz.upperlevel.openverse.util.math.Aabb3f;
-import xyz.upperlevel.openverse.world.BlockFace;
+import xyz.upperlevel.openverse.world.block.BlockFace;
 import xyz.upperlevel.openverse.world.World;
 
 import java.nio.ByteBuffer;

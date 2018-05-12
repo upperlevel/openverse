@@ -2,6 +2,7 @@ package xyz.upperlevel.openverse.world.chunk;
 
 import lombok.Getter;
 import lombok.NonNull;
+import xyz.upperlevel.openverse.world.LightType;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.block.BlockFace;
 import xyz.upperlevel.openverse.world.block.BlockType;
@@ -71,6 +72,26 @@ public class Block {
 
     public int getBlockLight() {
         return storage.getBlockLight(chunkRelativeX, chunkRelativeY, chunkRelativeZ);
+    }
+
+    public int getLight(LightType type) {
+        return type == LightType.SKY ? getSkyLight() : getBlockLight();
+    }
+
+    public void setSkyLight(int lightLevel) {
+        chunk.setBlockSkylight(chunkRelativeX, chunkRelativeY, chunkRelativeZ, lightLevel);
+    }
+
+    public void setBlockLight(int lightLevel) {
+        chunk.setBlockLight(chunkRelativeX, chunkRelativeY, chunkRelativeZ, lightLevel);
+    }
+
+    public void setLight(LightType type, int lightLevel) {
+        if (type == LightType.SKY) {
+            setSkyLight(lightLevel);
+        } else {
+            setBlockLight(lightLevel);
+        }
     }
 
     @Override

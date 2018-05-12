@@ -4,22 +4,33 @@ import lombok.Getter;
 import lombok.Setter;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.event.BlockUpdateEvent;
-import xyz.upperlevel.openverse.world.BlockFace;
+import xyz.upperlevel.openverse.world.LightType;
+import xyz.upperlevel.openverse.world.block.BlockFace;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.chunk.storage.BlockStorage;
 import xyz.upperlevel.openverse.world.chunk.storage.SimpleBlockStorage;
 
+import static xyz.upperlevel.openverse.world.LightType.SKY;
 import static xyz.upperlevel.openverse.world.chunk.storage.BlockStorage.AIR_STATE;
 
-@Getter
-@Setter
+
 public class Chunk {
+    @Getter
     private final World world;
+
+    @Getter
     private final ChunkPillar chunkPillar;
+
+    @Getter
     private final int y;
+
+    @Getter
     private final ChunkLocation location;
+
+    @Getter
+    @Setter
     private BlockStorage blockStorage;
 
     public Chunk(ChunkPillar chunkPillar, int y) {
@@ -113,23 +124,21 @@ public class Chunk {
     public BlockState setBlockState(int x, int y, int z, BlockState blockState, boolean blockUpdate) {
         BlockState oldState = blockStorage.setBlockState(x, y, z, blockState);
 
-        reloadLightForBlock(x, y, z, oldState, blockState, false);
-
         if (blockUpdate) {
-            world.recalcSkyLightOpacity(getX() * 16 + x, getY() * 16 + y, getZ() * 16 + z, false);
+            reloadLightForBlock(x, y, z, oldState, blockState);
+            //world.recalcSkyLightOpacity(getX() * 16 + x, getY() * 16 + y, getZ() * 16 + z, false);
 
             // Note thet the updateSkyLight is put after the opacity so that whatever is computed by that will then be
             // replaced by the real light if it is really under the sun
             rebuildHeightFor(x, z, y, true);
             updateSkylightOnBlockChange(x, z, y);
-            world.updateAllLights();
 
             Openverse.getEventManager().call(new BlockUpdateEvent(world, x + (location.x << 4), y + (location.y << 4), z + (location.z << 4), oldState, blockState));
         }
         return oldState;
     }
 
-    protected void reloadLightForBlock(int x, int y, int z, BlockState oldState, BlockState newState, boolean calculate) {
+    protected void reloadLightForBlock(int x, int y, int z, BlockState oldState, BlockState newState) {
         int realX = getX() * 16 + x;
         int realY = getY() * 16 + y;
         int realZ = getZ() * 16 + z;
@@ -137,15 +146,22 @@ public class Chunk {
         int oldLight = oldState.getBlockType().getEmittedBlockLight(oldState);
         int newLight = newState.getBlockType().getEmittedBlockLight(newState);
 
-        if (oldLight != newLight) {
-            if (oldLight > 0) {
-                world.removeBlockLight(realX, realY, realZ, oldLight, calculate);
+        if (oldLight != newLight || oldState.getBlockType().isOpaque() != newState.getBlockType().isOpaque()) {
+            world.updateLightAt(realX, realY, realZ);
+            world.flushLightChunkUpdates();
+        }
+    }
+
+    public void reloadAllLightBlocks() {
+        for (int x = 0; x < 16; x++) {
+            for(int y = 0; y < 16; y++) {
+                for (int z = 0; z < 16; z++) {
+                    BlockState state = blockStorage.getBlockState(x, y, z);
+                    if (state.getBlockType().getEmittedBlockLight(state) > 0) {
+                        world.updateLightAt(LightType.BLOCK, getX() * 16 + x, getY() * 16 + y, getZ() * 16 + z);
+                    }
+                }
             }
-            if (newLight > 0) {
-                world.appendBlockLight(realX, realY, realZ, newLight, calculate);
-            }
-        } else if (oldState == AIR_STATE ^ newState == AIR_STATE) {
-            world.recalcLightOpacity(realX, realY, realZ, calculate);
         }
     }
 
@@ -189,7 +205,7 @@ public class Chunk {
     }
 
     public boolean isHeightmapTestable() {
-        return y > chunkPillar.getHeightmapMinimum() >> 4 && y < chunkPillar.getHeightmapMaximum() >> 4;
+        return y >= chunkPillar.getHeightmapMinimum() >> 4 && y <= chunkPillar.getHeightmapMaximum() >> 4;
     }
 
     public void updateSkylightGaps() {
@@ -225,13 +241,13 @@ public class Chunk {
                     // but we still have a block under us then we still need to light it
                     maxHeight = height + 1;
                 }
-
+                // x == 8 && y == 24 && z == -35
                 // Calculate min and max values
                 int from = height < y * 16 ? 0 : (height + 1) & 0xF;
                 int to   = maxHeight > (y + 1) * 16 ? 15 : maxHeight & 0xF;
                 // And finally fill the gaps
                 for (int i = from; i <= to; i++) {
-                    world.appendBlockSkylight(currX, y * 16 + i, currZ, false);
+                    world.updateLightAt(SKY, currX, y * 16 + i, currZ);
                 }
             }
         }
@@ -249,12 +265,11 @@ public class Chunk {
                 int ch = chunkPillar.getHeight(x, z);
                 if (y > ch >> 4) {
                     for (int y = 15; y >= 0; y--) {
-                        world.appendBlockSkylight(realX + x, realY + y, realZ + z, false);
-                        //blockStorage.setBlockSkylight(x, y, z, 15);
+                        //world.appendBlockSkylight(realX + x, realY + y, realZ + z, false);
                     }
                 } else if (y == ch >> 4) {
                     for (int y = 15; y > (ch & 0xF); y--) {
-                        world.appendBlockSkylight(realX + x, realY + y, realZ + z, false);
+                        //world.appendBlockSkylight(realX + x, realY + y, realZ + z, false);
                     }
                 }
             }
@@ -342,7 +357,7 @@ public class Chunk {
         appendToLightUpdatingSet(); // Append to the updating set no matter what
         for (int y = 15; y >= 0; y--) {
             if (blockStorage.getBlockState(x, y, z) != AIR_STATE) return;
-            world.removeBlockSkylight(realX + x, realY + y,  realZ + z, false);
+            world.updateLightAt(SKY, realX + x, realY + y,  realZ + z);
         }
         // No block found, need to update the chunk below
         Chunk chunkBelow = chunkPillar.getChunk(y - 1);
@@ -372,7 +387,7 @@ public class Chunk {
         if (height < realY + initY) { // Block broken
             int startY = height < realY ? 0 : (height & 15) + 1;
             for (int y = startY; y <= initY; y++) {
-                world.appendBlockSkylight(realX + x, realY + y,  realZ + z, false);
+                world.updateLightAt(SKY, realX + x, realY + y,  realZ + z);
                 changed = true;
             }
 
@@ -391,10 +406,10 @@ public class Chunk {
                 }
             }
         } else if (height == realY + initY) {// Block placed directly under sun
-            world.removeBlockSkylight(realX + x, realY + initY, realZ + z, false);// Remove placed block
+            world.updateLightAt(SKY, realX + x, realY + initY, realZ + z);// Remove placed block
             for (int y = initY - 1; y >= 0; y--) {
                 if (blockStorage.getBlockState(x, y, z) != AIR_STATE) return;
-                world.removeBlockSkylight(realX + x, realY + y, realZ + z, false);
+                world.updateLightAt(SKY, realX + x, realY + y, realZ + z);
                 changed = true;
             }
             // No block found, update chunk below
@@ -409,7 +424,7 @@ public class Chunk {
     }
 
     public void updateSkylights() {
-        updateDirectSkylight();
+        //updateDirectSkylight();
         updateSkylightGaps();
     }
 
@@ -443,84 +458,7 @@ public class Chunk {
     }
 
     public void updateNearbyChunksLights() {
-        {
-            Chunk rel = getRelative(BlockFace.LEFT);
-            if (rel != null) {
-                for (int y = 0; y < 16; y++) {
-                    for (int z = 0; z < 16; z++) {
-                        int light = rel.getBlockLight(15, y, z);
-                        if (light > 0) {
-                            world.appendBlockLight(rel.getX() * 16 + 15, rel.getY() * 16 + y, rel.getZ() * 16 + z, light, false);
-                        }
-                    }
-                }
-            }
-        }
-        {
-            Chunk rel = getRelative(BlockFace.RIGHT);
-            if (rel != null) {
-                for (int y = 0; y < 16; y++) {
-                    for (int z = 0; z < 16; z++) {
-                        int light = rel.getBlockLight(0, y, z);
-                        if (light > 0) {
-                            world.appendBlockLight(rel.getX() * 16, rel.getY() * 16 + y, rel.getZ() * 16 + z, light, false);
-                        }
-                    }
-                }
-            }
-        }
-        {
-            Chunk rel = getRelative(BlockFace.UP);
-            if (rel != null) {
-                for (int x = 0; x < 16; x++) {
-                    for (int z = 0; z < 16; z++) {
-                        int light = rel.getBlockLight(x, 0, z);
-                        if (light > 0) {
-                            world.appendBlockLight(rel.getX() * 16 + x, rel.getY() * 16, rel.getZ() * 16 + z, light, false);
-                        }
-                    }
-                }
-            }
-        }
-        {
-            Chunk rel = getRelative(BlockFace.DOWN);
-            if (rel != null) {
-                for (int x = 0; x < 16; x++) {
-                    for (int z = 0; z < 16; z++) {
-                        int light = rel.getBlockLight(x, 15, z);
-                        if (light > 0) {
-                            world.appendBlockLight(rel.getX() * 16 + x, rel.getY() * 16 + 15, rel.getZ() * 16 + z, light, false);
-                        }
-                    }
-                }
-            }
-        }
-        {
-            Chunk rel = getRelative(BlockFace.BACK);
-            if (rel != null) {
-                for (int x = 0; x < 16; x++) {
-                    for (int y = 0; y < 16; y++) {
-                        int light = rel.getBlockLight(x, y, 0);
-                        if (light > 0) {
-                            world.appendBlockLight(rel.getX() * 16 + x, rel.getY() * 16 + y, rel.getZ() * 16, light, false);
-                        }
-                    }
-                }
-            }
-        }
-        {
-            Chunk rel = getRelative(BlockFace.FRONT);
-            if (rel != null) {
-                for (int x = 0; x < 16; x++) {
-                    for (int y = 0; y < 16; y++) {
-                        int light = rel.getBlockLight(x, y, 15);
-                        if (light > 0) {
-                            world.appendBlockLight(rel.getX() * 16 + x, rel.getY() * 16 + y, rel.getZ() * 16 + 15, light, false);
-                        }
-                    }
-                }
-            }
-        }
+        world.getLightComputer().spreadNeighbourLight(this);
     }
 
     public void rebuildHeightFor(int x, int z, int minYToCheck, boolean checkHeightMap) {
