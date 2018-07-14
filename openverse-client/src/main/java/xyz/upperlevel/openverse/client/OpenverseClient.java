@@ -69,6 +69,7 @@ public class OpenverseClient implements OpenverseProxy {
 
     public void onTick() {
         entityManager.onTick();
+        player.getWorld().onTick();
     }
 
     /**

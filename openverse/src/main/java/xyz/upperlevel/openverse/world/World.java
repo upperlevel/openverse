@@ -38,6 +38,9 @@ public class World {
         this.chunkPillarProvider = new SimpleChunkPillarProvider(this);
     }
 
+    public void onTick() {
+    }
+
     public ChunkPillar getChunkPillar(int x, int z) {
         return chunkPillarProvider.getChunkPillar(x, z);
     }
