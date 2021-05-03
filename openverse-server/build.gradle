@@ -1,5 +1,16 @@
+
 description = 'Openverse server'
+
 dependencies {
-    compile project(':openverse')
-    compileOnly group: 'xyz.upperlevel.hermes', name: 'hermes-server', version:'1.1'
+    api project(':openverse')
+    api group: 'xyz.upperlevel.hermes', name: 'hermes-server', version:'1.1'
+}
+
+task copyResources() {
+    shouldRunAfter assemble
+
+    copy {
+        from "src/main/resources"
+        into "$libsDirName/resources"
+    }
 }

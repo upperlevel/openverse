@@ -1,7 +1,20 @@
+
 description = 'Openverse client'
+
 dependencies {
-    compile project(':openverse')
-    compileOnly group: 'xyz.upperlevel.ulge', name: 'ulge', version:'1.0'
-    compileOnly group: 'xyz.upperlevel.hermes', name: 'hermes-client', version:'1.1'
+    api project(':openverse')
+
+    implementation group: 'xyz.upperlevel.ulge', name: 'ulge', version:'1.0'
+    api group: 'xyz.upperlevel.hermes', name: 'hermes-client', version:'1.1'
+
     compileOnly project(':openverse-launcher')
+}
+
+task copyResources() {
+    shouldRunAfter assemble
+
+    copy {
+        from "src/main/resources"
+        into "$libsDirName/resources"
+    }
 }

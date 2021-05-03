@@ -1,25 +1,23 @@
-apply plugin: 'application'
 
-description = 'Openverse client launcher'
-
-dependencies {
-    compile group: 'xyz.upperlevel.hermes', name: 'hermes-client', version:'1.1'
-    compile group: 'xyz.upperlevel.hermes', name: 'hermes-server', version:'1.1'
-    compile group: 'xyz.upperlevel.ulge', name: 'ulge', version:'1.0'
-    compile group: 'jline', name: 'jline', version: '2.14.4'
+plugins {
+    id 'application'
 }
 
 mainClassName = 'xyz.upperlevel.openverse.launcher.OpenverseLauncher'
 
-// The application plugin sets up some tasks not relevant to us (we don't want to run the jar directly)
-tasks.remove(tasks.run)
-tasks.remove(tasks.runShadow)
+description = 'The launcher of the Openverse client.'
 
-task setup {}
+libsDirName = project.openverseOutDir
 
-task runGame(type: Exec, overwrite: true) {
-    dependsOn 'setup'
+dependencies {
+    api group: 'xyz.upperlevel.hermes', name: 'hermes-client', version:'1.1'
+    api group: 'xyz.upperlevel.hermes', name: 'hermes-server', version:'1.1'
 
-    commandLine 'cmd start.bat'
-    commandLine './start.sh'
+    api group: 'xyz.upperlevel.ulge', name: 'ulge', version:'1.0'
+
+    api group: 'jline', name: 'jline', version: '2.14.4'
 }
+
+// The application plugin sets up some tasks not relevant to us (we don't want to run the jar directly)
+//tasks.run.enabled = false
+tasks.runShadow.enabled = false

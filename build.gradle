@@ -1,49 +1,51 @@
-import java.nio.file.Paths
 
-buildscript {
-    repositories {
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.2'
-    }
+plugins {
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
 
 allprojects  {
-    apply plugin: 'maven'
-
     group = 'xyz.upperlevel.openverse'
     version = '0.1'
 }
 
+project.ext.set("openverseOutDir", project.buildDir.toPath().resolve("game"))
+
 subprojects {
-    apply plugin: 'java'
+    apply plugin: 'java-library'
     apply plugin: 'idea'
     apply plugin: 'com.github.johnrengelman.shadow'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
+    // shadowJar final name must be in the form (for example) openverse-launcher.jar
+    // and not openverse-launcher-1.0-all.jar
     shadowJar {
-        baseName = project.name
-        classifier = null
-        version = null
+        archiveBaseName.set(project.name)
+        archiveVersion.set("")
+        //archiveExtension.set("")
+        archiveClassifier.set("")
     }
+
+    tasks.jar.enabled = false // We only want the shadowJar
+
     project.tasks.assemble.dependsOn project.tasks.shadowJar
 
     repositories {
         mavenLocal()
-        jcenter()
+        mavenCentral()
     }
   
     dependencies {
-        compileOnly "org.projectlombok:lombok:1.16.20"
-        testCompileOnly "org.projectlombok:lombok:1.16.20"
-        compile group: 'org.yaml', name: 'snakeyaml', version: '1.17'
-        testCompile group: 'junit', name: 'junit', version: '4.12'
+        compileOnly 'org.projectlombok:lombok:1.18.20'
+        annotationProcessor 'org.projectlombok:lombok:1.18.20'
+
+        testCompileOnly 'org.projectlombok:lombok:1.18.20'
+        testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
+
+        api group: 'org.yaml', name: 'snakeyaml', version: '1.17'
+
+        testCompileClasspath group: 'junit', name: 'junit', version: '4.12'
     }
 }
 
@@ -51,38 +53,46 @@ apply plugin: 'distribution'
 
 distributions {
     game {
-        baseName = 'game'
+        distributionBaseName.set("game")
+
         contents {
+            // openverse-launcher
             from { project(':openverse-launcher').tasks.shadowJar }
-            rename 'openverse-launcher.jar', 'launcher.jar'
-            from { project(':openverse-launcher').uri('src/main/dist') }
+            rename 'openverse-launcher(.*)\\.jar', 'launcher.jar'
+
+            from {
+                project(':openverse-launcher').uri('src/main/dist')
+            }
+
+            // openverse-client
             into('client') {
-                from { project('openverse-client').tasks.shadowJar }
+                from { project(':openverse-client').tasks.shadowJar }
+                rename 'openverse-client(.*)\\.jar', 'openverse-client.jar'
+
                 into('resources') {
-                    from { project('openverse-client').uri('src/main/resources') }
+                    from { project(':openverse-client').uri('src/main/resources') }
                 }
             }
 
+            // openverse-server
             into('server') {
-                from { project('openverse-server').tasks.shadowJar }
-                into('resources') {
-                    from { project('openverse-client').uri('src/main/resources') }
-                }
+                from { project(':openverse-server').tasks.shadowJar }
+                rename 'openverse-server(.*)\\.jar', 'openverse-server.jar'
             }
         }
     }
 }
 
-def targetFile
-if (!project.hasProperty('target')) {
-    targetFile = file(project.buildDir.toPath().resolve('game'))
-} else {
-    targetFile = file(target)
+// Changes the libs directory: the directory where output JARs will be stored (using the java plugin).
+
+project(':openverse-client') { client ->
+    client.libsDirName = project.openverseOutDir.resolve('client')
 }
 
-installGameDist.setDestinationDir(targetFile)
+project(':openverse-server') { server ->
+    server.libsDirName = project.openverseOutDir.resolve('server')
+}
 
-// Setup task order (setup must be runned after installGameDist)
-tasks.getByPath(':openverse-launcher:setup').dependsOn(':installGameDist')
-// Set runGame's workingDir
-tasks.getByPath(':openverse-launcher:runGame').workingDir = installGameDist.destinationDir
+project(':openverse-launcher') { launcher ->
+    launcher.libsDirName = project.openverseOutDir
+}
