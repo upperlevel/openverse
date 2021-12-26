@@ -11,12 +11,17 @@ allprojects  {
 project.ext.set("openverseOutDir", project.buildDir.toPath().resolve("game"))
 
 subprojects {
+    apply plugin: 'java'
     apply plugin: 'java-library'
     apply plugin: 'idea'
     apply plugin: 'com.github.johnrengelman.shadow'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
+
+    test {
+        useJUnit()
+    }
 
     // shadowJar final name must be in the form (for example) openverse-launcher.jar
     // and not openverse-launcher-1.0-all.jar
@@ -25,6 +30,14 @@ subprojects {
         archiveVersion.set("")
         //archiveExtension.set("")
         archiveClassifier.set("")
+
+        project.configurations.implementation.canBeResolved = true
+        project.configurations.testImplementation.canBeResolved = true
+
+        configurations = [
+                project.configurations.implementation,
+                project.configurations.testImplementation,
+        ]
     }
 
     tasks.jar.enabled = false // We only want the shadowJar
@@ -40,12 +53,12 @@ subprojects {
         compileOnly 'org.projectlombok:lombok:1.18.20'
         annotationProcessor 'org.projectlombok:lombok:1.18.20'
 
-        testCompileOnly 'org.projectlombok:lombok:1.18.20'
+        testCompileOnly 'org.projectlombok:lombok:1.18.20' // TODO needed ?
         testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
 
         api group: 'org.yaml', name: 'snakeyaml', version: '1.17'
 
-        testCompileClasspath group: 'junit', name: 'junit', version: '4.12'
+        testImplementation 'junit:junit:4.13'
     }
 }
 
