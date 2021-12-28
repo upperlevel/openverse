@@ -3,6 +3,7 @@ package xyz.upperlevel.openverse.client.render.entity;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.client.OpenverseClient;
 import xyz.upperlevel.openverse.network.world.entity.EntityRemovePacket;
 import xyz.upperlevel.openverse.world.entity.Entity;
 import xyz.upperlevel.openverse.world.entity.EntityType;
@@ -18,13 +19,15 @@ import java.util.*;
  */
 public class EntityViewRenderer implements Listener {
     // todo add render distance
-    /**
-     * Renderers from the type type
-     */
+
+    private final OpenverseClient client;
+
     private Map<EntityType, EntityRenderer> renderers = new HashMap<>();
     private Set<Entity> entities = new HashSet<>();
 
-    public EntityViewRenderer() {
+    public EntityViewRenderer(OpenverseClient client) {
+        this.client = client;
+
        // OpenverseClient.get().getChannel().register(this);
     }
 
@@ -70,6 +73,6 @@ public class EntityViewRenderer implements Listener {
 
     @EventHandler
     public void onEntityRemove(EntityRemovePacket packet) {
-        remove(Openverse.entities().get(packet.getEntityId()));
+        remove(client.getEntityManager().get(packet.getEntityId()));
     }
 }

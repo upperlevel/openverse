@@ -1,11 +1,8 @@
 package xyz.upperlevel.openverse;
 
-import lombok.RequiredArgsConstructor;
-import xyz.upperlevel.event.EventManager;
-import xyz.upperlevel.hermes.Endpoint;
 import xyz.upperlevel.hermes.PacketSide;
 import xyz.upperlevel.hermes.Protocol;
-import xyz.upperlevel.hermes.channel.Channel;
+import xyz.upperlevel.openverse.console.ChatColor;
 import xyz.upperlevel.openverse.network.LoginRequestPacket;
 import xyz.upperlevel.openverse.network.LoginResponsePacket;
 import xyz.upperlevel.openverse.network.inventory.*;
@@ -16,13 +13,10 @@ import xyz.upperlevel.openverse.network.world.PlayerUseItemPacket;
 import xyz.upperlevel.openverse.network.world.entity.*;
 import xyz.upperlevel.openverse.network.world.registry.BlockRegistryPacket;
 import xyz.upperlevel.openverse.network.world.registry.ItemRegistryPacket;
-import xyz.upperlevel.openverse.resource.Resources;
 import xyz.upperlevel.openverse.world.chunk.HeightmapPacket;
-import xyz.upperlevel.openverse.world.entity.EntityManager;
 
-import java.util.logging.Logger;
+import java.util.logging.LogRecord;
 
-@RequiredArgsConstructor
 public final class Openverse {
     public static final Protocol PROTOCOL = Protocol.builder()
             .packet(PacketSide.SERVER, EntityRemovePacket.class)
@@ -55,37 +49,18 @@ public final class Openverse {
             .packet(PacketSide.CLIENT, PlayerInventoryActionPacket.class)
             .build();
 
-    private static OpenverseProxy proxy;
 
-    public static OpenverseProxy getProxy() {
-        return proxy;
+    public static class Logger extends java.util.logging.Logger {
+        protected Logger() {
+            super(Openverse.class.getCanonicalName(), null);
+        }
+
+        @Override
+        public void log(LogRecord log) {
+            log.setMessage(ChatColor.MAGENTA + "[Core] " + log.getMessage());
+            super.log(log); // todo dispatcher.queue(log);
+        }
     }
 
-    public static void setProxy(OpenverseProxy proxy) {
-        Openverse.proxy = proxy;
-    }
-
-    public static EventManager getEventManager() {
-        return proxy.getEventManager();
-    }
-
-    public static EntityManager entities() {
-        return proxy.getEntityManager();
-    }
-
-    public static Logger getLogger() {
-        return proxy.getLogger();
-    }
-
-    public static Resources resources() {
-        return proxy.getResources();
-    }
-
-    public static Endpoint endpoint() {
-        return proxy.getEndpoint();
-    }
-
-    public static Channel getChannel() {
-        return proxy.getChannel();
-    }
+    public static final Logger logger = new Logger();
 }

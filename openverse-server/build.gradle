@@ -3,7 +3,7 @@ description = 'Openverse server'
 
 dependencies {
     implementation project(':openverse')
-    implementation group: 'xyz.upperlevel.hermes', name: 'hermes-server', version:'1.1'
+    api group: 'xyz.upperlevel.hermes', name: 'hermes-server', version:'1.1'
 
     testImplementation project(':openverse').sourceSets.main.output // todo better ?
 }

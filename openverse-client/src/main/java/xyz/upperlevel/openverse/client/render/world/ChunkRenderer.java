@@ -1,6 +1,7 @@
 package xyz.upperlevel.openverse.client.render.world;
 
 import lombok.Getter;
+import xyz.upperlevel.openverse.client.OpenverseClient;
 import xyz.upperlevel.openverse.client.render.block.BlockModel;
 import xyz.upperlevel.openverse.client.render.block.BlockTypeModelMapper;
 import xyz.upperlevel.openverse.client.render.world.util.VertexBufferPool;
@@ -21,6 +22,7 @@ import java.nio.ByteBuffer;
 public class ChunkRenderer {
     private static Uniform worldSkyLightLoc;
 
+    private final OpenverseClient client;
     private final Program program;
     private final ChunkViewRenderer view;
     private Chunk chunk;
@@ -35,7 +37,9 @@ public class ChunkRenderer {
     private int
             drawVerticesCount = 0; // draw vertices count on drawing
 
-    public ChunkRenderer(ChunkViewRenderer view, Chunk chunk, Program program) {
+    public ChunkRenderer(OpenverseClient client, ChunkViewRenderer view, Chunk chunk, Program program) {
+        this.client = client;
+
         this.view = view;
         this.program = program;
         this.chunk = chunk;
@@ -111,7 +115,7 @@ public class ChunkRenderer {
             compileTask.abort();
             compileTask = null;
         }
-        compileTask = new ChunkCompileTask(pool, this);
+        compileTask = new ChunkCompileTask(client, pool, this);
         return compileTask;
     }
 

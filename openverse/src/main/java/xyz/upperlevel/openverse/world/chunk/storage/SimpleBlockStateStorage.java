@@ -1,5 +1,6 @@
 package xyz.upperlevel.openverse.world.chunk.storage;
 
+import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.chunk.storage.palette.ArrayStatePalette;
 import xyz.upperlevel.openverse.world.chunk.storage.palette.BlockStatePalette;
@@ -10,11 +11,15 @@ import xyz.upperlevel.openverse.world.chunk.storage.utils.VariableBitArray;
 import static xyz.upperlevel.openverse.world.chunk.storage.BlockStorage.AIR_STATE;
 
 public class SimpleBlockStateStorage implements BlockStateStorage, BlockStatePalette.OverflowHandler {
+    private final OpenverseProxy module;
+
     private BlockStatePalette palette;
     private VariableBitArray storage;
     private int bitsPerPalette;
 
-    public SimpleBlockStateStorage() {
+    public SimpleBlockStateStorage(OpenverseProxy module) {
+        this.module = module;
+
         setBitsPerPalette(4);
     }
 
@@ -52,7 +57,7 @@ public class SimpleBlockStateStorage implements BlockStateStorage, BlockStatePal
         } else if (bits <= 8) {
             palette = new HashStatePalette(bits, this);
         } else {
-            palette = RegistryStatePalette.INSTANCE;
+            palette = new RegistryStatePalette(module.getResources().blockTypes());
         }
         palette.toId(AIR_STATE);
         this.bitsPerPalette = palette.getIdLength();

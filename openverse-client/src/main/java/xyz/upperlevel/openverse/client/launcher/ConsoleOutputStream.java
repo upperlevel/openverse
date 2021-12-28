@@ -1,4 +1,4 @@
-package xyz.upperlevel.openverse.launcher.util;
+package xyz.upperlevel.openverse.client.launcher;
 
 import jline.console.ConsoleReader;
 import lombok.RequiredArgsConstructor;

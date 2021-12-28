@@ -1,6 +1,7 @@
 package xyz.upperlevel.openverse.world.chunk;
 
 import lombok.Getter;
+import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 
@@ -8,21 +9,35 @@ import xyz.upperlevel.openverse.world.block.state.BlockState;
  * A chunk pillar has a x and a z coordinate constant and provides for chunks along y axis.
  * Takes care of maximum block heights.
  */
-@Getter
 public class ChunkPillar {
+    @Getter
+    private final OpenverseProxy module;
+
+    @Getter
     private final World world;
+
+    @Getter
     private final int x, z;
+
+    @Getter
     private VerticalChunkProvider verticalChunkProvider;
 
+    @Getter
     private int heightmap[];
+
+    @Getter
     private int heightmapMinimum;
+
+    @Getter
     private int heightmapMaximum;
 
-    public ChunkPillar(World world, int x, int z) {
+    public ChunkPillar(OpenverseProxy module, World world, int x, int z) {
+        this.module = module;
+
         this.world = world;
         this.x = x;
         this.z = z;
-        this.verticalChunkProvider = new SimpleVerticalChunkProvider(this);
+        this.verticalChunkProvider = new SimpleVerticalChunkProvider(module,this);
 
         // By default, each field of the heightmap is equal to max integer value
         this.heightmap = new int[256];

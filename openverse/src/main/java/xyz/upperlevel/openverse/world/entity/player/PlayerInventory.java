@@ -2,6 +2,7 @@ package xyz.upperlevel.openverse.world.entity.player;
 
 import lombok.Getter;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.inventory.*;
 import xyz.upperlevel.openverse.item.ItemStack;
 import xyz.upperlevel.openverse.network.world.entity.PlayerChangeHandSlotPacket;
@@ -17,12 +18,16 @@ import java.util.Iterator;
  * <br>So we can assign the same id at every player's inventory
  */
 public class PlayerInventory extends BaseInventory {
+    private final OpenverseProxy module;
+
     private InventoryContent content = new SimpleInventoryContent(4*9);
     private Slot[] slots = new Slot[4*9];
     @Getter
     private int handSlot = 0;
 
-    public PlayerInventory() {
+    public PlayerInventory(OpenverseProxy module) {
+        this.module = module;
+
         assignId(0);// See pre-class note
         for (int i = 0; i < slots.length; i++) {
             slots[i] = new Slot(this, i);
@@ -77,7 +82,7 @@ public class PlayerInventory extends BaseInventory {
     public void setHandSlot(int slot) {
         checkHotbarBounds(slot);
         PlayerChangeHandSlotPacket packet = new PlayerChangeHandSlotPacket(slot);
-        Openverse.endpoint().getConnections().forEach(c -> c.send(Openverse.getChannel(), packet));
+        module.getEndpoint().getConnections().forEach(conn -> conn.send(module.getChannel(), packet));
         this.handSlot = slot;
     }
 

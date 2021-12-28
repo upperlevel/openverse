@@ -1,6 +1,7 @@
 package xyz.upperlevel.openverse.world.chunk.storage;
 
 import lombok.Getter;
+import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.chunk.Block;
@@ -13,17 +14,31 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-@Getter
 public class SimpleBlockStorage implements BlockStorage {
+    @Getter
+    private final OpenverseProxy module;
+
+    @Getter
     private final World world;
+
+    @Getter
     private final Chunk chunk;
 
+    @Getter
     private BlockStateStorage blockStateStorage;
+
+    @Getter
     private Map<Integer, BlockEntity> blockEntityMap;
+
+    @Getter
     private NibbleArray blockSkylightArray;
+
+    @Getter
     private NibbleArray blockLightArray;
 
-    public SimpleBlockStorage(Chunk chunk) {
+    public SimpleBlockStorage(OpenverseProxy module, Chunk chunk) {
+        this.module = module;
+
         this.world = chunk.getWorld();
         this.chunk = chunk;
         this.blockStateStorage = createBlockStateStorage();
@@ -51,7 +66,7 @@ public class SimpleBlockStorage implements BlockStorage {
 
 
     protected BlockStateStorage createBlockStateStorage() {
-        return new SimpleBlockStateStorage();
+        return new SimpleBlockStateStorage(module);
     }
 
 

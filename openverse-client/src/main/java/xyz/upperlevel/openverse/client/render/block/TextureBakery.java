@@ -2,6 +2,7 @@ package xyz.upperlevel.openverse.client.render.block;
 
 import org.lwjgl.BufferUtils;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.client.OpenverseClient;
 import xyz.upperlevel.ulge.opengl.texture.Texture2dArray;
 import xyz.upperlevel.ulge.opengl.texture.loader.ImageContent;
 
@@ -45,7 +46,7 @@ public final class TextureBakery {
     }
 
     public static void bake() {
-        Openverse.getLogger().info("Baking " + registered.size() + " textures...");
+        OpenverseClient.get().getLogger().info("Baking " + registered.size() + " textures...");
         layers = new HashMap<>();
         textureArray = new Texture2dArray();
         textureArray.allocate(4, GL_RGBA8, 16, 16, 1 + registered.size());
@@ -62,7 +63,7 @@ public final class TextureBakery {
                 layer++;
             }
         }
-        Openverse.getLogger().info("Textures baked!");
+        OpenverseClient.get().getLogger().info("Textures baked!");
     }
 
     public static void bind() {

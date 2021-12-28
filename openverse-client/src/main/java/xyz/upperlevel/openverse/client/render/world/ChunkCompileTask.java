@@ -3,6 +3,7 @@ package xyz.upperlevel.openverse.client.render.world;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.client.OpenverseClient;
 import xyz.upperlevel.openverse.client.render.world.util.VertexBuffer;
 import xyz.upperlevel.openverse.client.render.world.util.VertexBufferPool;
 
@@ -10,6 +11,7 @@ import java.util.logging.Level;
 
 @RequiredArgsConstructor
 public class ChunkCompileTask {
+    private final OpenverseClient client;
     private final VertexBufferPool bufferPool;
     @NonNull
     private final ChunkRenderer chunk;
@@ -22,7 +24,7 @@ public class ChunkCompileTask {
             try {
                 buffer = bufferPool.waitForBuffer();
             } catch (InterruptedException e) {
-                Openverse.getLogger().log(Level.WARNING, " Chunk compiler: interrupted pool retrieving");
+                client.getLogger().log(Level.WARNING, " Chunk compiler: interrupted pool retrieving");
             }
         }
     }
@@ -95,7 +97,7 @@ public class ChunkCompileTask {
         try {
             vertexCount = chunk.compile(buffer.byteBuffer());
         } catch (Exception e) {
-            Openverse.getLogger().log(Level.SEVERE, "Error while compiling chunk (data:" + (chunk.getAllocateDataCount() * Float.BYTES) + ", cap:" + buffer.byteBuffer().capacity() + ")", e);
+            client.getLogger().log(Level.SEVERE, "Error while compiling chunk (data:" + (chunk.getAllocateDataCount() * Float.BYTES) + ", cap:" + buffer.byteBuffer().capacity() + ")", e);
             forceAbort();
             return false;
         }

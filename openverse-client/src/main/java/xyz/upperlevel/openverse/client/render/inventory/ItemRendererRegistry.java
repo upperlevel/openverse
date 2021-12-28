@@ -2,7 +2,7 @@ package xyz.upperlevel.openverse.client.render.inventory;
 
 import xyz.upperlevel.openverse.item.BlockItemType;
 import xyz.upperlevel.openverse.item.ItemType;
-import xyz.upperlevel.openverse.item.ItemTypes;
+import xyz.upperlevel.openverse.item.ItemTypeRegistry;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,9 +10,9 @@ import java.util.Map;
 public class ItemRendererRegistry {
     private Map<ItemType, ItemRenderer> renderers = new HashMap<>();
 
-    protected void registerDefaults() {
-        registerForBlock(ItemTypes.DIRT);
-        registerForBlock(ItemTypes.GRASS);
+    public void registerDefaults(ItemTypeRegistry registry) {
+        registerForBlock(registry.getDirt());
+        registerForBlock(registry.getGrass());
     }
 
     public void register(ItemType type, ItemRenderer renderer) {
@@ -35,9 +35,5 @@ public class ItemRendererRegistry {
 
     public ItemRenderer get(ItemType type) {
         return renderers.get(type);
-    }
-
-    public void init() {
-        registerDefaults();
     }
 }

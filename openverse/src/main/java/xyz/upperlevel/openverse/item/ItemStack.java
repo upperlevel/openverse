@@ -4,28 +4,39 @@ import io.netty.buffer.ByteBuf;
 import lombok.Getter;
 import lombok.Setter;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.OpenverseProxy;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ItemStack {
     public static final ItemStack EMPTY = new ItemStack(ItemType.AIR, 0);
+    public static final int ITEMS_COUNT_PER_STACK = 64;
 
     @Getter
-    private final ItemType type;
+    private int typeRawId;
+
     @Getter
     @Setter
     private int count;
+
     @Getter
     @Setter
     private int state;
+
     @Getter
     private Map<String, Object> data = new HashMap<>();
 
-    public ItemStack(ItemType type, int count, byte state) {
-        this.type = type;
-        this.count = count;
-        this.state = state;
+    // TODO do we really need all of these constructors?
+
+    public ItemStack(int typeRawId, int count, int state) {
+        this.typeRawId = typeRawId;
+        this.count     = count;
+        this.state     = state;
+    }
+
+    public ItemStack(ItemType type, int count, int state) {
+        this(type.getRawId(), count, state);
     }
 
     public ItemStack(ItemType type, int count) {
@@ -36,12 +47,16 @@ public class ItemStack {
         this(type, 1, type.getDefaultState());
     }
 
+    public ItemType getType(ItemTypeRegistry itemTypeRegistry) {
+        return itemTypeRegistry.entry(typeRawId);
+    }
+
     public boolean isEmpty() {
-        return count == 0 || type == ItemType.AIR;
+        return count == 0 || typeRawId == ItemType.AIR.getRawId();
     }
 
     public int addCount(int n) {
-        int newCount = Math.min(n, type.getMaxStack());
+        int newCount = Math.min(n, ITEMS_COUNT_PER_STACK); // TODO it would be cool to have max stack count depending on ItemType
         int remaining = (newCount - count) - n;
         count = newCount;
         return remaining;
@@ -52,35 +67,26 @@ public class ItemStack {
         if (other == this) return  true;
         if (!(other instanceof ItemStack)) return false;
         ItemStack o = (ItemStack) other;
-        return o.type == type && o.count == count;
+        return o.typeRawId == typeRawId && o.count == count;
     }
 
     public ItemStack copy() {
-        return new ItemStack(type, count);
+        return new ItemStack(typeRawId, count, state);
+    }
+
+    public static ItemStack fromData(ByteBuf in) {
+        return new ItemStack(in.readInt(), in.readInt(), in.readByte());
     }
 
     public void toData(ByteBuf out) {
-        if (type.getRawId() < 0) {
-            throw new IllegalStateException("Item not yet registered: " + type.getId());
-        }
-        out.writeInt(type.getRawId());
+        out.writeInt(typeRawId);
         out.writeInt(count);
         out.writeByte(state);
         //TODO Write obf data
     }
 
-    public static ItemStack fromData(ByteBuf in) {
-        int itemTypeId = in.readInt();
-        ItemType itemType = Openverse.resources().itemTypes().entry(itemTypeId);
-        if (itemType == null) {
-            throw new IllegalArgumentException("Invalid data: cannot find typeId " + itemTypeId);
-        }
-        //TODO Read obf data
-        return new ItemStack(itemType, in.readInt(), in.readByte());
-    }
-
     @Override
     public String toString() {
-        return type.getId() + (count != 0 ? "[" + count + "]" : "");
+        return typeRawId + (count != 0 ? "[" + count + "]" : "");
     }
 }

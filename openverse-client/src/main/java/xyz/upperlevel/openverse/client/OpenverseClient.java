@@ -16,7 +16,6 @@ import xyz.upperlevel.openverse.client.render.inventory.InventoryGuiRegistry;
 import xyz.upperlevel.openverse.client.render.inventory.ItemRendererRegistry;
 import xyz.upperlevel.openverse.client.resource.ClientResources;
 import xyz.upperlevel.openverse.console.log.OpenverseLogger;
-import xyz.upperlevel.openverse.launcher.OpenverseLauncher;
 import xyz.upperlevel.openverse.world.entity.EntityManager;
 import xyz.upperlevel.openverse.world.entity.player.Player;
 import xyz.upperlevel.ulge.game.Stage;
@@ -28,43 +27,55 @@ import java.util.logging.Logger;
 
 import static xyz.upperlevel.openverse.Openverse.PROTOCOL;
 
-@Getter
 public class OpenverseClient implements OpenverseProxy {
     private static OpenverseClient instance;
 
     private final Logger logger;
-
     private final Client endpoint;
     private final Channel channel;
     private final ClientResources resources; // resources are loaded per universe
-    private final EventManager eventManager = new EventManager();
+    private final EventManager eventManager;
     private final EntityManager entityManager;
+
+    @Getter
     private final ItemRendererRegistry itemRendererRegistry;
+
+    @Getter
     private final InventoryGuiRegistry inventoryGuiRegistry;
+
+    @Getter
     private final GuiManager guiManager;
+
+    //@Getter
+    //private final DebugGuiManager debugGuiManager;
 
     @Getter
     private boolean captureInput = true;
+
+    @Getter
     @Setter
     private Player player;
 
-    public OpenverseClient(@NonNull Client client, PrintStream writer) {
+    public OpenverseClient(Client client, PrintStream writer) {
         instance = this;
-        Openverse.setProxy(this);
 
-        endpoint = client;
+        this.eventManager = new EventManager();
 
-        logger = new OpenverseLogger(this, "Client", writer);
+        this.logger = new OpenverseLogger(this, "Client", writer);
+
+        this.endpoint = client;
 
         Connection connection = client.getConnection();
-        channel = new Channel("main").setProtocol(PROTOCOL.compile(PacketSide.CLIENT));
+        this.channel = new Channel("main").setProtocol(PROTOCOL.compile(PacketSide.CLIENT));
         connection.setDefaultChannel(channel);
-        resources = new ClientResources(logger);
-        resources.init();
-        entityManager = new EntityManager();
-        itemRendererRegistry = new ItemRendererRegistry();
-        inventoryGuiRegistry = new InventoryGuiRegistry();
-        guiManager = new GuiManager();
+
+        this.resources = new ClientResources(this, logger);
+        this.resources.init();
+        this.entityManager = new EntityManager(this);
+        this.itemRendererRegistry = new ItemRendererRegistry();
+        this.inventoryGuiRegistry = new InventoryGuiRegistry();
+        this.guiManager = new GuiManager(this);
+        //this.debugGuiManager = new DebugGuiManager(Launcher.get().getGame().getWindow().getId());
     }
 
     public void onTick() {
@@ -79,22 +90,43 @@ public class OpenverseClient implements OpenverseProxy {
      * @param stage the stage to use
      */
     public void join(Stage stage) {
-        stage.setScene(new ClientScene());
+        System.out.println("YUP I'M JOINING CORRECTLY!");
+        stage.setScene(new ClientScene(this));
     }
 
     public void setCaptureInput(boolean enable) {
-        OpenverseLauncher.get().getGame().getWindow().setCursorEnabled(!enable);
+        Launcher.get().getGame().getWindow().setCursorEnabled(!enable);
         captureInput = enable;
     }
 
     public boolean isShifting() {
-        Window w = OpenverseLauncher.get().getGame().getWindow();
+        Window w = Launcher.get().getGame().getWindow();
         return w.testKey(Key.LEFT_SHIFT) || w.testKey(Key.RIGHT_SHIFT);
     }
 
     @Override
+    public EventManager getEventManager() {
+        return this.eventManager;
+    }
+
+    @Override
+    public Logger getLogger() {
+        return this.logger;
+    }
+
+    @Override
     public ClientResources getResources() {
-        return resources;
+        return this.resources;
+    }
+
+    @Override
+    public Client getEndpoint() {
+        return this.endpoint;
+    }
+
+    @Override
+    public Channel getChannel() {
+        return this.channel;
     }
 
     @Override

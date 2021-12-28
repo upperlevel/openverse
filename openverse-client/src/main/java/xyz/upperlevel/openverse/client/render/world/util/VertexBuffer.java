@@ -3,6 +3,7 @@ package xyz.upperlevel.openverse.client.render.world.util;
 import lombok.Getter;
 import org.lwjgl.BufferUtils;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.client.OpenverseClient;
 
 import java.nio.ByteBuffer;
 
@@ -10,6 +11,7 @@ import static xyz.upperlevel.openverse.util.math.MathUtil.roundUp;
 
 public class VertexBuffer {
     public static final int CAPACITY_STEP = 2 * 1024 * 1024;
+
     private final VertexBufferPool pool;
     private ByteBuffer handle;
     @Getter
@@ -26,7 +28,10 @@ public class VertexBuffer {
                 finalCap = roundUp(capacity, CAPACITY_STEP);
             else
                 finalCap = CAPACITY_STEP;
-            Openverse.getLogger().fine("Resizing buffer from " + (handle == null ? 0 : handle.capacity()) + " to " + capacity + " (" + finalCap + ")");
+
+            // TODO global state for OpenverseClient in order to access Logger?
+            //client.getLogger().fine("Resizing buffer from " + (handle == null ? 0 : handle.capacity()) + " to " + capacity + " (" + finalCap + ")");
+
             handle = BufferUtils.createByteBuffer(finalCap);
         } else {
             handle.clear();

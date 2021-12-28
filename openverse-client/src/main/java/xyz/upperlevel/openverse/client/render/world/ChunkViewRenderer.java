@@ -4,6 +4,7 @@ import lombok.Getter;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.client.OpenverseClient;
 import xyz.upperlevel.openverse.client.render.world.util.VertexBufferPool;
 import xyz.upperlevel.openverse.client.world.ClientWorld;
 import xyz.upperlevel.openverse.event.BlockUpdateEvent;
@@ -25,6 +26,8 @@ import java.util.concurrent.Executors;
 public class ChunkViewRenderer implements Listener {
     public static final int MAX_RENDER_DISTANCE = 3;
 
+    private final OpenverseClient client;
+
     private final Program program;
     private ClientWorld world;
     private VertexBufferPool vertexProvider = new VertexBufferPool(50);
@@ -35,10 +38,13 @@ public class ChunkViewRenderer implements Listener {
     private int distance;
     private Map<ChunkLocation, ChunkRenderer> chunks = new HashMap<>();
 
-    public ChunkViewRenderer(Program program) {
+    public ChunkViewRenderer(OpenverseClient client, Program program) {
+        this.client = client;
+
         this.program = program;
         this.distance = 1;
-        Openverse.getEventManager().register(this);
+
+        client.getEventManager().register(this);
     }
 
     public void loadChunk(ChunkRenderer chunk) {
@@ -71,7 +77,7 @@ public class ChunkViewRenderer implements Listener {
 
     public void recompileChunk(ChunkRenderer chunk, ChunkCompileMode mode) {
         if (mode == ChunkCompileMode.INSTANT) {
-            pendingTasks.add(new ChunkCompileTask(syncProvider, chunk));
+            pendingTasks.add(new ChunkCompileTask(client, syncProvider, chunk));
         } else {
             ChunkCompileTask task = chunk.createCompileTask(vertexProvider);
             detachedChunkCompiler.execute(() -> {
@@ -136,16 +142,16 @@ public class ChunkViewRenderer implements Listener {
      * Destroys all chunks and remove them from memory.
      */
     public void destroy() {
-        Openverse.getLogger().fine("Shutting down chunk compiler");
+        client.getLogger().fine("Shutting down chunk compiler");
         detachedChunkCompiler.shutdownNow();
-        Openverse.getLogger().fine("Done");
+        client.getLogger().fine("Done");
         chunks.values().forEach(ChunkRenderer::destroy);
         chunks.clear();
     }
 
     @EventHandler
     public void onChunkLoad(ChunkLoadEvent e) {
-        loadChunk(new ChunkRenderer(this, e.getChunk(), program));
+        loadChunk(new ChunkRenderer(client,this, e.getChunk(), program));
 
         ChunkLocation loc = e.getChunk().getLocation();
         recompileChunksAround(loc.x, loc.y, loc.z, ChunkCompileMode.ASYNC);

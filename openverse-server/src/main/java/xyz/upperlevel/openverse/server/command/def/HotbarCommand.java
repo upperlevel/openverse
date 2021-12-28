@@ -1,6 +1,6 @@
 package xyz.upperlevel.openverse.server.command.def;
 
-import xyz.upperlevel.openverse.Openverse;
+import lombok.Getter;
 import xyz.upperlevel.openverse.item.ItemStack;
 import xyz.upperlevel.openverse.item.ItemType;
 import xyz.upperlevel.openverse.server.OpenverseServer;
@@ -14,9 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static xyz.upperlevel.openverse.console.ChatColor.BLUE;
-import static xyz.upperlevel.openverse.console.ChatColor.GREEN;
-import static xyz.upperlevel.openverse.console.ChatColor.RED;
+import static xyz.upperlevel.openverse.console.ChatColor.*;
 
 /**
  * TESTING COMMAND
@@ -24,6 +22,13 @@ import static xyz.upperlevel.openverse.console.ChatColor.RED;
  * <br>Usage: "hotbar [(hand [newSlot])|(set slotId itemId [count])]
  */
 public class HotbarCommand implements Command {
+    @Getter
+    private final OpenverseServer server;
+
+    public HotbarCommand(OpenverseServer server) {
+        this.server = server;
+    }
+
     @Override
     public String getName() {
         return "hotbar";
@@ -41,7 +46,7 @@ public class HotbarCommand implements Command {
 
     @Override
     public void execute(CommandSender sender, List<String> args) {
-        PlayerInventory inv = OpenverseServer.get().getPlayerManager().getPlayers().iterator().next().getInventory();
+        PlayerInventory inv = server.getPlayerManager().getPlayers().iterator().next().getInventory();
         if (args.isEmpty()) {
             printInventory(sender, inv);
         } else {
@@ -88,7 +93,7 @@ public class HotbarCommand implements Command {
             handSlot = -1;
         }
         if (handSlot < 0 || handSlot > 8) {
-            ItemType item = Openverse.resources().itemTypes().entry(newHand);
+            ItemType item = server.getResources().itemTypes().entry(newHand);
             if (item == null) {
                 sender.sendMessage(RED + "Cannot find item '" + GREEN + newHand + BLUE + "'");
                 return;
@@ -113,7 +118,7 @@ public class HotbarCommand implements Command {
             return;
         }
 
-        ItemType itemType = Openverse.resources().itemTypes().entry(itemIdStr);
+        ItemType itemType = server.getResources().itemTypes().entry(itemIdStr);
         if (itemType == null) {
             sender.sendMessage(RED + "Cannot find item '" + itemIdStr + "'");
             return;
@@ -152,7 +157,7 @@ public class HotbarCommand implements Command {
             return CommandUtil.searchCompletitions(Stream.of("hand", "set"), partialArg);
         }
         if (args.size() == 3 && args.get(0).equalsIgnoreCase("set")) {
-            return CommandUtil.itemTypeComplete(args.get(2));
+            return CommandUtil.itemTypeComplete(server.getResources().itemTypes(), args.get(2));
         }
         return Collections.emptyList();
     }

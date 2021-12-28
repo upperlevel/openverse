@@ -3,6 +3,7 @@ package xyz.upperlevel.openverse.world.chunk;
 import lombok.Getter;
 import lombok.Setter;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.event.BlockUpdateEvent;
 import xyz.upperlevel.openverse.world.LightType;
 import xyz.upperlevel.openverse.world.block.BlockFace;
@@ -17,6 +18,9 @@ import static xyz.upperlevel.openverse.world.chunk.storage.BlockStorage.AIR_STAT
 
 
 public class Chunk {
+    @Getter
+    private final OpenverseProxy module;
+
     @Getter
     private final World world;
 
@@ -33,12 +37,14 @@ public class Chunk {
     @Setter
     private BlockStorage blockStorage;
 
-    public Chunk(ChunkPillar chunkPillar, int y) {
+    public Chunk(OpenverseProxy module, ChunkPillar chunkPillar, int y) {
+        this.module = module;
+
         this.world = chunkPillar.getWorld();
         this.chunkPillar = chunkPillar;
         this.y = y;
         this.location = new ChunkLocation(getX(), y, getZ());
-        this.blockStorage = new SimpleBlockStorage(this);
+        this.blockStorage = new SimpleBlockStorage(module,this);
     }
 
     /**
@@ -68,7 +74,6 @@ public class Chunk {
     public Block getBlock(int x, int y, int z) {
         return blockStorage.getBlock(x, y, z);
     }
-
 
     public BlockType getBlockType(int x, int y, int z) {
         return getBlockState(x, y, z).getBlockType();
@@ -133,7 +138,7 @@ public class Chunk {
             rebuildHeightFor(x, z, y, true);
             updateSkylightOnBlockChange(x, z, y);
 
-            Openverse.getEventManager().call(new BlockUpdateEvent(world, x + (location.x << 4), y + (location.y << 4), z + (location.z << 4), oldState, blockState));
+            module.getEventManager().call(new BlockUpdateEvent(world, x + (location.x << 4), y + (location.y << 4), z + (location.z << 4), oldState, blockState));
         }
         return oldState;
     }

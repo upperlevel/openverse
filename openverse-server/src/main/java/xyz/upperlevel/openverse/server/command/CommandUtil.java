@@ -2,7 +2,9 @@ package xyz.upperlevel.openverse.server.command;
 
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.item.ItemType;
+import xyz.upperlevel.openverse.item.ItemTypeRegistry;
 import xyz.upperlevel.openverse.world.block.BlockType;
+import xyz.upperlevel.openverse.world.block.BlockTypeRegistry;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -19,16 +21,16 @@ public final class CommandUtil {
         return searchCompletitions(in, s -> startsWithIgnoreCase(s, prefix));
     }
 
-    public static List<String> itemTypeComplete(String input) {
+    public static List<String> itemTypeComplete(ItemTypeRegistry itemTypeRegistry, String input) {
         return searchCompletitions(
-                Openverse.resources().itemTypes().entries().stream().map(ItemType::getId),
+                itemTypeRegistry.entries().stream().map(ItemType::getId),
                 input
         );
     }
 
-    public static List<String> blockTypeComplete(String input) {
+    public static List<String> blockTypeComplete(BlockTypeRegistry blockTypeRegistry, String input) {
         return searchCompletitions(
-                Openverse.resources().blockTypes().entries().stream().map(BlockType::getId),
+                blockTypeRegistry.entries().stream().map(BlockType::getId),
                 input
         );
     }

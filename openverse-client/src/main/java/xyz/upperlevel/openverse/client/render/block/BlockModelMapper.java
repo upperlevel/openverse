@@ -3,6 +3,7 @@ package xyz.upperlevel.openverse.client.render.block;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.client.OpenverseClient;
 import xyz.upperlevel.openverse.util.config.Config;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.block.property.BlockProperty;
@@ -36,7 +37,7 @@ public class BlockModelMapper {
             throw new IllegalStateException("Cannot find " + path + " from " + type.getId());
         }
         model.addBlockPart(part);
-        System.out.println("Added " + path + " to def state of " + type.getId());
+        //System.out.println("Added " + path + " to def state of " + type.getId());
         for (BlockState state : reg.getStates()) {
             models.put(state, model);
         }
@@ -55,7 +56,7 @@ public class BlockModelMapper {
                             // Do NOT simplify or it won't compile (why??)
                             state = state.with((BlockProperty)p, (Comparable) val.get());
                         } else
-                            Openverse.getLogger().warning("Cannot parse value \"" + prop.getValue() + "\" of property: " + p.getName() + " ");
+                            OpenverseClient.get().getLogger().warning("Cannot parse value \"" + prop.getValue() + "\" of property: " + p.getName() + " ");
                     }
                     path = Paths.get(varCfg.getStringRequired("model"));
                     model.addBlockPart(BlockModelRegistry.load(path.toFile()));

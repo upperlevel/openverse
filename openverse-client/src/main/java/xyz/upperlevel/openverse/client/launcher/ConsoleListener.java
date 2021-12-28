@@ -1,9 +1,9 @@
-package xyz.upperlevel.openverse.launcher;
+package xyz.upperlevel.openverse.client.launcher;
 
 import jline.console.ConsoleReader;
 import lombok.Getter;
 import lombok.Setter;
-import xyz.upperlevel.openverse.launcher.loaders.ServerWrapper;
+import xyz.upperlevel.openverse.server.OpenverseServer;
 
 import java.io.IOException;
 import java.util.List;
@@ -11,10 +11,10 @@ import java.util.List;
 public class ConsoleListener {
     @Setter
     @Getter
-    private ServerWrapper server;
+    private OpenverseServer localServer;
 
     @Getter
-    private ConsoleReader in;
+    private final ConsoleReader in;
 
     public ConsoleListener() {
         try {
@@ -31,8 +31,12 @@ public class ConsoleListener {
         try {
             while (!Thread.interrupted()) {
                 String line = in.readLine();
-                if (line == null) return;
-                server.executeCommand(line);
+                if (line == null)
+                    return;
+
+
+
+                this.localServer.executeCommand(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -40,6 +44,7 @@ public class ConsoleListener {
     }
 
     private int onComplete(String line, int cursor, List<CharSequence> candidates) {
-        return server.tabComplete(line, (List)candidates);
+        return this.localServer.tabComplete(line, (List)candidates);
     }
 }
+

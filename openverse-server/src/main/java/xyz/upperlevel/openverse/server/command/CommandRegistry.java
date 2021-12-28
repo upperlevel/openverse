@@ -1,6 +1,7 @@
 package xyz.upperlevel.openverse.server.command;
 
-import xyz.upperlevel.openverse.Openverse;
+import lombok.Getter;
+import xyz.upperlevel.openverse.server.OpenverseServer;
 import xyz.upperlevel.openverse.server.command.def.EchoCommand;
 import xyz.upperlevel.openverse.server.command.def.GiveCommand;
 import xyz.upperlevel.openverse.server.command.def.HelpCommand;
@@ -9,10 +10,15 @@ import xyz.upperlevel.openverse.server.command.def.HotbarCommand;
 import java.util.*;
 
 public class CommandRegistry implements Iterable<Command> {
+    @Getter
+    private final OpenverseServer server;
+
     private Set<Command> commands = new HashSet<>();
     private Map<String, Command> nameMappedCommands = new HashMap<>();
 
-    public CommandRegistry() {
+    public CommandRegistry(OpenverseServer server) {
+        this.server = server;
+
         registerDefaultCommands();
     }
 
@@ -57,12 +63,12 @@ public class CommandRegistry implements Iterable<Command> {
     protected void registerDefaultCommands() {
         register(new EchoCommand());
         register(new HelpCommand(this));
-        register(new HotbarCommand());
-        register(new GiveCommand());
+        register(new HotbarCommand(server));
+        register(new GiveCommand(server));
     }
 
     protected void warn(String str) {
-        Openverse.getLogger().warning("[Command]" + str);
+        server.getLogger().warning("[Command]" + str);
     }
 
     @Override

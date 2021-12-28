@@ -2,6 +2,7 @@ package xyz.upperlevel.openverse.inventory;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.item.ItemStack;
 
 /**
@@ -48,7 +49,7 @@ public class Slot {
             content = other;
             parent.onSlotChange(this);
             return ItemStack.EMPTY;
-        } else if (content.getType() == other.getType()){
+        } else if (content.getTypeRawId() == other.getTypeRawId()){
             int remaining = content.addCount(other.getCount());
             other.setCount(remaining);
             parent.onSlotChange(this);

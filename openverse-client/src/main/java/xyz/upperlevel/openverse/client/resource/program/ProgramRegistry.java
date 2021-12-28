@@ -1,6 +1,7 @@
 package xyz.upperlevel.openverse.client.resource.program;
 
 import lombok.Getter;
+import xyz.upperlevel.openverse.client.OpenverseClient;
 import xyz.upperlevel.openverse.resource.ResourceLoader;
 import xyz.upperlevel.openverse.resource.ResourceRegistry;
 import xyz.upperlevel.ulge.opengl.shader.Program;
@@ -12,17 +13,19 @@ import java.util.logging.Logger;
  * The program manager contains a list of all programs.
  * It may be used after have set a context for OpenGL.
  */
-@Getter
 public class ProgramRegistry extends ResourceRegistry<Program> {
-    public static final ProgramLoader LOADER = new ProgramLoader();
+    @Getter
+    public final ProgramLoader defaultLoader;
 
-    public ProgramRegistry(File folder, Logger logger) {
+    @Getter
+    private final OpenverseClient client;
+
+    public ProgramRegistry(OpenverseClient client, File folder, Logger logger) {
         super(new File(folder, "programs"), logger);
-    }
 
-    @Override
-    protected ResourceLoader<Program> getDefaultLoader() {
-        return LOADER;
+        this.client = client;
+
+        this.defaultLoader = new ProgramLoader(client);
     }
 
     @Override

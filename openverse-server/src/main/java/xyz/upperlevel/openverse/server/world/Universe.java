@@ -1,22 +1,31 @@
 package xyz.upperlevel.openverse.server.world;
 
+import lombok.Getter;
 import xyz.upperlevel.hermes.reflect.PacketListener;
+import xyz.upperlevel.openverse.server.OpenverseServer;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.World;
 
 import java.util.*;
 
 /**
- * This is something similar to the World manager, in the sense that it stores all the worlds and their ids.
+ * A world manager, it handles worlds and their IDs.
  */
 public class Universe implements PacketListener {
+    @Getter
+    private final OpenverseServer server;
+
     // the spawn location is just server side
     private Location spawn;
     private final Map<String, ServerWorld> worlds = new HashMap<>();
 
+    public Universe(OpenverseServer server) {
+        this.server = server;
+    }
+
     public Location getSpawn() {
         if (spawn == null) {
-            ServerWorld w = new ServerWorld("world");
+            ServerWorld w = new ServerWorld(server, "world");
             addWorld(w);
             spawn = new Location(w, 0, 50, 0);
         }

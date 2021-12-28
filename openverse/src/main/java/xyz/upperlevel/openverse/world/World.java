@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.joml.Vector3i;
 import xyz.upperlevel.event.EventManager;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.util.math.Aabb3d;
 import xyz.upperlevel.openverse.util.math.LineVisitor3d;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
@@ -24,6 +25,8 @@ import static xyz.upperlevel.openverse.world.chunk.storage.BlockStorage.AIR_STAT
 @Getter
 @Setter
 public class World {
+    private final OpenverseProxy module;
+
     private final String name;
     private ChunkPillarProvider chunkPillarProvider;
 
@@ -33,7 +36,9 @@ public class World {
     // A value that atm goes from 0 to 1 where 0 is the deep night and 1 the day
     private float skylight = 0.2f; // todo update skylight value
 
-    public World(String name) {
+    public World(OpenverseProxy module, String name) {
+        this.module = module;
+
         this.name = name;
         this.chunkPillarProvider = new SimpleChunkPillarProvider(this);
     }
@@ -262,7 +267,7 @@ public class World {
     }
 
     public void flushLightChunkUpdates() {
-        EventManager eventManager = Openverse.getEventManager();
+        EventManager eventManager = module.getEventManager();
         for (Chunk chunk : lightUpdatingChunks) {
             eventManager.call(new ChunkLightChangeEvent(chunk));
         }

@@ -42,7 +42,6 @@ public class BlockType {
         this.opaque = opaque;
     }
 
-
     public BlockStateRegistry createBlockState() {
         return BlockStateRegistry.of(this); //Creates a BlockStateRegistry with no propriety
     }

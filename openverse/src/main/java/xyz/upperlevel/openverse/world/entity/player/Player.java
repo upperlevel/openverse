@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.inventory.Inventory;
 import xyz.upperlevel.openverse.inventory.PlayerInventorySession;
 import xyz.upperlevel.openverse.item.ItemStack;
@@ -23,21 +24,32 @@ import static xyz.upperlevel.openverse.world.chunk.storage.BlockStorage.AIR_STAT
 
 public class Player extends LivingEntity {
     public static final Type TYPE = new Type();
+
+    @Getter
+    private final OpenverseProxy module;
+
     @Getter
     private final String name;
+
     @Getter
     @Setter
     private Connection connection;
+
     @Getter
     @Setter
-    private PlayerInventory inventory = new PlayerInventory();
+    private PlayerInventory inventory;
 
     private PlayerInventorySession inventorySession;
 
-    public Player(Location loc, String name) {
-        super(TYPE, loc);
+    public Player(OpenverseProxy module, Location loc, String name) {
+        super(module, TYPE, loc);
+
+        this.module = module;
+
         this.name = name;
         setSize(0.6f, 1.8f);
+
+        this.inventory = new PlayerInventory(this.module);
     }
 
     public EntityType getType() {
@@ -48,7 +60,7 @@ public class Player extends LivingEntity {
         getWorld().setBlockState(x, y, z, AIR_STATE);
         if (sendPacket) {
             PlayerBreakBlockPacket packet = new PlayerBreakBlockPacket(x, y, z);
-            Openverse.endpoint().getConnections().forEach(s -> s.send(Openverse.getChannel(), packet));
+            module.getEndpoint().getConnections().forEach(conn -> conn.send(module.getChannel(), packet));
         }
     }
 
@@ -59,12 +71,12 @@ public class Player extends LivingEntity {
     public boolean useItemInHand(int x, int y, int z, BlockFace face, boolean sendPacket) {
         boolean result = inventory
                 .getHandItem()
-                .getType()
+                .getType(module.getResources().itemTypes())
                 .onUseBlock(this, inventory.getHandItem(), x, y, z, face);
 
         if (sendPacket) {
             PlayerUseItemPacket packet = new PlayerUseItemPacket(x, y, z, face);
-            Openverse.endpoint().getConnections().forEach(s -> s.send(Openverse.getChannel(), packet));
+            module.getEndpoint().getConnections().forEach(conn -> conn.send(module.getChannel(), packet));
         }
 
         return result;
@@ -84,7 +96,7 @@ public class Player extends LivingEntity {
         if (inventorySession != null) {
             closeInventory();
         }
-        Openverse.getEventManager().call(new PlayerInventoryOpenEvent(this, inventory));
+        module.getEventManager().call(new PlayerInventoryOpenEvent(this, inventory));
         inventorySession = new PlayerInventorySession(this, inventory);
     }
 
@@ -94,7 +106,7 @@ public class Player extends LivingEntity {
      * <br>This may call the events {@link PlayerInventoryCloseEvent} and {@link PlayerInventoryOpenEvent}
      */
     public void openInventory() {
-        getConnection().send(Openverse.getChannel(), new PlayerOpenInventoryPacket());
+        getConnection().send(module.getChannel(), new PlayerOpenInventoryPacket());
         openInventory(inventory);
     }
 
@@ -116,10 +128,10 @@ public class Player extends LivingEntity {
      */
     public void closeInventory() {
         if (inventorySession == null) {
-            Openverse.getLogger().warning("Trying to close a closed inventory");
+            module.getLogger().warning("Trying to close a closed inventory");
             return;
         }
-        getConnection().send(Openverse.getChannel(), new PlayerCloseInventoryPacket());
+        getConnection().send(module.getChannel(), new PlayerCloseInventoryPacket());
         onCloseInventory();
     }
 
@@ -130,11 +142,11 @@ public class Player extends LivingEntity {
      */
     public void onCloseInventory() {
         if (inventorySession == null) {
-            Openverse.getLogger().warning("Server trying to close a closed inventory");
+            module.getLogger().warning("Server trying to close a closed inventory");
             return;
         }
         inventorySession.onClose();
-        Openverse.getEventManager().call(new PlayerInventoryCloseEvent(this, inventorySession.getInventory()));
+        module.getEventManager().call(new PlayerInventoryCloseEvent(this, inventorySession.getInventory()));
         inventorySession = null;
     }
 
@@ -144,7 +156,6 @@ public class Player extends LivingEntity {
     }
 
     public static class Type extends EntityType {
-
         public Type() {
             super("player");
         }

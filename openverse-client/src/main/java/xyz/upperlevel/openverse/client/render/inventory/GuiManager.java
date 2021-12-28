@@ -5,11 +5,11 @@ import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.EventPriority;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.client.Launcher;
 import xyz.upperlevel.openverse.client.OpenverseClient;
 import xyz.upperlevel.openverse.inventory.PlayerInventorySession;
 import xyz.upperlevel.openverse.inventory.Slot;
 import xyz.upperlevel.openverse.item.ItemStack;
-import xyz.upperlevel.openverse.launcher.OpenverseLauncher;
 import xyz.upperlevel.openverse.world.entity.player.events.PlayerInventoryCloseEvent;
 import xyz.upperlevel.openverse.world.entity.player.events.PlayerInventoryOpenEvent;
 import xyz.upperlevel.ulge.gui.GuiBounds;
@@ -21,14 +21,17 @@ import xyz.upperlevel.ulge.window.event.action.Action;
 import static org.lwjgl.opengl.GL11.*;
 
 public class GuiManager implements Listener {
-    private GuiViewer viewer = new GuiViewer(OpenverseLauncher.get().getGame().getWindow());
+    private final OpenverseClient client;
+
+    private GuiViewer viewer = new GuiViewer(Launcher.get().getGame().getWindow());
     private HandSlotGui handSlotGui;
 
-    public GuiManager() {
-        Openverse.getEventManager().register(this);
-        OpenverseLauncher.get().getGame().getWindow().getEventManager().register(KeyChangeEvent.class, this::onKey, EventPriority.HIGH);
-    }
+    public GuiManager(OpenverseClient client) {
+        this.client = client;
 
+        client.getEventManager().register(this);
+        Launcher.get().getGame().getWindow().getEventManager().register(KeyChangeEvent.class, this::onKey, EventPriority.HIGH);
+    }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerOpenInventory(PlayerInventoryOpenEvent event) {
@@ -83,11 +86,13 @@ public class GuiManager implements Listener {
                 if (!item.isEmpty()) {
                     Window window = viewer.getCurrent().getWindow();
                     Vector2d mousePos = window.getCursorPosition();
-                    ItemRenderer renderer = OpenverseClient.get().getItemRendererRegistry().get(item.getType());
+                    ItemRenderer renderer = OpenverseClient.get().getItemRendererRegistry().get(item.getType(client.getResources().itemTypes()));
                     int size = Math.min(window.getWidth() / 10, window.getHeight() / 10);
                     renderer.renderInSlot(item, window, new GuiBounds(mousePos.x - size/2, mousePos.y - size/2, mousePos.x + size, mousePos.y + size), handSlotGui);
                 }
-            } else Openverse.getLogger().warning("Null session!");
+            } else {
+                client.getLogger().warning("Null session!");
+            }
 
             glDisable(GL_BLEND);
             glEnable(GL_DEPTH_TEST);

@@ -1,6 +1,7 @@
 package xyz.upperlevel.openverse.server.world;
 
 import lombok.Getter;
+import xyz.upperlevel.openverse.server.OpenverseServer;
 import xyz.upperlevel.openverse.server.world.chunk.PlayerChunkMapListener;
 import xyz.upperlevel.openverse.server.world.entity.EntityWatcher;
 import xyz.upperlevel.openverse.server.world.generators.SimpleWorldGenerator;
@@ -8,17 +9,22 @@ import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkPillar;
 
-@Getter
 public class ServerWorld extends World {
+    @Getter
     private final PlayerChunkMapListener chunkMap;
+
+    @Getter
     private final EntityWatcher entityWatcher;
+
+    @Getter
     private final ChunkGenerator chunkGenerator;
 
-    public ServerWorld(String name) {
-        super(name);
-        this.chunkGenerator = new SimpleWorldGenerator(100, 50);
-        this.chunkMap = new PlayerChunkMapListener(this, 4);
-        this.entityWatcher = new EntityWatcher(chunkMap);
+    public ServerWorld(OpenverseServer server, String name) {
+        super(server, name);
+
+        this.chunkGenerator = new SimpleWorldGenerator(server, 100, 50);
+        this.chunkMap = new PlayerChunkMapListener(server, this, 4);
+        this.entityWatcher = new EntityWatcher(server, chunkMap);
     }
 
     public ChunkPillar getOrLoadChunkPillar(int x, int z) {
@@ -30,7 +36,7 @@ public class ServerWorld extends World {
     }
 
     public ChunkPillar loadChunkPillar(int x, int z) {
-        ChunkPillar plr = new ChunkPillar(this, x, z);
+        ChunkPillar plr = new ChunkPillar(getModule(), this, x, z);
         chunkGenerator.generateHeightmap(plr);
         setChunkPillar(plr);
         return plr;
@@ -45,7 +51,7 @@ public class ServerWorld extends World {
     }
 
     public Chunk loadChunk(int x, int y, int z) {
-        Chunk chk = new Chunk(getOrLoadChunkPillar(x, z), y);
+        Chunk chk = new Chunk(getModule(), getOrLoadChunkPillar(x, z), y);
         chunkGenerator.generateChunk(chk);
         setChunk(chk);
         chk.updateNearbyChunksLights();

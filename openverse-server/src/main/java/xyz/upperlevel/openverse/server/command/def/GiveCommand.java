@@ -1,6 +1,6 @@
 package xyz.upperlevel.openverse.server.command.def;
 
-import xyz.upperlevel.openverse.Openverse;
+import lombok.Getter;
 import xyz.upperlevel.openverse.inventory.Slot;
 import xyz.upperlevel.openverse.item.ItemStack;
 import xyz.upperlevel.openverse.item.ItemType;
@@ -18,6 +18,13 @@ import static xyz.upperlevel.openverse.console.ChatColor.GREEN;
 import static xyz.upperlevel.openverse.console.ChatColor.RED;
 
 public class GiveCommand implements Command {
+    @Getter
+    private final OpenverseServer server;
+
+    public GiveCommand(OpenverseServer server) {
+        this.server = server;
+    }
+
     @Override
     public String getName() {
         return "give";
@@ -35,11 +42,11 @@ public class GiveCommand implements Command {
 
     @Override
     public void execute(CommandSender sender, List<String> args) {
-        PlayerInventory inv = OpenverseServer.get().getPlayerManager().getPlayers().iterator().next().getInventory();
+        PlayerInventory inv = server.getPlayerManager().getPlayers().iterator().next().getInventory();
         if (args.size() < 2) {
             sender.sendMessage(RED + "Usage: \\give <player> <item> [count] [variant=value...]");
         } else {
-            Player player = OpenverseServer.get().getPlayerManager().getPlayer(args.get(0));
+            Player player = server.getPlayerManager().getPlayer(args.get(0));
             if (player == null) {
                 sender.sendMessage(RED + "Cannot find player '" + args.get(0) + "'");
                 return;
@@ -87,7 +94,7 @@ public class GiveCommand implements Command {
     }
 
     private ItemStack parseItem(String itemType, int count, List<String> data) {
-        ItemType item = Openverse.resources().itemTypes().entry(itemType);
+        ItemType item = server.getResources().itemTypes().entry(itemType);
         if (item == null) return null;
         if (data.isEmpty()) {
             return item.getStackWithData(count, Collections.emptyMap());
@@ -106,14 +113,14 @@ public class GiveCommand implements Command {
     @Override
     public List<String> tabComplete(CommandSender sender, List<String> args) {
         if (args.isEmpty()) {
-            return OpenverseServer.get().getPlayerManager().getPlayers().stream().map(Player::getName).collect(Collectors.toList());
+            return server.getPlayerManager().getPlayers().stream().map(Player::getName).collect(Collectors.toList());
         }
         if (args.size() == 1) {
             String partialArg = args.get(0);
-            return CommandUtil.searchCompletitions(OpenverseServer.get().getPlayerManager().getPlayers().stream().map(Player::getName), partialArg);
+            return CommandUtil.searchCompletitions(server.getPlayerManager().getPlayers().stream().map(Player::getName), partialArg);
         }
         if (args.size() == 2) {
-            return CommandUtil.itemTypeComplete(args.get(0));
+            return CommandUtil.itemTypeComplete(server.getResources().itemTypes(), args.get(0));
         }
         return Collections.emptyList();
     }

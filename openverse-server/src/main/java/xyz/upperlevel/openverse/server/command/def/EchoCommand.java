@@ -1,5 +1,6 @@
 package xyz.upperlevel.openverse.server.command.def;
 
+import xyz.upperlevel.openverse.server.OpenverseServer;
 import xyz.upperlevel.openverse.server.command.Command;
 import xyz.upperlevel.openverse.server.command.CommandSender;
 

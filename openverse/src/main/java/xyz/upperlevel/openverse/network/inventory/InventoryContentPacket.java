@@ -8,6 +8,7 @@ import lombok.Setter;
 import xyz.upperlevel.hermes.Packet;
 import xyz.upperlevel.hermes.exceptions.IllegalPacketException;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.inventory.Inventory;
 import xyz.upperlevel.openverse.item.ItemStack;
 import xyz.upperlevel.openverse.world.entity.player.PlayerInventory;
@@ -15,15 +16,19 @@ import xyz.upperlevel.openverse.world.entity.player.PlayerInventory;
 import java.util.ArrayList;
 import java.util.List;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 public class InventoryContentPacket implements Packet {
+    @Getter
+    @Setter
     private long inventoryId;
+
+    @Getter
+    @Setter
     private ItemStack[] contents;
 
-    public InventoryContentPacket(Inventory inventory) {
+    public InventoryContentPacket() {
+    }
+
+    public InventoryContentPacket(OpenverseProxy module, Inventory inventory) {
         this.inventoryId = inventory.getId();
         contents = new ItemStack[inventory.getSize()];
         for (int i = 0; i < contents.length; i++) {
@@ -53,8 +58,9 @@ public class InventoryContentPacket implements Packet {
         if (contents.length > inventory.getSize()) {
             throw new IllegalPacketException(this, "Invalid InventoryContentPacket, packet contents: " + contents.length + "inventory: " + inventory.getSize());
         } else if (contents.length < inventory.getSize()) {
-            Openverse.getLogger().warning("Received bad InventoryContents packet, size:" + contents.length + ", actual:" + inventory.getSize());
+            Openverse.logger.warning("Received bad InventoryContents packet, size:" + contents.length + ", actual:" + inventory.getSize());
         }
+
         for (int i = 0; i < contents.length; i++) {
             inventory.get(i).swap(contents[i]);
         }

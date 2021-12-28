@@ -3,11 +3,11 @@ package xyz.upperlevel.openverse.client.render.inventory;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.client.OpenverseClient;
 import xyz.upperlevel.openverse.client.render.block.*;
 import xyz.upperlevel.openverse.client.resource.ClientResources;
 import xyz.upperlevel.openverse.item.ItemStack;
 import xyz.upperlevel.openverse.util.exceptions.NotImplementedException;
-import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.block.BlockFace;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
@@ -28,7 +28,7 @@ public class BlockItemRenderer implements ItemRenderer {
     private StateRenderData[] renderersByState;
 
     static {
-        program = ((ClientResources) Openverse.resources()).programs().entry("gui_item_shader");
+        program = OpenverseClient.get().getResources().programs().entry("gui_item_shader");
         program.use();
         boundsLoc = program.getUniform("bounds");
         if (boundsLoc == null) throw new IllegalStateException("Cannot find Uniform 'bounds'");
@@ -91,7 +91,7 @@ public class BlockItemRenderer implements ItemRenderer {
             if (model == null) {
                 throw new IllegalStateException("Cannot find model for " + state);
             }
-            List<BlockPart> parts = model.getBlockParts();
+            List<BlockPart> parts = model.getParts();
             List<BlockPartFace> faces = parts.stream().map(p -> p.getFaces().get(displayFace)).collect(Collectors.toList());
 
             ByteBuffer buffer = BufferUtils.createByteBuffer(faces.size() * 4 * 6 * Float.BYTES);

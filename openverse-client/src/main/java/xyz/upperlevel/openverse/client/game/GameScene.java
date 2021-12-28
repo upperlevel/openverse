@@ -4,9 +4,9 @@ import lombok.Getter;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.client.Launcher;
 import xyz.upperlevel.openverse.client.OpenverseClient;
 import xyz.upperlevel.openverse.event.ShutdownEvent;
-import xyz.upperlevel.openverse.launcher.OpenverseLauncher;
 import xyz.upperlevel.ulge.game.Game;
 import xyz.upperlevel.ulge.game.Scene;
 import xyz.upperlevel.ulge.game.Stage;
@@ -16,16 +16,24 @@ import xyz.upperlevel.ulge.window.event.action.Action;
 
 import static org.lwjgl.opengl.GL11.*;
 
-// todo put in openverse launcher
-@Getter
 public class GameScene extends Stage implements Listener {
+    @Getter
+    private final OpenverseClient client;
+
+    @Getter
     private final ClientScene parent;
+
+    @Getter
     private Game game;
+
+    @Getter
     private Window window;
 
-    public GameScene(ClientScene parent) {
+    public GameScene(OpenverseClient client, ClientScene parent) {
+        this.client = client;
+
         this.parent = parent;
-        game = OpenverseLauncher.get().getGame();
+        game = Launcher.get().getGame();
         window = game.getWindow();
         window.getEventManager().register(this);
         window.setCursorEnabled(false);
@@ -33,7 +41,7 @@ public class GameScene extends Stage implements Listener {
 
     @Override
     public void onEnable(Scene previous) {
-        Openverse.getLogger().info("Listening for world packets...");
+        client.getLogger().info("Listening for world packets...");
         glEnable(GL_TEXTURE_2D);
 
         glEnable(GL_CULL_FACE);
@@ -41,7 +49,7 @@ public class GameScene extends Stage implements Listener {
         glCullFace(GL_BACK);
         window.setVSync(false);
 
-        setScene(new ReceivingWorldScene(this));
+        setScene(new ReceivingWorldScene(client, this));
     }
 
     @Override
@@ -52,7 +60,7 @@ public class GameScene extends Stage implements Listener {
     @Override
     public void onDisable(Scene next) {
         getScene().onDisable(next);
-        Openverse.getEventManager().call(new ShutdownEvent());
+        client.getEventManager().call(new ShutdownEvent());
         System.exit(0);//Damn it jline, really?
     }
 
@@ -73,7 +81,7 @@ public class GameScene extends Stage implements Listener {
         if (e.getAction() == Action.PRESS) {
             switch (e.getKey()) {
                 case ESCAPE:
-                    OpenverseLauncher.get().getGame().stop();
+                    Launcher.get().getGame().stop();
                     break;
             }
         }

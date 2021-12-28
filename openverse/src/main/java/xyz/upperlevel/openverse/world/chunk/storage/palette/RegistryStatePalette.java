@@ -1,13 +1,16 @@
 package xyz.upperlevel.openverse.world.chunk.storage.palette;
 
-import xyz.upperlevel.openverse.Openverse;
+import lombok.Getter;
 import xyz.upperlevel.openverse.world.block.BlockTypeRegistry;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 
 public class RegistryStatePalette implements BlockStatePalette {
-    public static final RegistryStatePalette INSTANCE = new RegistryStatePalette();
+    @Getter
+    private final BlockTypeRegistry registry;
 
-    private final BlockTypeRegistry registry = Openverse.resources().blockTypes();
+    public RegistryStatePalette(BlockTypeRegistry registry) {
+        this.registry = registry;
+    }
 
     @Override
     public int getIdLength() {

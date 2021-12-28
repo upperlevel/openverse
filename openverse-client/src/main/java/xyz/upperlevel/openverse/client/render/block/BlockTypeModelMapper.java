@@ -3,6 +3,7 @@ package xyz.upperlevel.openverse.client.render.block;
 import com.google.gson.Gson;
 import lombok.Getter;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.client.OpenverseClient;
 import xyz.upperlevel.openverse.util.config.Config;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
@@ -20,7 +21,7 @@ public final class BlockTypeModelMapper {
 
     @SuppressWarnings("unchecked")
     public static BlockModelMapper load(BlockType type, Path path) {
-        Openverse.getLogger().info("Attempting to associate type " + type.getId() + " at \"" + path + "\"...");
+        OpenverseClient.get().getLogger().info("Attempting to associate type " + type.getId() + " at \"" + path + "\"...");
         BlockModelMapper models;
         try {
             models = new BlockModelMapper(type, Config.wrap(GSON.fromJson(new FileReader(path.toFile()), Map.class)));
@@ -28,7 +29,7 @@ public final class BlockTypeModelMapper {
             throw new IllegalStateException(e);
         }
         modelMappers.put(type, models);
-        Openverse.getLogger().info("Block type associated!");
+        OpenverseClient.get().getLogger().info("Block type associated!");
         return models;
     }
 

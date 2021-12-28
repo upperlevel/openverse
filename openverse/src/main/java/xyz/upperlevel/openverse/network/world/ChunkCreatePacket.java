@@ -5,17 +5,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import xyz.upperlevel.hermes.Packet;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.world.World;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.block.BlockTypeRegistry;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 
-@Getter
-@NoArgsConstructor
 public class ChunkCreatePacket implements Packet {
+    @Getter
     private int x, y, z;
-    private int[] states = new int[16 * 16 * 16];
+
+    @Getter
+    private final int[] states = new int[16 * 16 * 16];
+
+    public ChunkCreatePacket() {
+    }
 
     public ChunkCreatePacket(Chunk chunk) {
         this.x = chunk.getX();
@@ -33,13 +38,12 @@ public class ChunkCreatePacket implements Packet {
         }
     }
 
-    public void setBlockStates(Chunk chunk) {
-        BlockTypeRegistry reg = Openverse.resources().blockTypes();
+    public void setBlockStates(BlockTypeRegistry blockTypeRegistry, Chunk chunk) {
         for (int i = 0; i < 16 * 16 * 16; i++) {
             if (states[i] != 0) {
-                BlockState state = reg.getState(states[i]);
+                BlockState state = blockTypeRegistry.getState(states[i]);
                 if (state == null) {
-                    Openverse.getLogger().warning("Unresolved block-state id in ChunkCreatePacket: " + states[i]);
+                    Openverse.logger.warning("Unresolved block-state id in ChunkCreatePacket: " + states[i]);
                 } else {
                     chunk.setBlockState(i >> 8, i >> 4 & 0xF, i & 0xF, state, false);
                 }

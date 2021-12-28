@@ -11,10 +11,7 @@ import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.console.log.OpenverseLogger;
 import xyz.upperlevel.openverse.event.ShutdownEvent;
-import xyz.upperlevel.openverse.server.command.CommandInterpreter;
-import xyz.upperlevel.openverse.server.command.CommandRegistry;
-import xyz.upperlevel.openverse.server.command.CommandSender;
-import xyz.upperlevel.openverse.server.command.DefaultCommandInterpreter;
+import xyz.upperlevel.openverse.server.command.*;
 import xyz.upperlevel.openverse.server.inventory.InventoryManager;
 import xyz.upperlevel.openverse.server.resource.ServerResources;
 import xyz.upperlevel.openverse.server.world.Universe;
@@ -24,8 +21,6 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.logging.Logger;
-
-import static xyz.upperlevel.openverse.Openverse.resources;
 
 @Getter
 public class OpenverseServer implements OpenverseProxy, Listener {
@@ -38,23 +33,31 @@ public class OpenverseServer implements OpenverseProxy, Listener {
     private final PlayerManager playerManager;
     private final EntityManager entityManager;
     private final InventoryManager inventoryManager;
+
+    private final CommandInterpreter commandInterpreter;
     private final CommandRegistry commandRegistry;
-    private CommandInterpreter commandInterpreter;
+    private final CommandSender consoleCommandSender;
 
     public OpenverseServer(@NonNull Server server, PrintStream writer) {
-        Openverse.setProxy(this);
-        logger = new OpenverseLogger(this, "Server", writer);
+        this.logger = new OpenverseLogger(this, "Server", writer);
+        this.logger.info("Hey! This is the server... :)");
+
         this.endpoint = server;
         this.channel = new Channel("main").setProtocol(Openverse.PROTOCOL.compile(PacketSide.SERVER));
         endpoint.setDefaultChannel(channel);
+        this.universe = new Universe(this);
+        this.playerManager = new PlayerManager(this);
+        this.entityManager = new EntityManager(this);
+        this.inventoryManager = new InventoryManager(this);
+
         this.commandInterpreter = new DefaultCommandInterpreter();
-        this.universe = new Universe();
-        this.playerManager = new PlayerManager();
-        this.entityManager = new EntityManager();
-        this.inventoryManager = new InventoryManager();
-        this.commandRegistry = new CommandRegistry();
-        this.resources = new ServerResources(new File("server/resources"), logger);
+        this.commandRegistry = new CommandRegistry(this);
+        this.consoleCommandSender = new ConsoleCommandSender(logger);
+
+        this.resources = new ServerResources(this, new File("server/resources"), logger);
         resources.init();
+
+
     }
 
     /**
@@ -62,13 +65,14 @@ public class OpenverseServer implements OpenverseProxy, Listener {
      * It will just load resources and other saves (including world).
      */
     public void join() {
+        System.out.println("WHY SERVER IS JOINING :(");
         long init = System.currentTimeMillis();
-        Openverse.getLogger().info("Loading resources...");
-        resources().setup();
-        resources().load();
-        Openverse.getLogger().info("Resources loaded in " + (System.currentTimeMillis() - init) + " ms.");
+        logger.info("Loading resources...");
+        resources.setup();
+        resources.load();
+        logger.info("Resources loaded in " + (System.currentTimeMillis() - init) + " ms.");
 
-        Openverse.getLogger().info("Listening for incoming connections...");
+        logger.info("Listening for incoming connections...");
         playerManager.start();
     }
 
@@ -78,18 +82,14 @@ public class OpenverseServer implements OpenverseProxy, Listener {
     }
 
     public void executeCommand(String line) {
-        commandInterpreter.process(CommandSender.CONSOLE, commandRegistry, line);
+        commandInterpreter.process(consoleCommandSender, commandRegistry, line);
     }
 
     public int tabComplete(String line, List<String> completions) {
-        return commandInterpreter.tabComplete(CommandSender.CONSOLE, commandRegistry, line, completions);
+        return commandInterpreter.tabComplete(consoleCommandSender, commandRegistry, line, completions);
     }
 
     public void stop() {
-        Openverse.getEventManager().call(new ShutdownEvent());
-    }
-
-    public static OpenverseServer get() {
-        return (OpenverseServer) Openverse.getProxy();
+        eventManager.call(new ShutdownEvent());
     }
 }

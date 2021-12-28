@@ -1,5 +1,7 @@
 package xyz.upperlevel.openverse.resource;
 
+import lombok.Getter;
+import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.item.ItemTypeRegistry;
 import xyz.upperlevel.openverse.world.block.BlockTypeRegistry;
 import xyz.upperlevel.openverse.world.entity.EntityTypeRegistry;
@@ -12,6 +14,9 @@ import java.util.logging.Logger;
  * It's implemented both in client-side and server-side.
  */
 public class Resources {
+    @Getter
+    private final OpenverseProxy module;
+
     protected final File folder;
     protected final Logger logger;
 
@@ -19,7 +24,9 @@ public class Resources {
     private ItemTypeRegistry itemTypeRegistry;
     private EntityTypeRegistry entityTypeRegistry;
 
-    public Resources(File folder, Logger logger) {
+    public Resources(OpenverseProxy module, File folder, Logger logger) {
+        this.module = module;
+
         this.folder = folder;
         this.logger = logger;
     }
@@ -31,11 +38,11 @@ public class Resources {
     }
 
     protected BlockTypeRegistry createBlockTypeRegistry() {
-        return new BlockTypeRegistry();
+        return new BlockTypeRegistry(module);
     }
 
     protected ItemTypeRegistry createItemTypeRegistry(BlockTypeRegistry blockTypes) {
-        return new ItemTypeRegistry(blockTypes);
+        return new ItemTypeRegistry(module, blockTypes);
     }
 
     protected EntityTypeRegistry createEntityTypeRegistry(File folder, Logger logger) {

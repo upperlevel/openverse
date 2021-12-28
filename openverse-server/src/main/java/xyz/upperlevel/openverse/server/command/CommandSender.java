@@ -1,9 +1,7 @@
 package xyz.upperlevel.openverse.server.command;
 
-import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.server.OpenverseServer;
 
 public interface CommandSender {
-    CommandSender CONSOLE = message -> Openverse.getLogger().info(message);
-
     void sendMessage(String message);
 }

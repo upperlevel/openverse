@@ -6,6 +6,7 @@ import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.hermes.reflect.PacketHandler;
 import xyz.upperlevel.hermes.reflect.PacketListener;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.network.world.entity.EntityChangeVelocityPacket;
 import xyz.upperlevel.openverse.network.world.entity.EntityTeleportPacket;
 import xyz.upperlevel.openverse.profiler.ProfileSession;
@@ -16,12 +17,17 @@ import java.util.Map;
 
 public class EntityManager implements PacketListener {
     public static final ProfileSession ENTITY_TICK_PROFILER = new ProfileSession("Entity tick");
+
+    private final OpenverseProxy module;
+
     private int nextId = 0;
     //TODO: use a more specific class
     private final Map<Integer, Entity> entitiesById = new HashMap<>();
 
-    public EntityManager() {
-        Openverse.getProxy().getChannel().register(this);
+    public EntityManager(OpenverseProxy module) {
+        this.module = module;
+
+        this.module.getChannel().register(this);
     }
 
     public void register(Entity entity) {

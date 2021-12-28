@@ -9,7 +9,6 @@ import xyz.upperlevel.openverse.event.ShutdownEvent;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;

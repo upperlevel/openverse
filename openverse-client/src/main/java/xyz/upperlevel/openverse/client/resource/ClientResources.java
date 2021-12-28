@@ -1,5 +1,6 @@
 package xyz.upperlevel.openverse.client.resource;
 
+import xyz.upperlevel.openverse.client.OpenverseClient;
 import xyz.upperlevel.openverse.client.render.block.TextureBakery;
 import xyz.upperlevel.openverse.client.resource.program.ProgramRegistry;
 import xyz.upperlevel.openverse.client.resource.shader.ShaderRegistry;
@@ -21,15 +22,15 @@ public class ClientResources extends Resources {
     /**
      * The constructor of {@link ClientResources} initializes all sub resource managers.
      */
-    public ClientResources(Logger logger) {
-        super(new File("client/resources"), logger);
+    public ClientResources(OpenverseClient client, Logger logger) {
+        super(client, new File("client/resources"), logger);
     }
 
     @Override
     public void init() {
         super.init();
-        this.shaderRegistry = new ShaderRegistry(folder, logger);
-        this.programRegistry = new ProgramRegistry(folder, logger);
+        this.shaderRegistry  = new ShaderRegistry(folder, logger);
+        this.programRegistry = new ProgramRegistry((OpenverseClient) getModule(), folder, logger);
     }
 
     /**
@@ -49,12 +50,12 @@ public class ClientResources extends Resources {
 
     @Override
     protected ClientBlockTypeRegistry createBlockTypeRegistry() {
-        return new ClientBlockTypeRegistry();
+        return new ClientBlockTypeRegistry((OpenverseClient) getModule());
     }
 
     @Override
     protected ClientItemTypeRegistry createItemTypeRegistry(BlockTypeRegistry blockTypes) {
-        return new ClientItemTypeRegistry(blockTypes);
+        return new ClientItemTypeRegistry((OpenverseClient) getModule(), blockTypes);
     }
 
     //TODO: come on it's the only freaking class that needs to do this hack, and it's not even necessary!
@@ -76,10 +77,13 @@ public class ClientResources extends Resources {
 
     @Override
     protected int onLoad() {
-        int cnt = 0;
-        cnt += shaderRegistry.loadFolder();
-        cnt += programRegistry.loadFolder();
-        return cnt;
+        int shadersCount = shaderRegistry.loadFolder();
+        int programCount = programRegistry.loadFolder();
+
+        logger.info(String.format("Loaded %d shaders", shadersCount));
+        logger.info(String.format("Loaded %d programs", shadersCount));
+
+        return shadersCount +  programCount;
     }
 
     @Override

@@ -6,6 +6,7 @@ import xyz.upperlevel.hermes.Packet;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.network.world.entity.EntityChangeVelocityPacket;
 import xyz.upperlevel.openverse.network.world.entity.EntityTeleportPacket;
+import xyz.upperlevel.openverse.server.OpenverseServer;
 import xyz.upperlevel.openverse.server.world.chunk.PlayerChunkCache;
 import xyz.upperlevel.openverse.server.world.chunk.PlayerChunkMapListener;
 import xyz.upperlevel.openverse.world.Location;
@@ -18,10 +19,15 @@ import java.util.Map;
 
 public class EntityWatcher {
     @Getter
+    private final OpenverseServer server;
+
+    @Getter
     private final PlayerChunkMapListener map;
     private ChunkMap<Map<Entity, Data>> entities = new ChunkMap<>();
 
-    public EntityWatcher(PlayerChunkMapListener map) {
+    public EntityWatcher(OpenverseServer server, PlayerChunkMapListener map) {
+        this.server = server;
+
         this.map = map;
     }
 
@@ -36,9 +42,15 @@ public class EntityWatcher {
 
 
     protected static class Data {
+        private final OpenverseServer server;
+
         public double posX, posY, posZ;
         public double yaw, pitch;
         public double velX, velY, velZ;
+
+        public Data(OpenverseServer server) {
+            this.server = server;
+        }
 
         public void update(Entity entity, Collection<Player> viewers) {
             updateLoc(entity, viewers);
@@ -62,7 +74,7 @@ public class EntityWatcher {
                 Packet tpPacket = new EntityTeleportPacket(entity.getId(), posX, posY, posZ, yaw, pitch);
                 for (Player player : viewers) {
                     if (player != entity) {
-                        player.getConnection().send(Openverse.getChannel(), tpPacket);
+                        player.getConnection().send(server.getChannel(), tpPacket);
                     }
                 }
             }
@@ -80,7 +92,7 @@ public class EntityWatcher {
                 Packet valPacket = new EntityChangeVelocityPacket(entity.getId(), velX, velY, velZ);
                 for (Player player : viewers) {
                     if (player != entity) {
-                        player.getConnection().send(Openverse.getChannel(), valPacket);
+                        player.getConnection().send(server.getChannel(), valPacket);
                     }
                 }
             }

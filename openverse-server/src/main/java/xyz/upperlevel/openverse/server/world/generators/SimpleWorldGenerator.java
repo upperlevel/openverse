@@ -1,24 +1,29 @@
 package xyz.upperlevel.openverse.server.world.generators;
 
-import xyz.upperlevel.openverse.Openverse;
+import lombok.Getter;
+import xyz.upperlevel.openverse.server.OpenverseServer;
 import xyz.upperlevel.openverse.server.world.ChunkGenerator;
 import xyz.upperlevel.openverse.server.world.generators.util.SimplexNoise;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.chunk.Chunk;
 import xyz.upperlevel.openverse.world.chunk.ChunkPillar;
-import xyz.upperlevel.openverse.world.chunk.HeightmapPacket;
 
 public class SimpleWorldGenerator implements ChunkGenerator {
+    @Getter
+    private final OpenverseServer server;
+
     private final float frequency;
     private final int maxHeight;
     private final BlockType dirtType, grassType, photonType;
 
-    public SimpleWorldGenerator(float frequency, int maxHeight) {
+    public SimpleWorldGenerator(OpenverseServer server, float frequency, int maxHeight) {
+        this.server = server;
+
         this.frequency = frequency;
         this.maxHeight = maxHeight;
-        dirtType = Openverse.resources().blockTypes().entry("dirt");
-        grassType = Openverse.resources().blockTypes().entry("grass");
-        photonType = Openverse.resources().blockTypes().entry("photon");
+        dirtType   = server.getResources().blockTypes().entry("dirt");
+        grassType  = server.getResources().blockTypes().entry("grass");
+        photonType = server.getResources().blockTypes().entry("photon");
     }
 
     public int getNoisedHeight(int x, int z) {

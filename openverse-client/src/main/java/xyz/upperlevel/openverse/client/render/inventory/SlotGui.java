@@ -1,7 +1,6 @@
 package xyz.upperlevel.openverse.client.render.inventory;
 
 import lombok.Getter;
-import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.client.OpenverseClient;
 import xyz.upperlevel.openverse.inventory.PlayerInventorySession.InteractAction;
 import xyz.upperlevel.openverse.inventory.Slot;
@@ -30,7 +29,7 @@ public class SlotGui extends Gui {
 
     @Override
     public void renderCurrent() {
-        ItemType type = handle.getContent().getType();
+        ItemType type = handle.getContent().getType(OpenverseClient.get().getResources().itemTypes());
         if (type == ItemType.AIR) return;
         {
             GuiRenderer r = GuiRenderer.get();
@@ -41,7 +40,7 @@ public class SlotGui extends Gui {
         //TODO: add cache (using inventory listener)
         ItemRenderer renderer = OpenverseClient.get().getItemRendererRegistry().get(type);
         if (renderer == null) {
-            Openverse.getLogger().warning("Cannot find renderer for type: " + type);
+            OpenverseClient.get().getLogger().warning("Cannot find renderer for type: " + type);
             return;
         }
         renderer.renderInSlot(handle.getContent(), getWindow(), getBounds(), this);
@@ -62,8 +61,9 @@ public class SlotGui extends Gui {
                 break;
         }
         if (action != null) {
-            OpenverseClient.get().getPlayer().getInventorySession().onInteract(handle, action);
-            OpenverseClient.get().getEndpoint().getConnection().send(Openverse.getChannel(), new PlayerInventoryActionPacket(action, handle.getId()));
+            OpenverseClient client = OpenverseClient.get();
+            client.getPlayer().getInventorySession().onInteract(handle, action);
+            client.getEndpoint().getConnection().send(client.getChannel(), new PlayerInventoryActionPacket(action, handle.getId()));
         }
         super.onClickBegin(x, y, button);
     }

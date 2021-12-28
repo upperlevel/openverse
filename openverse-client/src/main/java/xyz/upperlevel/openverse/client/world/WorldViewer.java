@@ -2,16 +2,15 @@ package xyz.upperlevel.openverse.client.world;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.joml.Matrix4f;
 import xyz.upperlevel.event.EventHandler;
 import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.hermes.Connection;
 import xyz.upperlevel.hermes.reflect.PacketHandler;
 import xyz.upperlevel.hermes.reflect.PacketListener;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.client.Launcher;
 import xyz.upperlevel.openverse.client.OpenverseClient;
 import xyz.upperlevel.openverse.client.resource.ClientResources;
-import xyz.upperlevel.openverse.launcher.OpenverseLauncher;
 import xyz.upperlevel.openverse.network.inventory.InventoryContentPacket;
 import xyz.upperlevel.openverse.network.inventory.PlayerCloseInventoryPacket;
 import xyz.upperlevel.openverse.network.inventory.PlayerOpenInventoryPacket;
@@ -36,6 +35,9 @@ import xyz.upperlevel.ulge.window.event.ResizeEvent;
  */
 public class WorldViewer implements PacketListener, Listener {
     @Getter
+    private final OpenverseClient client;
+
+    @Getter
     private final WorldSession worldSession;
 
     @Getter
@@ -48,12 +50,14 @@ public class WorldViewer implements PacketListener, Listener {
     private Uniform cameraLoc;
     private float aspectRatio = 1f;
 
-    public WorldViewer(LivingEntity entity) {
+    public WorldViewer(OpenverseClient client, LivingEntity entity) {
+        this.client = client;
+
         this.entity = entity;
-        this.program = ((ClientResources) Openverse.resources()).programs().entry("simple_shader");
-        this.worldSession = new WorldSession(program);
+        this.program = client.getResources().programs().entry("simple_shader");
+        this.worldSession = new WorldSession(client, program);
         this.cameraLoc = program.getUniform("camera");
-        Window window = OpenverseLauncher.get().getGame().getWindow();
+        Window window = Launcher.get().getGame().getWindow();
         window.getEventManager().register(this);
         reloadAspectRatio();
     }
@@ -62,7 +66,7 @@ public class WorldViewer implements PacketListener, Listener {
      * Starts listening for server packets.
      */
     public void listen() {
-        Openverse.getChannel().register(this);
+        client.getChannel().register(this);
     }
 
     public void render(float partialTicks) {
@@ -85,7 +89,7 @@ public class WorldViewer implements PacketListener, Listener {
     }
 
     public void reloadAspectRatio() {
-        Window window = OpenverseLauncher.get().getGame().getWindow();
+        Window window = Launcher.get().getGame().getWindow();
         aspectRatio = window.getWidth() / (float) window.getHeight();
     }
 
@@ -96,20 +100,20 @@ public class WorldViewer implements PacketListener, Listener {
 
     @PacketHandler
     public void onPlayerChangeWorld(Connection conn, PlayerChangeWorldPacket pkt) {
-        worldSession.setWorld(new ClientWorld(pkt.getWorldName()));
-        Openverse.getLogger().info("Viewer changed world to: " + pkt.getWorldName());
+        worldSession.setWorld(new ClientWorld(client, pkt.getWorldName()));
+        client.getLogger().info("Viewer changed world to: " + pkt.getWorldName());
     }
 
     @PacketHandler
     public void onPlayerChangePosition(Connection conn, PlayerChangePositionPacket pkt) {
         //TODO update player pos
-        Openverse.getLogger().info("Viewer changed position to: " + pkt.getX() + " " + pkt.getY() + " " + pkt.getZ());
+        client.getLogger().info("Viewer changed position to: " + pkt.getX() + " " + pkt.getY() + " " + pkt.getZ());
     }
 
     @PacketHandler
     public void onPlayerChangeLook(Connection conn, PlayerChangeLookPacket pkt) {
         //TODO update player look
-        Openverse.getLogger().info("Viewer changed position to: " + pkt.getYaw() + " " + pkt.getPitch());
+        client.getLogger().info("Viewer changed position to: " + pkt.getYaw() + " " + pkt.getPitch());
     }
 
     @PacketHandler
@@ -119,7 +123,7 @@ public class WorldViewer implements PacketListener, Listener {
             PlayerInventory inventory = player.getInventory();
             inventory.get(packet.getSlotId()).swap(packet.getNewItem());
         } else throw new NotImplementedException();
-        Openverse.getLogger().info("slot change received");
+        client.getLogger().info("slot change received");
         //TODO update multi-inventory view and graphic things
     }
 
@@ -130,7 +134,7 @@ public class WorldViewer implements PacketListener, Listener {
             PlayerInventory inventory = player.getInventory();
             packet.apply(inventory);
         } else throw new NotImplementedException();
-        Openverse.getLogger().info("Inventory content received");
+        client.getLogger().info("Inventory content received");
         //TODO update multi-inventory view and graphic things
     }
 

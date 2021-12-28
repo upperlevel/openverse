@@ -13,24 +13,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Getter
-@NoArgsConstructor
 public class BlockModel {
+    @Getter
     private Aabb3f aabb = Aabb3f.ZERO;
-    private List<BlockPart> blockParts = new ArrayList<>();
 
-    private Map<BlockFace, List<BlockPartFace>> externalFaces = new HashMap<>();
+    @Getter
+    private final List<BlockPart> parts = new ArrayList<>();
 
-    public BlockModel(List<BlockPart> blockParts) {
-        for (BlockPart bp : blockParts)
-            addBlockPart(bp);
-    }
+    @Getter
+    private final Map<BlockFace, List<BlockPartFace>> externalFaces = new HashMap<>();
 
-    public boolean testAabbCarefully(Aabb3f aabb) {
-        for (BlockPart part : blockParts)
-            if (part.getAabb().inside(aabb))
-                return true;
-        return false;
+    public BlockModel() {
     }
 
     /**
@@ -66,7 +59,7 @@ public class BlockModel {
 
     public void addBlockPart(BlockPart blockPart) {
         Preconditions.checkNotNull(blockPart);
-        blockParts.add(blockPart);
+        parts.add(blockPart);
         aabb = aabb.union(blockPart.getAabb());
         loadExternalFaces(blockPart);
     }
@@ -75,14 +68,14 @@ public class BlockModel {
      * Prepares the parts of this model to be used for rendering.
      */
     public void bake() {
-        for (BlockPart part : blockParts) {
+        for (BlockPart part : parts) {
             part.bake();
         }
     }
 
     public int getVerticesCount() {
         int cnt = 0;
-        for (BlockPart part : getBlockParts())
+        for (BlockPart part : getParts())
             cnt += part.getVerticesCount();
         return cnt;
     }
@@ -93,13 +86,9 @@ public class BlockModel {
 
     public int renderOnBuffer(World world, int x, int y, int z, ByteBuffer buffer) {
         int v = 0;
-        for (BlockPart blockPart : blockParts) {
+        for (BlockPart blockPart : parts) {
             v += blockPart.renderOnBuffer(world, x, y, z, buffer);
         }
         return v;
-    }
-
-    public BlockModel copy() {
-        return new BlockModel(new ArrayList<>(blockParts));
     }
 }

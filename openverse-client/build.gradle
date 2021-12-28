@@ -1,13 +1,50 @@
 
 description = 'Openverse client'
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'xyz.upperlevel.openverse.client.Launcher'
+    }
+}
+
+import org.gradle.internal.os.OperatingSystem
+
+project.ext.lwjglVersion = "3.1.5"
+project.ext.jomlVersion = "1.10.2"
+
+switch (OperatingSystem.current()) {
+    case OperatingSystem.LINUX:
+        project.ext.lwjglNatives = "natives-linux"
+        break
+    case OperatingSystem.MAC_OS:
+        project.ext.lwjglNatives = natives-macos
+        break
+    case OperatingSystem.WINDOWS:
+        project.ext.lwjglNatives = "natives-windows"
+        break
+}
+
 dependencies {
     implementation project(':openverse')
+    implementation project(':openverse-server')
 
     implementation group: 'xyz.upperlevel.ulge', name: 'ulge', version:'1.0'
+    
     implementation group: 'xyz.upperlevel.hermes', name: 'hermes-client', version:'1.1'
 
-    implementation project(':openverse-launcher') // todo needed ?
+    implementation group: 'jline', name: 'jline', version: '2.14.4'
+
+    implementation "org.lwjgl:lwjgl:$lwjglVersion"
+    implementation "org.lwjgl:lwjgl-glfw:$lwjglVersion"
+    implementation "org.lwjgl:lwjgl-nuklear:$lwjglVersion"
+    implementation "org.lwjgl:lwjgl-opengl:$lwjglVersion"
+    implementation "org.lwjgl:lwjgl-stb:$lwjglVersion"
+    runtimeOnly "org.lwjgl:lwjgl:$lwjglVersion:$lwjglNatives"
+    runtimeOnly "org.lwjgl:lwjgl-glfw:$lwjglVersion:$lwjglNatives"
+    runtimeOnly "org.lwjgl:lwjgl-nuklear:$lwjglVersion:$lwjglNatives"
+    runtimeOnly "org.lwjgl:lwjgl-opengl:$lwjglVersion:$lwjglNatives"
+    runtimeOnly "org.lwjgl:lwjgl-stb:$lwjglVersion:$lwjglNatives"
+    implementation "org.joml:joml:${jomlVersion}"
 }
 
 task copyResources() {

@@ -23,12 +23,13 @@ import static xyz.upperlevel.openverse.world.chunk.storage.BlockStorage.AIR_STAT
 public class ClientWorld extends World implements PacketListener {
     public static final long BUILD_TIMEOUT = 10000000;
     public static final int MAX_PENDING_QUEUE_SIZE = 512*4;
+
     private boolean gameStarted = false;
     private BlockingQueue<Chunk> buildPendingChunks = new ArrayBlockingQueue<>(MAX_PENDING_QUEUE_SIZE);
 
-    public ClientWorld(String name) {
-        super(name);
-        Openverse.getChannel().register(this);
+    public ClientWorld(OpenverseClient client, String name) {
+        super(client, name);
+        client.getChannel().register(this);
     }
 
     /**
@@ -36,7 +37,7 @@ public class ClientWorld extends World implements PacketListener {
      */
     @PacketHandler
     public void onHeightmapReceive(Connection conn, HeightmapPacket pkt) {
-        ChunkPillar plr = new ChunkPillar(this, pkt.getX(), pkt.getZ());
+        ChunkPillar plr = new ChunkPillar(getModule(), this, pkt.getX(), pkt.getZ());
         plr.setHeightmap(pkt.getHeightmap());
         setChunkPillar(plr);
     }
@@ -48,11 +49,11 @@ public class ClientWorld extends World implements PacketListener {
     public void onChunkCreate(Connection conn, ChunkCreatePacket pkt) {
         ChunkPillar plr = getChunkPillar(pkt.getX(), pkt.getZ());
         if (plr == null) {
-            Openverse.getLogger().warning("Chunk received at x=" + pkt.getX() + " y=" + pkt.getY() + " z=" + pkt.getZ() + " but there is no pillar!");
+            getModule().getLogger().warning("Chunk received at x=" + pkt.getX() + " y=" + pkt.getY() + " z=" + pkt.getZ() + " but there is no pillar!");
             return;
         }
-        Chunk chk = new Chunk(plr, pkt.getY());
-        pkt.setBlockStates(chk);
+        Chunk chk = new Chunk(getModule(), plr, pkt.getY());
+        pkt.setBlockStates(getModule().getResources().blockTypes(), chk);
         if (gameStarted && buildPendingChunks.size() < MAX_PENDING_QUEUE_SIZE) {
             buildPendingChunks.add(chk);
         } else {

@@ -1,24 +1,28 @@
 package xyz.upperlevel.openverse.item;
 
+import lombok.Getter;
 import xyz.upperlevel.hermes.util.DynamicArray;
+import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.resource.Registry;
 import xyz.upperlevel.openverse.world.block.BlockType;
 import xyz.upperlevel.openverse.world.block.BlockTypeRegistry;
-import xyz.upperlevel.openverse.world.block.BlockTypes;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-import static xyz.upperlevel.openverse.item.ItemType.AIR;
-
 public class ItemTypeRegistry extends Registry<ItemType> {
-    private int nextId = 0;
-    private DynamicArray<ItemType> idRegistry = new DynamicArray<>(256);
+    @Getter
+    private final OpenverseProxy module;
 
-    public ItemTypeRegistry(BlockTypeRegistry blockRegistry) {//TODO remove parameter
-        register(AIR);
-        registerForBlock(BlockTypes.DIRT);
-        registerForBlock(BlockTypes.GRASS);
+    private int nextId = 0;
+    private final DynamicArray<ItemType> idRegistry = new DynamicArray<>(256);
+
+    public ItemTypeRegistry(OpenverseProxy module, BlockTypeRegistry blockTypeRegistry) {
+        this.module = module;
+
+        register(ItemType.AIR);
+        registerForBlock(blockTypeRegistry.getDirt());
+        registerForBlock(blockTypeRegistry.getGrass());
     }
 
     public void register(ItemType type) {
@@ -31,6 +35,18 @@ public class ItemTypeRegistry extends Registry<ItemType> {
 
     public ItemType entry(int id) {
         return idRegistry.get(id);
+    }
+
+    public ItemType getAir() {
+        return ItemType.AIR;
+    }
+
+    public BlockItemType getDirt() {
+        return (BlockItemType) entry("dirt");
+    }
+
+    public BlockItemType getGrass() {
+        return (BlockItemType) entry("grass");
     }
 
     public void registerId(ItemType type) {

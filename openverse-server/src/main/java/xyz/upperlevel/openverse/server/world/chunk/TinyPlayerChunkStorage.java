@@ -20,19 +20,27 @@ import java.util.*;
 @Getter
 public class TinyPlayerChunkStorage extends PlayerChunkStorage implements Listener {
     protected static final int SIZE = Long.BYTES * 8;
+
+    @Getter
+    private final OpenverseServer server;
+
     private final Runnable onOverflow;
 
     private ChunkMap<TinyPlayerChunkCache> chunks = new ChunkMap<>();
     private Player[] players = new Player[SIZE];
+
     @Getter
     private int nextId = 0;
 
-    public TinyPlayerChunkStorage(ServerWorld world, Runnable onOverflow) {
+    public TinyPlayerChunkStorage(OpenverseServer server, ServerWorld world, Runnable onOverflow) {
         super(world);
+
+        this.server = server;
+
         this.onOverflow = onOverflow;
 
-        OpenverseServer.get().getPlayerManager().getPlayers().forEach(this::addPlayer);
-        Openverse.getEventManager().register(this);
+        server.getPlayerManager().getPlayers().forEach(this::addPlayer);
+        server.getEventManager().register(this);
     }
 
     @Override
@@ -58,7 +66,7 @@ public class TinyPlayerChunkStorage extends PlayerChunkStorage implements Listen
     }
 
     public void addPlayer(Player player) {
-        Openverse.getLogger().severe("Adding player " + player.getName());
+        server.getLogger().severe("Adding player " + player.getName());
         if (nextId == SIZE) {
             onOverflow.run();
             destroy();
@@ -68,7 +76,7 @@ public class TinyPlayerChunkStorage extends PlayerChunkStorage implements Listen
     }
 
     protected void destroy() {
-        Openverse.getEventManager().unregister(this);
+        server.getEventManager().unregister(this);
     }
 
     @Override

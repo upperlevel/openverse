@@ -11,9 +11,11 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-@Getter
 public class BlockPart {
+    @Getter
     private final Aabb3f aabb;
+
+    @Getter
     private Map<BlockFace, BlockPartFace> faces = new HashMap<>();
 
     private BlockFace parseFacing(String string) {

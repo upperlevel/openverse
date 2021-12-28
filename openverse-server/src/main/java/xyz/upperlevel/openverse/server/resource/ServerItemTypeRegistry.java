@@ -7,14 +7,16 @@ import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.item.ItemType;
 import xyz.upperlevel.openverse.item.ItemTypeRegistry;
 import xyz.upperlevel.openverse.network.world.registry.ItemRegistryPacket;
+import xyz.upperlevel.openverse.server.OpenverseServer;
 import xyz.upperlevel.openverse.server.event.PlayerJoinEvent;
 import xyz.upperlevel.openverse.world.block.BlockTypeRegistry;
 
 public class ServerItemTypeRegistry extends ItemTypeRegistry implements Listener {
 
-    public ServerItemTypeRegistry(BlockTypeRegistry blockTypes) {
-        super(blockTypes);
-        Openverse.getEventManager().register(this);
+    public ServerItemTypeRegistry(OpenverseServer server, BlockTypeRegistry blockTypes) {
+        super(server, blockTypes);
+
+        server.getEventManager().register(this);
     }
 
     @Override
@@ -25,6 +27,6 @@ public class ServerItemTypeRegistry extends ItemTypeRegistry implements Listener
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
-        event.getPlayer().getConnection().send(Openverse.getChannel(), new ItemRegistryPacket(getOrderedEntries()));
+        event.getPlayer().getConnection().send(getModule().getChannel(), new ItemRegistryPacket(getOrderedEntries()));
     }
 }

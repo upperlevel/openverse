@@ -2,6 +2,7 @@ package xyz.upperlevel.openverse.world.block;
 
 import lombok.Getter;
 import xyz.upperlevel.hermes.util.DynamicArray;
+import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.resource.Registry;
 import xyz.upperlevel.openverse.world.block.state.BlockState;
 
@@ -10,12 +11,19 @@ import java.util.stream.Stream;
 
 import static xyz.upperlevel.openverse.world.block.BlockType.AIR;
 
-@Getter
 public class BlockTypeRegistry extends Registry<BlockType> {
-    private int nextId = 0;
-    private DynamicArray<BlockType> idRegistry = new DynamicArray<>(256);
+    @Getter
+    private final OpenverseProxy module;
 
-    public BlockTypeRegistry() {
+    @Getter
+    private int nextId = 0;
+
+    @Getter
+    private final DynamicArray<BlockType> idRegistry = new DynamicArray<>(256);
+
+    public BlockTypeRegistry(OpenverseProxy module) {
+        this.module = module;
+
         register(AIR);
         register(new GrassType());
         register(new BlockType("dirt", true));
@@ -29,6 +37,18 @@ public class BlockTypeRegistry extends Registry<BlockType> {
 
     public BlockType entry(int id) {
         return idRegistry.get(id);
+    }
+
+    public BlockType getAir() {
+        return BlockType.AIR;
+    }
+
+    public BlockType getDirt() {
+        return entry("dirt");
+    }
+
+    public BlockType getGrass() {
+        return entry("grass");
     }
 
     public BlockState getState(int id) {

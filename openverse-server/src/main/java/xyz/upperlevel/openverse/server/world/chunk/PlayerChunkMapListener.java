@@ -6,6 +6,7 @@ import xyz.upperlevel.event.Listener;
 import xyz.upperlevel.openverse.Openverse;
 import xyz.upperlevel.openverse.network.world.ChunkCreatePacket;
 import xyz.upperlevel.openverse.network.world.ChunkDestroyPacket;
+import xyz.upperlevel.openverse.server.OpenverseServer;
 import xyz.upperlevel.openverse.server.event.PlayerJoinEvent;
 import xyz.upperlevel.openverse.server.event.PlayerQuitEvent;
 import xyz.upperlevel.openverse.server.world.ServerPlayer;
@@ -19,15 +20,21 @@ import java.util.Set;
 
 @Getter
 public class PlayerChunkMapListener extends PlayerChunkMap implements Listener {
+    @Getter
+    private final OpenverseServer server;
+
     private final ServerWorld world;
     private PlayerChunkStorage chunks;
     private Set<ServerPlayer> players = new HashSet<>(); // Todo: update this bad asshole shit
 
-    public PlayerChunkMapListener(ServerWorld world, int radius) {
+    public PlayerChunkMapListener(OpenverseServer server, ServerWorld world, int radius) {
         super(radius);
+
+        this.server = server;
         this.world = world;
-        chunks = new TinyPlayerChunkStorage(world, this::storageOverflow);
-        Openverse.getEventManager().register(this);
+
+        chunks = new TinyPlayerChunkStorage(server, world, this::storageOverflow);
+        server.getEventManager().register(this);
     }
 
     private void storageOverflow() {
@@ -50,7 +57,7 @@ public class PlayerChunkMapListener extends PlayerChunkMap implements Listener {
     public void sendChunk(ServerPlayer player, Chunk chunk) {
         PlayerChunkCache pcc = chunks.getOrCreate(chunk.getLocation());
         pcc.addPlayer(player);
-        player.getConnection().send(Openverse.getChannel(), new ChunkCreatePacket(chunk));
+        player.getConnection().send(server.getChannel(), new ChunkCreatePacket(chunk));
     }
 
     public void destroyChunk(ServerPlayer player, Chunk chunk) {
@@ -60,7 +67,7 @@ public class PlayerChunkMapListener extends PlayerChunkMap implements Listener {
             return;
         }
         pcc.removePlayer(player);
-        player.getConnection().send(Openverse.getChannel(), new ChunkDestroyPacket(loc));
+        player.getConnection().send(server.getChannel(), new ChunkDestroyPacket(loc));
         if (pcc.isEmpty()) {
             chunks.remove(loc);
         }
@@ -69,7 +76,7 @@ public class PlayerChunkMapListener extends PlayerChunkMap implements Listener {
     @Override
     public void onChunkPillarSend(ServerPlayer player, int x, int z) {
         ChunkPillar plr = world.getOrLoadChunkPillar(x, z);
-        player.getConnection().send(Openverse.getChannel(), new HeightmapPacket(plr));
+        player.getConnection().send(server.getChannel(), new HeightmapPacket(plr));
     }
 
     @Override
@@ -96,7 +103,7 @@ public class PlayerChunkMapListener extends PlayerChunkMap implements Listener {
         if (loc.getWorld() == world) {
             sendChunkView(pl, loc.getChunkLocation());
             players.add(pl);
-            Openverse.getLogger().info("Player \"" + pl.getName() + "\" joined the world \"" + world.getName() + "\"!");
+            server.getLogger().info("Player \"" + pl.getName() + "\" joined the world \"" + world.getName() + "\"!");
         }
     }
 
@@ -107,7 +114,7 @@ public class PlayerChunkMapListener extends PlayerChunkMap implements Listener {
         if (loc.getWorld() == world) {
             destroyChunkView(pl, loc.getChunkLocation());
             players.remove(pl);
-            Openverse.getLogger().info("Player \"" + pl.getName() + "\" quit the world \"" + world.getName() + "\"!");
+            server.getLogger().info("Player \"" + pl.getName() + "\" quit the world \"" + world.getName() + "\"!");
         }
     }
 

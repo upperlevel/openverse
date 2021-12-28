@@ -14,19 +14,24 @@ import xyz.upperlevel.openverse.world.entity.LivingEntity;
 
 public class PlayerLocationWatcher {
     @Getter
+    private final OpenverseClient client;
+
+    @Getter
     @Setter
     @NonNull
-    private LivingEntity handle;
+    private LivingEntity watching;
 
     private double x, y, z;
     private double yaw, pitch;
 
-    public PlayerLocationWatcher(LivingEntity watcher) {
-        this.handle = watcher;
+    public PlayerLocationWatcher(OpenverseClient client, LivingEntity watching) {
+        this.client = client;
+
+        this.watching = watching;
     }
 
     public void update() {
-        Location loc = handle.getLocation();
+        Location loc = watching.getLocation();
         if (    loc.getX() != x ||
                 loc.getY() != y ||
                 loc.getZ() != z) {
@@ -35,7 +40,7 @@ public class PlayerLocationWatcher {
             z = loc.getZ();
 
             Packet packet = new PlayerChangePositionPacket(x, y, z);
-            OpenverseClient.get().getEndpoint().getConnection().send(Openverse.getChannel(), packet);
+            client.getEndpoint().getConnection().send(client.getChannel(), packet);
         }
 
         if (    loc.getYaw() != yaw ||
@@ -44,7 +49,7 @@ public class PlayerLocationWatcher {
             pitch = loc.getPitch();
 
             Packet packet = new PlayerChangeLookPacket(yaw, pitch);
-            OpenverseClient.get().getEndpoint().getConnection().send(Openverse.getChannel(), packet);
+            client.getEndpoint().getConnection().send(client.getChannel(), packet);
         }
     }
 }

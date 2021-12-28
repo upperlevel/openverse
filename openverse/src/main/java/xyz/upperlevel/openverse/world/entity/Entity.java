@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.joml.Vector3d;
 import xyz.upperlevel.openverse.Openverse;
+import xyz.upperlevel.openverse.OpenverseProxy;
 import xyz.upperlevel.openverse.util.math.Aabb3d;
 import xyz.upperlevel.openverse.util.math.LineVisitor3d.RayCastResult;
 import xyz.upperlevel.openverse.util.math.MathUtil;
@@ -22,22 +23,31 @@ public class Entity {
     public static final double JUMP_MULTIPLIER = 3;
 
     @Getter
+    private final OpenverseProxy module;
+
+    @Getter
     @Setter
     private int id = -1;
+
     @Getter
     private final EntityType type;
+
     @Getter
     private float width;
+
     @Getter
     private float height;
+
     @Getter
     private boolean onGround;
 
     protected Location lastLocation;
     protected Location location;
+
     @Getter
     @Setter
     private Vector3d velocity = new Vector3d();
+
     @Getter
     @Setter
     private Aabb3d boundingBox = Aabb3d.ZERO;
@@ -45,7 +55,9 @@ public class Entity {
     @Getter
     private int ticksLived = 0;
 
-    public Entity(EntityType type, Location spawn) {
+    public Entity(OpenverseProxy module, EntityType type, Location spawn) {
+        this.module = module;
+
         this.type = type;
         this.location = spawn;
     }
@@ -57,7 +69,7 @@ public class Entity {
     public void setLocation(Location location) {
         checkNotNull(location);
         EntityMoveEvent event = new EntityMoveEvent(this, location);
-        Openverse.getEventManager().call(event);
+        module.getEventManager().call(event);
         if (event.isCancelled()) return;
         this.location = location;
         updateBoundingBox();

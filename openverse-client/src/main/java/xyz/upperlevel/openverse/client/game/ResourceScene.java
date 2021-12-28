@@ -11,33 +11,41 @@ import xyz.upperlevel.ulge.game.Scene;
 import java.io.File;
 import java.nio.file.Paths;
 
-@Getter
-@RequiredArgsConstructor
 public class ResourceScene implements Scene {
+    @Getter
+    private final OpenverseClient client;
+
+    @Getter
     private final ClientScene parent;
+
+    public ResourceScene(OpenverseClient client, ClientScene parent) {
+        this.client = client;
+
+        this.parent = parent;
+    }
 
     @Override
     public void onEnable(Scene previous) {
         long init = System.currentTimeMillis();
 
-        Openverse.getLogger().info("Loading resources...");
+        client.getLogger().info("Loading resources...");
 
-        Openverse.resources().setup();
-        Openverse.resources().load();
+        client.getResources().setup();
+        client.getResources().load();
 
         BlockModelRegistry.loadFolder(new File("client/resources/blocks/models"));
-        BlockTypeModelMapper.load(Openverse.resources().blockTypes().entry("grass"), Paths.get("client/resources/blocks/grass.json"));
-        BlockTypeModelMapper.load(Openverse.resources().blockTypes().entry("dirt"), Paths.get("client/resources/blocks/dirt.json"));
-        BlockTypeModelMapper.load(Openverse.resources().blockTypes().entry("test"), Paths.get("client/resources/blocks/test.json"));
-        BlockTypeModelMapper.load(Openverse.resources().blockTypes().entry("photon"), Paths.get("client/resources/blocks/photon.json"));
+        BlockTypeModelMapper.load(client.getResources().blockTypes().entry("grass"), Paths.get("client/resources/blocks/grass.json"));
+        BlockTypeModelMapper.load(client.getResources().blockTypes().entry("dirt"), Paths.get("client/resources/blocks/dirt.json"));
+        BlockTypeModelMapper.load(client.getResources().blockTypes().entry("test"), Paths.get("client/resources/blocks/test.json"));
+        BlockTypeModelMapper.load(client.getResources().blockTypes().entry("photon"), Paths.get("client/resources/blocks/photon.json"));
 
         TextureBakery.bake();
         BlockTypeModelMapper.bake(); // bakes models
-        OpenverseClient.get().getItemRendererRegistry().init(); // bakes item icons
+        OpenverseClient.get().getItemRendererRegistry().registerDefaults(client.getResources().itemTypes()); // bakes item icons
 
-        Openverse.getLogger().info("Resources loaded in " + (System.currentTimeMillis() - init) + " ms.");
+        client.getLogger().info("Resources loaded in " + (System.currentTimeMillis() - init) + " ms.");
 
-        parent.setScene(new GameScene(parent));
+        parent.setScene(new GameScene(client, parent));
     }
 
     @Override

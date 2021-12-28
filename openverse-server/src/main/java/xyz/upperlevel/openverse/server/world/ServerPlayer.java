@@ -9,27 +9,34 @@ import xyz.upperlevel.openverse.network.inventory.InventoryContentPacket;
 import xyz.upperlevel.openverse.network.inventory.SlotChangePacket;
 import xyz.upperlevel.openverse.network.world.entity.PlayerChangeLookPacket;
 import xyz.upperlevel.openverse.network.world.entity.PlayerChangePositionPacket;
+import xyz.upperlevel.openverse.server.OpenverseServer;
 import xyz.upperlevel.openverse.world.Location;
 import xyz.upperlevel.openverse.world.entity.player.Player;
 import xyz.upperlevel.openverse.world.entity.event.PlayerMoveEvent;
 
-@Getter
 public class ServerPlayer extends Player implements PacketListener {
+    @Getter
+    private final OpenverseServer server;
+
+    @Getter
     private final Connection connection;
 
-    public ServerPlayer(Location loc, String name, Connection connection) {
-        super(loc, name);
+    public ServerPlayer(OpenverseServer server, Location loc, String name, Connection connection) {
+        super(server, loc, name);
+
+        this.server = server;
+
         this.connection = connection;
-        Openverse.getChannel().register(this);
+        server.getChannel().register(this);
         getInventory().addListener((inventory, slot) -> {
-            Openverse.getLogger().severe("CHANGING ITEM IN " + slot);
+            server.getLogger().severe("CHANGING ITEM IN " + slot);
             SlotChangePacket packet = new SlotChangePacket(inventory.getId(), slot.getId(), slot.getContent());
-            Openverse.endpoint().getConnections().forEach(c -> c.send(Openverse.getChannel(), packet));
+            server.getEndpoint().getConnections().forEach(conn -> conn.send(server.getChannel(), packet));
         });
     }
 
     public void updateInventory() {
-        connection.send(Openverse.getChannel(), new InventoryContentPacket(getInventory()));
+        connection.send(server.getChannel(), new InventoryContentPacket(server, getInventory()));
     }
 
     @Override
@@ -37,7 +44,7 @@ public class ServerPlayer extends Player implements PacketListener {
         if (loc == null)
             throw new IllegalArgumentException("Invalid player location");
         PlayerMoveEvent e = new PlayerMoveEvent(this, loc);
-        Openverse.getEventManager().call(e);
+        server.getEventManager().call(e);
         this.location = loc;
     }
 
