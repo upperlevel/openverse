@@ -13,3 +13,7 @@ How to run openverse-server:
 ```
 gradlew :openverse-server:run
 ```
+
+### Gallery
+
+![openverse_1](screenshots/1640869916791.png)
