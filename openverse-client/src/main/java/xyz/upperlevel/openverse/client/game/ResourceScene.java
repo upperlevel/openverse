@@ -33,11 +33,11 @@ public class ResourceScene implements Scene {
         client.getResources().setup();
         client.getResources().load();
 
-        BlockModelRegistry.loadFolder(new File("client/resources/blocks/models"));
-        BlockTypeModelMapper.load(client.getResources().blockTypes().entry("grass"), Paths.get("client/resources/blocks/grass.json"));
-        BlockTypeModelMapper.load(client.getResources().blockTypes().entry("dirt"), Paths.get("client/resources/blocks/dirt.json"));
-        BlockTypeModelMapper.load(client.getResources().blockTypes().entry("test"), Paths.get("client/resources/blocks/test.json"));
-        BlockTypeModelMapper.load(client.getResources().blockTypes().entry("photon"), Paths.get("client/resources/blocks/photon.json"));
+        BlockModelRegistry.loadFolder(new File("resources/blocks/models"));
+        BlockTypeModelMapper.load(client.getResources().blockTypes().entry("grass"), Paths.get("resources/blocks/grass.json"));
+        BlockTypeModelMapper.load(client.getResources().blockTypes().entry("dirt"), Paths.get("resources/blocks/dirt.json"));
+        BlockTypeModelMapper.load(client.getResources().blockTypes().entry("test"), Paths.get("resources/blocks/test.json"));
+        BlockTypeModelMapper.load(client.getResources().blockTypes().entry("photon"), Paths.get("resources/blocks/photon.json"));
 
         TextureBakery.bake();
         BlockTypeModelMapper.bake(); // bakes models

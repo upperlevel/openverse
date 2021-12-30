@@ -1,5 +1,5 @@
 {
   "defaults": {
-    "model": "client/resources/blocks/models/test.json"
+    "model": "resources/blocks/models/test.json"
   }
 }

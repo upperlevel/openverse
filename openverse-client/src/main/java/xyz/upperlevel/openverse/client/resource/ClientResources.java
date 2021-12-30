@@ -23,7 +23,7 @@ public class ClientResources extends Resources {
      * The constructor of {@link ClientResources} initializes all sub resource managers.
      */
     public ClientResources(OpenverseClient client, Logger logger) {
-        super(client, new File("client/resources"), logger);
+        super(client, new File("resources"), logger);
     }
 
     @Override

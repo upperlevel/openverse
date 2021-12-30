@@ -45,7 +45,7 @@ import static org.lwjgl.system.MemoryUtil.*;
 // https://www.thecodingfox.com/nuklear-usage-guide-lwjgl
 
 public class DebugGuiManager {
-    public static final File FONT_PATH = new File("client/resources/fonts/Roboto-Regular.ttf");
+    public static final File FONT_PATH = new File("resources/fonts/Roboto-Regular.ttf");
 
     private final long mWindow;
 

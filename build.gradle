@@ -1,12 +1,11 @@
 
 plugins {
-    id 'application'
     id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
 
 allprojects  {
     group = 'xyz.upperlevel.openverse'
-    version = '0.1'
+    version = '1.0'
 }
 
 project.ext.set("openverseOutDir", project.buildDir.toPath().resolve("game"))
@@ -14,33 +13,12 @@ project.ext.set("openverseOutDir", project.buildDir.toPath().resolve("game"))
 subprojects {
     apply plugin: 'java'
     apply plugin: 'java-library'
-    apply plugin: 'idea'
     apply plugin: 'com.github.johnrengelman.shadow'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
-    test {
-        useJUnit()
-    }
-
-    // shadowJar final name must be in the form (for example) openverse-launcher.jar
-    // and not openverse-launcher-1.0-all.jar
-    shadowJar {
-        archiveBaseName.set(project.name)
-        archiveVersion.set("")
-        //archiveExtension.set("")
-        archiveClassifier.set("")
-
-        configurations = [
-                project.configurations.compileClasspath,
-                project.configurations.runtimeClasspath
-        ]
-    }
-
-    tasks.jar.enabled = false // We only want the shadowJar
-
-    project.tasks.assemble.dependsOn project.tasks.shadowJar
+    tasks.jar.enabled = false
 
     repositories {
         mavenLocal()
@@ -58,40 +36,11 @@ subprojects {
 
         testImplementation 'junit:junit:4.13'
     }
-}
 
-apply plugin: 'distribution'
-
-distributions {
-    game {
-        distributionBaseName.set("game")
-
-        contents {
-            // openverse-client
-            into('client') {
-                from { project(':openverse-client').tasks.shadowJar }
-                rename 'openverse-client(.*)\\.jar', 'openverse-client.jar'
-
-                into('resources') {
-                    from { project(':openverse-client').uri('src/main/resources') }
-                }
-            }
-
-            // openverse-server
-            into('server') {
-                from { project(':openverse-server').tasks.shadowJar }
-                rename 'openverse-server(.*)\\.jar', 'openverse-server.jar'
-            }
-        }
+    test {
+        useJUnit()
     }
-}
 
-// Changes the libs directory: the directory where output JARs will be stored (using the java plugin).
-
-project(':openverse-client') { client ->
-    client.libsDirName = project.openverseOutDir.resolve('client')
-}
-
-project(':openverse-server') { server ->
-    server.libsDirName = project.openverseOutDir.resolve('server')
+    shadowJar {
+    }
 }

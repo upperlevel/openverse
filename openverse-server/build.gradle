@@ -1,6 +1,17 @@
 
 description = 'Openverse server'
 
+shadowJar {
+    manifest.attributes(
+            "Main-Class": "xyz.upperlevel.openverse.server.ServerLauncher"
+    )
+
+    configurations = [
+            project.configurations.compileClasspath,
+            project.configurations.runtimeClasspath
+    ]
+}
+
 dependencies {
     implementation project(':openverse')
     api group: 'xyz.upperlevel.hermes', name: 'hermes-server', version:'1.1'
@@ -13,6 +24,14 @@ task copyResources() {
 
     copy {
         from "src/main/resources"
-        into "$libsDirName/resources"
+        into "${jar.destinationDirectory.get()}/resources"
     }
 }
+
+task run(type: JavaExec) {
+    shouldRunAfter tasks.shadowJar
+
+    workingDir = tasks.shadowJar.destinationDirectory
+    classpath  = files(tasks.shadowJar)
+}
+

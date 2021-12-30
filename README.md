@@ -1,15 +1,15 @@
 # Openverse
 
+Openverse is a sandbox open-world voxel game developed with modding in mind.
 
 ### How to run
 
-In order to build Openverse:
+How to run openverse-client:
 ```
-gradlew build
+gradlew :openverse-client:run
 ```
 
-To run it:
+How to run openverse-server:
 ```
-cd build/game
-java -jar openverse-launcher.jar
+gradlew :openverse-server:run
 ```

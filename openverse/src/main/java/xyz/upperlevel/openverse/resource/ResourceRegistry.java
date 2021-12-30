@@ -5,9 +5,11 @@ import lombok.Getter;
 import java.io.File;
 import java.util.logging.Logger;
 
-@Getter
 public abstract class ResourceRegistry<E> extends Registry<E> {
+    @Getter
     private final Logger logger;
+
+    @Getter
     private final File defaultFolder;
 
     public ResourceRegistry(File defaultFolder, Logger logger) {
@@ -19,13 +21,14 @@ public abstract class ResourceRegistry<E> extends Registry<E> {
      * Creates default folder.
      */
     public void setup() {
+        /*
         if (!defaultFolder.exists()) {
             if (!defaultFolder.mkdirs()) {
                 logger.warning(defaultFolder + " hasn't been created.");
             } else {
                 logger.info(defaultFolder + " created successfully!");
             }
-        }
+        }*/
     }
 
     protected void onUnload(E entry) {

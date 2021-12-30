@@ -11,22 +11,22 @@
   },
   "faces": {
     "up": {
-      "texture": "client/resources/blocks/textures/grass_top.png"
+      "texture": "resources/blocks/textures/grass_top.png"
     },
     "down": {
-      "texture": "client/resources/blocks/textures/dirt.png"
+      "texture": "resources/blocks/textures/dirt.png"
     },
     "left": {
-      "texture": "client/resources/blocks/textures/grass_side.png"
+      "texture": "resources/blocks/textures/grass_side.png"
     },
     "right": {
-      "texture": "client/resources/blocks/textures/grass_side.png"
+      "texture": "resources/blocks/textures/grass_side.png"
     },
     "front": {
-      "texture": "client/resources/blocks/textures/grass_side.png"
+      "texture": "resources/blocks/textures/grass_side.png"
     },
     "back": {
-      "texture": "client/resources/blocks/textures/grass_side.png"
+      "texture": "resources/blocks/textures/grass_side.png"
     }
   }
 }

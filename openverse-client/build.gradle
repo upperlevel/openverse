@@ -1,10 +1,15 @@
 
 description = 'Openverse client'
 
-jar {
-    manifest {
-        attributes 'Main-Class': 'xyz.upperlevel.openverse.client.Launcher'
-    }
+shadowJar {
+    manifest.attributes(
+            "Main-Class": "xyz.upperlevel.openverse.client.Launcher"
+    )
+
+    configurations = [
+            project.configurations.compileClasspath,
+            project.configurations.runtimeClasspath
+    ]
 }
 
 import org.gradle.internal.os.OperatingSystem
@@ -17,7 +22,7 @@ switch (OperatingSystem.current()) {
         project.ext.lwjglNatives = "natives-linux"
         break
     case OperatingSystem.MAC_OS:
-        project.ext.lwjglNatives = natives-macos
+        project.ext.lwjglNatives = "natives-macos"
         break
     case OperatingSystem.WINDOWS:
         project.ext.lwjglNatives = "natives-windows"
@@ -48,10 +53,17 @@ dependencies {
 }
 
 task copyResources() {
-    shouldRunAfter assemble
+    shouldRunAfter tasks.shadowJar
 
     copy {
         from "src/main/resources"
-        into "$libsDirName/resources"
+        into "${tasks.shadowJar.destinationDirectory.get()}/resources"
     }
+}
+
+task run(type: JavaExec) {
+    shouldRunAfter tasks.shadowJar
+
+    workingDir = tasks.shadowJar.destinationDirectory
+    classpath  = files(tasks.shadowJar)
 }
